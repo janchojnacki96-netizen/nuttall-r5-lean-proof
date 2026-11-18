@@ -26,3 +26,5 @@ import W5.PositiveScalarCongruence
 
 
 import W5.CoefficientTailBound
+
+import W5.ThetaCoordinateIdentity
