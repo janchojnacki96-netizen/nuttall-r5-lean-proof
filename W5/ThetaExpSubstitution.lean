@@ -29,6 +29,7 @@ theorem theta_exp_change_variables (g : ℝ → ℝ) (t : ℝ) :
   have hfour :
       (∫ s in Set.Ioi t, (4:ℝ) * h (4*s)) =
         ∫ u in Set.Ioi ((4:ℝ)*t), h u := by
+    rw [integral_const_mul]
     simpa only [smul_eq_mul] using
       (MeasureTheory.integral_comp_mul_left_Ioi' h t
         (by norm_num : (0:ℝ) < 4))
