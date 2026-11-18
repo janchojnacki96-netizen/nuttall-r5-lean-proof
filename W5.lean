@@ -38,3 +38,4 @@ import W5.ThetaIntegrandMajorant
 import W5.ThetaSeparableFubini
 import W5.ThetaMajorantWeights
 import W5.ThetaYFubini
+import W5.ThetaFiniteBoundaryIntegral
