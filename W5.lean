@@ -47,3 +47,5 @@ import W5.ThetaGammaScaling
 import W5.ThetaSingleTermClosedForm
 import W5.ThetaIntegratedClosedForm
 import W5.ThetaOriginalCoordinate
+
+import W5.ThetaExpSubstitution
