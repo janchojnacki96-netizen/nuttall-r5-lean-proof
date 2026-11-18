@@ -65,3 +65,5 @@ import W5.ThetaIntegralStrictPositivity
 import W5.ThetaWronskianCoordinate
 
 import W5.ThetaInverseCoordinate
+
+import W5.ThetaLocalWronskian
