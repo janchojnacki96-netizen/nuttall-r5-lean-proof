@@ -11,3 +11,5 @@ import W5.DeterminantCongruence
 import W5.BoundaryCoefficients
 
 import W5.VerifiedIntervalCore
+
+import W5.VerifiedIntervalMultiplication
