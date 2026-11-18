@@ -20,7 +20,7 @@ theorem phiSummand_summable (t : ℝ) :
   let a : ℝ := Real.pi * Real.exp (4*t)
   have ha : 0 < a := mul_pos Real.pi_pos (Real.exp_pos _)
   have heq (n : ℕ) :
-      -(a * (n:ℝ)^2) =
+      -a * (n:ℝ)^2 =
       -(n:ℝ)^2 * Real.pi * Real.exp (4*t) := by
     dsimp [a]
     ring
