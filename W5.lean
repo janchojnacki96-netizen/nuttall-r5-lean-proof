@@ -37,3 +37,4 @@ import W5.ThetaPhiSummability
 import W5.ThetaIntegrandMajorant
 import W5.ThetaSeparableFubini
 import W5.ThetaMajorantWeights
+import W5.ThetaYFubini
