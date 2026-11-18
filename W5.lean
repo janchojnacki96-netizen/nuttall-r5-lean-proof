@@ -49,3 +49,5 @@ import W5.ThetaIntegratedClosedForm
 import W5.ThetaOriginalCoordinate
 
 import W5.ThetaExpSubstitution
+
+import W5.ThetaDensityClosedForm
