@@ -59,3 +59,5 @@ import W5.ThetaDerivativeBridge
 import W5.ThetaIteratedChainRule
 
 import W5.WronskianLowOrder
+
+import W5.ThetaIntegralStrictPositivity
