@@ -1,6 +1,6 @@
 import W5.FiniteCore
 namespace W5
-def boundaryPivot (k : Fin 5) : ℝ :=
+noncomputable def boundaryPivot (k : Fin 5) : ℝ :=
   if k.val % 2 = 0 then 1 / (Nat.factorial k.val : ℝ)
   else -(1 / (Nat.factorial k.val : ℝ))
 theorem boundaryPivot_signs :
