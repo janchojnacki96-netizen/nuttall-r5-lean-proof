@@ -93,8 +93,10 @@ theorem thetaYIntegrand_one_integral_pos (y0 : ℝ) (hy0 : 3 ≤ y0) :
       Set.Ioi y0 ⊆
         Function.support (thetaYIntegrand 1) ∩ Set.Ici y0 := by
     intro y hy
-    exact ⟨(thetaYIntegrand_pos 1 y (by decide)
-      (le_trans hy0 hy.le)).ne', hy.le⟩
+    refine ⟨?_, ?_⟩
+    · exact (thetaYIntegrand_pos 1 y (by decide)
+        (le_trans hy0 hy.le)).ne'
+    · exact Set.mem_Ici.mpr hy.le
   have hmass : (0 : ENNReal) <
       volume (Function.support (thetaYIntegrand 1) ∩ Set.Ici y0) :=
     lt_of_lt_of_le hopen (measure_mono hsubset)
