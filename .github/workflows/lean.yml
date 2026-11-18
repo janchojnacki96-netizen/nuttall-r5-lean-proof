@@ -1,0 +1,40 @@
+name: Lean 4 — partial formalization
+on:
+  push:
+    branches: [main, "work/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lake-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Lean, Mathlib cache and build
+        uses: leanprover/lean-action@v1
+        with:
+          use-mathlib-cache: true
+          build: true
+          test: false
+          lint: false
+      - name: Check for admitted proofs
+        shell: bash
+        run: |
+          if grep -RnE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' --include='*.lean' W5 W5.lean; then
+            echo 'Prohibited sorry/admit/axiom detected'; exit 1
+          fi
+      - name: Report formal proof status
+        shell: bash
+        run: |
+          echo "This CI currently checks ONLY compilation of partial lemmas."
+          echo "It DOES NOT certify the order-five Nuttall conjecture."
+          if grep -R -Eq 'theorem[[:space:]]+nuttall_r5[[:space:]]*:' --include='*.lean' W5; then
+            echo "A theorem named nuttall_r5 exists; its hypotheses/axioms still require auditing."
+          else
+            echo "Unconditional theorem W5.nuttall_r5 : MainClaim is NOT present."
+          fi
