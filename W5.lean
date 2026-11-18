@@ -19,3 +19,5 @@ import W5.DirectedRounding
 import W5.TailExponentialRatio
 
 import W5.TailRatioGeneral
+
+import W5.PositiveTriangularCongruence
