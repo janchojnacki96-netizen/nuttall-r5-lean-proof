@@ -35,7 +35,8 @@ theorem theta_quarter_integral_scale (p a : ℝ) (ha : 0 < a) :
             (v ^ ((1:ℝ)/4) * Real.exp (-p*a*v))) := by
     apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioi
     intro v hv
-    have hv0 : 0 ≤ v := by linarith [hv]
+    have hv0 : 0 ≤ v :=
+      le_of_lt (lt_trans (by norm_num : (0:ℝ) < 1) hv)
     dsimp only [g]
     rw [Real.mul_rpow (le_of_lt ha) hv0]
     have he : -p*(a*v) = -p*a*v := by ring
