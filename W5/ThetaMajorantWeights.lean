@@ -52,7 +52,9 @@ theorem theta_integrand_abs_split_rpow (p y y0 : ℝ)
     |y ^ ((1:ℝ)/4) * (2*p*y-3) * Real.exp (-p*y)| ≤
       (5*p*Real.exp (-p*y0/2)) *
         (y ^ (2:ℝ) * Real.exp (-y/2)) := by
-  simpa only [Real.rpow_natCast] using
-    theta_integrand_abs_split p y y0 hp hy0 hy
+  have hpow : y ^ (2:ℝ) = y ^ (2:ℕ) :=
+    Real.rpow_natCast y 2
+  rw [hpow]
+  exact theta_integrand_abs_split p y y0 hp hy0 hy
 
 end W5
