@@ -15,13 +15,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Lean, Mathlib cache and build
-        uses: leanprover/lean-action@v1
-        with:
-          use-mathlib-cache: true
-          build: true
-          test: false
-          lint: false
+      - name: Install Lean toolchain with elan
+        shell: bash
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve pinned Mathlib dependency and generate manifest
+        run: ~/.elan/bin/lake update
+      - name: Download compiled Mathlib cache
+        run: ~/.elan/bin/lake exe cache get
+      - name: Compile partial formalization
+        run: ~/.elan/bin/lake build
       - name: Check for admitted proofs
         shell: bash
         run: |
