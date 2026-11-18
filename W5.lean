@@ -40,3 +40,4 @@ import W5.ThetaMajorantWeights
 import W5.ThetaYFubini
 import W5.ThetaFiniteBoundaryIntegral
 import W5.ThetaFiniteIntegrationByParts
+import W5.ThetaImproperBoundaryIntegral
