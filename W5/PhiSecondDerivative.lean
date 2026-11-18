@@ -302,8 +302,8 @@ sum of the genuine second derivatives, for every real t. -/
 theorem Phi_secondDerivative (t : ℝ) :
     iteratedDeriv 2 Phi t =
       ∑' n : ℕ, phiSummandSecondDerivative n t := by
-  simpa only [iteratedDeriv_succ, iteratedDeriv_one] using
-    (Phi_deriv_hasDerivAt t).deriv
+  rw [show (2:ℕ) = 1+1 by omega, iteratedDeriv_succ, iteratedDeriv_one]
+  exact (Phi_deriv_hasDerivAt t).deriv
 
 /-- Existence of the second derivative as a genuine derivative at
 every point; used to continue towards derivative orders three to eight. -/
