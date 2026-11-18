@@ -46,3 +46,4 @@ import W5.ThetaImproperIntegrationByParts
 import W5.ThetaGammaScaling
 import W5.ThetaSingleTermClosedForm
 import W5.ThetaIntegratedClosedForm
+import W5.ThetaOriginalCoordinate
