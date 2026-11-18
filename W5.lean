@@ -5,3 +5,5 @@ import W5.Range
 import W5.CurvatureBridge
 import W5.BoundaryPivots
 import W5.AnalyticTargets
+
+import W5.DeterminantCongruence
