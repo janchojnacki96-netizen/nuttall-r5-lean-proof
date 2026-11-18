@@ -1,0 +1,76 @@
+name: Lean 4 — partial formalization
+on:
+  push:
+    branches: [main, work/lean-ci-bootstrap]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  cpp-certificate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and run GCC checker
+        shell: bash
+        run: |
+          g++ -O2 -std=c++17 -fno-fast-math -ffp-contract=off certificate/certyfikat_theta_W5.cpp -o /tmp/w5_gcc
+          /tmp/w5_gcc | tee /tmp/w5_gcc.log
+          grep -Fx "Certified all five signs; intervals = 51, max depth = 10" /tmp/w5_gcc.log
+      - name: Independent 768-bit integer interval audit
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 certificate/audyt_theta_W5_integer.py | tee /tmp/w5_integer.log
+          grep -Fx "PASS: exact integer fixed-point interval proof verified 255 signs" /tmp/w5_integer.log
+      - name: Exact polynomial majorant audit
+        shell: bash
+        run: python3 certificate/verify_polynomial_majorant_w5.py
+      - name: Build and run Clang checker
+        shell: bash
+        run: |
+          clang++ -O2 -std=c++17 -fno-fast-math -ffp-contract=off certificate/certyfikat_theta_W5.cpp -o /tmp/w5_clang
+          /tmp/w5_clang | tee /tmp/w5_clang.log
+          grep -Fx "Certified all five signs; intervals = 51, max depth = 10" /tmp/w5_clang.log
+
+  lake-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Lean toolchain with elan
+        shell: bash
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve pinned Mathlib dependency and generate manifest
+        run: ~/.elan/bin/lake update
+      - name: Download compiled Mathlib cache
+        run: ~/.elan/bin/lake exe cache get
+      - name: Compile partial formalization
+        run: ~/.elan/bin/lake build
+      - name: Check for admitted proofs
+        shell: bash
+        run: |
+          if grep -RnE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' --include='*.lean' W5 W5.lean; then
+            echo 'Prohibited sorry/admit/axiom detected'; exit 1
+          fi
+      - name: Report formal proof status
+        shell: bash
+        run: |
+          echo "This CI currently checks ONLY compilation of partial lemmas."
+          echo "It DOES NOT certify the order-five Nuttall conjecture."
+          if grep -R -Eq 'theorem[[:space:]]+nuttall_r5[[:space:]]*:' --include='*.lean' W5; then
+            echo "A theorem named nuttall_r5 exists; its hypotheses/axioms still require auditing."
+          else
+            echo "Unconditional theorem W5.nuttall_r5 : MainClaim is NOT present."
+          fi
