@@ -75,3 +75,5 @@ import W5.PsiFundamentalDerivative
 import W5.PsiMonotonicity
 
 import W5.PhiSecondDerivative
+
+import W5.PsiThirdDerivative

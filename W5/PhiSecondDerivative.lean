@@ -274,11 +274,12 @@ theorem phiSummandSecondDerivative_le_envelope
             (le_of_lt (Real.exp_pos _)) hnonneg
     _ = phiSecondDerivativeEnvelope a b n := rfl
 
-/-- The second derivative of the ORIGINAL Phi equals the convergent
-sum of the genuine second derivatives. -/
-theorem Phi_secondDerivative (t : ℝ) :
-    iteratedDeriv 2 Phi t =
-      ∑' n : ℕ, phiSummandSecondDerivative n t := by
+/-- Strong form of the second differentiated theta series:
+the FIRST derivative of Phi genuinely has the displayed derivative,
+not merely a coincidentally equal value of Lean's total `deriv`. -/
+theorem Phi_deriv_hasDerivAt (t : ℝ) :
+    HasDerivAt (deriv Phi)
+      (∑' n : ℕ, phiSummandSecondDerivative n t) t := by
   have ht : t ∈ Set.Ioo (t-1) (t+1) := by
     constructor <;> linarith
   have h := hasDerivAt_tsum_of_isPreconnected
@@ -294,7 +295,20 @@ theorem Phi_secondDerivative (t : ℝ) :
     funext s
     exact (Phi_hasDerivAt s).deriv.symm
   rw [hfun] at h
-  rw [show (2:ℕ)=1+1 by omega, iteratedDeriv_succ, iteratedDeriv_one]
-  exact h.deriv
+  exact h
+
+/-- The second derivative of the ORIGINAL Phi equals the convergent
+sum of the genuine second derivatives, for every real t. -/
+theorem Phi_secondDerivative (t : ℝ) :
+    iteratedDeriv 2 Phi t =
+      ∑' n : ℕ, phiSummandSecondDerivative n t := by
+  simpa only [iteratedDeriv_succ, iteratedDeriv_one] using
+    (Phi_deriv_hasDerivAt t).deriv
+
+/-- Existence of the second derivative as a genuine derivative at
+every point; used to continue towards derivative orders three to eight. -/
+theorem Phi_deriv_differentiable : Differentiable ℝ (deriv Phi) := by
+  intro t
+  exact (Phi_deriv_hasDerivAt t).differentiableAt
 
 end W5
