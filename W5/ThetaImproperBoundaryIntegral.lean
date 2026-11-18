@@ -58,6 +58,12 @@ theorem theta_boundary_integral_infinite
   have hlim := theta_boundary_tendsto_zero p hp
   have hFTC := MeasureTheory.integral_Ioi_of_hasDerivAt_of_tendsto'
     hderiv hint hlim
-  simpa only [zero_sub] using hFTC
+  calc
+    (∫ y in Set.Ioi a,
+       ((5:ℝ)/4) * (y ^ ((1:ℝ)/4) * Real.exp (-p*y)) -
+       p * (y ^ ((5:ℝ)/4) * Real.exp (-p*y))) =
+        -(a ^ ((5:ℝ)/4) * Real.exp (-p*a)) := by
+          simpa only [zero_sub] using hFTC
+    _ = -a ^ ((5:ℝ)/4) * Real.exp (-p*a) := by ring
 
 end W5
