@@ -34,6 +34,7 @@ import W5.ThetaTermIntegrability
 import W5.ThetaGaussianSummability
 import W5.ThetaExponentialDomination
 import W5.ThetaPhiSummability
+import W5.PhiPositivity
 import W5.ThetaIntegrandMajorant
 import W5.ThetaSeparableFubini
 import W5.ThetaMajorantWeights
