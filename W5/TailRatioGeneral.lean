@@ -25,7 +25,7 @@ theorem theta_majorant_ratio (n y : ℝ) (hn : 2 ≤ n) (hy : 3 ≤ y) :
         (n^26 * Real.exp (-((n^2-1)*y))) := by
   have hb : n+1 ≤ ((3:ℝ)/2)*n := by nlinarith
   have hp : (n+1)^26 ≤ (((3:ℝ)/2)*n)^26 := by
-    gcongr <;> linarith
+    gcongr
   have he := exponential_step n y hn hy
   calc
     (n+1)^26 * Real.exp (-(((n+1)^2-1)*y)) ≤
