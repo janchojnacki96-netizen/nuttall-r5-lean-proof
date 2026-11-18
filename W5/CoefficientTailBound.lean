@@ -13,6 +13,7 @@ It does not by itself prove the entire analytic theta remainder.
 
 namespace W5
 
+set_option maxHeartbeats 4000000 in
 theorem coefficientPolynomial_abs_bound
     (i j : Fin 5) (d q : ℝ) (hd : 0 ≤ d) (hq : 0 ≤ q) :
     |coefficientPolynomial i j d q| ≤
