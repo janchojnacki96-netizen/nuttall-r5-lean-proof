@@ -65,11 +65,8 @@ theorem W_eq_thetaWronskian_explicit
       Differentiable ℝ ((thetaDerivOp^[k]) psiThetaCoordinate))
     (t : ℝ) :
     W r t = thetaWronskian r psiThetaCoordinate (xOfT t) := by
-  apply W_eq_thetaWronskian_of_representation r psiThetaCoordinate
-  · intro s
-    exact (psiThetaCoordinate_comp_xOfT s).symm
-  · exact hf
-  · exact t
+  exact W_eq_thetaWronskian_of_representation r psiThetaCoordinate
+    (fun s => (psiThetaCoordinate_comp_xOfT s).symm) hf t
 
 /-- Explicit order-five determinant identity. It needs smoothness
 through the eighth derivative of psiThetaCoordinate, which remains
@@ -79,10 +76,7 @@ theorem W_five_eq_thetaWronskian_explicit
       Differentiable ℝ ((thetaDerivOp^[k]) psiThetaCoordinate))
     (t : ℝ) :
     W 5 t = thetaWronskian 5 psiThetaCoordinate (xOfT t) := by
-  apply W_five_eq_thetaWronskian psiThetaCoordinate
-  · intro s
-    exact (psiThetaCoordinate_comp_xOfT s).symm
-  · exact hf
-  · exact t
+  exact W_five_eq_thetaWronskian psiThetaCoordinate
+    (fun s => (psiThetaCoordinate_comp_xOfT s).symm) hf t
 
 end W5
