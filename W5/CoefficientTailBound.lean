@@ -23,13 +23,13 @@ theorem coefficientPolynomial_abs_bound
         coefficientPolynomial i j d q := by
       fin_cases i <;> fin_cases j <;>
         norm_num [coefficientPolynomial, Finset.sum_range_succ] <;>
-        ring_nf <;> positivity
+        ring_nf <;> (first | positivity | trace_state)
     linarith
   · have hp : 0 ≤ (5:ℝ) * (1+d)^8 * (1+q)^4 -
         coefficientPolynomial i j d q := by
       fin_cases i <;> fin_cases j <;>
         norm_num [coefficientPolynomial, Finset.sum_range_succ] <;>
-        ring_nf <;> positivity
+        ring_nf <;> (first | positivity | trace_state)
     linarith
 
 end W5
