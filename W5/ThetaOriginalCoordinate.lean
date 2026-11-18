@@ -36,7 +36,6 @@ theorem phiSummand_eq_thetaYIntegrand (n : ℕ) (t : ℝ) :
         -(n : ℝ)^2 * Real.pi * Real.exp (4*t) := by ring
   rw [harg]
   field_simp [ne_of_gt hyquarter]
-  ring
 
 /-- Unconditional pointwise identity between the two infinite theta series. -/
 theorem Phi_eq_thetaY_tsum (t : ℝ) :
