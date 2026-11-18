@@ -36,14 +36,15 @@ execution does not close the analytic part of the conjecture.
 - Exact sound addition/multiplication of rational intervals and
   directed integer quotient inequalities.
 - Boundary-model coefficient evaluations.
-- Elementary theta exponential coordinate identity (new;
-  inspect CI status before considering this proven).
+- Elementary theta exponential coordinate identity (proved by Lean).
+- All **25** coefficient-polynomial majorants
+  `abs(B_ij(d,q)) <= 5*(1+d)^8*(1+q)^4` for `d,q >= 0`,
+  formally proved in `W5/CoefficientTailBound.lean`.
 
-`W5/CoefficientTailBound.lean` attempts the complete absolute
-bound for all 25 coefficient polynomials. **Its Lean compilation
-must be checked against the latest workflow.** The independent
-rational verifier establishes the corresponding finite algebra
-outside Lean.
+**Verified:** GitHub Actions run `44331879652` compiled `W5`
+successfully (9066 jobs), including both new lemmas, and all
+independent computational checks passed. This still does NOT
+constitute the unconditional theta Wronskian sign theorem.
 
 ## Essential open mathematical proof obligations
 
