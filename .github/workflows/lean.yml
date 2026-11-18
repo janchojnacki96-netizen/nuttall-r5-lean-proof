@@ -25,6 +25,9 @@ jobs:
           g++ -O2 -std=c++17 -fno-fast-math -ffp-contract=off certificate/certyfikat_theta_W5.cpp -o /tmp/w5_gcc
           /tmp/w5_gcc | tee /tmp/w5_gcc.log
           grep -Fx "Certified all five signs; intervals = 51, max depth = 10" /tmp/w5_gcc.log
+      - name: Exact polynomial majorant audit
+        shell: bash
+        run: python3 certificate/verify_polynomial_majorant_w5.py
       - name: Build and run Clang checker
         shell: bash
         run: |
