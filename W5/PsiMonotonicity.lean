@@ -24,7 +24,9 @@ theorem Psi1_deriv_neg (t : ℝ) (ht : 0 ≤ t) :
 theorem Psi1_strictAntiOn_nonneg :
     StrictAntiOn Psi1 (Set.Ici (0:ℝ)) := by
   apply strictAntiOn_of_deriv_neg (convex_Ici)
-  · exact (fun t => (Psi1_hasDerivAt t).continuousAt).continuous.continuousOn
+  · have hc : Continuous Psi1 := continuous_iff_continuousAt.mpr (fun t =>
+      (Psi1_hasDerivAt t).continuousAt)
+    exact hc.continuousOn
   · intro t ht
     exact Psi1_deriv_neg t (by
       have h : t ∈ Set.Ici (0:ℝ) := interior_subset ht
