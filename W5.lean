@@ -33,3 +33,5 @@ import W5.ThetaCoordinateAlgebra
 import W5.ThetaTermIntegrability
 import W5.ThetaGaussianSummability
 import W5.ThetaExponentialDomination
+import W5.ThetaPhiSummability
+import W5.ThetaIntegrandMajorant
