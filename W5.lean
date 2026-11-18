@@ -41,3 +41,4 @@ import W5.ThetaYFubini
 import W5.ThetaFiniteBoundaryIntegral
 import W5.ThetaFiniteIntegrationByParts
 import W5.ThetaImproperBoundaryIntegral
+import W5.ThetaImproperIntegrationByParts
