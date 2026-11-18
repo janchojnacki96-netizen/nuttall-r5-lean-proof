@@ -3,7 +3,7 @@ import Mathlib
 /-!
 Rigorous uniform ratio constant for the square-index theta tail.
 No floating point, no interval oracle and no noncomputable numerical
-axiom is used: a nine-term Taylor lower bound for e^15 suffices.
+assumption is introduced: a nine-term Taylor lower bound for e^15 suffices.
 -/
 namespace W5
 
