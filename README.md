@@ -68,3 +68,17 @@ claiming a proof of the full W5 sign conjecture.
 
 - Draft PR #1: source development and CI
 - Issue #2: all remaining mathematical obligations
+
+## Half-line substitution bridge (new work in progress)
+
+The module `W5/ThetaExpSubstitution.lean` applies Mathlib's
+change-of-variables results to `y = pi * exp(4*t)`. Its intended
+statements are the exact substitution formula for arbitrary real
+integrands and `Psi1_eq_integral_thetaOriginalDensity` for the
+original `Psi1` integral. This component must pass CI before it
+can be listed as a verified theorem.
+
+The inverse-coordinate density is deliberately defined using
+`Phi (log(y/pi)/4)`; identifying it with the integrated theta series
+is a **separate** mathematical proof obligation. Even once the
+substitution is compiled, it does not certify Nuttall r=5.
