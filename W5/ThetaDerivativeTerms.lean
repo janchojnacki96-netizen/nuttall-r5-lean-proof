@@ -49,20 +49,25 @@ theorem phiSummand_hasDerivAt (n : ℕ) (t : ℝ) :
         (h5.const_mul (3 * (n : ℝ)^2 * Real.pi))
       using 1 <;> ring
   have hlinE : HasDerivAt
-      (fun s : ℝ => -(n : ℝ)^2 * Real.pi * Real.exp (4*s))
+      (fun s : ℝ => -((n : ℝ)^2 * Real.pi) * Real.exp (4*s))
       (-((n : ℝ)^2 * Real.pi) * (Real.exp (4*t)*4)) t := by
     convert h4.const_mul (-((n : ℝ)^2 * Real.pi)) using 1 <;> ring
   have harg (s : ℝ) :
       -(n : ℝ)^2 * Real.pi * Real.exp (4*s) =
         -((n : ℝ)^2 * Real.pi) * Real.exp (4*s) := by ring
+  have hE' : HasDerivAt
+      (fun s : ℝ =>
+        Real.exp (-((n : ℝ)^2 * Real.pi) * Real.exp (4*s)))
+      (Real.exp (-((n : ℝ)^2 * Real.pi) * Real.exp (4*t)) *
+        (-((n : ℝ)^2 * Real.pi) * (Real.exp (4*t)*4))) t :=
+    (Real.hasDerivAt_exp
+      (-((n : ℝ)^2 * Real.pi) * Real.exp (4*t))).comp t hlinE
   have hE : HasDerivAt
       (fun s : ℝ =>
         Real.exp (-(n : ℝ)^2 * Real.pi * Real.exp (4*s)))
       (Real.exp (-(n : ℝ)^2 * Real.pi * Real.exp (4*t)) *
         (-((n : ℝ)^2 * Real.pi) * (Real.exp (4*t)*4))) t := by
-    simpa only [harg] using
-      (Real.hasDerivAt_exp
-        (-((n : ℝ)^2 * Real.pi) * Real.exp (4*t))).comp t hlinE
+    simpa only [harg] using hE'
   have h13 : Real.exp (13*t) =
       Real.exp (9*t)*Real.exp (4*t) := by
     rw [show (13:ℝ)*t = 9*t + 4*t by ring, Real.exp_add]
