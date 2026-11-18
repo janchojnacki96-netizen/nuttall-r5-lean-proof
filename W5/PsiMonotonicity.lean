@@ -18,12 +18,13 @@ namespace W5
 theorem Psi1_deriv_neg (t : ℝ) (ht : 0 ≤ t) :
     deriv Psi1 t < 0 := by
   rw [Psi1_deriv]
-  exact neg_neg.mpr (Phi_pos t ht)
+  have hp := Phi_pos t ht
+  linarith
 
 /-- The actual original theta tail is strictly decreasing on [0,∞). -/
 theorem Psi1_strictAntiOn_nonneg :
     StrictAntiOn Psi1 (Set.Ici (0:ℝ)) := by
-  apply strictAntiOn_of_deriv_neg (convex_Ici)
+  apply strictAntiOn_of_deriv_neg (convex_Ici (0:ℝ))
   · have hc : Continuous Psi1 := continuous_iff_continuousAt.mpr (fun t =>
       (Psi1_hasDerivAt t).continuousAt)
     exact hc.continuousOn
