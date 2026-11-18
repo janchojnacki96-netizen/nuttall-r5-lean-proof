@@ -67,3 +67,5 @@ import W5.ThetaWronskianCoordinate
 import W5.ThetaInverseCoordinate
 
 import W5.ThetaLocalWronskian
+
+import W5.PhiTailIntegrability
