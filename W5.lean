@@ -17,3 +17,5 @@ import W5.VerifiedIntervalMultiplication
 import W5.DirectedRounding
 
 import W5.TailExponentialRatio
+
+import W5.TailRatioGeneral
