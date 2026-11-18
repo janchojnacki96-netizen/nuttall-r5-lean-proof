@@ -51,7 +51,9 @@ theorem chain_cover : ∀ (bs : List ℚ) (a : ℚ) (x : ℝ),
 
 theorem endpoint_count : endpointsNumerators.length = 51 := by decide
 theorem endpoints_ne : endpoints ≠ [] := by decide
-theorem endpoints_last : lastFrom 0 endpoints = (145 : ℚ) / 256 := by decide
+theorem endpoints_last : lastFrom 0 endpoints = (145 : ℚ) / 256 := by
+  change (56640625000000000 : ℚ) / 100000000000000000 = (145 : ℚ) / 256
+  norm_num
 
 theorem cover_51 (x : ℝ) (hzero : 0 ≤ x)
     (hmax : x ≤ (145 : ℝ) / 256) : Chain 0 endpoints x := by
