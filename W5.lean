@@ -30,3 +30,4 @@ import W5.CoefficientTailBound
 import W5.ThetaCoordinateIdentity
 import W5.SingleSummandCalculus
 import W5.ThetaCoordinateAlgebra
+import W5.ThetaTermIntegrability
