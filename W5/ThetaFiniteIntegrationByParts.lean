@@ -39,6 +39,7 @@ theorem theta_finite_integration_by_parts (p a b : ℝ)
       exact hy'.1
     have h := theta_integration_by_parts_integrand p y
       (lt_of_lt_of_le ha hya)
+    dsimp only
     rw [h]
     ring
   rw [hcongr, intervalIntegral.integral_const_mul,
