@@ -86,7 +86,7 @@ theorem thetaYIntegrand_one_integral_pos (y0 : ℝ) (hy0 : 3 ≤ y0) :
     filter_upwards [ae_restrict_mem measurableSet_Ici] with y hy
     exact (thetaYIntegrand_pos 1 y (by decide)
       (le_trans hy0 hy)).le
-  have hopen : (0:ℝ≥0∞) < volume (Set.Ioi y0) :=
+  have hopen : (0 : ENNReal) < volume (Set.Ioi y0) :=
     isOpen_Ioi.measure_pos volume
       ⟨y0 + 1, by simp⟩
   have hsubset :
@@ -95,7 +95,7 @@ theorem thetaYIntegrand_one_integral_pos (y0 : ℝ) (hy0 : 3 ≤ y0) :
     intro y hy
     exact ⟨(thetaYIntegrand_pos 1 y (by decide)
       (le_trans hy0 hy.le)).ne', hy.le⟩
-  have hmass : (0:ℝ≥0∞) <
+  have hmass : (0 : ENNReal) <
       volume (Function.support (thetaYIntegrand 1) ∩ Set.Ici y0) :=
     lt_of_lt_of_le hopen (measure_mono hsubset)
   exact (setIntegral_pos_iff_support_of_nonneg_ae hnonneg hint).mpr hmass
