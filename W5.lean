@@ -52,3 +52,4 @@ import W5.ThetaExpSubstitution
 
 import W5.ThetaDensityClosedForm
 import W5.ThetaDerivativeTerms
+import W5.PhiFirstDerivative
