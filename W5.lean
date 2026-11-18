@@ -45,3 +45,4 @@ import W5.ThetaImproperBoundaryIntegral
 import W5.ThetaImproperIntegrationByParts
 import W5.ThetaGammaScaling
 import W5.ThetaSingleTermClosedForm
+import W5.ThetaIntegratedClosedForm
