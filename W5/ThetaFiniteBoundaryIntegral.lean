@@ -30,7 +30,10 @@ theorem theta_boundary_integral_finite
         (((5:ℝ)/4)*y^((1:ℝ)/4)*Real.exp (-p*y) -
           p*y^((5:ℝ)/4)*Real.exp (-p*y)) y := by
     intro y hy
-    have hya : a ≤ y := ((Set.uIcc_of_le hab).mp hy).1
+    have hya : a ≤ y := by
+      have hy' : y ∈ Set.Icc a b := by
+        simpa only [Set.uIcc_of_le hab] using hy
+      exact hy'.1
     exact theta_power_exp_hasDerivAt p y (lt_of_lt_of_le ha hya)
   have hc1 : Continuous (fun y : ℝ => y ^ ((1:ℝ)/4)) :=
     Real.continuous_rpow_const (by norm_num)
