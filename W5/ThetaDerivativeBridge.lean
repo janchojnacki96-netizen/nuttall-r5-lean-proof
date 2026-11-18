@@ -40,22 +40,23 @@ theorem xOfT_hasDerivAt (t : ℝ) :
   have hx : xOfT t =
       (Real.pi * Real.exp (4*t)) ^ (-(1:ℝ)/2) := by
     unfold xOfT
-    rw [Real.rpow_neg (le_of_lt harg), Real.sqrt_eq_rpow]
-    norm_num
+    rw [Real.sqrt_eq_rpow, Real.rpow_neg (le_of_lt harg)]
+    simp
   have hfun : xOfT =
       (fun s : ℝ => (Real.pi * Real.exp (4*s)) ^ (-(1:ℝ)/2)) := by
     funext s
     unfold xOfT
-    rw [Real.rpow_neg (le_of_lt (mul_pos Real.pi_pos (Real.exp_pos _))),
-      Real.sqrt_eq_rpow]
-    norm_num
-  rw [hfun, hx]
-  convert hpow using 1
-  · ring
-  · have hp : Real.pi * Real.exp (4*t) ≠ 0 := ne_of_gt harg
-    rw [show (-(1:ℝ)/2-1) = -(1:ℝ)/2-1 by ring]
+    rw [Real.sqrt_eq_rpow,
+      Real.rpow_neg (le_of_lt (mul_pos Real.pi_pos (Real.exp_pos _)))]
+    simp
+  have hs :
+      ((-(1:ℝ)/2) *
+        (Real.pi * Real.exp (4*t)) ^ (-(1:ℝ)/2-1) *
+          (Real.pi * (Real.exp (4*t)*4))) =
+        -2 * (Real.pi * Real.exp (4*t)) ^ (-(1:ℝ)/2) := by
     rw [Real.rpow_sub harg]
-    field_simp [hp]
-    <;> ring
+    field_simp [ne_of_gt harg] <;> ring
+  rw [hfun]
+  simpa only [hs] using hpow
 
 end W5

@@ -59,9 +59,12 @@ theorem phiSummand_hasDerivAt (n : ℕ) (t : ℝ) :
       (fun s : ℝ =>
         Real.exp (-((n : ℝ)^2 * Real.pi) * Real.exp (4*s)))
       (Real.exp (-((n : ℝ)^2 * Real.pi) * Real.exp (4*t)) *
-        (-((n : ℝ)^2 * Real.pi) * (Real.exp (4*t)*4))) t :=
-    (Real.hasDerivAt_exp
-      (-((n : ℝ)^2 * Real.pi) * Real.exp (4*t))).comp t hlinE
+        (-((n : ℝ)^2 * Real.pi) * (Real.exp (4*t)*4))) t := by
+    have houter : HasDerivAt Real.exp
+        (Real.exp (-((n : ℝ)^2 * Real.pi) * Real.exp (4*t)))
+        (-((n : ℝ)^2 * Real.pi) * Real.exp (4*t)) :=
+      Real.hasDerivAt_exp _
+    simpa only [Function.comp_def] using (houter.comp t hlinE)
   have hE : HasDerivAt
       (fun s : ℝ =>
         Real.exp (-(n : ℝ)^2 * Real.pi * Real.exp (4*s)))
