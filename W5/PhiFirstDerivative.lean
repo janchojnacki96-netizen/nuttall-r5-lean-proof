@@ -136,7 +136,7 @@ theorem Phi_hasDerivAt (t : ℝ) :
     HasDerivAt Phi
       (∑' n : ℕ, phiSummandDerivative n t) t := by
   have ht : t ∈ Set.Ioo (t-1) (t+1) := by
-    constructor <;> dsimp <;> linarith
+    constructor <;> linarith
   have h := hasDerivAt_tsum_of_isPreconnected
     (phiDerivativeEnvelope_summable (t-1) (t+1))
     isOpen_Ioo isPreconnected_Ioo

@@ -37,24 +37,22 @@ theorem xOfT_hasDerivAt (t : ℝ) :
           (Real.pi * (Real.exp (4*t)*4))) t := by
     exact (Real.hasDerivAt_rpow_const (Or.inl (ne_of_gt harg))).comp t
       (hexp.const_mul Real.pi)
-  have hx : xOfT t =
-      (Real.pi * Real.exp (4*t)) ^ (-(1:ℝ)/2) := by
-    unfold xOfT
-    rw [Real.sqrt_eq_rpow, Real.rpow_neg (le_of_lt harg)]
-    simp
   have hfun : xOfT =
       (fun s : ℝ => (Real.pi * Real.exp (4*s)) ^ (-(1:ℝ)/2)) := by
     funext s
     unfold xOfT
-    rw [Real.sqrt_eq_rpow,
-      Real.rpow_neg (le_of_lt (mul_pos Real.pi_pos (Real.exp_pos _)))]
-    simp
+    rw [Real.sqrt_eq_rpow]
+    rw [show (-(1:ℝ)/2) = -((1:ℝ)/2) by ring]
+    simpa only [one_div] using
+      (Real.rpow_neg
+        (le_of_lt (mul_pos Real.pi_pos (Real.exp_pos (4*s))))
+        ((1:ℝ)/2)).symm
   have hs :
       ((-(1:ℝ)/2) *
         (Real.pi * Real.exp (4*t)) ^ (-(1:ℝ)/2-1) *
           (Real.pi * (Real.exp (4*t)*4))) =
         -2 * (Real.pi * Real.exp (4*t)) ^ (-(1:ℝ)/2) := by
-    rw [Real.rpow_sub harg]
+    rw [Real.rpow_sub harg, Real.rpow_one]
     field_simp [ne_of_gt harg] <;> ring
   rw [hfun]
   simpa only [hs] using hpow
