@@ -79,7 +79,7 @@ theorem thetaGaussianModel_zero_one_eq_polynomial (d q : ℝ) :
     deriv (fun v : ℝ => thetaGaussianModel d q 0 v) 0 =
       coefficientPolynomial (0 : Fin 5) (1 : Fin 5) d q := by
   rw [thetaGaussianModel_right_deriv_zero, coefficientPolynomial_zero_one]
-  ring
+  simp
 
 theorem thetaGaussianModel_one_one_eq_polynomial (d q : ℝ) :
     deriv (fun u : ℝ =>
