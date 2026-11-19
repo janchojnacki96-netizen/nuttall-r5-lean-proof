@@ -148,4 +148,160 @@ theorem normalizedMatrixTwo_negative_iff_W_two_negative_of_diagonal
       analyticCoeff_one_zero_exact (xOfT t), h11⟩
   exact normalizedMatrixTwo_negative_iff_W_two_negative t ht h
 
+
+
+/-!
+## The actual mixed derivative (1,1)
+
+The following calculation does not use \`OrderTwoDiagonalJetData\`
+as an assumption. It differentiates the genuine two-variable theta
+kernel, relying on the previously established real derivatives of
+\`Psi1\` and \`Phi\`.
+-/
+
+private noncomputable def thetaGauge (x u : ℝ) : ℝ :=
+  Real.exp (u / x) / (1 + x * u) ^ ((5 : ℝ) / 4)
+
+private noncomputable def thetaShift (x u : ℝ) : ℝ :=
+  Real.log (1 + x * u) / 4
+
+private theorem thetaGauge_zero (x : ℝ) : thetaGauge x 0 = 1 := by
+  simp [thetaGauge]
+
+private theorem thetaShift_zero (x : ℝ) : thetaShift x 0 = 0 := by
+  simp [thetaShift]
+
+/-- Exact factorization of the *genuine* normalized kernel, valid
+without a positivity assumption on x or on the Taylor variables. -/
+theorem normalizedKernel_factor (x u v : ℝ) :
+    normalizedKernel x u v =
+      kernelNormalization x * (thetaGauge x u * thetaGauge x v) *
+        Psi1 (thetaTimeOfX x + thetaShift x u + thetaShift x v) := by
+  simp only [normalizedKernel, kernelNormalization, thetaTimeOfX,
+    thetaGauge, thetaShift]
+  ring
+
+/-- First derivative with respect to the second variable, at v=0,
+but with the first variable still arbitrary. -/
+theorem normalizedKernel_right_hasDerivAt_zero (x u : ℝ) :
+    HasDerivAt (fun v : ℝ => normalizedKernel x u v)
+      (kernelNormalization x * thetaGauge x u *
+        (firstGaugeSlope x *
+            Psi1 (thetaTimeOfX x + thetaShift x u) -
+          firstShiftSlope x *
+            Phi (thetaTimeOfX x + thetaShift x u))) 0 := by
+  have hg : HasDerivAt (thetaGauge x) (firstGaugeSlope x) 0 := by
+    simpa only [thetaGauge] using normalizedKernel_gauge_hasDerivAt x
+  have hs : HasDerivAt
+      (fun v : ℝ =>
+        thetaTimeOfX x + thetaShift x u + thetaShift x v)
+      (firstShiftSlope x) 0 := by
+    have h := (normalizedKernel_shift_hasDerivAt x).const_add
+      (thetaShift x u)
+    convert h using 1
+    · funext v
+      dsimp [thetaShift]
+      ring
+    · ring
+  have hp : HasDerivAt
+      (fun v : ℝ =>
+        Psi1 (thetaTimeOfX x + thetaShift x u + thetaShift x v))
+      (-Phi (thetaTimeOfX x + thetaShift x u) *
+        firstShiftSlope x) 0 := by
+    have h := (Psi1_hasDerivAt
+      (thetaTimeOfX x + thetaShift x u + thetaShift x 0)).comp (0 : ℝ) hs
+    simpa only [thetaShift_zero, add_zero] using h
+  have hprod := (hg.mul hp).const_mul
+    (kernelNormalization x * thetaGauge x u)
+  have hf :
+      (fun v : ℝ => normalizedKernel x u v) =
+        (fun v : ℝ =>
+          (kernelNormalization x * thetaGauge x u) *
+            (thetaGauge x v *
+              Psi1 (thetaTimeOfX x + thetaShift x u + thetaShift x v))) := by
+    funext v
+    rw [normalizedKernel_factor]
+    ring
+  rw [hf]
+  convert hprod using 1 <;>
+    simp only [thetaGauge_zero, thetaShift_zero, add_zero] <;> ring
+
+/-- Genuine mixed Taylor coefficient computed by differentiation of
+the two-variable kernel. This is a derivative identity, NOT a
+numerical determinant sign inequality. -/
+theorem analyticCoeff_one_one_exact (x : ℝ) :
+    analyticCoeff x (1 : Fin 5) (1 : Fin 5) =
+      kernelNormalization x *
+        (firstGaugeSlope x ^ 2 * Psi1 (thetaTimeOfX x) -
+          2 * firstGaugeSlope x * firstShiftSlope x *
+            Phi (thetaTimeOfX x) -
+          firstShiftSlope x ^ 2 *
+            (∑' n : ℕ, phiSummandDerivative n (thetaTimeOfX x))) := by
+  let c : ℝ := kernelNormalization x
+  let a : ℝ := firstGaugeSlope x
+  let b : ℝ := firstShiftSlope x
+  let t : ℝ := thetaTimeOfX x
+  let G : ℝ → ℝ := thetaGauge x
+  let S : ℝ → ℝ := fun u => t + thetaShift x u
+  let Q : ℝ → ℝ := fun u => a * Psi1 (S u) - b * Phi (S u)
+  have hs : HasDerivAt S b 0 := by
+    simpa only [S, t, b, thetaShift] using normalizedKernel_shift_hasDerivAt x
+  have hpsi : HasDerivAt (fun u : ℝ => Psi1 (S u))
+      (-Phi t * b) 0 := by
+    have h := (Psi1_hasDerivAt (S 0)).comp (0 : ℝ) hs
+    simpa [S, t, thetaShift] using h
+  have hphi : HasDerivAt (fun u : ℝ => Phi (S u))
+      ((∑' n : ℕ, phiSummandDerivative n t) * b) 0 := by
+    have h := (Phi_hasDerivAt (S 0)).comp (0 : ℝ) hs
+    simpa [S, t, thetaShift] using h
+  have hq : HasDerivAt Q
+      (a * (-Phi t * b) -
+        b * ((∑' n : ℕ, phiSummandDerivative n t) * b)) 0 := by
+    exact (hpsi.const_mul a).sub (hphi.const_mul b)
+  have hg : HasDerivAt G a 0 := by
+    simpa only [G, a, thetaGauge] using normalizedKernel_gauge_hasDerivAt x
+  have htotal := ((hg.mul hq).const_mul c)
+  have hfun :
+      (fun u : ℝ => deriv (fun v : ℝ => normalizedKernel x u v) 0) =
+        (fun u : ℝ => c * (G u * Q u)) := by
+    funext u
+    have hv := (normalizedKernel_right_hasDerivAt_zero x u).deriv
+    convert hv using 1 <;> dsimp [c, G, Q, S, a, b, t] <;> ring
+  have hvalue :
+      deriv (fun u : ℝ => c * (G u * Q u)) 0 =
+        c * (a ^ 2 * Psi1 t -
+          2 * a * b * Phi t -
+          b ^ 2 * (∑' n : ℕ, phiSummandDerivative n t)) := by
+    convert htotal.deriv using 1 <;>
+      simp only [G, Q, S, thetaGauge_zero, thetaShift_zero,
+        add_zero] <;> ring
+  unfold analyticCoeff
+  simp only [iteratedDeriv_one, Nat.factorial_one, Nat.cast_one,
+    mul_one, div_one]
+  rw [hfun, hvalue]
+  rfl
+
+/-- The remaining mixed-derivative premise for order two is actually
+discharged, using only differentiability of the ORIGINAL theta kernel. -/
+theorem orderTwoDiagonalJetData_proved (x : ℝ) :
+    OrderTwoDiagonalJetData x := by
+  exact analyticCoeff_one_one_exact x
+
+/-- Exact, unconditional normalization factor for the ORIGINAL W2.
+This does not assert that W2 has the desired negative sign. -/
+theorem normalizedMatrixTwo_det_exact (x : ℝ) :
+    (normalizedMatrixTwo x).det =
+      kernelNormalization x ^ 2 * firstShiftSlope x ^ 2 *
+        W 2 (thetaTimeOfX x) := by
+  exact normalizedMatrixTwo_det_of_diagonal_jet x
+    (orderTwoDiagonalJetData_proved x)
+
+/-- Exact sign equivalence for the original W2 on its theta ray.
+A separate certified or analytic inequality must prove negativity. -/
+theorem normalizedMatrixTwo_negative_iff_W_two_negative_exact
+    (t : ℝ) (ht : 0 ≤ t) :
+    (normalizedMatrixTwo (xOfT t)).det < 0 ↔ W 2 t < 0 :=
+  normalizedMatrixTwo_negative_iff_W_two_negative_of_diagonal
+    t ht (orderTwoDiagonalJetData_proved (xOfT t))
+
 end W5
