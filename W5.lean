@@ -116,3 +116,5 @@ import W5.NormalizedKernelLocalClosedSeries
 import W5.ThetaClosedKernelJetEquivalence
 
 import W5.ThetaClosedKernelAllJets
+
+import W5.ThetaClosedLeadingMatrices
