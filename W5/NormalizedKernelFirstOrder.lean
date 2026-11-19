@@ -30,7 +30,9 @@ private theorem normalizedKernel_log_hasDerivAt (x : ℝ) :
     · ring
   have hlog : HasDerivAt Real.log 1 (1:ℝ) := by
     simpa using (Real.hasDerivAt_log (by norm_num : (1:ℝ) ≠ 0))
-  convert hlog.comp (0:ℝ) hbase using 1 <;> simp
+  have houter := Real.hasDerivAt_log
+    (show (1:ℝ) + x*(0:ℝ) ≠ 0 by simp)
+  convert houter.comp (0:ℝ) hbase using 1 <;> simp
 
 /-- The logarithmic shift has derivative exactly x/4 at zero. -/
 private theorem normalizedKernel_shift_hasDerivAt (x : ℝ) :
@@ -56,7 +58,7 @@ private theorem normalizedKernel_gauge_hasDerivAt (x : ℝ) :
       ring
     · ring
   have he : HasDerivAt (fun v : ℝ => Real.exp (v/x)) (1/x) 0 := by
-    convert (Real.hasDerivAt_exp (0:ℝ)).comp (0:ℝ) harg using 1 <;> simp
+    convert (Real.hasDerivAt_exp ((0:ℝ)/x)).comp (0:ℝ) harg using 1 <;> simp
   have hbase : HasDerivAt (fun v : ℝ => 1 + x * v) x 0 := by
     convert ((hasDerivAt_id (0:ℝ)).const_mul x).const_add 1 using 1
     · funext v
@@ -65,14 +67,13 @@ private theorem normalizedKernel_gauge_hasDerivAt (x : ℝ) :
   have hp : HasDerivAt
       (fun v : ℝ => (1 + x*v)^((5:ℝ)/4)) (((5:ℝ)/4)*x) 0 := by
     have hh := (Real.hasDerivAt_rpow_const
-      (Or.inl (by norm_num : (1:ℝ) ≠ 0)) ((5:ℝ)/4)).comp (0:ℝ) hbase
+      (Or.inl (show (1:ℝ) + x*(0:ℝ) ≠ 0 by simp)) ((5:ℝ)/4)).comp (0:ℝ) hbase
     convert hh using 1 <;> norm_num
   have h := he.div hp (by norm_num : (1 + x * (0:ℝ))^((5:ℝ)/4) ≠ 0)
   convert h using 1
   · funext v
     rfl
-  · simp [firstGaugeSlope]
-    ring
+  · simp [firstGaugeSlope] <;> ring
 
 /-- Strictly analytic origin: no unproved derivative/interchange premise.
 This uses the already proved derivative of the genuine improper theta
@@ -87,14 +88,13 @@ theorem normalizedKernel_zero_left_hasDerivAt (x : ℝ) :
   have hpsi : HasDerivAt
       (fun v : ℝ => Psi1 (thetaTimeOfX x + Real.log (1 + x*v)/4))
       (-Phi (thetaTimeOfX x) * firstShiftSlope x) 0 := by
-    convert (Psi1_hasDerivAt (thetaTimeOfX x)).comp (0:ℝ) hs using 1 <;> simp
+    convert (Psi1_hasDerivAt (thetaTimeOfX x + Real.log (1 + x*(0:ℝ))/4)).comp (0:ℝ) hs using 1 <;> simp
   have h := (hg.mul hpsi).const_mul (kernelNormalization x)
   convert h using 1
   · funext v
     rw [normalizedKernel_zero_left]
     ring
-  · simp
-    ring
+  · simp <;> ring
 
 /-- The first nonconstant mixed analytic Taylor coefficient,
 unconditionally for every real x. -/
