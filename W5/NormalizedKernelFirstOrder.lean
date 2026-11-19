@@ -114,7 +114,9 @@ theorem normalizedKernel_zero_left_hasDerivAt (x : ℝ) :
       kernelNormalization x *
         (firstGaugeSlope x * Psi1 (thetaTimeOfX x) -
           firstShiftSlope x * Phi (thetaTimeOfX x)) := by
-    simp <;> (first | ring | exact Or.inl trivial)
+    simp only [mul_zero, add_zero, Real.log_one, zero_div,
+      Real.exp_zero, Real.one_rpow, div_one, one_mul]
+    ring
   have hnormalized : HasDerivAt
       (fun v : ℝ =>
         kernelNormalization x *
