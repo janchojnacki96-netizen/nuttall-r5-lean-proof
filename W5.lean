@@ -137,3 +137,4 @@ import W5.ThetaHigherJetSeparableEnvelope
 import W5.ThetaHigherJetShiftedPolynomialTails
 import W5.ThetaHigherRightJetFubini
 import W5.ThetaHigherRightJetIntegratedBound
+import W5.ThetaHigherRightJetIntegralDerivative
