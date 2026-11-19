@@ -24,10 +24,7 @@ theorem normalizedKernel_zero_left (x v : ℝ) :
 private theorem normalizedKernel_log_hasDerivAt (x : ℝ) :
     HasDerivAt (fun v : ℝ => Real.log (1 + x * v)) x 0 := by
   have hbase : HasDerivAt (fun v : ℝ => 1 + x * v) x 0 := by
-    convert ((hasDerivAt_id (0:ℝ)).const_mul x).const_add 1 using 1
-    · funext v
-      ring
-    · ring
+    simpa using (((hasDerivAt_id (0:ℝ)).const_mul x).const_add (1:ℝ))
   have hlog : HasDerivAt Real.log 1 (1:ℝ) := by
     simpa using (Real.hasDerivAt_log (by norm_num : (1:ℝ) ≠ 0))
   have houter := Real.hasDerivAt_log
@@ -60,10 +57,7 @@ private theorem normalizedKernel_gauge_hasDerivAt (x : ℝ) :
   have he : HasDerivAt (fun v : ℝ => Real.exp (v/x)) (1/x) 0 := by
     convert (Real.hasDerivAt_exp ((0:ℝ)/x)).comp (0:ℝ) harg using 1 <;> simp
   have hbase : HasDerivAt (fun v : ℝ => 1 + x * v) x 0 := by
-    convert ((hasDerivAt_id (0:ℝ)).const_mul x).const_add 1 using 1
-    · funext v
-      ring
-    · ring
+    simpa using (((hasDerivAt_id (0:ℝ)).const_mul x).const_add (1:ℝ))
   have hp : HasDerivAt
       (fun v : ℝ => (1 + x*v)^((5:ℝ)/4)) (((5:ℝ)/4)*x) 0 := by
     have hh := (Real.hasDerivAt_rpow_const
@@ -71,9 +65,10 @@ private theorem normalizedKernel_gauge_hasDerivAt (x : ℝ) :
     convert hh using 1 <;> norm_num
   have h := he.div hp (by norm_num : (1 + x * (0:ℝ))^((5:ℝ)/4) ≠ 0)
   convert h using 1
-  · funext v
-    rfl
-  · simp [firstGaugeSlope] <;> ring
+  all_goals
+    first
+    | funext v; rfl
+    | simp [firstGaugeSlope] <;> ring
 
 /-- Strictly analytic origin: no unproved derivative/interchange premise.
 This uses the already proved derivative of the genuine improper theta
