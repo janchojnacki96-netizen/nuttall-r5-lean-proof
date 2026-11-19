@@ -104,3 +104,5 @@ import W5.OrderTwoSingleDiagonalCriterion
 import W5.OrderTwoThetaIntegralForms
 
 import W5.VerifiedIntervalDivision
+
+import W5.VerifiedOrderTwoPivot
