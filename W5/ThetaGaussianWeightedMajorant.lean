@@ -64,6 +64,8 @@ theorem thetaGaussian_weighted_uniform_bound
     rw [hrewrite]
     exact theta_quarter_root_le_linear (x^2/p) w hc hw
   have hexp := thetaGaussian_uniform_decay x u v w hu hv hw
+  have hexparg : -w/4 = -((1:ℝ)/4)*w := by ring
+  rw [hexparg] at hexp
   have hprod :
       Real.exp (-w*(1+x*u)*(1+x*v)) *
         (1+w*x^2/p)^((1:ℝ)/4) ≤
@@ -101,8 +103,17 @@ theorem thetaGaussian_weighted_majorant_integrable
   have h := (thetaGaussian_quadratic_exp_integrable
     (0:ℝ) (x^2/p) 1).const_mul
       (Real.exp (-d0*(u+v)-p*u*v))
-  convert h using 1
-  funext w
-  ring
+  have hfun :
+      (fun w : ℝ =>
+        Real.exp (-d0*(u+v)-p*u*v) *
+          (1+w*x^2/p) * Real.exp (-((1:ℝ)/4)*w)) =
+      (fun w : ℝ =>
+        Real.exp (-d0*(u+v)-p*u*v) *
+          ((0*w^2 + (x^2/p)*w + 1) *
+            Real.exp (-((1:ℝ)/4)*w))) := by
+    funext w
+    ring
+  rw [hfun]
+  exact h
 
 end W5
