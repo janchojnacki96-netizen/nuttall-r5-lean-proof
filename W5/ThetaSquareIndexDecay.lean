@@ -102,4 +102,27 @@ theorem thetaGaussian_surviving_square_decay_summable :
     0 ((47:ℝ)/64) (by norm_num)
   simpa only [pow_zero, one_mul] using h
 
+
+/-- The Gaussian weight from an individual theta square survives
+uniformly on the shrinking parameter box.  In particular the
+estimate already includes the outer factor `exp (-(p-1)/x²)`,
+which is needed when summing over the square index. -/
+theorem thetaGaussian_small_box_weighted_decay
+    (x p u v : ℝ)
+    (hx : 0 < x) (hx1 : x ≤ 1) (hp : 1 ≤ p)
+    (hu : |u| ≤ x/8) (hv : |v| ≤ x/8) :
+    Real.exp (-(p-1)/x^2) *
+      Real.exp (-((p-1)/x)*(u+v)-p*u*v) ≤
+      Real.exp (3/4) * Real.exp (-((47:ℝ)/64)*p) := by
+  calc
+    Real.exp (-(p-1)/x^2) *
+        Real.exp (-((p-1)/x)*(u+v)-p*u*v) ≤
+      Real.exp (-(p-1)/x^2) *
+        Real.exp ((p-1)/4+p*x^2/64) :=
+          mul_le_mul_of_nonneg_left
+            (thetaGaussian_base_exponent_small_box x p u v hx hp hu hv)
+            (Real.exp_nonneg _)
+    _ ≤ Real.exp (3/4) * Real.exp (-((47:ℝ)/64)*p) :=
+      thetaGaussian_outer_prefactor_decay x p hx hx1 hp
+
 end W5
