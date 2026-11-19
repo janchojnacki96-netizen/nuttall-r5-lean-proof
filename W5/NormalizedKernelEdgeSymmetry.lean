@@ -24,9 +24,10 @@ theorem analyticCoeff_zero_eq_transpose (x : ℝ) (j : Fin 5) :
       (fun v : ℝ => normalizedKernel x v 0) := by
     funext v
     exact normalizedKernel_swap x 0 v
-  simp only [analyticCoeff, iteratedDeriv_zero,
-    Nat.factorial_zero, Nat.cast_one, one_mul, mul_one]
-  rw [hf]
+  simpa [analyticCoeff] using
+    (congrArg
+      (fun f : ℝ → ℝ =>
+        iteratedDeriv j.val f 0 / (Nat.factorial j.val : ℝ)) hf)
 
 /-- In particular the previously missing order-(0,2) coefficient
 and its mirrored (2,0) coefficient are genuinely equal. -/
