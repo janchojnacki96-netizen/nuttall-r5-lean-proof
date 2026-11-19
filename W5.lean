@@ -112,3 +112,5 @@ import W5.ThetaGaussianUniformDecay
 import W5.ThetaClosedFormLocalExtension
 
 import W5.NormalizedKernelLocalClosedSeries
+
+import W5.ThetaClosedKernelJetEquivalence
