@@ -33,8 +33,12 @@ theorem thetaWeightedGaussianRightJet_measurable
       ((-d0-p*u)-w*x*(1+x*u))^k) := by
     fun_prop
   have hf := thetaWeightedGaussian_measurable x p d0 u v
-  simpa only [thetaWeightedGaussianRightJet,
-    thetaWeightedGaussianRightMultiplier, Pi.mul_apply] using hm.mul hf
+  change Measurable (fun w : ℝ =>
+    ((-d0-p*u)-w*x*(1+x*u))^k *
+      thetaWeightedGaussianIntegrand x p d0 u v w)
+  convert hm.mul hf using 1
+  funext w
+  simp only [Pi.mul_apply]
 
 /-- The actual kth right jet with n²-substitution and exterior
 Gaussian factor. The index zero vanishes, matching the original
