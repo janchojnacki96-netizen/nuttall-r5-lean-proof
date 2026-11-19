@@ -17,6 +17,8 @@ remains to be justified separately for the closed-series kernel.
 
 namespace W5
 
+open Filter
+
 /-- For any real x the condition x*v >= -1/4 holds eventually near v=0. -/
 private theorem eventually_mul_ge_quarter (x : ℝ) :
     ∀ᶠ v : ℝ in 𝓝 (0:ℝ), -(1:ℝ)/4 ≤ x*v := by
