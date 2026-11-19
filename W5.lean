@@ -129,3 +129,4 @@ import W5.ThetaGaussianBaseTermMajorant
 import W5.ThetaGaussianIntegratedSeriesDerivative
 import W5.ThetaGaussianFullFirstDerivativeFubini
 import W5.ThetaGaussianIntegratedSeriesLocalDerivative
+import W5.ThetaWeightedGaussianHigherRightJets
