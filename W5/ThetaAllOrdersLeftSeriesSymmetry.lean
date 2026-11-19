@@ -1,10 +1,11 @@
 import W5.ThetaAllOrdersTransformedSeriesBridge
+import W5.ThetaWeightedGaussianMixedJets
 
 /-!
 # All left-variable derivatives of the genuine transformed theta series
 
 The transformed Gaussian is symmetric in its two Taylor parameters.
-We first establish this symmetry pointwise and under the genuine
+Its pointwise symmetry was proved earlier; we transport it under the genuine
 Lebesgue w-integral and infinite square-index sum. By transporting the
 existing arbitrary-order right-derivative theorem through this exact
 functional equality, we obtain arbitrary-order left derivatives with
@@ -17,22 +18,6 @@ normalized Nuttall kernel, or any determinant sign.
 
 namespace W5
 open MeasureTheory
-
-/-- Exact symmetry of the unweighted Gaussian model. -/
-theorem thetaGaussianModel_swap (d q u v : ℝ) :
-    thetaGaussianModel d q u v = thetaGaussianModel d q v u := by
-  unfold thetaGaussianModel
-  congr 1
-  ring
-
-/-- The weighted Gaussian is symmetric pointwise in its two
-Taylor variables, including the genuine quarter-power weight. -/
-theorem thetaWeightedGaussianIntegrand_swap
-    (x p d0 u v w : ℝ) :
-    thetaWeightedGaussianIntegrand x p d0 u v w =
-      thetaWeightedGaussianIntegrand x p d0 v u w := by
-  unfold thetaWeightedGaussianIntegrand
-  rw [thetaGaussianModel_swap (d0+w*x) (p+w*x^2) u v]
 
 /-- Arbitrary ordinary derivatives in the left coordinate, identified
 with the already-proved right jets after exchanging the variables. -/
