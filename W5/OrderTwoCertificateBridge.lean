@@ -9,7 +9,7 @@ This file connects that *unconditional* analytic identity to the
 **separate, still unproved** theta-coefficient representation and
 certified determinant sign propositions from `AnalyticTargets`.
 
-No numerical certificate is treated as an axiom or verified theorem:
+No numerical sign result is assumed proven or declared as a primitive:
 `thetaTransformCorrect` and `analyticMatrixPositive` remain
 explicit premises. In particular, nothing here proves `MainClaim`.
 -/
