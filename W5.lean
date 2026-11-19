@@ -94,3 +94,4 @@ import W5.NormalizedKernelSymmetry
 import W5.NormalizedKernelFirstOrder
 import W5.OrderTwoCertificateBridge
 import W5.NormalizedKernelOrderThree
+import W5.NormalizedKernelSecondJets
