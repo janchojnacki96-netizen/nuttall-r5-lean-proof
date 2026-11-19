@@ -124,3 +124,4 @@ import W5.ThetaGaussianIntegratedIndexBridge
 import W5.ThetaGaussianFirstDerivativeFubini
 import W5.ThetaGaussianOpenPatchIntegralDerivative
 import W5.ThetaGaussianIntegratedDerivativeBound
+import W5.ThetaGaussianSummableOpenPatch
