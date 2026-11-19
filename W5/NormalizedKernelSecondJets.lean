@@ -10,6 +10,8 @@ from the actual real derivative (not assumed as a jet datum).
 
 namespace W5
 
+open scoped Topology
+
 /-- The logarithmic coordinate change occurring in the original kernel. -/
 noncomputable def normalizedLogShift (x u : ℝ) : ℝ :=
   Real.log (1 + x * u) / 4
@@ -40,7 +42,6 @@ theorem normalizedLogShift_second_derivative (x : ℝ) :
     convert h using 1
     · funext v
       simp only [id_eq]
-      ring
     · ring
   have hq : HasDerivAt
       (fun u : ℝ => x / (4 * (1 + x * u)))
@@ -53,12 +54,12 @@ theorem normalizedLogShift_second_derivative (x : ℝ) :
     · simp only [mul_zero, add_zero, mul_one, zero_mul, sub_zero]
       norm_num
       ring
-  have hne : ∀ᶠ u : ℝ in Filter.nhds (0 : ℝ), 1 + x * u ≠ 0 := by
+  have hne : ∀ᶠ u : ℝ in 𝓝 (0 : ℝ), 1 + x * u ≠ 0 := by
     have hc : ContinuousAt (fun u : ℝ => 1 + x * u) 0 := by
       fun_prop
     exact hc.eventually_ne (by norm_num)
   have heq :
-      (fun u : ℝ => deriv (normalizedLogShift x) u) =ᶠ[Filter.nhds (0 : ℝ)]
+      (fun u : ℝ => deriv (normalizedLogShift x) u) =ᶠ[𝓝 (0 : ℝ)]
       (fun u : ℝ => x / (4 * (1 + x * u))) := by
     filter_upwards [hne] with u hu
     exact (normalizedLogShift_hasDerivAt x u hu).deriv
