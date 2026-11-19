@@ -156,4 +156,62 @@ theorem thetaGaussian_surviving_polynomial_decay_summable (k : ℕ) :
     k ((47:ℝ)/64) (by norm_num)).mul_left (Real.exp (3/4))
   simpa only [mul_assoc] using h
 
+
+/-- The differentiated single-index Gaussian, including its theta
+outer factor, admits a Gaussian-in-p envelope on the shrinking
+parameter box.  Its remaining multiplier is affine in w and
+polynomial in p; the w factor has fixed exponential damping.
+This is not yet differentiation under the n-sum. -/
+theorem thetaGaussian_small_box_first_deriv_decay
+    (x p u v w : ℝ)
+    (hx : 0 < x) (hx1 : x ≤ 1) (hp : 1 ≤ p)
+    (hw : 0 ≤ w) (hu : |u| ≤ x/8) (hv : |v| ≤ x/8) :
+    |Real.exp (-(p-1)/x^2) *
+      (Real.exp (-w) * (1+w*x^2/p)^((1:ℝ)/4) *
+        deriv (fun z : ℝ =>
+          thetaGaussianModel ((p-1)/x+w*x) (p+w*x^2) u z) v)| ≤
+      (|((p-1)/x)+p*u| + w*|x*(1+x*u)|) *
+        ((Real.exp (3/4) * Real.exp (-((47:ℝ)/64)*p)) *
+          ((1+w*x^2/p)*Real.exp (-((1:ℝ)/4)*w))) := by
+  have hpu : 0 < p := by linarith
+  obtain ⟨_, hxu⟩ :=
+    thetaGaussian_small_box_inside_local_patch x u hx hx1 hu
+  obtain ⟨_, hxv⟩ :=
+    thetaGaussian_small_box_inside_local_patch x v hx hx1 hv
+  have hfirst := thetaGaussian_weighted_right_deriv_abs_le
+    x p ((p-1)/x) u v w hpu hw hxu hxv
+  have hdecay :=
+    thetaGaussian_small_box_weighted_decay x p u v hx hx1 hp hu hv
+  have hM : 0 ≤ |((p-1)/x)+p*u| + w*|x*(1+x*u)| := by
+    positivity
+  have hnum : 0 ≤ w*x^2/p :=
+    div_nonneg (mul_nonneg hw (sq_nonneg x)) hpu.le
+  have htail :
+      0 ≤ (1+w*x^2/p)*Real.exp (-((1:ℝ)/4)*w) := by
+    exact mul_nonneg (by linarith) (Real.exp_nonneg _)
+  calc
+    |Real.exp (-(p-1)/x^2) *
+        (Real.exp (-w) * (1+w*x^2/p)^((1:ℝ)/4) *
+          deriv (fun z : ℝ =>
+            thetaGaussianModel ((p-1)/x+w*x) (p+w*x^2) u z) v)| =
+      Real.exp (-(p-1)/x^2) *
+        |Real.exp (-w) * (1+w*x^2/p)^((1:ℝ)/4) *
+          deriv (fun z : ℝ =>
+            thetaGaussianModel ((p-1)/x+w*x) (p+w*x^2) u z) v| := by
+          rw [abs_mul, abs_of_nonneg (Real.exp_nonneg _)]
+    _ ≤ Real.exp (-(p-1)/x^2) *
+        ((|((p-1)/x)+p*u| + w*|x*(1+x*u)|) *
+          (Real.exp (-((p-1)/x)*(u+v)-p*u*v) *
+            (1+w*x^2/p)*Real.exp (-((1:ℝ)/4)*w))) :=
+          mul_le_mul_of_nonneg_left hfirst (Real.exp_nonneg _)
+    _ = (|((p-1)/x)+p*u| + w*|x*(1+x*u)|) *
+        ((Real.exp (-(p-1)/x^2) *
+          Real.exp (-((p-1)/x)*(u+v)-p*u*v)) *
+          ((1+w*x^2/p)*Real.exp (-((1:ℝ)/4)*w))) := by ring
+    _ ≤ (|((p-1)/x)+p*u| + w*|x*(1+x*u)|) *
+        ((Real.exp (3/4)*Real.exp (-((47:ℝ)/64)*p)) *
+          ((1+w*x^2/p)*Real.exp (-((1:ℝ)/4)*w))) := by
+          exact mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_right hdecay htail) hM
+
 end W5
