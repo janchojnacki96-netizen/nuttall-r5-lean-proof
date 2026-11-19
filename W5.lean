@@ -134,3 +134,4 @@ import W5.ThetaGaussianHigherRightJetBound
 import W5.ThetaWeightedGaussianMixedJets
 import W5.ThetaHigherJetPolynomialTail
 import W5.ThetaHigherJetSeparableEnvelope
+import W5.ThetaHigherJetShiftedPolynomialTails
