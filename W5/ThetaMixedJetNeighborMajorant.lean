@@ -138,6 +138,7 @@ theorem thetaMixedOneRightJetSeriesTerm_norm_le_two_gaussian_factors
           (thetaHigherJetIndexFactor (k-1) x n *
             thetaHigherJetTailFactor (k-1) w) := by
       gcongr
+      all_goals first | exact hq | exact hprev
     have hsecond :
         |thetaWeightedGaussianRightMultiplier x p ((p-1)/x) v w| *
           ‖thetaHigherRightJetSeriesTerm k x u v n w‖ ≤
@@ -145,6 +146,7 @@ theorem thetaMixedOneRightJetSeriesTerm_norm_le_two_gaussian_factors
           (thetaHigherJetIndexFactor k x n *
             thetaHigherJetTailFactor k w) := by
       gcongr
+      all_goals first | exact hm | exact hnow
     have hmain := thetaMixedOneRightJetSeriesTerm_norm_le_neighbors
       k x u v n w
     change ‖thetaMixedOneRightJetSeriesTerm k x u v n w‖ ≤
