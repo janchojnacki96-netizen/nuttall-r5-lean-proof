@@ -26,7 +26,7 @@ theorem normalizedLogShift_hasDerivAt (x u : ℝ)
   · funext v
     simp only [normalizedLogShift, Function.comp_def]
     ring
-  · ring
+  · field_simp [hu] <;> ring
 
 /-- A genuine second derivative of the coordinate shift at the
 origin, equivalent to its quadratic coefficient -x²/8. -/
@@ -37,7 +37,11 @@ theorem normalizedLogShift_second_derivative (x : ℝ) :
       (fun u : ℝ => 4 * (1 + x * u)) (4 * x) 0 := by
     have h := (((hasDerivAt_id (0 : ℝ)).const_mul x).const_add
       (1 : ℝ)).const_mul (4 : ℝ)
-    convert h using 1 <;> ring
+    convert h using 1
+    · funext v
+      simp only [id_eq]
+      ring
+    · ring
   have hq : HasDerivAt
       (fun u : ℝ => x / (4 * (1 + x * u)))
       (-x ^ 2 / 4) 0 := by
@@ -46,16 +50,15 @@ theorem normalizedLogShift_second_derivative (x : ℝ) :
     have h := hconst.div hden
       (by norm_num : 4 * (1 + x * (0 : ℝ)) ≠ 0)
     convert h using 1
-    · funext u
-      rfl
     · simp only [mul_zero, add_zero, mul_one, zero_mul, sub_zero]
+      norm_num
       ring
-  have hne : ∀ᶠ u : ℝ in 𝓝 (0 : ℝ), 1 + x * u ≠ 0 := by
+  have hne : ∀ᶠ u : ℝ in Filter.nhds (0 : ℝ), 1 + x * u ≠ 0 := by
     have hc : ContinuousAt (fun u : ℝ => 1 + x * u) 0 := by
       fun_prop
-    exact hc.eventually_ne (by simp)
+    exact hc.eventually_ne (by norm_num)
   have heq :
-      (fun u : ℝ => deriv (normalizedLogShift x) u) =ᶠ[𝓝 (0 : ℝ)]
+      (fun u : ℝ => deriv (normalizedLogShift x) u) =ᶠ[Filter.nhds (0 : ℝ)]
       (fun u : ℝ => x / (4 * (1 + x * u))) := by
     filter_upwards [hne] with u hu
     exact (normalizedLogShift_hasDerivAt x u hu).deriv
