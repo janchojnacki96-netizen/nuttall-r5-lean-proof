@@ -114,3 +114,5 @@ import W5.ThetaClosedFormLocalExtension
 import W5.NormalizedKernelLocalClosedSeries
 
 import W5.ThetaClosedKernelJetEquivalence
+
+import W5.ThetaClosedKernelAllJets
