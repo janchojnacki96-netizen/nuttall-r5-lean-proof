@@ -141,3 +141,5 @@ import W5.ThetaHigherRightJetIntegralDerivative
 import W5.ThetaHigherRightJetSeriesDerivative
 import W5.ThetaHigherRightJetIteratedDerivative
 import W5.ThetaAllOrdersTransformedSeriesBridge
+
+import W5.ThetaAllOrdersLeftSeriesSymmetry
