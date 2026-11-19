@@ -123,8 +123,7 @@ theorem phiSummandThirdDerivative_hasDerivAt (n : ℕ) (t : ℝ) :
     simp only [phiSummandThirdDerivative, Pi.mul_apply]
     ring_nf
   · simp only [phiSummandFourthDerivative]
-    rw [h25exp, h21exp, h17exp, h13exp, h9exp]
-    ring
+    rw [h25exp, h21exp, h17exp, h13exp, h9exp] <;> ring
 
 theorem phiSummandFourthDerivative_summable (t : ℝ) :
     Summable (fun n : ℕ => phiSummandFourthDerivative n t) := by
