@@ -37,8 +37,6 @@ theorem thetaWeightedGaussianRightJet_measurable
     ((-d0-p*u)-w*x*(1+x*u))^k *
       thetaWeightedGaussianIntegrand x p d0 u v w)
   convert hm.mul hf using 1
-  funext w
-  simp only [Pi.mul_apply]
 
 /-- The actual kth right jet with n²-substitution and exterior
 Gaussian factor. The index zero vanishes, matching the original
