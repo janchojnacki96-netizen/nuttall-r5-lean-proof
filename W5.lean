@@ -114,3 +114,5 @@ import W5.ThetaGaussianPolynomialIntegrability
 import W5.ThetaGaussianWeightedMajorant
 
 import W5.ThetaGaussianFirstDerivativeBound
+
+import W5.ThetaGaussianNeighborhoodEnvelope
