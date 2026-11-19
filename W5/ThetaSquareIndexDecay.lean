@@ -41,15 +41,15 @@ theorem thetaGaussian_base_exponent_radius
     calc
       -d0*(u+v) = -(d0*(u+v)) := by ring
       _ ≤ |d0*(u+v)| := neg_le_abs _
-      _ = |d0|*|u+v| := by rw [abs_mul]
-      _ ≤ |d0|*(2*δ) := mul_le_mul_of_nonneg_left hsum (abs_nonneg _)
+      _ = |d0| * |u+v| := by rw [abs_mul]
+      _ ≤ |d0| * (2*δ) := mul_le_mul_of_nonneg_left hsum (abs_nonneg _)
       _ = 2*δ*|d0| := by ring
   have hp : -p*u*v ≤ δ^2*|p| := by
     calc
       -p*u*v = -(p*(u*v)) := by ring
       _ ≤ |p*(u*v)| := neg_le_abs _
-      _ = |p|*|u*v| := by rw [abs_mul]
-      _ ≤ |p|*δ^2 := mul_le_mul_of_nonneg_left hprod (abs_nonneg _)
+      _ = |p| * |u*v| := by rw [abs_mul]
+      _ ≤ |p| * δ^2 := mul_le_mul_of_nonneg_left hprod (abs_nonneg _)
       _ = δ^2*|p| := by ring
   apply Real.exp_le_exp.mpr
   linarith
@@ -92,7 +92,15 @@ theorem thetaGaussian_outer_prefactor_decay
       (by linarith : 0 ≤ 1-x^2)]
   rw [← Real.exp_add, ← Real.exp_add]
   apply Real.exp_le_exp.mpr
-  linarith [hdiv, hterm]
+  have hstep1 : -(p-1)/x^2 ≤ -(p-1) := by
+    linarith [hdiv]
+  have hstep2 : p*x^2/64 ≤ p/64 := by
+    linarith [hterm]
+  calc
+    -(p-1)/x^2 + ((p-1)/4+p*x^2/64) ≤
+      -(p-1) + ((p-1)/4+p*x^2/64) := by linarith [hstep1]
+    _ ≤ -(p-1) + ((p-1)/4+p/64) := by linarith [hstep2]
+    _ = 3/4 - ((47:ℝ)/64)*p := by ring
 
 /-- The resulting square-index Gaussian is summable. -/
 theorem thetaGaussian_surviving_square_decay_summable :
