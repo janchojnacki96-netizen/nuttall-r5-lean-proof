@@ -44,12 +44,12 @@ noncomputable def normalizedCoordinateMatrixThree (x : ℝ) :
         firstGaugeSlope x * firstShiftSlope x + secondShiftCoeff x
       else firstShiftSlope x ^ 2 / 2
 
-/-- All three upper-triangular entries vanish exactly. -/
-theorem normalizedCoordinateMatrixThree_lower (x : ℝ) :
-    (normalizedCoordinateMatrixThree x).IsLowerTriangular := by
-  intro i j hij
-  fin_cases i <;> fin_cases j <;>
-    norm_num [normalizedCoordinateMatrixThree] at *
+/-- Exactly the three entries above the diagonal vanish. -/
+theorem normalizedCoordinateMatrixThree_above_diag_zero (x : ℝ) :
+    normalizedCoordinateMatrixThree x 0 1 = 0 ∧
+    normalizedCoordinateMatrixThree x 0 2 = 0 ∧
+    normalizedCoordinateMatrixThree x 1 2 = 0 := by
+  simp [normalizedCoordinateMatrixThree]
 
 /-- The triangular determinant does not depend on the gauge
 coefficients: it is b^3 / 2, where b=x/4. -/
