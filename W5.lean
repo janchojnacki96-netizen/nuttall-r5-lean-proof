@@ -122,3 +122,5 @@ import W5.ThetaWeightedGaussianDerivative
 import W5.ThetaGaussianDifferentiationPatch
 
 import W5.ThetaGaussianDominatedIntegralDerivative
+
+import W5.ThetaGaussianIntegralFirstDerivative
