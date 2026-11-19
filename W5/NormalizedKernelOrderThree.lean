@@ -171,7 +171,17 @@ theorem normalizedMatrixThree_positive_iff_W_three_positive_of_jet
     0 < (normalizedMatrixThree (xOfT t)).det ↔ 0 < W 3 t := by
   rw [normalizedMatrixThree_det_of_jet (xOfT t) hjet,
     thetaTimeOfX_xOfT]
-  exact (mul_pos_iff_of_pos_left (normalizedThreeMultiplier_pos t ht))
+  have hp := normalizedThreeMultiplier_pos t ht
+  constructor
+  · intro h
+    by_contra hn
+    have hw : W 3 t ≤ 0 := le_of_not_gt hn
+    have hz : kernelNormalization (xOfT t) ^ 3 *
+        (firstShiftSlope (xOfT t) ^ 6 / 4) * W 3 t ≤ 0 :=
+      mul_nonpos_of_nonneg_of_nonpos hp.le hw
+    linarith
+  · intro h
+    exact mul_pos hp h
 
 /-- A zero of the genuine W3 is exactly a zero of the normalized
 order-three determinant, provided the analytic jet identity holds. -/
@@ -181,8 +191,14 @@ theorem normalizedMatrixThree_zero_iff_W_three_zero_of_jet
     (normalizedMatrixThree (xOfT t)).det = 0 ↔ W 3 t = 0 := by
   rw [normalizedMatrixThree_det_of_jet (xOfT t) hjet,
     thetaTimeOfX_xOfT]
-  exact mul_eq_zero_iff_of_ne_zero_left
-    (ne_of_gt (normalizedThreeMultiplier_pos t ht))
+  have hp := normalizedThreeMultiplier_pos t ht
+  constructor
+  · intro h
+    rcases mul_eq_zero.mp h with hz | hz
+    · exact False.elim ((ne_of_gt hp) hz)
+    · exact hz
+  · intro h
+    rw [h, mul_zero]
 
 /-- The complete trichotomy is transported by the exact positive
 normalization, with no assumption about the determinant sign. -/
