@@ -147,3 +147,5 @@ import W5.ThetaAllOrdersLeftSeriesSymmetry
 import W5.ThetaMixedRightJetSeriesDerivative
 
 import W5.ThetaMixedJetNeighborMajorant
+
+import W5.ThetaMixedJetSeparableEnvelope
