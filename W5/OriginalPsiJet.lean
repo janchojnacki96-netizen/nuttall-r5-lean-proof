@@ -17,7 +17,7 @@ noncomputable def originalPsiJet (k : ℕ) (t : ℝ) : ℝ :=
   match k with
   | 0 => Psi1 t
   | 1 => -Phi t
-  | 2 => -(∑' n : ℕ, phiSummandFirstDerivative n t)
+  | 2 => -(∑' n : ℕ, phiSummandDerivative n t)
   | 3 => -(∑' n : ℕ, phiSummandSecondDerivative n t)
   | 4 => -(∑' n : ℕ, phiSummandThirdDerivative n t)
   | 5 => -(∑' n : ℕ, phiSummandFourthDerivative n t)
