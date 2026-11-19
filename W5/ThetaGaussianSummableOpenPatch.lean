@@ -40,7 +40,10 @@ theorem thetaGaussianSummableRightPatch_zero_mem
     (x : ℝ) (hx : 0 < x) :
     (0:ℝ) ∈ thetaGaussianSummableRightPatch x := by
   change -x/8 < (0:ℝ) ∧ (0:ℝ) < x/8
-  constructor <;> positivity
+  have hx8 : 0 < x/8 := by positivity
+  constructor
+  · linarith [hx8]
+  · exact hx8
 
 /-- Members of the open patch lie in the closed small box needed
 by the Gaussian n-index estimates. -/
@@ -48,7 +51,8 @@ theorem thetaGaussianSummableRightPatch_abs_le
     (x v : ℝ) (hv : v ∈ thetaGaussianSummableRightPatch x) :
     |v| ≤ x/8 := by
   change -x/8 < v ∧ v < x/8 at hv
-  exact abs_le.mpr ⟨hv.1.le, hv.2.le⟩
+  apply abs_le.mpr
+  constructor <;> linarith [hv.1, hv.2]
 
 /-- The summability patch lies inside the larger Gaussian
 differentiability patch for every 0<x<=1. -/
@@ -57,7 +61,9 @@ theorem thetaGaussianSummableRightPatch_subset_rightPatch
     thetaGaussianSummableRightPatch x ⊆ thetaGaussianRightPatch x := by
   intro v hv
   change -x/8 < v ∧ v < x/8 at hv
-  have hvabs : |v| < x/8 := abs_lt.mpr hv
+  have hvabs : |v| < x/8 := by
+    apply abs_lt.mpr
+    constructor <;> linarith [hv.1, hv.2]
   have hsmall : |v| < 1 := by linarith
   have hprod : 0 < x*(v+x/8) :=
     mul_pos hx (by linarith [hv.1])
