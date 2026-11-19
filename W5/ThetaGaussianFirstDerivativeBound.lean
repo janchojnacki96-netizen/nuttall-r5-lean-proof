@@ -29,7 +29,7 @@ theorem thetaGaussian_right_multiplier_abs_le
           congr 1
           ring
     _ ≤ |-(d0+p*u)| + |w*(x*(1+x*u))| :=
-          abs_sub_le _ _
+          abs_sub _ _
     _ = |d0+p*u| + w * |x*(1+x*u)| := by
           rw [abs_neg, abs_mul, abs_of_nonneg hw]
 
