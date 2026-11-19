@@ -85,8 +85,10 @@ theorem thetaMixedOneRightJetSeriesTerm_zero
   · simp only [thetaMixedOneRightJetSeriesTerm,
       thetaHigherLeftJetSeriesTerm, thetaHigherRightJetSeriesTerm,
       if_neg hn]
-    simp only [Nat.cast_zero, zero_mul, zero_add, pow_zero, one_mul]
-    rfl
+    simp only [Nat.cast_zero, zero_mul, zero_add, pow_zero,
+      one_mul, pow_one]
+    rw [thetaWeightedGaussianIntegrand_swap
+      x ((n:ℝ)^2) (((n:ℝ)^2-1)/x) u v w]
 
 /-- In the original theta coordinates, the mixed (1,1) square-index
 jet at the origin is exactly B11(d,q) with the real integral weight.
