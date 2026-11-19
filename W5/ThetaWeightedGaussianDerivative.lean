@@ -35,8 +35,10 @@ theorem thetaWeightedGaussian_hasDerivAt_right
     (thetaGaussianModel_right_hasDerivAt
       (d0+w*x) (p+w*x^2) u v).const_mul
         (Real.exp (-w) * (1+w*x^2/p)^((1:ℝ)/4))
-  simpa only [thetaWeightedGaussianIntegrand,
-    thetaGaussian_right_derivative_multiplier] using h
+  have hmul :
+      -(d0+w*x) - (p+w*x^2)*u =
+        ((-d0-p*u)-w*x*(1+x*u)) := by ring
+  simpa only [thetaWeightedGaussianIntegrand, hmul] using h
 
 /-- The derivative is the same as multiplying the derivative of the
 plain Gaussian by the w-weight. This equality is useful for applying
