@@ -105,8 +105,8 @@ theorem thetaGaussian_right_deriv_majorant_integrable
             (1+w*x^2/p) * Real.exp (-((1:ℝ)/4)*w))) =
       (fun w : ℝ =>
         Real.exp (-d0*(u+v)-p*u*v) *
-          ((|x*(1+x*u)|*(x^2/p)*w^2 +
-            (|d0+p*u|*(x^2/p)+|x*(1+x*u)|)*w +
+          ((|x*(1+x*u)| *(x^2/p)*w^2 +
+            (|d0+p*u| *(x^2/p)+|x*(1+x*u)|)*w +
             |d0+p*u|) * Real.exp (-((1:ℝ)/4)*w))) := by
     funext w
     ring
