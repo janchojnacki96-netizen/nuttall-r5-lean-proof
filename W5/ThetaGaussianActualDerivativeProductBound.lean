@@ -146,7 +146,7 @@ theorem thetaGaussian_nonzero_index_first_deriv_le_product
   have hn1 : (1:ℝ) ≤ (n:ℝ) := by exact_mod_cast hn
   have hp : (1:ℝ) ≤ (n:ℝ)^2 := by nlinarith [sq_nonneg (n:ℝ)]
   have h := thetaGaussian_small_box_first_deriv_product_bound
-    x (n:ℝ)^2 u v w hx hx1 hp hw hu hv
+    x ((n:ℝ)^2) u v w hx hx1 hp hw hu hv
   simpa only [thetaGaussianProductMajorant] using h
 
 end W5
