@@ -39,7 +39,9 @@ theorem thetaGaussianFirstDerivSeriesTerm_measurable
     (x u : ℝ) (n : ℕ) :
     Measurable (thetaGaussianFirstDerivSeriesTerm x u n) := by
   by_cases hn : n = 0
-  · simp [thetaGaussianFirstDerivSeriesTerm, hn]
+  · subst n
+    change Measurable (fun _ : ℝ => (0:ℝ))
+    exact measurable_const
   · have hm : Measurable (fun w : ℝ =>
         Real.exp (-((n:ℝ)^2-1)/x^2) *
           thetaWeightedGaussianRightDerivative x ((n:ℝ)^2)
@@ -47,7 +49,12 @@ theorem thetaGaussianFirstDerivSeriesTerm_measurable
       measurable_const.mul
         (thetaWeightedGaussianRightDerivative_measurable
           x ((n:ℝ)^2) (((n:ℝ)^2-1)/x) u 0)
-    simpa only [thetaGaussianFirstDerivSeriesTerm, hn, ↓reduceIte] using hm
+    change Measurable (fun w : ℝ =>
+      if n = 0 then (0:ℝ) else
+        Real.exp (-((n:ℝ)^2-1)/x^2) *
+          thetaWeightedGaussianRightDerivative x ((n:ℝ)^2)
+            (((n:ℝ)^2-1)/x) u 0 w)
+    simpa only [if_neg hn] using hm
 
 /-- In the small coordinate box, the series of integrals of
 actual theta first derivatives equals the integral of their
