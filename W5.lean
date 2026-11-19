@@ -100,3 +100,5 @@ import W5.VerifiedIntervalPolynomials
 import W5.OrderTwoPolynomialCoefficients
 
 import W5.OrderTwoSingleDiagonalCriterion
+
+import W5.OrderTwoThetaIntegralForms
