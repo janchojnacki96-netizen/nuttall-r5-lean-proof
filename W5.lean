@@ -120,3 +120,4 @@ import W5.ThetaGaussianNeighborhoodEnvelope
 import W5.ThetaSquareIndexDecay
 import W5.ThetaGaussianProductMajorant
 import W5.ThetaGaussianActualDerivativeProductBound
+import W5.ThetaGaussianIntegratedIndexBridge
