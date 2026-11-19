@@ -125,4 +125,23 @@ theorem thetaGaussian_small_box_weighted_decay
     _ ≤ Real.exp (3/4) * Real.exp (-((47:ℝ)/64)*p) :=
       thetaGaussian_outer_prefactor_decay x p hx hx1 hp
 
+
+/-- The shrinking parameter box required to retain Gaussian decay
+automatically lies in the local positivity patch used by the
+integrable first-derivative majorant. -/
+theorem thetaGaussian_small_box_inside_local_patch
+    (x z : ℝ) (hx : 0 < x) (hx1 : x ≤ 1)
+    (hz : |z| ≤ x/8) :
+    |z| ≤ 1 ∧ -(1:ℝ)/2 ≤ x*z := by
+  have hzlow : -x/8 ≤ z := by
+    have hneg : -|z| ≤ z := neg_abs_le z
+    linarith
+  have hprod : 0 ≤ x * (z+x/8) :=
+    mul_nonneg hx.le (by linarith)
+  have hx2 : x^2 ≤ 1 := by
+    nlinarith [mul_nonneg hx.le (by linarith : 0 ≤ 1-x)]
+  constructor
+  · exact hz.trans (by linarith)
+  · nlinarith [hprod]
+
 end W5
