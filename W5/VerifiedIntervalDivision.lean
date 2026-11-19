@@ -53,7 +53,7 @@ the numerator interval contains negative and positive values. -/
 theorem divPositive_contains {a b : QInterval} {x y : ℚ}
     (ha : Contains a x) (hb : Contains b y) (hbpos : 0 < b.lo) :
     Contains (divPositive a b) (x / y) := by
-  simpa only [divPositive, div_eq_mul_inv, one_div] using
+  simpa only [divPositive, div_eq_mul_inv, one_div, one_mul] using
     mul_contains ha (reciprocalPositive_contains hbpos hb)
 
 /-- Exact-rational interval division by negative denominator bounds. -/
@@ -63,7 +63,7 @@ def divNegative (a b : QInterval) : QInterval :=
 theorem divNegative_contains {a b : QInterval} {x y : ℚ}
     (ha : Contains a x) (hb : Contains b y) (hbneg : b.hi < 0) :
     Contains (divNegative a b) (x / y) := by
-  simpa only [divNegative, div_eq_mul_inv, one_div] using
+  simpa only [divNegative, div_eq_mul_inv, one_div, one_mul] using
     mul_contains ha (reciprocalNegative_contains hbneg hb)
 
 end W5.QInterval
