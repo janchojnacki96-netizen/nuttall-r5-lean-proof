@@ -143,4 +143,59 @@ theorem normalizedMatrixThree_negative_iff_W_three_negative_of_jet
   · intro hw
     exact mul_neg_of_pos_of_neg hfactor hw
 
+/-!
+## Full sign and zero transfer at order three
+
+The analytic mixed-jet identity is kept explicit. Once established,
+the strictly positive determinant multiplier preserves all three
+possible signs, not only strict negativity.
+-/
+
+/-- The exact determinant multiplier on the theta ray is positive. -/
+theorem normalizedThreeMultiplier_pos
+    (t : ℝ) (ht : 0 ≤ t) :
+    0 < kernelNormalization (xOfT t) ^ 3 *
+      (firstShiftSlope (xOfT t) ^ 6 / 4) := by
+  have hx : 0 < xOfT t := (xOfT_positive_and_bounded t ht).1
+  have hc : 0 < kernelNormalization (xOfT t) :=
+    kernelNormalization_pos (xOfT t) hx
+  have hb : 0 < firstShiftSlope (xOfT t) := by
+    dsimp [firstShiftSlope]
+    positivity
+  positivity
+
+/-- The normalized determinant is positive exactly when W3 is. -/
+theorem normalizedMatrixThree_positive_iff_W_three_positive_of_jet
+    (t : ℝ) (ht : 0 ≤ t)
+    (hjet : OrderThreeNormalizedJetData (xOfT t)) :
+    0 < (normalizedMatrixThree (xOfT t)).det ↔ 0 < W 3 t := by
+  rw [normalizedMatrixThree_det_of_jet (xOfT t) hjet,
+    thetaTimeOfX_xOfT]
+  exact (mul_pos_iff_of_pos_left (normalizedThreeMultiplier_pos t ht))
+
+/-- A zero of the genuine W3 is exactly a zero of the normalized
+order-three determinant, provided the analytic jet identity holds. -/
+theorem normalizedMatrixThree_zero_iff_W_three_zero_of_jet
+    (t : ℝ) (ht : 0 ≤ t)
+    (hjet : OrderThreeNormalizedJetData (xOfT t)) :
+    (normalizedMatrixThree (xOfT t)).det = 0 ↔ W 3 t = 0 := by
+  rw [normalizedMatrixThree_det_of_jet (xOfT t) hjet,
+    thetaTimeOfX_xOfT]
+  exact mul_eq_zero_iff_of_ne_zero_left
+    (ne_of_gt (normalizedThreeMultiplier_pos t ht))
+
+/-- The complete trichotomy is transported by the exact positive
+normalization, with no assumption about the determinant sign. -/
+theorem normalizedMatrixThree_sign_trichotomy_of_jet
+    (t : ℝ) (ht : 0 ≤ t)
+    (hjet : OrderThreeNormalizedJetData (xOfT t)) :
+    ((normalizedMatrixThree (xOfT t)).det < 0 ↔ W 3 t < 0) ∧
+    ((normalizedMatrixThree (xOfT t)).det = 0 ↔ W 3 t = 0) ∧
+    (0 < (normalizedMatrixThree (xOfT t)).det ↔ 0 < W 3 t) := by
+  exact ⟨normalizedMatrixThree_negative_iff_W_three_negative_of_jet
+      t ht hjet,
+    normalizedMatrixThree_zero_iff_W_three_zero_of_jet t ht hjet,
+    normalizedMatrixThree_positive_iff_W_three_positive_of_jet
+      t ht hjet⟩
+
 end W5
