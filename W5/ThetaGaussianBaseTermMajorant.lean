@@ -15,6 +15,7 @@ claim or Nuttall r=5 determinant sign is made here.
 -/
 
 namespace W5
+open MeasureTheory
 
 /-- The genuine weighted Gaussian integrand, including the original
 outer square-index factor, is bounded by a polynomial-Gaussian
