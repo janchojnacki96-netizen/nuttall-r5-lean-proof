@@ -98,3 +98,5 @@ import W5.OrderTwoThetaCertificateBridge
 import W5.VerifiedIntervalPolynomials
 
 import W5.OrderTwoPolynomialCoefficients
+
+import W5.OrderTwoSingleDiagonalCriterion
