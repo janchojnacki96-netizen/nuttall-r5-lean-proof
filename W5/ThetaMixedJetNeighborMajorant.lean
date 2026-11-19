@@ -65,7 +65,7 @@ theorem thetaMixedOneRightJetSeriesTerm_norm_le_neighbors
       have hk0 : (0:ℝ) ≤ (k:ℝ) := Nat.cast_nonneg k
       simp only [norm_mul, Real.norm_eq_abs, abs_neg,
         abs_of_nonneg hk0]
-      ring
+ 
 
 /-- Uniform bound for any mixed one-left/k-right theta Gaussian jet.
 The two Gaussian factors come directly from already verified jet
