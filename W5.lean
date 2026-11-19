@@ -91,3 +91,4 @@ import W5.NormalizedKernelZeroth
 import W5.ThetaCoefficientSymmetry
 import W5.NormalizedKernelOrderTwo
 import W5.NormalizedKernelSymmetry
+import W5.NormalizedKernelFirstOrder
