@@ -62,7 +62,7 @@ theorem thetaWeightedGaussian_actual_deriv_uniform_envelope
     (hxv : -(1:ℝ)/2 ≤ x*v) :
     |deriv (fun z : ℝ =>
       thetaWeightedGaussianIntegrand x p d0 u z w) v| ≤
-        ((|d0|+|p|)+w*(|x|*(1+|x|))) *
+        ((|d0|+|p|)+w*(|x| *(1+|x|))) *
           (Real.exp (2*|d0|+|p|) *
             (1+w*x^2/p)*Real.exp (-((1:ℝ)/4)*w)) := by
   rw [thetaWeightedGaussian_right_deriv_eq_weighted]
