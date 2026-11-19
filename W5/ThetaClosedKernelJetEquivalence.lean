@@ -34,7 +34,7 @@ private theorem eventually_mul_ge_quarter (x : ℝ) :
     · simpa only [mul_zero] using hnhds
     · intro y hy
       exact hy
-  have hnear := hcont.tendsto.eventually hnhds'
+  have hnear := hcont.tendsto.eventually (by simpa using hnhds)'
   filter_upwards [hnear] with v hv
   exact le_of_lt hv
 
