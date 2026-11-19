@@ -127,3 +127,4 @@ import W5.ThetaGaussianIntegratedDerivativeBound
 import W5.ThetaGaussianSummableOpenPatch
 import W5.ThetaGaussianBaseTermMajorant
 import W5.ThetaGaussianIntegratedSeriesDerivative
+import W5.ThetaGaussianFullFirstDerivativeFubini
