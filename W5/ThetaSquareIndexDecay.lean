@@ -93,14 +93,16 @@ theorem thetaGaussian_outer_prefactor_decay
   rw [← Real.exp_add, ← Real.exp_add]
   apply Real.exp_le_exp.mpr
   have hstep1 : -(p-1)/x^2 ≤ -(p-1) := by
-    linarith [hdiv]
+    calc
+      -(p-1)/x^2 = -((p-1)/x^2) := by ring
+      _ ≤ -(p-1) := neg_le_neg hdiv
   have hstep2 : p*x^2/64 ≤ p/64 := by
     linarith [hterm]
   calc
     -(p-1)/x^2 + ((p-1)/4+p*x^2/64) ≤
       -(p-1) + ((p-1)/4+p*x^2/64) := by linarith [hstep1]
     _ ≤ -(p-1) + ((p-1)/4+p/64) := by linarith [hstep2]
-    _ = 3/4 - ((47:ℝ)/64)*p := by ring
+    _ = 3/4 + -((47:ℝ)/64)*p := by ring
 
 /-- The resulting square-index Gaussian is summable. -/
 theorem thetaGaussian_surviving_square_decay_summable :
