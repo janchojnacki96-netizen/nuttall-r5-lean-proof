@@ -56,7 +56,6 @@ theorem analyticCoeff_zero_zero_exact (x : ℝ) :
     analyticCoeff x (0 : Fin 5) (0 : Fin 5) =
       kernelNormalization x * Psi1 (thetaTimeOfX x) := by
   rw [analyticCoeff_zero_zero, normalizedKernel_zero_zero]
-  rfl
 
 /-- The precise factor relating a normalized 2-by-2 determinant
 to the original W2, once the three mixed-jet identities are proved.
