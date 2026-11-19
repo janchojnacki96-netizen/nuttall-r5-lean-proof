@@ -34,7 +34,7 @@ theorem thetaWeightedGaussianRightJet_measurable
     fun_prop
   have hf := thetaWeightedGaussian_measurable x p d0 u v
   simpa only [thetaWeightedGaussianRightJet,
-    thetaWeightedGaussianRightMultiplier] using hm.mul hf
+    thetaWeightedGaussianRightMultiplier, Pi.mul_apply] using hm.mul hf
 
 /-- The actual kth right jet with n²-substitution and exterior
 Gaussian factor. The index zero vanishes, matching the original
@@ -127,7 +127,6 @@ theorem thetaHigherRightJetSeries_integral_hasSum
               (((w+1)^k*(w^2+w+1)) *
                 Real.exp (-((1:ℝ)/4)*w)) := by
         dsimp [a, b]
-        ring
       rw [heq]
       change ‖if n = 0 then (0:ℝ) else
         Real.exp (-((n:ℝ)^2-1)/x^2) *
