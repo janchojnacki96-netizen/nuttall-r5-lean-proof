@@ -149,3 +149,5 @@ import W5.ThetaMixedRightJetSeriesDerivative
 import W5.ThetaMixedJetNeighborMajorant
 
 import W5.ThetaMixedJetSeparableEnvelope
+
+import W5.ThetaMixedJetFubini
