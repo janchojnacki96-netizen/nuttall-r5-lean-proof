@@ -102,8 +102,10 @@ theorem phiSummandSixthDerivative_hasDerivAt (n : ℕ) (t : ℝ) :
       using 1
     all_goals
       first
-      | funext s; ring
-      | ring
+      | funext s
+        simp only [Pi.add_apply]
+        ring_nf
+      | ring_nf
   have hlinE : HasDerivAt
       (fun s : ℝ => -((n : ℝ)^2 * Real.pi) * Real.exp (4*s))
       (-((n : ℝ)^2 * Real.pi) * (Real.exp (4*t)*4)) t := by
@@ -155,7 +157,7 @@ theorem phiSummandSixthDerivative_hasDerivAt (n : ℕ) (t : ℝ) :
   convert hprod using 1
   · funext s
     simp only [phiSummandSixthDerivative, Pi.mul_apply]
-    ring
+    ring_nf
   · simp only [phiSummandSeventhDerivative]
     rw [h37exp, h33exp, h29exp, h25exp, h21exp, h17exp, h13exp, h9exp]
     ring
