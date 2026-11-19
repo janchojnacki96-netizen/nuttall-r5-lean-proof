@@ -104,3 +104,5 @@ import W5.OrderTwoSingleDiagonalCriterion
 import W5.OrderTwoThetaIntegralForms
 
 import W5.ThetaGaussianModelLowOrder
+
+import W5.ThetaGaussianIntegralCoefficient
