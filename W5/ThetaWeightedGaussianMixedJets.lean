@@ -87,8 +87,9 @@ theorem thetaWeightedGaussianRightJet_hasDerivAt_left
   have hprod := (hm.pow k).mul hf
   convert hprod using 1
   · funext z
-    simp only [thetaWeightedGaussianRightJet]
-  · ring
+    simp only [thetaWeightedGaussianRightJet, Pi.pow_apply, Pi.mul_apply]
+  · simp only [Pi.pow_apply]
+    ring
 
 /-- The first mixed derivative has the exact quadratic expression
 multiplier_u * multiplier_v - (p+w*x²). -/
@@ -116,7 +117,7 @@ theorem thetaWeightedGaussian_mixed_one_one_zero
         thetaWeightedGaussianIntegrand x p d0 0 0 w := by
   rw [thetaWeightedGaussian_mixed_one_one]
   simp only [thetaWeightedGaussianRightMultiplier, mul_zero,
-    zero_mul, add_zero, one_add, mul_one, sub_zero]
+    add_zero, mul_one, sub_zero]
   ring
 
 end W5
