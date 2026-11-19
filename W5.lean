@@ -89,3 +89,11 @@ import W5.OriginalPsiJet
 import W5.OriginalJetSignBridge
 import W5.NormalizedKernelZeroth
 import W5.ThetaCoefficientSymmetry
+import W5.NormalizedKernelOrderTwo
+import W5.NormalizedKernelSymmetry
+import W5.NormalizedKernelFirstOrder
+import W5.OrderTwoCertificateBridge
+import W5.NormalizedKernelOrderThree
+import W5.NormalizedKernelSecondJets
+import W5.NormalizedKernelEdgeSymmetry
+import W5.OrderThreeCertificateBridge
