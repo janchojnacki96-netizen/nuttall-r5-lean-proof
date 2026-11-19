@@ -46,7 +46,7 @@ theorem analyticCoeff_zero_zero_pos_on_ray (t : ℝ) (ht : 0 ≤ t) :
     0 < analyticCoeff (xOfT t) (0 : Fin 5) (0 : Fin 5) := by
   rw [analyticCoeff_zero_zero_xOfT]
   exact mul_pos
-    (kernelNormalization_pos (xOfT t) (xOfT_pos_all t))
+    (kernelNormalization_pos (xOfT t) ((xOfT_positive_and_bounded t ht).1))
     (W_one_pos t ht)
 
 end W5
