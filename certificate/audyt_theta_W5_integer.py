@@ -152,6 +152,14 @@ def check(l:Fraction,r:Fraction,far:bool,mass,tail):
                 for s in range(9):
                     integ=integ+pol[s]*moments[s]
                 A[i][j]=A[i][j]+amp*(pol[0]-x2/Q(4*p)*integ)
+    # Independent order-two simplification: before LDL elimination,
+    # the original symmetric theta coefficient (1,1) itself is negative.
+    # Coupled with A[0][0]>0 this forces the genuine 2x2 determinant
+    # negative, once the analytic coefficient identity is proved in Lean.
+    if not A[1][1].negative():
+        raise ValueError(
+            f'uncertified raw diagonal A11 at x=[{l},{r}]: '
+            f'[{A[1][1].l},{A[1][1].h}]')
     margins=[]
     for k in range(5):
         pivot=A[k][k]
@@ -192,6 +200,7 @@ def main():
                 mins[j]=(m,idx+1)
         print(f'PASS {idx+1}/51 elapsed={time.monotonic()-t0:.2f}s',flush=True)
     print('Minimum signed pivot bounds per order:',mins)
+    print('PASS: 51/51 raw theta A11 diagonals strictly negative',flush=True)
     print('PASS: exact integer fixed-point interval proof verified 255 signs',flush=True)
 
 if __name__=='__main__':
