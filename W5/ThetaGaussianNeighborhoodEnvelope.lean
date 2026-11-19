@@ -23,8 +23,8 @@ theorem thetaGaussian_right_multiplier_uniform
     rw [abs_mul]
     simpa only [mul_one] using
       (mul_le_mul_of_nonneg_left hu (abs_nonneg p))
-  have hd : |d0+p*u| ≤ |d0| + |p| :=
-    (abs_add_le d0 (p*u)).trans (add_le_add_left hpu _)
+  have hd : |d0+p*u| ≤ |d0| + |p| := by
+    linarith [abs_add_le d0 (p*u)]
   have hxu : |x*u| ≤ |x| := by
     rw [abs_mul]
     simpa only [mul_one] using
