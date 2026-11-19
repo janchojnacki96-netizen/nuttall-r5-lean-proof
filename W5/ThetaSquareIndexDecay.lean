@@ -35,7 +35,7 @@ theorem thetaGaussian_base_exponent_radius
   have hprod : |u*v| ≤ δ^2 := by
     rw [abs_mul]
     calc
-      |u|*|v| ≤ δ*δ := mul_le_mul hu hv (abs_nonneg _) hδ
+      |u| * |v| ≤ δ*δ := mul_le_mul hu hv (abs_nonneg _) hδ
       _ = δ^2 := by ring
   have hd : -d0*(u+v) ≤ 2*δ*|d0| := by
     calc
@@ -92,7 +92,7 @@ theorem thetaGaussian_outer_prefactor_decay
       (by linarith : 0 ≤ 1-x^2)]
   rw [← Real.exp_add, ← Real.exp_add]
   apply Real.exp_le_exp.mpr
-  nlinarith [hdiv, hterm]
+  linarith [hdiv, hterm]
 
 /-- The resulting square-index Gaussian is summable. -/
 theorem thetaGaussian_surviving_square_decay_summable :
