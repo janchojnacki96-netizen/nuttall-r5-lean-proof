@@ -139,3 +139,4 @@ import W5.ThetaHigherRightJetFubini
 import W5.ThetaHigherRightJetIntegratedBound
 import W5.ThetaHigherRightJetIntegralDerivative
 import W5.ThetaHigherRightJetSeriesDerivative
+import W5.ThetaHigherRightJetIteratedDerivative
