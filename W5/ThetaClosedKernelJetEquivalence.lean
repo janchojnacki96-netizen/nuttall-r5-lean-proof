@@ -26,15 +26,11 @@ private theorem eventually_mul_ge_quarter (x : ℝ) :
     ∀ᶠ v : ℝ in 𝓝 (0:ℝ), -(1:ℝ)/4 ≤ x*v := by
   have hcont : ContinuousAt (fun v : ℝ => x*v) (0:ℝ) := by
     fun_prop
-  have hnhds :
-      Set.Ioi (-(1:ℝ)/4) ∈ 𝓝 (0:ℝ) :=
-    Ioi_mem_nhds (by norm_num)
-  have hnhds' : ∀ᶠ y : ℝ in 𝓝 (x*(0:ℝ)), -(1:ℝ)/4 < y := by
-    refine Filter.eventually_of_mem (U := Set.Ioi (-(1:ℝ)/4)) ?_ ?_
-    · simpa only [mul_zero] using hnhds
-    · intro y hy
-      exact hy
-  have hnear := hcont.tendsto.eventually (by simpa using hnhds)'
+  have hnhds : ∀ᶠ y : ℝ in 𝓝 (0:ℝ), -(1:ℝ)/4 < y := by
+    change Set.Ioi (-(1:ℝ)/4) ∈ 𝓝 (0:ℝ)
+    exact Ioi_mem_nhds (by norm_num)
+  have hnear := hcont.tendsto.eventually
+    (by simpa only [mul_zero] using hnhds)
   filter_upwards [hnear] with v hv
   exact le_of_lt hv
 
