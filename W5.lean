@@ -88,3 +88,4 @@ import W5.PhiSeventhDerivative
 import W5.OriginalPsiJet
 import W5.OriginalJetSignBridge
 import W5.NormalizedKernelZeroth
+import W5.NormalizedKernelOrderTwo
