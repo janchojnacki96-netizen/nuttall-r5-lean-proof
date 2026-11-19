@@ -1,0 +1,11 @@
+name = "w5_formalizacja"
+version = "0.3.0"
+defaultTargets = ["W5"]
+
+[[lean_lib]]
+name = "W5"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.35.0"
