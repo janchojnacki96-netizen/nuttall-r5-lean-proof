@@ -49,8 +49,11 @@ private theorem normalizedKernel_gauge_hasDerivAt (x : ℝ) :
       (fun v : ℝ => Real.exp (v/x) / (1 + x*v)^((5:ℝ)/4))
       (firstGaugeSlope x) 0 := by
   have harg : HasDerivAt (fun v : ℝ => v / x) (1/x) 0 := by
-    convert (hasDerivAt_id (0:ℝ)).const_mul (1/x) using 1 <;>
-      simp only [id_eq] <;> ring
+    convert (hasDerivAt_id (0:ℝ)).const_mul (1/x) using 1
+    all_goals
+      first
+      | funext v; simp only [id_eq]; ring
+      | ring
   have he : HasDerivAt (fun v : ℝ => Real.exp (v/x)) (1/x) 0 := by
     have h := (Real.hasDerivAt_exp ((0:ℝ)/x)).comp (0:ℝ) harg
     simpa only [Function.comp_def, zero_div, Real.exp_zero, one_mul] using h
@@ -65,8 +68,7 @@ private theorem normalizedKernel_gauge_hasDerivAt (x : ℝ) :
       exact Real.hasDerivAt_rpow_const
         (Or.inl (show (1:ℝ) + x*(0:ℝ) ≠ 0 by simp))
     have hh := houter.comp (0:ℝ) hbase
-    simpa only [Function.comp_def, mul_zero, add_zero, one_rpow,
-      mul_one] using hh
+    simpa [Function.comp_def] using hh
   have h := he.div hp (by norm_num : (1 + x * (0:ℝ))^((5:ℝ)/4) ≠ 0)
   convert h using 1
   all_goals
@@ -92,8 +94,48 @@ theorem normalizedKernel_zero_left_hasDerivAt (x : ℝ) :
     simpa only [Function.comp_def, mul_zero, add_zero,
       Real.log_one, zero_div] using h
   have h := (hg.mul hpsi).const_mul (kernelNormalization x)
-  convert h using 1 <;>
-    simp [Pi.mul_apply, normalizedKernel_zero_left] <;> ring
+  have hraw : HasDerivAt
+      (fun v : ℝ =>
+        kernelNormalization x *
+          ((Real.exp (v/x) / (1 + x*v)^((5:ℝ)/4)) *
+            Psi1 (thetaTimeOfX x + Real.log (1 + x*v)/4)))
+      (kernelNormalization x *
+        (firstGaugeSlope x *
+            Psi1 (thetaTimeOfX x + Real.log (1 + x*(0:ℝ))/4) +
+          (Real.exp ((0:ℝ)/x) / (1 + x*(0:ℝ))^((5:ℝ)/4)) *
+            (-Phi (thetaTimeOfX x) * firstShiftSlope x))) 0 := by
+    simpa only [Pi.mul_apply] using h
+  have hnum :
+      kernelNormalization x *
+        (firstGaugeSlope x *
+            Psi1 (thetaTimeOfX x + Real.log (1 + x*(0:ℝ))/4) +
+          (Real.exp ((0:ℝ)/x) / (1 + x*(0:ℝ))^((5:ℝ)/4)) *
+            (-Phi (thetaTimeOfX x) * firstShiftSlope x)) =
+      kernelNormalization x *
+        (firstGaugeSlope x * Psi1 (thetaTimeOfX x) -
+          firstShiftSlope x * Phi (thetaTimeOfX x)) := by
+    simp <;> ring
+  have hnormalized : HasDerivAt
+      (fun v : ℝ =>
+        kernelNormalization x *
+          ((Real.exp (v/x) / (1 + x*v)^((5:ℝ)/4)) *
+            Psi1 (thetaTimeOfX x + Real.log (1 + x*v)/4)))
+      (kernelNormalization x *
+        (firstGaugeSlope x * Psi1 (thetaTimeOfX x) -
+          firstShiftSlope x * Phi (thetaTimeOfX x))) 0 := by
+    rw [← hnum]
+    exact hraw
+  have hfun :
+      (fun v : ℝ => normalizedKernel x 0 v) =
+      (fun v : ℝ =>
+        kernelNormalization x *
+          ((Real.exp (v/x) / (1 + x*v)^((5:ℝ)/4)) *
+            Psi1 (thetaTimeOfX x + Real.log (1 + x*v)/4))) := by
+    funext v
+    rw [normalizedKernel_zero_left]
+    ring
+  rw [hfun]
+  exact hnormalized
 
 /-- The first nonconstant mixed analytic Taylor coefficient,
 unconditionally for every real x. -/
