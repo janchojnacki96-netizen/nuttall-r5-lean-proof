@@ -87,3 +87,4 @@ import W5.PhiSixthDerivative
 import W5.PhiSeventhDerivative
 import W5.OriginalPsiJet
 import W5.OriginalJetSignBridge
+import W5.NormalizedKernelZeroth
