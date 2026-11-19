@@ -84,7 +84,7 @@ theorem thetaMixedOneRightJetSeriesTerm_zero
       thetaHigherLeftJetSeriesTerm, thetaHigherRightJetSeriesTerm, hn]
   · simp only [thetaMixedOneRightJetSeriesTerm,
       thetaHigherLeftJetSeriesTerm, thetaHigherRightJetSeriesTerm,
-      if_neg hn]
+      thetaWeightedGaussianRightJet, if_neg hn]
     simp only [Nat.cast_zero, zero_mul, zero_add, pow_zero,
       one_mul, pow_one]
     rw [thetaWeightedGaussianIntegrand_swap
