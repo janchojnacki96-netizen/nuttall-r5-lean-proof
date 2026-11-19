@@ -144,4 +144,16 @@ theorem thetaGaussian_small_box_inside_local_patch
   · exact hz.trans (by linarith)
   · nlinarith [hprod]
 
+
+/-- Every fixed polynomial in the square index remains summable
+after multiplication by the surviving Gaussian decay.  This form
+is useful for derivatives whose multipliers grow polynomially. -/
+theorem thetaGaussian_surviving_polynomial_decay_summable (k : ℕ) :
+    Summable (fun n : ℕ =>
+      Real.exp (3/4) * (n:ℝ)^k *
+        Real.exp (-((47:ℝ)/64)*(n:ℝ)^2)) := by
+  have h := (theta_gaussian_polynomial_summable
+    k ((47:ℝ)/64) (by norm_num)).mul_left (Real.exp (3/4))
+  simpa only [mul_assoc] using h
+
 end W5
