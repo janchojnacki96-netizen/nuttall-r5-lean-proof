@@ -93,8 +93,10 @@ theorem phiSummandFifthDerivative_hasDerivAt (n : ℕ) (t : ℝ) :
       using 1
     all_goals
       first
-      | funext s; simp only [Pi.add_apply]; ring
-      | simp only [Pi.add_apply]; ring
+      | funext s
+        simp only [Pi.add_apply]
+        ring_nf
+      | ring_nf
   have hlinE : HasDerivAt
       (fun s : ℝ => -((n : ℝ)^2 * Real.pi) * Real.exp (4*s))
       (-((n : ℝ)^2 * Real.pi) * (Real.exp (4*t)*4)) t := by
@@ -143,7 +145,7 @@ theorem phiSummandFifthDerivative_hasDerivAt (n : ℕ) (t : ℝ) :
   convert hprod using 1
   · funext s
     simp only [phiSummandFifthDerivative, Pi.mul_apply]
-    ring
+    ring_nf
   · simp only [phiSummandSixthDerivative]
     rw [h33exp, h29exp, h25exp, h21exp, h17exp, h13exp, h9exp]
     ring
