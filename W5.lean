@@ -81,3 +81,7 @@ import W5.PsiThirdDerivative
 import W5.WronskianRatio
 
 import W5.PhiThirdDerivative
+import W5.PhiFourthDerivative
+import W5.PhiFifthDerivative
+import W5.PhiSixthDerivative
+import W5.PhiSeventhDerivative
