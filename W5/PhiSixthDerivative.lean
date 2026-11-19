@@ -147,8 +147,7 @@ theorem phiSummandFifthDerivative_hasDerivAt (n : ℕ) (t : ℝ) :
     simp only [phiSummandFifthDerivative, Pi.mul_apply]
     ring_nf
   · simp only [phiSummandSixthDerivative]
-    rw [h33exp, h29exp, h25exp, h21exp, h17exp, h13exp, h9exp]
-    ring
+    rw [h33exp, h29exp, h25exp, h21exp, h17exp, h13exp, h9exp] <;> ring
 
 theorem phiSummandSixthDerivative_summable (t : ℝ) :
     Summable (fun n : ℕ => phiSummandSixthDerivative n t) := by
