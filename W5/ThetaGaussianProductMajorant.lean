@@ -76,6 +76,9 @@ theorem thetaGaussianProductMajorant_integrableOn (n : ℕ) :
       (thetaGaussian_quadratic_exp_integrable (1:ℝ) 1 1)
   have h := hw.const_mul
     (((n:ℝ)^2 + 1) * Real.exp (-((47:ℝ)/64)*(n:ℝ)^2))
+  change Integrable
+    (fun w : ℝ => thetaGaussianProductMajorant n w)
+    (volume.restrict (Set.Ioi (0:ℝ)))
   simpa only [thetaGaussianProductMajorant] using h
 
 
