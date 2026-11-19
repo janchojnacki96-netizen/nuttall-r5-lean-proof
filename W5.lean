@@ -116,3 +116,5 @@ import W5.ThetaGaussianWeightedMajorant
 import W5.ThetaGaussianFirstDerivativeBound
 
 import W5.ThetaGaussianNeighborhoodEnvelope
+
+import W5.ThetaSquareIndexDecay
