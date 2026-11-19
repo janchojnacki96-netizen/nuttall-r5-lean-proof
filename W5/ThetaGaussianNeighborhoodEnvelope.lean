@@ -33,7 +33,7 @@ theorem thetaGaussian_right_multiplier_uniform
     calc
       |1+x*u| ≤ |(1:ℝ)| + |x*u| := abs_add_le _ _
       _ = 1+|x*u| := by norm_num
-      _ ≤ 1+|x| := add_le_add_left hxu 1
+      _ ≤ 1+|x| := add_le_add_right hxu 1
   have hxbound : |x*(1+x*u)| ≤ |x| *(1+|x|) := by
     rw [abs_mul]
     exact mul_le_mul_of_nonneg_left hxu1 (abs_nonneg x)
