@@ -1,5 +1,6 @@
 import W5.NormalizedKernelLocalClosedSeries
 import W5.NormalizedKernelSymmetry
+import Mathlib.Topology.Defs.Filter
 
 /-!
 # From local equality of the ORIGINAL kernel to equality of its jets
@@ -18,6 +19,7 @@ remains to be justified separately for the closed-series kernel.
 namespace W5
 
 open Filter
+open scoped Topology
 
 /-- For any real x the condition x*v >= -1/4 holds eventually near v=0. -/
 private theorem eventually_mul_ge_quarter (x : ℝ) :
