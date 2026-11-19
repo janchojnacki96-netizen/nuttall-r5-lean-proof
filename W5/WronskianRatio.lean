@@ -46,6 +46,7 @@ theorem W_two_negative_iff_ratio_deriv_pos (t : ℝ)
       linarith
     exact (mul_pos_iff_of_pos_left hs).mp hprod
   · intro h
-    exact neg_mul_neg_iff.mpr (mul_pos hs h)
+    have hprod := mul_pos hs h
+    linarith
 
 end W5
