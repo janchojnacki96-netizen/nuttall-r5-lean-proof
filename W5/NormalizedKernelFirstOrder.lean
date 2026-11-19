@@ -111,4 +111,41 @@ theorem analyticCoeff_one_zero_exact (x : ℝ) :
   rw [← analyticCoeff_zero_one_eq_one_zero]
   exact analyticCoeff_zero_one_exact x
 
+
+/-- The only independent first-order-or-higher analytic entry
+still missing for the original normalized two-by-two matrix. -/
+def OrderTwoDiagonalJetData (x : ℝ) : Prop :=
+  analyticCoeff x (1 : Fin 5) (1 : Fin 5) =
+    kernelNormalization x *
+      (firstGaugeSlope x ^ 2 * Psi1 (thetaTimeOfX x) -
+        2 * firstGaugeSlope x * firstShiftSlope x * Phi (thetaTimeOfX x) -
+        firstShiftSlope x ^ 2 *
+          (∑' n : ℕ, phiSummandDerivative n (thetaTimeOfX x)))
+
+/-- The normalized order-two determinant identity now needs only
+ONE explicit analytic derivative equality. All lower-order
+off-diagonal equalities are supplied by unconditional theorems above. -/
+theorem normalizedMatrixTwo_det_of_diagonal_jet (x : ℝ)
+    (h11 : OrderTwoDiagonalJetData x) :
+    (normalizedMatrixTwo x).det =
+      kernelNormalization x ^ 2 * firstShiftSlope x ^ 2 *
+        W 2 (thetaTimeOfX x) := by
+  apply normalizedMatrixTwo_det_of_jet x
+  dsimp [OrderTwoNormalizedJetData, OrderTwoDiagonalJetData] at h11 ⊢
+  exact ⟨analyticCoeff_zero_one_exact x,
+    analyticCoeff_one_zero_exact x, h11⟩
+
+/-- Along the original theta ray the remaining 2-by-2 sign test is
+equivalent to the sign of the actual Wronskian, conditional only on
+the genuine (1,1) analytic Taylor coefficient identity. -/
+theorem normalizedMatrixTwo_negative_iff_W_two_negative_of_diagonal
+    (t : ℝ) (ht : 0 ≤ t)
+    (h11 : OrderTwoDiagonalJetData (xOfT t)) :
+    (normalizedMatrixTwo (xOfT t)).det < 0 ↔ W 2 t < 0 := by
+  have h : OrderTwoNormalizedJetData (xOfT t) := by
+    dsimp [OrderTwoNormalizedJetData, OrderTwoDiagonalJetData] at h11 ⊢
+    exact ⟨analyticCoeff_zero_one_exact (xOfT t),
+      analyticCoeff_one_zero_exact (xOfT t), h11⟩
+  exact normalizedMatrixTwo_negative_iff_W_two_negative t ht h
+
 end W5
