@@ -30,7 +30,10 @@ private theorem eventually_mul_ge_quarter (x : ℝ) :
       Set.Ioi (-(1:ℝ)/4) ∈ 𝓝 (0:ℝ) :=
     Ioi_mem_nhds (by norm_num)
   have hnhds' : ∀ᶠ y : ℝ in 𝓝 (x*(0:ℝ)), -(1:ℝ)/4 < y := by
-    simpa only [mul_zero, Set.mem_Ioi] using hnhds
+    refine Filter.eventually_of_mem (U := Set.Ioi (-(1:ℝ)/4)) ?_ ?_
+    · simpa only [mul_zero] using hnhds
+    · intro y hy
+      exact hy
   have hnear := hcont.tendsto.eventually hnhds'
   filter_upwards [hnear] with v hv
   exact le_of_lt hv
