@@ -26,6 +26,7 @@ proving the determinant sign are separate analytic steps.
 
 namespace W5
 open MeasureTheory
+open scoped Topology
 
 /-- Genuine kth iterated right derivative of the full infinite
 theta series of weighted, integrated Gaussians: the result is
