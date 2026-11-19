@@ -110,3 +110,5 @@ import W5.ThetaGaussianIntegralCoefficient
 import W5.ThetaGaussianUniformDecay
 
 import W5.ThetaClosedFormLocalExtension
+
+import W5.NormalizedKernelLocalClosedSeries
