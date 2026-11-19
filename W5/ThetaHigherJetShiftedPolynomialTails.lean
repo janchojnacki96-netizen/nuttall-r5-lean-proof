@@ -73,9 +73,15 @@ theorem thetaHigherJet_shifted_w_integrableOn (k : ℕ) :
       (fun w : ℝ =>
         ∑ j ∈ Finset.range (k+1),
           (w^j * Real.exp (-((1:ℝ)/4)*w)) * (k.choose j : ℝ)) μ := by
-    simpa only [Finset.sum_apply] using
-      (integrable_finsetSum' (Finset.range (k+1))
-        (fun j _ => hterms j))
+    have hraw : Integrable
+        (∑ j ∈ Finset.range (k+1),
+          (fun w : ℝ =>
+            (w^j * Real.exp (-((1:ℝ)/4)*w)) * (k.choose j : ℝ))) μ :=
+      integrable_finsetSum' (Finset.range (k+1))
+        (fun j _ => hterms j)
+    convert hraw using 1
+    funext w
+    simp only [Finset.sum_apply]
   have hfun :
       (fun w : ℝ => (w+1)^k * Real.exp (-((1:ℝ)/4)*w)) =
       (fun w : ℝ =>
@@ -109,7 +115,7 @@ theorem thetaHigherJet_full_w_factor_integrableOn (k : ℕ) :
     fun_prop
   have hbound : ∀ᵐ w : ℝ ∂μ,
       ‖((w+1)^k*(w^2+w+1)) * Real.exp (-((1:ℝ)/4)*w)‖ ≤
-        ‖(w+1)^(k+2) * Real.exp (-((1:ℝ)/4)*w)‖ := by
+        (w+1)^(k+2) * Real.exp (-((1:ℝ)/4)*w) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with w hw
     have hw0 : 0 ≤ w := le_of_lt hw
     have hw1 : 0 ≤ w+1 := by linarith
@@ -117,11 +123,9 @@ theorem thetaHigherJet_full_w_factor_integrableOn (k : ℕ) :
     have hmul : (w+1)^k * (w^2+w+1) ≤ (w+1)^(k+2) := by
       rw [pow_add]
       exact mul_le_mul_of_nonneg_left hq (pow_nonneg hw1 k)
-    rw [Real.norm_eq_abs, Real.norm_eq_abs,
+    rw [Real.norm_eq_abs,
       abs_of_nonneg (by positivity :
-        0 ≤ ((w+1)^k*(w^2+w+1)) * Real.exp (-((1:ℝ)/4)*w)),
-      abs_of_nonneg (by positivity :
-        0 ≤ (w+1)^(k+2) * Real.exp (-((1:ℝ)/4)*w))]
+        0 ≤ ((w+1)^k*(w^2+w+1)) * Real.exp (-((1:ℝ)/4)*w))]
     exact mul_le_mul_of_nonneg_right hmul (Real.exp_nonneg _)
   change Integrable
     (fun w : ℝ =>
