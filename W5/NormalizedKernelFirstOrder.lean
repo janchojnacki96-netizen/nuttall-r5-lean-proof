@@ -25,11 +25,10 @@ private theorem normalizedKernel_log_hasDerivAt (x : ℝ) :
     HasDerivAt (fun v : ℝ => Real.log (1 + x * v)) x 0 := by
   have hbase : HasDerivAt (fun v : ℝ => 1 + x * v) x 0 := by
     simpa using (((hasDerivAt_id (0:ℝ)).const_mul x).const_add (1:ℝ))
-  have hlog : HasDerivAt Real.log 1 (1:ℝ) := by
-    simpa using (Real.hasDerivAt_log (by norm_num : (1:ℝ) ≠ 0))
   have houter := Real.hasDerivAt_log
-    (show (1:ℝ) + x*(0:ℝ) ≠ 0 by simp)
-  convert houter.comp (0:ℝ) hbase using 1 <;> simp
+    (show (1:ℝ) + x * (0:ℝ) ≠ 0 by simp)
+  have h := houter.comp (0:ℝ) hbase
+  simpa only [Function.comp_def, mul_zero, add_zero, inv_one, one_mul] using h
 
 /-- The logarithmic shift has derivative exactly x/4 at zero. -/
 private theorem normalizedKernel_shift_hasDerivAt (x : ℝ) :
@@ -50,19 +49,24 @@ private theorem normalizedKernel_gauge_hasDerivAt (x : ℝ) :
       (fun v : ℝ => Real.exp (v/x) / (1 + x*v)^((5:ℝ)/4))
       (firstGaugeSlope x) 0 := by
   have harg : HasDerivAt (fun v : ℝ => v / x) (1/x) 0 := by
-    convert (hasDerivAt_id (0:ℝ)).const_mul (1/x) using 1
-    · funext v
-      ring
-    · ring
+    convert (hasDerivAt_id (0:ℝ)).const_mul (1/x) using 1 <;>
+      simp only [id_eq] <;> ring
   have he : HasDerivAt (fun v : ℝ => Real.exp (v/x)) (1/x) 0 := by
-    convert (Real.hasDerivAt_exp ((0:ℝ)/x)).comp (0:ℝ) harg using 1 <;> simp
+    have h := (Real.hasDerivAt_exp ((0:ℝ)/x)).comp (0:ℝ) harg
+    simpa only [Function.comp_def, zero_div, Real.exp_zero, one_mul] using h
   have hbase : HasDerivAt (fun v : ℝ => 1 + x * v) x 0 := by
     simpa using (((hasDerivAt_id (0:ℝ)).const_mul x).const_add (1:ℝ))
   have hp : HasDerivAt
       (fun v : ℝ => (1 + x*v)^((5:ℝ)/4)) (((5:ℝ)/4)*x) 0 := by
-    have hh := (Real.hasDerivAt_rpow_const
-      (Or.inl (show (1:ℝ) + x*(0:ℝ) ≠ 0 by simp)) ((5:ℝ)/4)).comp (0:ℝ) hbase
-    convert hh using 1 <;> norm_num
+    have houter : HasDerivAt
+        (fun z : ℝ => z ^ ((5:ℝ)/4))
+        (((5:ℝ)/4) * (1 + x*(0:ℝ)) ^ (((5:ℝ)/4) - 1))
+        (1 + x*(0:ℝ)) := by
+      exact Real.hasDerivAt_rpow_const
+        (Or.inl (show (1:ℝ) + x*(0:ℝ) ≠ 0 by simp))
+    have hh := houter.comp (0:ℝ) hbase
+    simpa only [Function.comp_def, mul_zero, add_zero, one_rpow,
+      mul_one] using hh
   have h := he.div hp (by norm_num : (1 + x * (0:ℝ))^((5:ℝ)/4) ≠ 0)
   convert h using 1
   all_goals
@@ -83,13 +87,13 @@ theorem normalizedKernel_zero_left_hasDerivAt (x : ℝ) :
   have hpsi : HasDerivAt
       (fun v : ℝ => Psi1 (thetaTimeOfX x + Real.log (1 + x*v)/4))
       (-Phi (thetaTimeOfX x) * firstShiftSlope x) 0 := by
-    convert (Psi1_hasDerivAt (thetaTimeOfX x + Real.log (1 + x*(0:ℝ))/4)).comp (0:ℝ) hs using 1 <;> simp
+    have h := (Psi1_hasDerivAt
+      (thetaTimeOfX x + Real.log (1 + x*(0:ℝ))/4)).comp (0:ℝ) hs
+    simpa only [Function.comp_def, mul_zero, add_zero,
+      Real.log_one, zero_div] using h
   have h := (hg.mul hpsi).const_mul (kernelNormalization x)
-  convert h using 1
-  · funext v
-    rw [normalizedKernel_zero_left]
-    ring
-  · simp <;> ring
+  convert h using 1 <;>
+    simp [Pi.mul_apply, normalizedKernel_zero_left] <;> ring
 
 /-- The first nonconstant mixed analytic Taylor coefficient,
 unconditionally for every real x. -/
@@ -191,18 +195,17 @@ theorem normalizedKernel_right_hasDerivAt_zero (x u : ℝ) :
           firstShiftSlope x *
             Phi (thetaTimeOfX x + thetaShift x u))) 0 := by
   have hg : HasDerivAt (thetaGauge x) (firstGaugeSlope x) 0 := by
-    simpa only [thetaGauge] using normalizedKernel_gauge_hasDerivAt x
+    change HasDerivAt
+      (fun v : ℝ => Real.exp (v/x) / (1 + x*v)^((5:ℝ)/4))
+      (firstGaugeSlope x) 0
+    exact normalizedKernel_gauge_hasDerivAt x
   have hs : HasDerivAt
       (fun v : ℝ =>
         thetaTimeOfX x + thetaShift x u + thetaShift x v)
       (firstShiftSlope x) 0 := by
     have h := (normalizedKernel_shift_hasDerivAt x).const_add
       (thetaShift x u)
-    convert h using 1
-    · funext v
-      dsimp [thetaShift]
-      ring
-    · ring
+    convert h using 1 <;> dsimp [thetaShift] <;> ring
   have hp : HasDerivAt
       (fun v : ℝ =>
         Psi1 (thetaTimeOfX x + thetaShift x u + thetaShift x v))
@@ -210,7 +213,7 @@ theorem normalizedKernel_right_hasDerivAt_zero (x u : ℝ) :
         firstShiftSlope x) 0 := by
     have h := (Psi1_hasDerivAt
       (thetaTimeOfX x + thetaShift x u + thetaShift x 0)).comp (0 : ℝ) hs
-    simpa only [thetaShift_zero, add_zero] using h
+    simpa only [Function.comp_def, thetaShift_zero, add_zero] using h
   have hprod := (hg.mul hp).const_mul
     (kernelNormalization x * thetaGauge x u)
   have hf :
@@ -249,17 +252,22 @@ theorem analyticCoeff_one_one_exact (x : ℝ) :
   have hpsi : HasDerivAt (fun u : ℝ => Psi1 (S u))
       (-Phi t * b) 0 := by
     have h := (Psi1_hasDerivAt (S 0)).comp (0 : ℝ) hs
-    simpa [S, t, thetaShift] using h
+    simpa only [Function.comp_def, S, t, thetaShift,
+      mul_zero, add_zero, Real.log_one, zero_div] using h
   have hphi : HasDerivAt (fun u : ℝ => Phi (S u))
       ((∑' n : ℕ, phiSummandDerivative n t) * b) 0 := by
     have h := (Phi_hasDerivAt (S 0)).comp (0 : ℝ) hs
-    simpa [S, t, thetaShift] using h
+    simpa only [Function.comp_def, S, t, thetaShift,
+      mul_zero, add_zero, Real.log_one, zero_div] using h
   have hq : HasDerivAt Q
       (a * (-Phi t * b) -
         b * ((∑' n : ℕ, phiSummandDerivative n t) * b)) 0 := by
     exact (hpsi.const_mul a).sub (hphi.const_mul b)
   have hg : HasDerivAt G a 0 := by
-    simpa only [G, a, thetaGauge] using normalizedKernel_gauge_hasDerivAt x
+    change HasDerivAt
+      (fun v : ℝ => Real.exp (v/x) / (1 + x*v)^((5:ℝ)/4))
+      (firstGaugeSlope x) 0
+    exact normalizedKernel_gauge_hasDerivAt x
   have htotal := ((hg.mul hq).const_mul c)
   have hfun :
       (fun u : ℝ => deriv (fun v : ℝ => normalizedKernel x u v) 0) =
@@ -275,11 +283,17 @@ theorem analyticCoeff_one_one_exact (x : ℝ) :
     convert htotal.deriv using 1 <;>
       simp only [G, Q, S, thetaGauge_zero, thetaShift_zero,
         add_zero] <;> ring
-  unfold analyticCoeff
-  simp only [iteratedDeriv_one, Nat.factorial_one, Nat.cast_one,
-    mul_one, div_one]
-  rw [hfun, hvalue]
-  rfl
+  have hresult :
+      deriv (fun u : ℝ =>
+        deriv (fun v : ℝ => normalizedKernel x u v) 0) 0 =
+        kernelNormalization x *
+          (firstGaugeSlope x ^ 2 * Psi1 (thetaTimeOfX x) -
+            2 * firstGaugeSlope x * firstShiftSlope x *
+              Phi (thetaTimeOfX x) -
+            firstShiftSlope x ^ 2 *
+              (∑' n : ℕ, phiSummandDerivative n (thetaTimeOfX x))) := by
+    rw [hfun, hvalue] <;> rfl
+  simpa [analyticCoeff, iteratedDeriv_one] using hresult
 
 /-- The remaining mixed-derivative premise for order two is actually
 discharged, using only differentiability of the ORIGINAL theta kernel. -/
