@@ -140,17 +140,9 @@ theorem thetaGaussian_nonzero_index_derivative_integrableOn
         ‖Real.exp (-((n:ℝ)^2-1)/x^2) *
           thetaWeightedGaussianRightDerivative x ((n:ℝ)^2)
             (((n:ℝ)^2-1)/x) u v w‖ ≤
-          ‖C * thetaGaussianProductMajorant n w‖ := by
+          C * thetaGaussianProductMajorant n w := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with w hw
-    have hC : 0 ≤ C := by
-      dsimp [C]
-      positivity
-    have hM : 0 ≤ thetaGaussianProductMajorant n w := by
-      unfold thetaGaussianProductMajorant
-      have hw0 : 0 ≤ w := le_of_lt hw
-      positivity
-    rw [Real.norm_eq_abs, Real.norm_eq_abs,
-      abs_of_nonneg (mul_nonneg hC hM)]
+    rw [Real.norm_eq_abs]
     exact thetaGaussian_nonzero_index_integrand_deriv_le_product
       x hx hx1 n hn u v w (le_of_lt hw) hu hv
   change Integrable
