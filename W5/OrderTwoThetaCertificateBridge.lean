@@ -74,9 +74,9 @@ theorem W_two_negative_of_full_theta_targets
   have hx := xOfT_positive_and_bounded t ht
   have hsmall : OrderTwoThetaIdentification (xOfT t) :=
     orderTwoThetaIdentification_of_transform
-      (xOfT t) hx.1 hx.2 hident
+      (xOfT t) hx.1 hx.2.le hident
   have hdet : (thetaMatrixTwo (xOfT t)).det < 0 :=
-    (hsigns (xOfT t) hx.1 hx.2).2.1
+    (hsigns (xOfT t) hx.1 hx.2.le).2.1
   exact W_two_negative_of_orderTwo_certificate t ht hsmall hdet
 
 end W5
