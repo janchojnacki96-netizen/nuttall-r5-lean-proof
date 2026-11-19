@@ -1,5 +1,6 @@
 import W5.NormalizedKernelLocalClosedSeries
 import W5.NormalizedKernelSymmetry
+import Mathlib.Topology.Defs.Filter
 
 /-!
 # From local equality of the ORIGINAL kernel to equality of its jets
@@ -17,15 +18,19 @@ remains to be justified separately for the closed-series kernel.
 
 namespace W5
 
+open Filter
+open scoped Topology
+
 /-- For any real x the condition x*v >= -1/4 holds eventually near v=0. -/
 private theorem eventually_mul_ge_quarter (x : ℝ) :
     ∀ᶠ v : ℝ in 𝓝 (0:ℝ), -(1:ℝ)/4 ≤ x*v := by
   have hcont : ContinuousAt (fun v : ℝ => x*v) (0:ℝ) := by
     fun_prop
-  have hnhds :
-      Set.Ioi (-(1:ℝ)/4) ∈ 𝓝 (0:ℝ) :=
-    Ioi_mem_nhds (by norm_num)
-  have hnear := hcont.tendsto.eventually hnhds
+  have hnhds : ∀ᶠ y : ℝ in 𝓝 (0:ℝ), -(1:ℝ)/4 < y := by
+    change Set.Ioi (-(1:ℝ)/4) ∈ 𝓝 (0:ℝ)
+    exact Ioi_mem_nhds (by norm_num)
+  have hnear := hcont.tendsto.eventually
+    (by simpa only [mul_zero] using hnhds)
   filter_upwards [hnear] with v hv
   exact le_of_lt hv
 

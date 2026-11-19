@@ -20,6 +20,9 @@ is a further (currently unproved) theorem.
 
 namespace W5
 
+open Filter
+open scoped Topology
+
 /-- A fixed local neighborhood of zero keeps the normalized theta
 coordinate within the domain of the proven closed series. -/
 private theorem allJets_eventually_mul_ge_quarter (x : ℝ) :
@@ -28,7 +31,12 @@ private theorem allJets_eventually_mul_ge_quarter (x : ℝ) :
     fun_prop
   have hh : Set.Ioi (-(1:ℝ)/4) ∈ 𝓝 (0:ℝ) :=
     Ioi_mem_nhds (by norm_num)
-  filter_upwards [hc.tendsto.eventually hh] with v hv
+  have hh' : ∀ᶠ y : ℝ in 𝓝 (x*(0:ℝ)), -(1:ℝ)/4 < y := by
+    refine Filter.eventually_of_mem (U := Set.Ioi (-(1:ℝ)/4)) ?_ ?_
+    · simpa only [mul_zero] using hh
+    · intro y hy
+      exact hy
+  filter_upwards [hc.tendsto.eventually hh'] with v hv
   exact le_of_lt hv
 
 /-- Local equality transfers every order of differentiation in the
