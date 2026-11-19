@@ -60,7 +60,7 @@ theorem thetaWeightedGaussian_integral_hasDerivAt_of_measurable
       (∫ w : ℝ, thetaWeightedGaussianRightDerivative x p d0 u 0 w
         ∂(volume.restrict (Set.Ioi (0:ℝ)))) (0:ℝ) := by
   let majorant : ℝ → ℝ := fun w =>
-    ((|d0|+|p|)+w*(|x|*(1+|x|))) *
+    ((|d0|+|p|)+w*(|x| *(1+|x|))) *
       (Real.exp (2*|d0|+|p|) *
         (1+w*x^2/p)*Real.exp (-((1:ℝ)/4)*w))
   have hbound :
