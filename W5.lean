@@ -106,3 +106,5 @@ import W5.OrderTwoThetaIntegralForms
 import W5.ThetaGaussianModelLowOrder
 
 import W5.ThetaGaussianIntegralCoefficient
+
+import W5.ThetaGaussianUniformDecay
