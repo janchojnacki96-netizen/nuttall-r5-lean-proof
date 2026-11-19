@@ -30,10 +30,7 @@ theorem thetaGaussianModel_right_hasDerivAt
   have harg : HasDerivAt
       (fun w : ℝ => -d*(u+w) - q*u*w) (-d-q*u) v := by
     have h := ((hasDerivAt_id v).const_mul (-d-q*u)).const_add (-d*u)
-    convert h using 1
-    · funext w
-      ring
-    · ring
+    convert h using 1 <;> (first | (funext w; ring) | ring)
   have h := (Real.hasDerivAt_exp (-d*(u+v) - q*u*v)).comp v harg
   convert h using 1 <;>
     simp only [thetaGaussianModel, Function.comp_def] <;> ring
@@ -57,10 +54,7 @@ theorem thetaGaussianModel_mixed_deriv_zero (d q : ℝ) :
   rw [hfun]
   have hlin : HasDerivAt (fun u : ℝ => -d-q*u) (-q) 0 := by
     have h := ((hasDerivAt_id (0:ℝ)).const_mul (-q)).const_add (-d)
-    convert h using 1
-    · funext u
-      ring
-    · ring
+    convert h using 1 <;> (first | (funext u; ring) | ring)
   have hscale : HasDerivAt (fun u : ℝ => -d*u) (-d) 0 := by
     simpa only [id_eq] using
       ((hasDerivAt_id (0:ℝ)).const_mul (-d))
