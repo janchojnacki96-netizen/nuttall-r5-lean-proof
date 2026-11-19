@@ -120,3 +120,5 @@ import W5.ThetaGaussianNeighborhoodEnvelope
 import W5.ThetaWeightedGaussianDerivative
 
 import W5.ThetaGaussianDifferentiationPatch
+
+import W5.ThetaGaussianDominatedIntegralDerivative
