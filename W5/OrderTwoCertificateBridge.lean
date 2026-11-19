@@ -53,7 +53,7 @@ theorem W_two_negative_of_theta_certificate
   obtain ⟨hx, hbound⟩ := xOfT_positive_and_bounded t ht
   have hdet : (normalizedMatrixTwo (xOfT t)).det < 0 :=
     normalizedMatrixTwo_negative_of_theta_certificate
-      (xOfT t) hx hbound htransform hsigns
+      (xOfT t) hx hbound.le htransform hsigns
   exact (normalizedMatrixTwo_negative_iff_W_two_negative_exact t ht).mp hdet
 
 /-- A compact reduction: under the full proposed certificate
