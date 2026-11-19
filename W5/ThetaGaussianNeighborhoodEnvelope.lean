@@ -147,8 +147,19 @@ theorem thetaGaussian_first_deriv_uniform_envelope_integrable
       ((|d0|+|p|)*(x^2/p)+|x|*(1+|x|))
       (|d0|+|p|)).const_mul
         (Real.exp (2*|d0|+|p|))
-  convert h using 1
-  funext w
-  ring
+  have hfun :
+      (fun w : ℝ =>
+        ((|d0|+|p|)+w*(|x|*(1+|x|))) *
+          (Real.exp (2*|d0|+|p|) *
+            (1+w*x^2/p)*Real.exp (-((1:ℝ)/4)*w))) =
+      (fun w : ℝ =>
+        Real.exp (2*|d0|+|p|) *
+          (((|x|*(1+|x|))*(x^2/p)*w^2 +
+            ((|d0|+|p|)*(x^2/p)+|x|*(1+|x|))*w +
+            (|d0|+|p|)) * Real.exp (-((1:ℝ)/4)*w))) := by
+    funext w
+    ring
+  rw [hfun]
+  exact h
 
 end W5
