@@ -64,4 +64,22 @@ theorem thetaGaussian_one_add_square_exp_integrable :
   funext w
   ring
 
+
+/-- The exact original theta model's mixed Gaussian coefficient has
+an integrable polynomial/exponential envelope for every fixed
+parameter triple `(d0,p,x)`. The identity used here is the
+already-proved genuine mixed derivative formula. -/
+theorem thetaGaussian_mixed_coefficient_exp_integrable
+    (d0 p x : ℝ) :
+    IntegrableOn
+      (fun w : ℝ =>
+        gaussianMixedCoeff11 (d0+w*x) (p+w*x^2) *
+          Real.exp (-((1:ℝ)/4)*w))
+      (Set.Ioi (0:ℝ)) volume := by
+  convert thetaGaussian_quadratic_exp_integrable
+      (x^2) (2*d0*x-x^2) (d0^2-p) using 1
+  funext w
+  rw [gaussianMixedCoeff11_exact]
+  ring
+
 end W5
