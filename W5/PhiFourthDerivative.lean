@@ -72,7 +72,11 @@ theorem phiSummandThirdDerivative_hasDerivAt (n : ℕ) (t : ℝ) :
         (h13.const_mul (-4232 * (n : ℝ)^6 * Real.pi^3))).add
         (h9.const_mul (3270 * (n : ℝ)^4 * Real.pi^2))).add
         (h5.const_mul (-375 * (n : ℝ)^2 * Real.pi^1)))
-      using 1 <;> ring
+      using 1
+    all_goals
+      first
+      | funext s; ring
+      | ring
   have hlinE : HasDerivAt
       (fun s : ℝ => -((n : ℝ)^2 * Real.pi) * Real.exp (4*s))
       (-((n : ℝ)^2 * Real.pi) * (Real.exp (4*t)*4)) t := by
@@ -115,6 +119,7 @@ theorem phiSummandThirdDerivative_hasDerivAt (n : ℕ) (t : ℝ) :
   convert hprod using 1
   · funext s
     simp only [phiSummandThirdDerivative, Pi.mul_apply]
+    ring
   · simp only [phiSummandFourthDerivative]
     rw [h25exp, h21exp, h17exp, h13exp, h9exp]
     ring
