@@ -78,4 +78,30 @@ theorem thetaGaussianProductMajorant_integrableOn (n : ℕ) :
     (((n:ℝ)^2 + 1) * Real.exp (-((47:ℝ)/64)*(n:ℝ)^2))
   simpa only [thetaGaussianProductMajorant] using h
 
+
+/-- The integrals of this explicit separable majorant are also
+summable over the square index.  This is a stronger summability fact
+than pointwise-in-w summability, but it does not establish a bound
+for the actual differentiated theta kernel. -/
+theorem thetaGaussianProductMajorant_integrals_summable :
+    Summable (fun n : ℕ =>
+      ∫ w : ℝ, thetaGaussianProductMajorant n w
+        ∂(volume.restrict (Set.Ioi (0:ℝ)))) := by
+  let c : ℝ := ∫ w : ℝ,
+    (w^2+w+1) * Real.exp (-((1:ℝ)/4)*w)
+      ∂(volume.restrict (Set.Ioi (0:ℝ)))
+  have heq :
+      (fun n : ℕ =>
+        ∫ w : ℝ, thetaGaussianProductMajorant n w
+          ∂(volume.restrict (Set.Ioi (0:ℝ)))) =
+      (fun n : ℕ =>
+        c * (((n:ℝ)^2+1) *
+          Real.exp (-((47:ℝ)/64)*(n:ℝ)^2))) := by
+    funext n
+    simp only [thetaGaussianProductMajorant, integral_const_mul]
+    dsimp [c]
+    ring
+  rw [heq]
+  exact thetaGaussianProductMajorant_index_factor_summable.mul_left c
+
 end W5
