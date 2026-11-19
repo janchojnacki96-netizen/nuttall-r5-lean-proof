@@ -108,3 +108,5 @@ import W5.ThetaGaussianModelLowOrder
 import W5.ThetaGaussianIntegralCoefficient
 
 import W5.ThetaGaussianUniformDecay
+
+import W5.ThetaGaussianFirstDerivativeFactor
