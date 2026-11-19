@@ -120,8 +120,7 @@ theorem phiSummandThirdDerivative_hasDerivAt (n : ℕ) (t : ℝ) :
   have hprod := hA.mul hE
   convert hprod using 1
   · funext s
-    simp only [phiSummandThirdDerivative, Pi.mul_apply]
-    ring_nf
+    simp only [phiSummandThirdDerivative, Pi.mul_apply] <;> ring_nf
   · simp only [phiSummandFourthDerivative]
     rw [h25exp, h21exp, h17exp, h13exp, h9exp] <;> ring
 
