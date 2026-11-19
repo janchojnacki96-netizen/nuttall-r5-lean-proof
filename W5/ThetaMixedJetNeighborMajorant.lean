@@ -62,8 +62,9 @@ theorem thetaMixedOneRightJetSeriesTerm_norm_le_neighbors
           (((n:ℝ)^2-1)/x) v w *
         thetaHigherRightJetSeriesTerm k x u v n w‖ := norm_add_le _ _
     _ = _ := by
+      have hk0 : (0:ℝ) ≤ (k:ℝ) := Nat.cast_nonneg k
       simp only [norm_mul, Real.norm_eq_abs, abs_neg,
-        abs_of_nonneg (Nat.cast_nonneg k)]
+        abs_of_nonneg hk0]
       ring
 
 /-- Uniform bound for any mixed one-left/k-right theta Gaussian jet.
@@ -150,7 +151,7 @@ theorem thetaMixedOneRightJetSeriesTerm_norm_le_two_gaussian_factors
     have hmain := thetaMixedOneRightJetSeriesTerm_norm_le_neighbors
       k x u v n w
     change ‖thetaMixedOneRightJetSeriesTerm k x u v n w‖ ≤
-      (k:ℝ)*|p+w*x^2|*
+      (k:ℝ) * |p+w*x^2| *
         ‖thetaHigherRightJetSeriesTerm (k-1) x u v n w‖ +
       |thetaWeightedGaussianRightMultiplier x p ((p-1)/x) v w| *
         ‖thetaHigherRightJetSeriesTerm k x u v n w‖ at hmain
