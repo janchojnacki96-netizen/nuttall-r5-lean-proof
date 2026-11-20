@@ -217,3 +217,7 @@ import W5.Theta51CellRealCertificateReduction
 import W5.ThetaSymmetric15EntryCellCertificates
 
 import W5.ThetaAudited768IntervalMatrices
+
+import W5.ThetaFiniteDecidableLDLChecker
+
+import W5.ThetaAuditedFirstCellFinitePivotCheck
