@@ -74,4 +74,28 @@ theorem thetaWeightedGaussian_two_left_one_right_zero
   dsimp [thetaWeightedGaussianRightMultiplier]
   ring
 
+
+/-- The numerical certificate's (2,1) polynomial is precisely the
+ordinary Gaussian derivative polynomial divided by 2!1!. -/
+theorem coefficientPolynomial_two_one (d q : ℝ) :
+    coefficientPolynomial (2 : Fin 5) (1 : Fin 5) d q =
+      -(d^3)/2 + d*q := by
+  norm_num [coefficientPolynomial, Finset.sum_range_succ] <;> ring
+
+/-- The pointwise (2,1) derivative of the GENUINE weighted Gaussian
+equals 2!1! times the certificate coefficient polynomial, including
+the exact non-polynomial w-weight. This is an algebraic identification
+after ordinary differentiation, not interchange with an integral. -/
+theorem thetaWeightedGaussian_two_left_one_right_zero_eq_polynomial
+    (x p d0 w : ℝ) :
+    deriv (fun z : ℝ =>
+      deriv (fun y : ℝ =>
+        thetaWeightedGaussianRightJet 1 x p d0 y 0 w) z) 0 =
+      2 * coefficientPolynomial (2 : Fin 5) (1 : Fin 5)
+        (d0+w*x) (p+w*x^2) *
+          thetaWeightedGaussianIntegrand x p d0 0 0 w := by
+  rw [thetaWeightedGaussian_two_left_one_right_zero,
+    coefficientPolynomial_two_one]
+  ring
+
 end W5
