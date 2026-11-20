@@ -36,7 +36,7 @@ parameter p≥1, using the monotonicity formalized in Mathlib. -/
 theorem leancert_theta_gaussian_decay_lt_half
     (p : ℝ) (hp : 1 ≤ p) :
     Real.exp (-((47:ℝ)/64)*p) < (1:ℝ)/2 := by
-  have he : -((47:ℝ)/64)*p ≤ -(47:ℝ)/64 := by
+  have he : -((47:ℝ)/64)*p ≤ -((47:ℝ)/64) := by
     nlinarith
   exact lt_of_le_of_lt
     (Real.exp_le_exp.mpr he) leancert_theta_first_gaussian_lt_half
