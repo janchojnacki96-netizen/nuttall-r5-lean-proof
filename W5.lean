@@ -213,3 +213,5 @@ import W5.LeadingThreeFourRealLDLDeterminants
 import W5.ThetaAllFiveActualLeadingMinorSigns
 
 import W5.Theta51CellRealCertificateReduction
+
+import W5.ThetaActualAnalyticCoefficientSignsFrom51Cells
