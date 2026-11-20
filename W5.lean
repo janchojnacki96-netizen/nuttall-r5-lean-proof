@@ -209,3 +209,5 @@ import W5.RealLDL5PivotSchurIdentification
 import W5.ThetaActualFullFiveDeterminantFromInterval
 
 import W5.LeadingThreeFourRealLDLDeterminants
+
+import W5.ThetaAllFiveActualLeadingMinorSigns
