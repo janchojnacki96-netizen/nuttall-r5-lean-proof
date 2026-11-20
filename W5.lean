@@ -231,3 +231,8 @@ import W5.ThetaAudited51CellCertificateBridge
 import W5.ThetaSeriesPrefixTailEnclosure
 
 import W5.ThetaFiniteTermIntervalFold
+
+import W5.ThetaAllCoefficientPolynomialEnvelope
+import W5.ThetaAllCoefficientPolynomialLocalSeparation
+import W5.ThetaAllCorrectionSummabilityFubini
+import W5.ThetaTermwiseCellRealCertificates
