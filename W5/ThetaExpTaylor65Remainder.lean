@@ -70,7 +70,7 @@ theorem thetaExpTaylor65_bounds
       _ ≤ ((1:ℝ)/3)^65 * (2 / (Nat.factorial 65 : ℝ)) :=
         mul_le_mul_of_nonneg_left hcoef (by positivity)
       _ = 2 / ((3:ℝ)^65 * (Nat.factorial 65 : ℝ)) := by
-        simp only [one_div, div_eq_mul_inv, inv_pow]
+        simp only [one_div, div_eq_mul_inv, inv_pow, mul_inv_rev]
         ring
   exact ⟨hpartial, hbound.trans (add_le_add_left herror _)⟩
 
