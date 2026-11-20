@@ -191,3 +191,5 @@ import W5.VerifiedIntervalDivision
 import W5.VerifiedIntervalLDL5
 
 import W5.VerifiedIntervalRealLDL5
+
+import W5.ThetaRealPivotProductSigns
