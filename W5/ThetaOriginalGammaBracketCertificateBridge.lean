@@ -124,8 +124,7 @@ theorem theta_original_gamma_bracket_eq_certificate
     theta_original_gamma_integral_eq_certificate_integral
       x p u v hx hp
   have hcoef : (1/4:ℝ) * (x^2/p) = x^2/(4*p) := by
-    field_simp [hp.ne']
-    ring
+    field_simp [hp.ne'] <;> ring
   change E * thetaOriginalGammaBracket p y =
     Real.exp (-(p-1)/x^2) *
       (thetaGaussianModel ((p-1)/x) p u v -
