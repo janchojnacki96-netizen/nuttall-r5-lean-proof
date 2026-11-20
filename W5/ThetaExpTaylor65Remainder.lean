@@ -45,17 +45,20 @@ theorem thetaExpTaylor65_bounds
       Real.exp z ≤ thetaExpTaylor65 z +
         z^65 * ((66:ℝ) /
           ((Nat.factorial 65 : ℝ) * 65)) := by
-    simpa [thetaExpTaylor65] using
-      (Real.exp_bound' hz hz1 (n := 65) (by norm_num))
+    have hraw := Real.exp_bound' hz hz1 (n := 65) (by norm_num)
+    convert hraw using 1 <;> ring
   have hpower : z^65 ≤ ((1:ℝ)/3)^65 :=
     pow_le_pow_left₀ hz hthird 65
   have hcoef :
       (66:ℝ) / ((Nat.factorial 65 : ℝ) * 65) ≤
       2 / (Nat.factorial 65 : ℝ) := by
-    have hden : (0:ℝ) <
-        (Nat.factorial 65 : ℝ) * 65 := by positivity
-    apply (div_le_div_iff₀ hden hfactorial).2
-    nlinarith [hfactorial]
+    have hnum : (66:ℝ) / 65 ≤ 2 := by norm_num
+    calc
+      (66:ℝ) / ((Nat.factorial 65 : ℝ) * 65) =
+          ((66:ℝ) / 65) / (Nat.factorial 65 : ℝ) := by
+        rw [div_div_eq_div_mul, mul_comm 65 (Nat.factorial 65 : ℝ)]
+      _ ≤ 2 / (Nat.factorial 65 : ℝ) :=
+        div_le_div_of_nonneg_right hnum hfactorial.le
   have hnonnegcoef :
       (0:ℝ) ≤ (66:ℝ) / ((Nat.factorial 65 : ℝ) * 65) := by
     positivity
@@ -72,7 +75,7 @@ theorem thetaExpTaylor65_bounds
       _ = 2 / ((3:ℝ)^65 * (Nat.factorial 65 : ℝ)) := by
         simp only [one_div, div_eq_mul_inv, inv_pow, mul_inv_rev]
         ring
-  exact ⟨hpartial, hbound.trans (add_le_add_left herror _)⟩
+  exact ⟨hpartial, hbound.trans (add_le_add_right herror _)⟩
 
 /-- Direct soundness of a real interval enclosing the exact
 65-term partial sum, with the already Mathlib-certified remainder
@@ -86,6 +89,6 @@ theorem thetaExpTaylor65_interval_contains_real_exp
       (Real.exp z ≤ (P.hi : ℝ) +
         2 / ((3:ℝ)^65 * (Nat.factorial 65 : ℝ))) := by
   obtain ⟨hlo, hhi⟩ := thetaExpTaylor65_bounds z hz hthird
-  exact ⟨hP.1.trans hlo, hhi.trans (add_le_add_right hP.2 _)⟩
+  exact ⟨hP.1.trans hlo, hhi.trans (add_le_add_left hP.2 _)⟩
 
 end W5
