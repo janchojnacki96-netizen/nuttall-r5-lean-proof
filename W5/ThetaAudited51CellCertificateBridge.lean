@@ -94,7 +94,7 @@ theorem. The equality is decided using exact Mathlib rationals. -/
 theorem thetaAuditCellBounds_match_endpoints :
     thetaAuditCellBounds =
       (((0 : ℚ) :: endpoints).zip endpoints) := by
-  decide
+  native_decide
 
 /-- A length-matched cell-wise Boolean test is the ordinary list
 `all` of those same 51 pivot tests. This is generic and independent
