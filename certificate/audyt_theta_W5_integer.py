@@ -9,6 +9,8 @@ The formal proof of these algorithms in Lean remains a separate obligation.
 from __future__ import annotations
 from fractions import Fraction
 from pathlib import Path
+import argparse
+import json
 import math
 import time
 
@@ -135,7 +137,7 @@ def poly(i:int,j:int,p:int,d:I,x:I,x2:I):
                 coeff[a+b]=coeff[a+b]+fac*lhs*rhs
     return coeff
 
-def check(l:Fraction,r:Fraction,far:bool,mass,tail):
+def check(l:Fraction,r:Fraction,far:bool,mass,tail, initial_upper=None):
     x=I(Q(l.numerator,l.denominator).l,Q(r.numerator,r.denominator).h)
     x2=x*x
     E=Q(1,10**35)
@@ -152,6 +154,15 @@ def check(l:Fraction,r:Fraction,far:bool,mass,tail):
                 for s in range(9):
                     integ=integ+pol[s]*moments[s]
                 A[i][j]=A[i][j]+amp*(pol[0]-x2/Q(4*p)*integ)
+    # Copy the exact 15 original upper-triangle intervals BEFORE elimination.
+    # A stores its computed values in the lower triangle, so reflect [j][i].
+    # Endpoints are full arbitrary-precision integers at scale 2**768.
+    # No floating-point conversion is permitted in this export.
+    if initial_upper is not None:
+        initial_upper.extend([
+            [str(A[j][i].l), str(A[j][i].h)]
+            for i in range(5) for j in range(i, 5)
+        ])
     # Independent order-two simplification: before LDL elimination,
     # the original symmetric theta coefficient (1,1) itself is negative.
     # Coupled with A[0][0]>0 this forces the genuine 2x2 determinant
@@ -174,6 +185,10 @@ def check(l:Fraction,r:Fraction,far:bool,mass,tail):
     return margins
 
 def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--export-json', type=Path,
+        help='export all 51 uneliminated 15-entry integer interval matrices')
+    args=parser.parse_args()
     t0=time.monotonic()
     entries=[]
     for line in Path(__file__).with_name('w5_przedzialy.txt').read_text().splitlines():
@@ -193,8 +208,14 @@ def main():
     assert ratio.h < Q(1,2).l
     mass,tail=init_moments()
     mins=[(float('inf'),-1) for _ in range(5)]
+    exported=[] if args.export_json is not None else None
     for idx,(l,r,far) in enumerate(entries):
-        margins=check(l,r,far,mass,tail)
+        upper=[] if exported is not None else None
+        margins=check(l,r,far,mass,tail,upper)
+        if exported is not None:
+            assert len(upper)==15
+            exported.append({'cell':idx+1, 'left':str(l), 'right':str(r),
+                             'far':bool(far), 'upper':upper})
         for j,m in enumerate(margins):
             if m<mins[j][0]:
                 mins[j]=(m,idx+1)
@@ -202,6 +223,15 @@ def main():
     print('Minimum signed pivot bounds per order:',mins)
     print('PASS: 51/51 raw theta A11 diagonals strictly negative',flush=True)
     print('PASS: exact integer fixed-point interval proof verified 255 signs',flush=True)
+    if exported is not None:
+        assert len(exported)==51
+        payload={'scale_power_of_two':B, 'ordering':'i<=j, lexicographic i then j',
+                 'source':'audyt_theta_W5_integer.py', 'cells':exported}
+        args.export_json.parent.mkdir(parents=True,exist_ok=True)
+        args.export_json.write_text(json.dumps(payload,indent=2,sort_keys=True)+'\n',
+                                    encoding='utf-8')
+        print(f'EXPORTED {len(exported)} cells, {len(exported)*15} independent '
+              f'entries to {args.export_json}',flush=True)
 
 if __name__=='__main__':
     main()
