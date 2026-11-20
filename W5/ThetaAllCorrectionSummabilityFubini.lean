@@ -77,7 +77,6 @@ theorem thetaCertificateCorrectionTerm_eq_integral
       thetaCertificateCorrectionIntegrand, if_neg hn]
     rw [MeasureTheory.integral_Ici_eq_integral_Ioi]
     rw [integral_const_mul]
-    ring
 
 /-- An explicit, entirely summable n-dependent envelope:
 the n-factor grows only as (n²+1)^9, dominated by exp(-47 n²/64).
@@ -183,7 +182,11 @@ theorem thetaCertificateCorrectionIntegrand_measurable
     unfold coefficientPolynomial
     fun_prop
   have hjet := thetaHigherRightJetSeriesTerm_measurable 0 x 0 0 n
-  have h := (measurable_const.mul hjet).mul hpoly
+  have h : Measurable (fun w : ℝ =>
+      (x^2/4) * thetaHigherRightJetSeriesTerm 0 x 0 0 n w *
+        coefficientPolynomial i j
+          (((n:ℝ)^2-1)/x+w*x) (((n:ℝ)^2)+w*x^2)) :=
+    (measurable_const.mul hjet).mul hpoly
   convert h using 1
   funext w
   exact thetaCertificateCorrectionIntegrand_eq_zero_jet x i j n w
