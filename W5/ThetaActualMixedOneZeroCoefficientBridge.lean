@@ -108,7 +108,9 @@ theorem thetaGaussianIntegratedSeries_left_deriv_eq_B10_tsum_integral
   have hbase := thetaGaussianIntegratedSeries_deriv_left_iteratedDeriv_right_eq
     0 x 0 0 hx hx1 hz hz
   simp only [iteratedDeriv_zero] at hbase
-  have hzero : |(0:ℝ)| ≤ x/8 := by positivity
+  have hzero : |(0:ℝ)| ≤ x/8 := by
+    simp only [abs_zero]
+    positivity
   have hFubini := thetaMixedOneRightJetSeries_integral_hasSum
     0 x 0 0 hx hx1 hzero hzero
   calc
