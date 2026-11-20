@@ -15,7 +15,10 @@ with (i) a real entry enclosure valid uniformly over the positive x values in th
 (ii) the exact rational five-pivot check. The existing chain coverage
 then supplies the correct matrix for every x in the required range.
 
-The strict x>0 restriction is necessary: the original formula is singular\nat x=0 even though the numerical certificate has a regular limiting case.\n\nThis closes the finite-COVERAGE part, not the transcendental
+The strict x>0 restriction is necessary: the original formula is singular
+at x=0 even though the numerical certificate has a regular limiting case.
+
+This closes the finite-COVERAGE part, not the transcendental
 entry-bound or rational-check computation. No assumptions are hidden.
 -/
 
