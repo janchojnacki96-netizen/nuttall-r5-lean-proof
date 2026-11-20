@@ -205,3 +205,5 @@ import W5.RealSchurSubmatrix
 import W5.MathlibFiveSchurPivotDeterminant
 
 import W5.RealLDL5PivotSchurIdentification
+
+import W5.ThetaActualFullFiveDeterminantFromInterval
