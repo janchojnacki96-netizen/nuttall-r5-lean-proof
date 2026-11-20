@@ -49,6 +49,11 @@ jobs:
                   assert Fraction(cells[idx-1]['right'])==Fraction(cell['left'])
           print('PASS: 51 adjacent cells, exactly 765 valid 768-bit integer upper-triangle intervals')
           PY
+      - name: Independently replay all 255 exported pivot signs in exact rationals
+        shell: bash
+        run: |
+          python3 certificate/verify_exported_768_rational.py \
+            /tmp/w5_theta_51_upper_triangles_768.json
       - name: Generate Lean 4 rational interval data from audited integers
         shell: bash
         run: |
