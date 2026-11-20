@@ -53,8 +53,11 @@ theorem det_eq_first_pivot_mul_leadingSchurBlock
     Matrix.of (fun i j => A (e (Sum.inr i)) (e (Sum.inl j)))
   let d : Matrix (Fin n) (Fin n) ℝ :=
     Matrix.of (fun i j => A (e (Sum.inr i)) (e (Sum.inr j)))
+  have hzero : Fin.castAdd n (0 : Fin 1) = (0 : Fin (1+n)) := by
+    apply Fin.ext
+    rfl
   have ha : a 0 0 ≠ 0 := by
-    simpa [a, e] using hp
+    simpa [a, e, hzero] using hp
   have hu : IsUnit a.det := by
     simpa [Matrix.det_fin_one] using
       (isUnit_iff_ne_zero.mpr ha)
@@ -73,8 +76,9 @@ theorem det_eq_first_pivot_mul_leadingSchurBlock
       d - c * ⅟a * b = leadingSchurBlock n A := by
     ext i j
     simp only [Matrix.sub_apply, Matrix.of_apply]
-    simp [leadingSchurBlock, Matrix.mul_apply, Fin.sum_univ_one,
-      a, b, c, d, e, hinv, div_eq_mul_inv]
+    simp only [Matrix.mul_apply, Fin.sum_univ_one]
+    rw [hinv]
+    simp [leadingSchurBlock, a, b, c, d, e, hzero, div_eq_mul_inv]
     ring
   have hdet :
       (A.submatrix e e).det = A.det :=
