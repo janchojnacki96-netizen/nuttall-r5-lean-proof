@@ -199,3 +199,5 @@ import W5.ThetaGammaAffineGaussianIntegrand
 import W5.ThetaGammaMathlibAffineIntegralSubstitution
 
 import W5.ThetaOriginalGammaBracketCertificateBridge
+
+import W5.ThetaActualNormalizedKernelCertificateSeries
