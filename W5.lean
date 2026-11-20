@@ -201,3 +201,5 @@ import W5.ThetaGammaMathlibAffineIntegralSubstitution
 import W5.ThetaOriginalGammaBracketCertificateBridge
 
 import W5.ThetaActualNormalizedKernelCertificateSeries
+
+import W5.ThetaActualAnalyticZeroZeroIdentification
