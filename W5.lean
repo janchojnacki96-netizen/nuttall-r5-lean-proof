@@ -197,3 +197,5 @@ import W5.ThetaRealPivotProductSigns
 import W5.ThetaActualLeadingMinorOneTwoFromPivots
 
 import W5.MathlibGenericSchurDeterminant
+
+import W5.RealSchurTrailingDeterminantBridge
