@@ -61,16 +61,11 @@ theorem thetaHigherRightJetSeriesTerm_contDiff_twoVariable
   · subst n
     change ContDiff ℝ ⊤ (fun _ : Fin 2 → ℝ => (0:ℝ))
     exact contDiff_const
-  · have h := (thetaWeightedGaussianRightJet_contDiff_twoVariable
-      k x ((n:ℝ)^2) (((n:ℝ)^2-1)/x) w).const_mul
-      (Real.exp (-((n:ℝ)^2-1)/x^2))
-    change ContDiff ℝ ⊤
-      (fun z : Fin 2 → ℝ =>
-        if n = 0 then (0:ℝ) else
-          Real.exp (-((n:ℝ)^2-1)/x^2) *
-            thetaWeightedGaussianRightJet k x ((n:ℝ)^2)
-              (((n:ℝ)^2-1)/x) (z 0) (z 1) w)
-    simpa only [if_neg hn] using h
+  · simp only [thetaHigherRightJetSeriesTerm, if_neg hn]
+    dsimp [thetaWeightedGaussianRightJet,
+      thetaWeightedGaussianRightMultiplier,
+      thetaWeightedGaussianIntegrand, thetaGaussianModel]
+    fun_prop
 
 /-- Every kth LEFT theta jet is C-infinity jointly in (u,v)
 by transporting the result for right jets under coordinate
@@ -84,17 +79,12 @@ theorem thetaHigherLeftJetSeriesTerm_contDiff_twoVariable
   · subst n
     change ContDiff ℝ ⊤ (fun _ : Fin 2 → ℝ => (0:ℝ))
     exact contDiff_const
-  · change ContDiff ℝ ⊤
-      (fun z : Fin 2 → ℝ =>
-        thetaHigherRightJetSeriesTerm k x (z 1) (z 0) n w)
-    have h := thetaHigherRightJetSeriesTerm_contDiff_twoVariable k x n w
-    have hswap : ContDiff ℝ ⊤
-        (fun z : Fin 2 → ℝ => (fun i : Fin 2 =>
-          if i = 0 then z 1 else z 0)) := by
-      fun_prop
-    convert h.comp hswap using 1
-    funext z
-    simp
+  · simp only [thetaHigherLeftJetSeriesTerm,
+      thetaHigherRightJetSeriesTerm, if_neg hn]
+    dsimp [thetaWeightedGaussianRightJet,
+      thetaWeightedGaussianRightMultiplier,
+      thetaWeightedGaussianIntegrand, thetaGaussianModel]
+    fun_prop
 
 /-- The ACTUAL mixed jet (one left and k right) of each
 weighted theta term is also C-infinity in both Taylor variables.
