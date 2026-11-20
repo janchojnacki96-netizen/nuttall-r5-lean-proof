@@ -9,3 +9,10 @@ name = "W5"
 name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.35.0"
+
+# Isolated experiment: pinned LeanCert commit, also using Lean/Mathlib v4.35.0.
+# Never use a moving 'main' dependency in a formal proof.
+[[require]]
+name = "leancert"
+git = "https://github.com/alerad/leancert"
+rev = "44b323a0d6af00211d5013f6e021432db032087c"
