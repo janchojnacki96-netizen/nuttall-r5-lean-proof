@@ -177,3 +177,5 @@ import W5.ThetaB10B01FullCoefficientSplitting
 import W5.ThetaLeadingTwoActualJetMatrixBridge
 
 import W5.ThetaSecondOrderPureJetCoefficient
+
+import W5.ThetaB02OriginalCorrectionEqualsSecondDerivative
