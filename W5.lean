@@ -229,3 +229,5 @@ import W5.Theta51ExplicitMatrixChecker
 import W5.ThetaAudited51CellCertificateBridge
 
 import W5.ThetaSeriesPrefixTailEnclosure
+
+import W5.ThetaFiniteTermIntervalFold
