@@ -181,3 +181,5 @@ import W5.ThetaMathlibTwoVariableOrderEightTsum
 import W5.ThetaMathlibLocalTwoVariableDerivative
 
 import W5.ThetaArbitraryPolynomialGaussianSummability
+
+import W5.ThetaAllBaseCoefficientsSummability
