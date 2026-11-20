@@ -153,3 +153,5 @@ import W5.ThetaMixedJetSeparableEnvelope
 import W5.ThetaMixedJetFubini
 
 import W5.ThetaMixedJetIntegralAndSeriesDerivative
+
+import W5.ThetaActualMixedElevenCoefficientBridge
