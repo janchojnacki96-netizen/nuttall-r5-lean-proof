@@ -20,7 +20,7 @@ correction summability for EVERY i,j:Fin5 simultaneously.
 All operations are actual Bochner/Lebesgue integrals
 and summable Mathlib infinite series. In particular this
 module does NOT assume a sum/integral exchange, does
-NOT introduce a new axiom and does NOT claim determinant
+NOT introduce any postulate and does NOT claim determinant
 positivity or thetaTransformCorrect.
 -/
 
