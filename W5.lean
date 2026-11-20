@@ -239,3 +239,5 @@ import W5.ThetaTermwiseCellRealCertificates
 
 import W5.ThetaSignedFixedPointRounding
 import W5.ThetaSignedFixedPointMultiplication
+
+import W5.ThetaFixedPointRealPolynomialArithmetic
