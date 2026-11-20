@@ -82,8 +82,7 @@ theorem coefficientPolynomial_abs_le_eighth_power
          (Nat.factorial (j.val-k) : ℝ)))| *
       (|d|^(i.val+j.val-2*k) * |q|^k) := by
     rw [div_eq_mul_inv]
-    simp only [abs_mul, abs_pow]
-    ring
+    simp only [abs_mul, abs_pow, abs_neg, abs_one, one_pow, mul_one] <;> ring
   unfold coefficientPolynomial
   calc
     |∑ k ∈ Finset.range (min i.val j.val + 1),
