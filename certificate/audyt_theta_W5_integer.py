@@ -228,7 +228,7 @@ def main():
         payload={'scale_power_of_two':B, 'ordering':'i<=j, lexicographic i then j',
                  'source':'audyt_theta_W5_integer.py', 'cells':exported}
         args.export_json.parent.mkdir(parents=True,exist_ok=True)
-        args.export_json.write_text(json.dumps(payload,indent=2,sort_keys=True)+'\\n',
+        args.export_json.write_text(json.dumps(payload,indent=2,sort_keys=True)+'\n',
                                     encoding='utf-8')
         print(f'EXPORTED {len(exported)} cells, {len(exported)*15} independent '
               f'entries to {args.export_json}',flush=True)
