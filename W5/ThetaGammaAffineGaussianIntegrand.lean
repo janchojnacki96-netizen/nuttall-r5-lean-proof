@@ -30,7 +30,6 @@ theorem theta_gamma_affine_coefficient
     (x p w : ℝ) (hp : p ≠ 0) :
     p * (1 + w*x^2/p) = p + w*x^2 := by
   field_simp [hp]
-  ring
 
 /-- For p>0 and w≥0, the transformed gamma coordinate is in [1,∞).
 This ensures the real fourth root has its intended positive branch. -/
@@ -67,9 +66,13 @@ theorem theta_gamma_affine_weighted_gaussian_exact
         Real.exp (-(p-1)/x^2) * Real.exp (-w) *
           thetaGaussianModel
             ((p-1)/x+w*x) (p+w*x^2) u v := by
-    simpa only [E, y, thetaGaussianModel] using
-      (thetaNormalizedGaussianExp_eq_certificateGaussianExp
-        x p u v w hx)
+    have hexponent :
+        -((((p-1)/x+w*x)*(u+v)) + (p+w*x^2)*u*v) =
+          -((p-1)/x+w*x)*(u+v) - (p+w*x^2)*u*v := by ring
+    have h := thetaNormalizedGaussianExp_eq_certificateGaussianExp
+      x p u v w hx
+    rw [hexponent] at h
+    exact h
   change E * ((1+w*x^2/p)^((1:ℝ)/4) *
     Real.exp (-p*y*(1+w*x^2/p))) =
       Real.exp (-(p-1)/x^2) *
