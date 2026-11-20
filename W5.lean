@@ -223,3 +223,7 @@ import W5.ThetaFiniteDecidableLDLChecker
 import W5.ThetaAuditedFirstCellFinitePivotCheck
 
 import W5.ThetaAuditedAll255FinitePivotChecks
+
+import W5.Theta51ExplicitMatrixChecker
+
+import W5.ThetaAudited51CellCertificateBridge
