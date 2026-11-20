@@ -189,3 +189,5 @@ import W5.ThetaAllCoefficientGenericSplitting
 import W5.ThetaAllCoefficientPolynomialEnvelope
 
 import W5.ThetaAllCoefficientPolynomialLocalSeparation
+
+import W5.ThetaAllCorrectionSummabilityFubini
