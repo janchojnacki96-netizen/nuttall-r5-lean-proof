@@ -60,7 +60,7 @@ theorem thetaNormalizedGaussianExp_eq_certificateGaussianExp
         (p+w*x^2)*u*v)) := by
   simp only [← Real.exp_add]
   congr 1
-  simpa only [sub_eq_add_neg] using
+  simpa only [sub_eq_add_neg, neg_mul] using
     (thetaNormalizedExponent_eq_certificateExponent x p u v w hx)
 
 /-- Specialize the universal identity to the actual original
