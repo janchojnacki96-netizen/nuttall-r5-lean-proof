@@ -193,3 +193,5 @@ import W5.ThetaNormalizedKernelClosedSeriesBridge
 import W5.ThetaNormalizedExponentCertificateIdentity
 
 import W5.ThetaActualNormalizedGammaSquareSeries
+
+import W5.ThetaGammaAffineGaussianIntegrand
