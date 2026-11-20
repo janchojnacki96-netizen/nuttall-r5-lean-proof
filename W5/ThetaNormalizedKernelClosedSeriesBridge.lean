@@ -135,5 +135,7 @@ theorem normalizedKernel_eq_true_theta_closed_series
       ((1+x*u)^((5:ℝ)/4) * (1+x*v)^((5:ℝ)/4))) *
     Psi1 t = _
   rw [hpsi]
+  dsimp [t]
+  ring
 
 end W5
