@@ -86,6 +86,16 @@ theorem thetaAuditUpperCellMatrices_map :
       thetaAuditCellMatrices := by
   rfl
 
+/-- The rational x-ranges attached to the 51 original audited
+matrices are *exactly* the adjacent pairs from the already proven
+`FiniteCore.endpoints` partition. This eliminates a possible
+misalignment between the imported numerical data and the coverage
+theorem. The equality is decided using exact Mathlib rationals. -/
+theorem thetaAuditCellBounds_match_endpoints :
+    thetaAuditCellBounds =
+      (((0 : ℚ) :: endpoints).zip endpoints) := by
+  decide
+
 /-- A length-matched cell-wise Boolean test is the ordinary list
 `all` of those same 51 pivot tests. This is generic and independent
 of the size or precision of the imported rational matrices. -/
