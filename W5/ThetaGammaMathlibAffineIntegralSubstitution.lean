@@ -43,8 +43,7 @@ theorem theta_integral_affine_Ioi
     · intro hz
       refine ⟨(z-a)/c, div_pos (sub_pos.mpr hz) hc, ?_⟩
       change a+c*((z-a)/c) = z
-      field_simp [hc.ne']
-      ring
+      field_simp [hc.ne'] <;> ring
   have hinj : Set.InjOn f (Set.Ioi (0:ℝ)) := by
     intro w _ v _ heq
     dsimp only [f] at heq
