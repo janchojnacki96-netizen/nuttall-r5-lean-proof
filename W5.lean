@@ -215,3 +215,5 @@ import W5.ThetaAllFiveActualLeadingMinorSigns
 import W5.Theta51CellRealCertificateReduction
 
 import W5.ThetaSymmetric15EntryCellCertificates
+
+import W5.ThetaAudited768IntervalMatrices
