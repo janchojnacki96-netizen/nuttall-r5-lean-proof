@@ -86,7 +86,7 @@ theorem intervalLDL5Alternating_of_check
       (0 < ((intervalLDL5 B 4)
         (pivotIndexFive 4) (pivotIndexFive 4)).lo) := by
     simpa only [intervalLDL5AlternatingCheck,
-      Bool.and_eq_true, decide_eq_true_eq] using h
+      Bool.and_eq_true, decide_eq_true_eq, and_assoc] using h
   rcases hsigns with ⟨h0, h1, h2, h3, h4⟩
   apply (intervalLDL5Alternating_iff_fin B).2
   intro k
