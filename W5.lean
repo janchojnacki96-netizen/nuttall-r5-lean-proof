@@ -183,3 +183,5 @@ import W5.ThetaMathlibLocalTwoVariableDerivative
 import W5.ThetaArbitraryPolynomialGaussianSummability
 
 import W5.ThetaAllBaseCoefficientsSummability
+
+import W5.ThetaAllCoefficientGenericSplitting
