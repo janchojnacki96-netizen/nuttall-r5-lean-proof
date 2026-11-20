@@ -155,3 +155,5 @@ import W5.ThetaMixedJetFubini
 import W5.ThetaMixedJetIntegralAndSeriesDerivative
 
 import W5.ThetaActualMixedElevenCoefficientBridge
+
+import W5.ThetaActualMixedOneZeroCoefficientBridge
