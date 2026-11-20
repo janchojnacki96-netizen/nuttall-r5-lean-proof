@@ -167,3 +167,5 @@ import W5.ThetaCertificateBaseCorrectionSplit
 import W5.ThetaB00CorrectionEqualsIntegratedSeries
 
 import W5.ThetaB11CorrectionEqualsMixedDerivative
+
+import W5.ThetaB00BaseSeriesSummability
