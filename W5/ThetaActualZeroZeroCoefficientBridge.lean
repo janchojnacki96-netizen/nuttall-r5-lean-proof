@@ -36,7 +36,6 @@ theorem thetaHigherRightJetSeriesTerm_zero_zero_eq_B00
       coefficientPolynomial_zero_zero]
     unfold thetaWeightedGaussianIntegrand
     rw [thetaGaussianModel_zero_zero]
-    ring
 
 /-- The actual undifferentiated transformed Gaussian theta
 integral series equals the sum of w-integrals of the exact
