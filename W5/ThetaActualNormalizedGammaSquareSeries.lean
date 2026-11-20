@@ -106,7 +106,11 @@ theorem thetaOriginalGaussian_eq_certificate_model
       Real.exp (-p * thetaShiftedYAlgebraic x u v) =
       Real.exp (-(p-1)/x^2) *
         thetaGaussianModel ((p-1)/x) p u v := by
-  simpa only [thetaGaussianModel] using
-    (thetaOriginalMainGaussianExp_eq_certificateMain x p u v hx)
+  have harg :
+      -((p-1)/x*(u+v) + p*u*v) =
+        -((p-1)/x)*(u+v) - p*u*v := by ring
+  rw [thetaOriginalMainGaussianExp_eq_certificateMain x p u v hx]
+  unfold thetaGaussianModel
+  rw [harg]
 
 end W5
