@@ -169,3 +169,5 @@ import W5.ThetaB00CorrectionEqualsIntegratedSeries
 import W5.ThetaB11CorrectionEqualsMixedDerivative
 
 import W5.ThetaB00BaseSeriesSummability
+
+import W5.ThetaB11BaseAndCorrectionSummability
