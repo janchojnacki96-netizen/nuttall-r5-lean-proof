@@ -1,0 +1,58 @@
+name: W5 exact 768-bit theta interval data export
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - certificate/audyt_theta_W5_integer.py
+      - .github/workflows/export-interval-data.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export-integer-intervals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out certificate implementation
+        uses: actions/checkout@v4
+      - name: Generate and fully audit 51 scaled integer matrices
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 certificate/audyt_theta_W5_integer.py \
+            --export-json /tmp/w5_theta_51_upper_triangles_768.json \
+            | tee /tmp/w5_integer_export.log
+          grep -Fx "PASS: exact integer fixed-point interval proof verified 255 signs" /tmp/w5_integer_export.log
+          grep -F "EXPORTED 51 cells, 765 independent entries" /tmp/w5_integer_export.log
+      - name: Validate lossless integer export format
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from fractions import Fraction
+          from pathlib import Path
+          f=Path('/tmp/w5_theta_51_upper_triangles_768.json')
+          data=json.loads(f.read_text(encoding='utf-8'))
+          assert data['scale_power_of_two']==768
+          cells=data['cells']
+          assert len(cells)==51
+          assert Fraction(cells[0]['left'])==0
+          assert Fraction(cells[-1]['right'])==Fraction(145,256)
+          for idx,cell in enumerate(cells):
+              assert cell['cell']==idx+1
+              assert len(cell['upper'])==15
+              assert all(len(entry)==2 and all(isinstance(v,str) and int(v)==int(v.strip()) for v in entry) for entry in cell['upper'])
+              assert all(int(lo)<=int(hi) for lo,hi in cell['upper'])
+              if idx:
+                  assert Fraction(cells[idx-1]['right'])==Fraction(cell['left'])
+          print('PASS: 51 adjacent cells, exactly 765 valid 768-bit integer upper-triangle intervals')
+          PY
+      - name: Save exact certificate matrices as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: w5-theta-51-upper-triangles-768
+          path: /tmp/w5_theta_51_upper_triangles_768.json
+          retention-days: 7
+          if-no-files-found: error
