@@ -40,7 +40,14 @@ theorem thetaMixedOneRightJetSeriesTerm_measurable
     have hb : Measurable (fun w : ℝ =>
         thetaWeightedGaussianIntegrand x p d0 u v w) :=
       thetaWeightedGaussian_measurable x p d0 u v
-    have hfull := (measurable_const.mul (hm.mul hb))
+    have hfull : Measurable (fun w : ℝ =>
+        Real.exp (-(p-1)/x^2) *
+          (((k:ℝ) * (-(p+w*x^2)) *
+              (thetaWeightedGaussianRightMultiplier x p d0 u w)^(k-1) +
+            (thetaWeightedGaussianRightMultiplier x p d0 u w)^k *
+              thetaWeightedGaussianRightMultiplier x p d0 v w) *
+            thetaWeightedGaussianIntegrand x p d0 u v w)) :=
+      measurable_const.mul (hm.mul hb)
     change Measurable (fun w : ℝ =>
       if n = 0 then (0:ℝ) else
         Real.exp (-(p-1)/x^2) *
