@@ -33,8 +33,8 @@ def FixedIntInterval.productMax (a b : FixedIntInterval) : ℤ :=
 
 /-- The SAME scaled four-corner integer multiplication as the Python
 auditor: floor(min/D), ceil(max/D), both for positive or negative values. -/
-def FixedIntInterval.mul (D : ℤ)
-    (a b : FixedIntInterval) : FixedIntInterval :=
+def FixedIntInterval.mul (a : FixedIntInterval) (D : ℤ)
+    (b : FixedIntInterval) : FixedIntInterval :=
   ⟨(a.productMin b) / D, - ((-(a.productMax b)) / D)⟩
 
 private theorem fixedMul_lower_corner
