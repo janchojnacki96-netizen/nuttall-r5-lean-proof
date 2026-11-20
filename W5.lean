@@ -179,3 +179,5 @@ import W5.ThetaLeadingTwoActualJetMatrixBridge
 import W5.ThetaMathlibTwoVariableOrderEightTsum
 
 import W5.ThetaMathlibLocalTwoVariableDerivative
+
+import W5.ThetaTwoVariableSummableJetEnvelopes
