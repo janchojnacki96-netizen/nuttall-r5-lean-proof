@@ -155,10 +155,13 @@ theorem FixedIntInterval.sqrt_containsReal
       ((a.sqrt D).asQInterval D) (Real.sqrt x) := by
   have hlow := (fixedPointSqrt_rounds_real a.lo D hlo hD).1
   have hhigh := (fixedPointSqrt_rounds_real a.hi D hhi hD).2
-  change (fixedPointSqrtFloor a.lo D : ℝ) / (D : ℝ) ≤ Real.sqrt x ∧
-    Real.sqrt x ≤ (fixedPointSqrtCeil a.hi D : ℝ) / (D : ℝ)
-  exact ⟨hlow.trans (Real.sqrt_le_sqrt hx.1),
-    (Real.sqrt_le_sqrt hx.2).trans hhigh⟩
+  have hbounds :
+      (fixedPointSqrtFloor a.lo D : ℝ) / (D : ℝ) ≤ Real.sqrt x ∧
+        Real.sqrt x ≤ (fixedPointSqrtCeil a.hi D : ℝ) / (D : ℝ) :=
+    ⟨hlow.trans (Real.sqrt_le_sqrt hx.1),
+      (Real.sqrt_le_sqrt hx.2).trans hhigh⟩
+  simpa only [QInterval.ContainsReal, FixedIntInterval.asQInterval,
+    FixedIntInterval.sqrt, Rat.cast_div, Rat.cast_intCast] using hbounds
 
 /-- The actual 768-bit sqrt, sharing its scale with the auditor. -/
 theorem FixedIntInterval.auditSqrt_containsReal
