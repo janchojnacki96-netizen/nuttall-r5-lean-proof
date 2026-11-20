@@ -68,9 +68,6 @@ theorem thetaGaussian_arbitrary_polynomial_summable
     change (∑ k ∈ P.support, P.coeff k * ((n:ℝ)^2)^k) *
         Real.exp (-c*(n:ℝ)^2) = _
     rw [Finset.sum_mul]
-    apply Finset.sum_congr rfl
-    intro k _
-    ring
   rw [hfun]
   exact hsum
 
