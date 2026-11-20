@@ -221,3 +221,5 @@ import W5.ThetaAudited768IntervalMatrices
 import W5.ThetaFiniteDecidableLDLChecker
 
 import W5.ThetaAuditedFirstCellFinitePivotCheck
+
+import W5.ThetaAuditedAll255FinitePivotChecks
