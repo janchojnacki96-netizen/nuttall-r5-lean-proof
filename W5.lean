@@ -236,3 +236,5 @@ import W5.ThetaAllCoefficientPolynomialEnvelope
 import W5.ThetaAllCoefficientPolynomialLocalSeparation
 import W5.ThetaAllCorrectionSummabilityFubini
 import W5.ThetaTermwiseCellRealCertificates
+
+import W5.ThetaExpTaylor65Remainder
