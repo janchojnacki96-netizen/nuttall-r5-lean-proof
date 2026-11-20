@@ -183,3 +183,5 @@ import W5.ThetaB02OriginalCorrectionEqualsSecondDerivative
 import W5.ThetaB02B20FullCoefficientSummability
 
 import W5.ThetaMixedOneTwoGenuineSeriesJet
+
+import W5.ThetaB12OriginalCorrectionEqualsMixedThirdDerivative
