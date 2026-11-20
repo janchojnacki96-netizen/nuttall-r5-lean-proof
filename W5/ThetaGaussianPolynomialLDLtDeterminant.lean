@@ -81,10 +81,11 @@ noncomputable def thetaPolynomialFive (d q : ℝ) :
     Matrix (Fin 5) (Fin 5) ℝ :=
   Matrix.of (fun i j : Fin 5 => coefficientPolynomial i j d q)
 
+set_option maxHeartbeats 2000000
+
 /-- Symbolic finite verification of all 25 coefficient entries.
 The remaining simplification is elementary commutative-ring
 normalization after expanding Fin 5 sums, using Mathlib tactics. -/
-set_option maxHeartbeats 2000000 in
 theorem thetaPolynomialFive_LDLt
     (d q : ℝ) :
     thetaPolynomialFive d q =
