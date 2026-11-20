@@ -189,3 +189,5 @@ import W5.ThetaAllCoefficientGenericSplitting
 import W5.ThetaPsiClosedFormLocalShift
 
 import W5.ThetaNormalizedKernelClosedSeriesBridge
+
+import W5.ThetaNormalizedExponentCertificateIdentity
