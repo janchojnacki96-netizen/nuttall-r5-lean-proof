@@ -171,3 +171,5 @@ import W5.ThetaB11CorrectionEqualsMixedDerivative
 import W5.ThetaB00BaseSeriesSummability
 
 import W5.ThetaB11BaseAndCorrectionSummability
+
+import W5.ThetaB10B01FullCoefficientSplitting
