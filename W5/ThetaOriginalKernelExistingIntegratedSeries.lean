@@ -69,12 +69,13 @@ theorem thetaCertificateGaussianFullTerm_eq_base_sub_integrated
             (∫ w : ℝ, thetaWeightedGaussianIntegrand
               x ((n:ℝ)^2) (((n:ℝ)^2-1)/x) u v w
               ∂(volume.restrict (Set.Ioi (0:ℝ)))))
-    exact thetaCoefficient_cancel_square_index
-      x ((n:ℝ)^2) (Real.exp (-((n:ℝ)^2-1)/x^2))
-      (thetaGaussianModel (((n:ℝ)^2-1)/x) ((n:ℝ)^2) u v)
-      (∫ w : ℝ, thetaWeightedGaussianIntegrand
-        x ((n:ℝ)^2) (((n:ℝ)^2-1)/x) u v w
-        ∂(volume.restrict (Set.Ioi (0:ℝ)))) hp
+    simpa only [mul_assoc] using
+      (thetaCoefficient_cancel_square_index
+        x ((n:ℝ)^2) (Real.exp (-((n:ℝ)^2-1)/x^2))
+        (thetaGaussianModel (((n:ℝ)^2-1)/x) ((n:ℝ)^2) u v)
+        (∫ w : ℝ, thetaWeightedGaussianIntegrand
+          x ((n:ℝ)^2) (((n:ℝ)^2-1)/x) u v w
+          ∂(volume.restrict (Set.Ioi (0:ℝ)))) hp)
 
 /-- The original kernel is a single exact sum of the elementary
 Gaussian terms minus the EXISTING integrated Gaussian correction.
