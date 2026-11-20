@@ -49,23 +49,53 @@ theorem intervalLDL5Alternating_iff_fin
   · intro h k hk
     exact h ⟨k, hk⟩
 
-/-- An executable Boolean test on exact rational interval endpoints.
-For an explicit literal matrix `B`, the goal
-`intervalLDL5AlternatingCheck B = true` can be checked by `decide`
-(or by an equivalent kernel-verified reduction), without enumerating
-five different handwritten sign proofs. -/
+/-- An executable Boolean checker consisting of the five *actual*
+exact-rational pivot comparisons. Unlike a proposition-level
+`decide (∀ k : Fin 5, ...)`, this directly uses the constructive
+rational inequality decision procedure at each concrete pivot.
+There is no classical noncomputable decision oracle. -/
 def intervalLDL5AlternatingCheck
     (B : Matrix (Fin 5) (Fin 5) QInterval) : Bool :=
-  decide (intervalLDL5AlternatingFin B)
+  decide (0 < ((intervalLDL5 B 0)
+    (pivotIndexFive 0) (pivotIndexFive 0)).lo) &&
+  decide (((intervalLDL5 B 1)
+    (pivotIndexFive 1) (pivotIndexFive 1)).hi < 0) &&
+  decide (0 < ((intervalLDL5 B 2)
+    (pivotIndexFive 2) (pivotIndexFive 2)).lo) &&
+  decide (((intervalLDL5 B 3)
+    (pivotIndexFive 3) (pivotIndexFive 3)).hi < 0) &&
+  decide (0 < ((intervalLDL5 B 4)
+    (pivotIndexFive 4) (pivotIndexFive 4)).lo)
 
-/-- Soundness of the runnable finite Boolean test: the already proved
-rational and real LDL enclosure/sign theorems remain in force. -/
+/-- Soundness of the executable five-stage Boolean test follows by
+case analysis over the five possible indices, reducing each Boolean
+comparison to a rational inequality. -/
 theorem intervalLDL5Alternating_of_check
     (B : Matrix (Fin 5) (Fin 5) QInterval)
     (h : intervalLDL5AlternatingCheck B = true) :
     intervalLDL5Alternating B := by
+  have hsigns :
+      (0 < ((intervalLDL5 B 0)
+        (pivotIndexFive 0) (pivotIndexFive 0)).lo) ∧
+      (((intervalLDL5 B 1)
+        (pivotIndexFive 1) (pivotIndexFive 1)).hi < 0) ∧
+      (0 < ((intervalLDL5 B 2)
+        (pivotIndexFive 2) (pivotIndexFive 2)).lo) ∧
+      (((intervalLDL5 B 3)
+        (pivotIndexFive 3) (pivotIndexFive 3)).hi < 0) ∧
+      (0 < ((intervalLDL5 B 4)
+        (pivotIndexFive 4) (pivotIndexFive 4)).lo) := by
+    simpa only [intervalLDL5AlternatingCheck,
+      Bool.and_eq_true, decide_eq_true_eq] using h
+  rcases hsigns with ⟨h0, h1, h2, h3, h4⟩
   apply (intervalLDL5Alternating_iff_fin B).2
-  exact of_decide_true h
+  intro k
+  fin_cases k
+  · simpa using h0
+  · simpa using h1
+  · simpa using h2
+  · simpa using h3
+  · simpa using h4
 
 /-- The 15-entry upper-triangle cell certificate can now be supplied
 using ONE concrete Boolean result of the finite verified checker.
