@@ -239,3 +239,9 @@ import W5.ThetaTermwiseCellRealCertificates
 
 import W5.ThetaSignedFixedPointRounding
 import W5.ThetaSignedFixedPointMultiplication
+
+import W5.ThetaActualAnalyticZeroZeroIdentification
+import W5.ThetaOriginalKernelAllMixedJetsFromLocalEqOn
+import W5.ThetaOriginalKernelExistingIntegratedSeries
+import W5.ThetaActualAnalyticCoefficientSignsFrom51Cells
+import W5.ThetaAuditedNormalizedKernelBridge
