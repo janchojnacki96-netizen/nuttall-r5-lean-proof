@@ -45,7 +45,8 @@ noncomputable def thetaPolynomialDiagonal (r : ℕ) (q : ℝ) :
 theorem thetaPolynomialLower_isLowerTriangular (r : ℕ) (d : ℝ) :
     (thetaPolynomialLower r d).IsLowerTriangular := by
   intro i j hij
-  simp [thetaPolynomialLower, not_le.mpr hij]
+  have hji : ¬ j ≤ i := not_le.mpr (show i < j from hij)
+  simp [thetaPolynomialLower, hji]
 
 /-- All Taylor shift diagonal entries are exactly one. -/
 theorem thetaPolynomialLower_diag_one
@@ -83,6 +84,7 @@ noncomputable def thetaPolynomialFive (d q : ℝ) :
 /-- Symbolic finite verification of all 25 coefficient entries.
 The remaining simplification is elementary commutative-ring
 normalization after expanding Fin 5 sums, using Mathlib tactics. -/
+set_option maxHeartbeats 2000000 in
 theorem thetaPolynomialFive_LDLt
     (d q : ℝ) :
     thetaPolynomialFive d q =
@@ -90,12 +92,16 @@ theorem thetaPolynomialFive_LDLt
         (thetaPolynomialLower 5 d).transpose := by
   classical
   ext i j
+  change coefficientPolynomial i j d q =
+    ((thetaPolynomialLower 5 d *
+        Matrix.diagonal (fun k : Fin 5 =>
+          (-q)^k.val / (k.val.factorial : ℝ))) *
+        (thetaPolynomialLower 5 d).transpose) i j
+  rw [Matrix.mul_apply]
+  simp only [Matrix.mul_diagonal, Matrix.transpose_apply]
   fin_cases i <;> fin_cases j <;>
-    norm_num [thetaPolynomialFive, thetaPolynomialLower,
-      thetaPolynomialDiagonal, Matrix.mul_apply,
-      Matrix.mul_diagonal, Matrix.transpose_apply,
-      coefficientPolynomial, Fin.sum_univ_succ,
-      Finset.sum_range_succ] <;> ring
+    norm_num [thetaPolynomialLower, coefficientPolynomial,
+      Fin.sum_univ_succ, Finset.sum_range_succ] <;> ring
 
 /-- Consequently the genuine full 5x5 single-Gaussian
 coefficient determinant is independent of d, and equals
