@@ -49,10 +49,21 @@ jobs:
                   assert Fraction(cells[idx-1]['right'])==Fraction(cell['left'])
           print('PASS: 51 adjacent cells, exactly 765 valid 768-bit integer upper-triangle intervals')
           PY
+      - name: Generate Lean 4 rational interval data from audited integers
+        shell: bash
+        run: |
+          python3 -m py_compile certificate/export_intervals_to_lean.py
+          python3 certificate/export_intervals_to_lean.py \
+            /tmp/w5_theta_51_upper_triangles_768.json \
+            /tmp/ThetaAudited768IntervalMatrices.lean
+          grep -F "thetaAuditCell_51" /tmp/ThetaAudited768IntervalMatrices.lean
+          grep -F "thetaAuditCellMatrices_length" /tmp/ThetaAudited768IntervalMatrices.lean
       - name: Save exact certificate matrices as workflow artifact
         uses: actions/upload-artifact@v4
         with:
           name: w5-theta-51-upper-triangles-768
-          path: /tmp/w5_theta_51_upper_triangles_768.json
+          path: |
+            /tmp/w5_theta_51_upper_triangles_768.json
+            /tmp/ThetaAudited768IntervalMatrices.lean
           retention-days: 7
           if-no-files-found: error
