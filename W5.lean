@@ -201,3 +201,5 @@ import W5.MathlibGenericSchurDeterminant
 import W5.RealSchurTrailingDeterminantBridge
 
 import W5.RealSchurSubmatrix
+
+import W5.MathlibFiveSchurPivotDeterminant
