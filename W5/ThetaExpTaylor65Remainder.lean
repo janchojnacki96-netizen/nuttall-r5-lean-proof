@@ -46,6 +46,9 @@ theorem thetaExpTaylor65_bounds
         z^65 * ((66:ℝ) /
           ((Nat.factorial 65 : ℝ) * 65)) := by
     have hraw := Real.exp_bound' hz hz1 (n := 65) (by norm_num)
+    change Real.exp z ≤
+      (∑ m ∈ Finset.range 65, z^m / (Nat.factorial m : ℝ)) +
+        z^65 * ((66:ℝ) / ((Nat.factorial 65 : ℝ) * 65))
     convert hraw using 1 <;> ring
   have hpower : z^65 ≤ ((1:ℝ)/3)^65 :=
     pow_le_pow_left₀ hz hthird 65
@@ -56,7 +59,8 @@ theorem thetaExpTaylor65_bounds
     calc
       (66:ℝ) / ((Nat.factorial 65 : ℝ) * 65) =
           ((66:ℝ) / 65) / (Nat.factorial 65 : ℝ) := by
-        rw [div_div_eq_div_mul, mul_comm 65 (Nat.factorial 65 : ℝ)]
+        simp only [div_eq_mul_inv, mul_inv_rev]
+        ring
       _ ≤ 2 / (Nat.factorial 65 : ℝ) :=
         div_le_div_of_nonneg_right hnum hfactorial.le
   have hnonnegcoef :
