@@ -151,3 +151,5 @@ import W5.ThetaMixedJetNeighborMajorant
 import W5.ThetaMixedJetSeparableEnvelope
 
 import W5.ThetaMixedJetFubini
+
+import W5.ThetaMixedJetIntegralAndSeriesDerivative
