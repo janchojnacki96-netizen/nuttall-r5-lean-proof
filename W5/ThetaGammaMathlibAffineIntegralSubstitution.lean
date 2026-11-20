@@ -31,7 +31,7 @@ theorem theta_integral_affine_Ioi
       ∫ z in Set.Ioi a, g z := by
   let f : ℝ → ℝ := fun w => a+c*w
   have hfderiv (w : ℝ) : HasDerivAt f c w := by
-    simpa only [f, id_eq] using
+    simpa [f] using
       (((hasDerivAt_id w).const_mul c).const_add a)
   have hderiv (w : ℝ) : deriv f w = c := (hfderiv w).deriv
   have himage : f '' Set.Ioi (0:ℝ) = Set.Ioi a := by
