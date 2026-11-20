@@ -245,3 +245,5 @@ import W5.ThetaOriginalKernelAllMixedJetsFromLocalEqOn
 import W5.ThetaOriginalKernelExistingIntegratedSeries
 import W5.ThetaActualAnalyticCoefficientSignsFrom51Cells
 import W5.ThetaAuditedNormalizedKernelBridge
+
+import W5.ThetaAuditedMajorantGeometricTail
