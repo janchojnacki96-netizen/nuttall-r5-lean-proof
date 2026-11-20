@@ -177,3 +177,5 @@ import W5.ThetaB10B01FullCoefficientSplitting
 import W5.ThetaLeadingTwoActualJetMatrixBridge
 
 import W5.ThetaMathlibTwoVariableOrderEightTsum
+
+import W5.ThetaMathlibLocalTwoVariableDerivative
