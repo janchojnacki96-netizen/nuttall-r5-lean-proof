@@ -247,3 +247,5 @@ import W5.ThetaActualAnalyticCoefficientSignsFrom51Cells
 import W5.ThetaAuditedNormalizedKernelBridge
 
 import W5.ThetaAuditedMajorantGeometricTail
+
+import W5.ThetaAuditedMajorantTailNumerical
