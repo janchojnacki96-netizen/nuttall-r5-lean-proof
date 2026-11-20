@@ -11,23 +11,23 @@ requires, at each x, some 5×5 rational interval matrix enclosing the
 
 Here we prove a constructive logical reduction: it suffices to supply
 ONE constant rational interval matrix for each of the 51 cells,
-with (i) a real entry enclosure valid uniformly over that cell and
+with (i) a real entry enclosure valid uniformly over the positive x values in that cell and
 (ii) the exact rational five-pivot check. The existing chain coverage
 then supplies the correct matrix for every x in the required range.
 
-This closes the finite-COVERAGE part, not the transcendental
+The strict x>0 restriction is necessary: the original formula is singular\nat x=0 even though the numerical certificate has a regular limiting case.\n\nThis closes the finite-COVERAGE part, not the transcendental
 entry-bound or rational-check computation. No assumptions are hidden.
 -/
 
 namespace W5
 
 /-- A *single* exact 5×5 rational interval matrix certifying the actual
-25 real theta coefficients UNIFORMLY on a rational x-cell [a,b].
+25 real theta coefficients UNIFORMLY on the positive part of a rational x-cell [a,b].
 The five rational LDL checks are independent of x once B is fixed. -/
 def ThetaRealCellCertificate (a b : ℚ) : Prop :=
   ∃ B : Matrix (Fin 5) (Fin 5) QInterval,
     intervalLDL5Alternating B ∧
-      ∀ x : ℝ, (a : ℝ) ≤ x → x ≤ (b : ℝ) →
+      ∀ x : ℝ, 0 < x → (a : ℝ) ≤ x → x ≤ (b : ℝ) →
         ∀ i j : Fin 5,
           QInterval.ContainsReal (B i j) (thetaCoefficient x i j)
 
@@ -43,7 +43,7 @@ def ThetaRealCellCertificateChain (a : ℚ) : List ℚ → Prop
 of a certified rational endpoint chain. This proves the soundness
 of the interval partition selection, without numeric approximations. -/
 theorem theta_real_interval_certificate_of_chain (bs : List ℚ) :
-    ∀ (a : ℚ) (x : ℝ),
+    ∀ (a : ℚ) (x : ℝ), 0 < x →
       ThetaRealCellCertificateChain a bs →
       Chain a bs x →
       ∃ B : Matrix (Fin 5) (Fin 5) QInterval,
@@ -52,10 +52,10 @@ theorem theta_real_interval_certificate_of_chain (bs : List ℚ) :
         intervalLDL5Alternating B := by
   induction bs with
   | nil =>
-      intro a x _ hmem
+      intro a x _ _ hmem
       exact False.elim hmem
   | cons b bs ih =>
-      intro a x hcert hmem
+      intro a x hx hcert hmem
       change ThetaRealCellCertificate a b ∧
         ThetaRealCellCertificateChain b bs at hcert
       rcases hcert with ⟨hfirst, hrest⟩
@@ -65,8 +65,8 @@ theorem theta_real_interval_certificate_of_chain (bs : List ℚ) :
       · rcases hfirst with ⟨B, hchecks, hentry⟩
         refine ⟨B, ?_, hchecks⟩
         intro i j
-        exact hentry x hab.1 hab.2 i j
-      · exact ih b x hrest hmore
+        exact hentry x hx hab.1 hab.2 i j
+      · exact ih b x hx hrest hmore
 
 /-- Only the 51 concrete cells remain to be certified:
 their validity yields all five signs of the ACTUAL theta matrix
@@ -82,6 +82,6 @@ theorem analyticMatrixPositive_of_51_real_cell_certificates
   have hchain : Chain 0 endpoints x :=
     cover_51 x hx.le hbound
   exact theta_real_interval_certificate_of_chain endpoints
-    0 x hcells hchain
+    0 x hx hcells hchain
 
 end W5
