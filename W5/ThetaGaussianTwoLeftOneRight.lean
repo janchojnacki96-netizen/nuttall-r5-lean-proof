@@ -42,9 +42,6 @@ theorem thetaWeightedGaussian_two_left_one_right
   have hp : HasDerivAt (fun z : ℝ => M z * L - Q)
       (-Q*L) u := by
     convert hp0 using 1
-    · funext z
-      ring
-    · ring
   have hg : HasDerivAt G (L*G u) u := by
     exact thetaWeightedGaussian_hasDerivAt_left x p d0 u v w
   have hprod := hp.mul hg
