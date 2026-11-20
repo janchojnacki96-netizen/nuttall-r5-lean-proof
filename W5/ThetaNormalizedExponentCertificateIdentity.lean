@@ -60,8 +60,8 @@ theorem thetaNormalizedGaussianExp_eq_certificateGaussianExp
         (p+w*x^2)*u*v)) := by
   simp only [← Real.exp_add]
   congr 1
-  exact thetaNormalizedExponent_eq_certificateExponent
-    x p u v w hx
+  simpa only [sub_eq_add_neg] using
+    (thetaNormalizedExponent_eq_certificateExponent x p u v w hx)
 
 /-- Specialize the universal identity to the actual original
 elementary square-index Gaussian term (w=0). -/
@@ -73,7 +73,7 @@ theorem thetaOriginalMainGaussianExp_eq_certificateMain
       Real.exp (-((p-1)/x*(u+v) + p*u*v)) := by
   have h := thetaNormalizedGaussianExp_eq_certificateGaussianExp
     x p u v 0 hx
-  simpa only [zero_mul, add_zero, Real.exp_zero, mul_one] using h
+  simpa only [zero_mul, add_zero, neg_zero, Real.exp_zero, mul_one] using h
 
 /-- At the original symmetric Taylor origin both Gaussian
 factors reduce to the SAME exact square-index damping.
