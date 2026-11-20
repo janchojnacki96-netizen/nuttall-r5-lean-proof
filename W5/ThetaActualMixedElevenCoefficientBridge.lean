@@ -96,9 +96,11 @@ theorem thetaGaussianIntegratedSeries_mixed_one_one_eq_B11_tsum_integral
   have hz := thetaGaussianSummableRightPatch_origin x hx
   have hbase := thetaGaussianIntegratedSeries_deriv_left_iteratedDeriv_right_eq
     1 x 0 0 hx hx1 hz hz
+  have hzero : |(0:ℝ)| ≤ x/8 := by
+    simp only [abs_zero]
+    positivity
   have hFubini := thetaMixedOneRightJetSeries_integral_hasSum
-    1 x 0 0 hx hx1 (by positivity : |(0:ℝ)| ≤ x/8)
-      (by positivity : |(0:ℝ)| ≤ x/8)
+    1 x 0 0 hx hx1 hzero hzero
   calc
     deriv
         (fun z : ℝ =>
