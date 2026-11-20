@@ -41,11 +41,12 @@ theorem thetaCertificateGaussianFullTerm_at_origin
       if_neg hn, thetaGaussianModel_zero_zero,
       coefficientPolynomial_zero_zero,
       MeasureTheory.integral_Ici_eq_integral_Ioi, mul_one]
-    exact thetaCoefficient_cancel_square_index x ((n:ℝ)^2)
-      (Real.exp (-((n:ℝ)^2-1)/x^2)) 1
-      (∫ w in Set.Ioi (0:ℝ),
-        Real.exp (-w) *
-          (1+w*x^2/((n:ℝ)^2))^((1:ℝ)/4)) hp
+    simpa only [mul_one] using
+      (thetaCoefficient_cancel_square_index x ((n:ℝ)^2)
+        (Real.exp (-((n:ℝ)^2-1)/x^2)) 1
+        (∫ w in Set.Ioi (0:ℝ),
+          Real.exp (-w) *
+            (1+w*x^2/((n:ℝ)^2))^((1:ℝ)/4)) hp)
 
 /-- Actual original normalizedKernel at (u,v)=(0,0) equals
 the original independent theta certificate coefficient B00.
