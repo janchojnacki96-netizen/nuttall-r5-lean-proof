@@ -99,12 +99,12 @@ theorem theta_shifted_y_ge_one_on_box
       mul_nonneg hx.le (sub_nonneg.mpr hxB)
     nlinarith [hmul]
   have hua : -(1:ℝ)/24 ≤ x*u := by
-    have hlow : -x/8 ≤ u := (abs_le.mp hu).1
+    have hlow : -(x/8) ≤ u := (abs_le.mp hu).1
     have hmul : 0 ≤ x*(u+x/8) :=
       mul_nonneg hx.le (by linarith)
     nlinarith [hmul, hxsmall]
   have hva : -(1:ℝ)/24 ≤ x*v := by
-    have hlow : -x/8 ≤ v := (abs_le.mp hv).1
+    have hlow : -(x/8) ≤ v := (abs_le.mp hv).1
     have hmul : 0 ≤ x*(v+x/8) :=
       mul_nonneg hx.le (by linarith)
     nlinarith [hmul, hxsmall]
