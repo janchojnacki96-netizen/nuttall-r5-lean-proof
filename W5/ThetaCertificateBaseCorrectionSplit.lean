@@ -55,8 +55,7 @@ theorem thetaCoefficient_cancel_square_index
     p*E*(B - x^2/(4*p)*I) =
       p*E*B - (x^2/4)*E*I := by
   have hcancel : p*(x^2/(4*p)) = x^2/4 := by
-    field_simp [hp]
-    ring
+    field_simp [hp] <;> ring
   calc
     p*E*(B - x^2/(4*p)*I) =
       p*E*B - (p*(x^2/(4*p)))*E*I := by ring
