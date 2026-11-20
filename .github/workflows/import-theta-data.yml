@@ -1,0 +1,46 @@
+name: W5 temporary exact data import
+on:
+  push:
+    branches:
+      - work/export-768bit-upper-triangle-interval-data
+    paths:
+      - .github/workflows/import-theta-data.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    if: github.ref == 'refs/heads/work/export-768bit-upper-triangle-interval-data'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Regenerate and independently check 51x15 original integer intervals
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 certificate/audyt_theta_W5_integer.py \
+            --export-json /tmp/w5_theta_51_upper_triangles_768.json \
+            | tee /tmp/w5_integer_import.log
+          grep -Fx "PASS: exact integer fixed-point interval proof verified 255 signs" /tmp/w5_integer_import.log
+          python3 certificate/verify_exported_768_rational.py \
+            /tmp/w5_theta_51_upper_triangles_768.json
+          python3 certificate/export_intervals_to_lean.py \
+            /tmp/w5_theta_51_upper_triangles_768.json \
+            W5/ThetaAudited768IntervalMatrices.lean
+      - name: Commit exact candidate interval constants only on this trusted branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add W5/ThetaAudited768IntervalMatrices.lean
+          if git diff --cached --quiet; then
+            echo "No change in deterministic exact interval constants"
+          else
+            git commit -m "Import all 51 exact 768-bit original theta interval matrices"
+            git push origin HEAD:work/export-768bit-upper-triangle-interval-data
+          fi
