@@ -279,4 +279,114 @@ theorem thetaCoefficient_far_eq_weighted_moment_sum
     thetaAuditedSeriesTerm_one_weighted_moment_sum_unconditional
       x hx hx1 i j]
 
+
+/-!
+## Exact real soundness of the first-cell moment interval composition
+
+The original integer auditor evaluates an interval polynomial and
+multiplies its coefficients by moment intervals. We reuse EXISTING
+QInterval.mul_containsReal and QInterval.finsetSum_containsReal,
+rather than reproducing signed interval arithmetic or 51 LDL tests.
+
+Inputs here are still uniform rational enclosures of x²/4,
+the genuine polynomial coefficients and the genuinely weighted
+moments. The theorems establish the exact real-semantic bridge,
+not their numerical values.
+-/
+
+/-- The original auditor's finite signed interval computation:
+the first-index diagonal, minus x²/4 times the finite sum of
+original affine polynomial coefficients multiplied by true moments.
+All products use the already proved signed four-corner arithmetic. -/
+def thetaAuditedOneTermMomentInterval
+    (D X : QInterval) (C M : ℕ → QInterval) (N : ℕ) : QInterval :=
+  QInterval.sub D
+    (QInterval.mul X
+      (QInterval.finsetSum (Finset.range N)
+        (fun k => QInterval.mul (C k) (M k))))
+
+/-- An exact interval for the true first square-index theta term
+follows from finite rational coefficient/moment interval inputs.
+No analytic summability or integrability hypothesis remains. -/
+theorem thetaAuditedOneTermMomentInterval_containsReal
+    (x : ℝ) (hx : 0 < x) (hx1 : x ≤ 1)
+    (i j : Fin 5)
+    (D X : QInterval) (C M : ℕ → QInterval)
+    (hdiag : QInterval.ContainsReal D
+      (if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+       else 0))
+    (hscale : QInterval.ContainsReal X (x^2/4))
+    (hcoeff : ∀ k ∈ Finset.range
+        ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
+      QInterval.ContainsReal (C k)
+        (thetaCorrectionWPolynomial x 1 0 i j).coeff k)
+    (hmoment : ∀ k ∈ Finset.range
+        ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
+      QInterval.ContainsReal (M k)
+        (thetaAuditedOneWeightedMoment x k)) :
+    QInterval.ContainsReal
+      (thetaAuditedOneTermMomentInterval D X C M
+        ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1))
+      (thetaAuditedSeriesTerm x i j 1) := by
+  have hsum :=
+    QInterval.finsetSum_containsReal
+      (Finset.range
+        ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1))
+      (fun k => QInterval.mul (C k) (M k))
+      (fun k =>
+        (thetaCorrectionWPolynomial x 1 0 i j).coeff k *
+          thetaAuditedOneWeightedMoment x k)
+      (fun k hk => QInterval.mul_containsReal
+        (hcoeff k hk) (hmoment k hk))
+  have hfinal :=
+    QInterval.sub_containsReal hdiag
+      (QInterval.mul_containsReal hscale hsum)
+  rw [thetaAuditedSeriesTerm_one_weighted_moment_sum_unconditional
+    x hx hx1 i j]
+  exact hfinal
+
+/-- Reuse the already verified 10^(-35) tail and interval-addition
+bridge to enclose the TRUE full theta coefficient on the first cell,
+given only finite moment/affine-coefficient rational enclosures.
+The remaining two rational endpoint inequalities are explicit. -/
+theorem thetaCoefficient_first_cell_containsReal_of_moment_intervals
+    (x : ℝ) (hx : 0 < x) (hxB : x ≤ (1 : ℝ)/8)
+    (i j : Fin 5)
+    (D X : QInterval) (C M : ℕ → QInterval)
+    (Target : QInterval)
+    (hdiag : QInterval.ContainsReal D
+      (if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+       else 0))
+    (hscale : QInterval.ContainsReal X (x^2/4))
+    (hcoeff : ∀ k ∈ Finset.range
+        ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
+      QInterval.ContainsReal (C k)
+        (thetaCorrectionWPolynomial x 1 0 i j).coeff k)
+    (hmoment : ∀ k ∈ Finset.range
+        ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
+      QInterval.ContainsReal (M k)
+        (thetaAuditedOneWeightedMoment x k))
+    (hlo : Target.lo ≤
+      (QInterval.add
+        (thetaAuditedOneTermMomentInterval D X C M
+          ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1))
+        thetaAuditedTailErrorInterval).lo)
+    (hhi :
+      (QInterval.add
+        (thetaAuditedOneTermMomentInterval D X C M
+          ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1))
+        thetaAuditedTailErrorInterval).hi ≤ Target.hi) :
+    QInterval.ContainsReal Target (thetaCoefficient x i j) := by
+  have hx1 : x ≤ 1 := by linarith
+  exact thetaCoefficient_far_containsReal_of_one_term
+    x hx hxB i j
+    (thetaAuditedOneTermMomentInterval D X C M
+      ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1))
+    Target
+    (thetaAuditedOneTermMomentInterval_containsReal
+      x hx hx1 i j D X C M hdiag hscale hcoeff hmoment)
+    hlo hhi
+
 end W5
