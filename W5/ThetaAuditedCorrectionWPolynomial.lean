@@ -161,7 +161,7 @@ theorem thetaAuditedOneWeightedMoment_integrable
         (Real.exp (-w) * (1+w*x^2)^((1 : ℝ)/4)) * w^k)
       (Set.Ioi (0 : ℝ)) MeasureTheory.volume :=
     hbig.mono' hmeas hbound
-  exact (MeasureTheory.integrableOn_Ici_iff_integrableOn_Ioi).2 hIoi
+  exact (integrableOn_Ici_iff_integrableOn_Ioi).2 hIoi
 
 /-- Exact integral linearity expresses the original n=1 theta
 summand as a finite linear combination of the true moments.
