@@ -141,8 +141,11 @@ theorem thetaAuditedFirstCellGammaMomentInterval_containsReal
           x^2 * (Nat.factorial (k+1) : ℝ) := hu
       _ ≤ (Nat.factorial k : ℝ) +
           (1/64 : ℝ) * (Nat.factorial (k+1) : ℝ) := by
+            have hfac : (0 : ℝ) ≤ (Nat.factorial (k+1) : ℝ) := by
+              positivity
             exact add_le_add_left
-              (mul_le_mul_of_nonneg_right hsq (by positivity)) _
+              (mul_le_mul_of_nonneg_right hsq hfac)
+              (Nat.factorial k : ℝ)
       _ = (Nat.factorial k : ℝ) +
           (Nat.factorial (k+1) : ℝ)/64 := by ring
   simpa only [QInterval.ContainsReal,
