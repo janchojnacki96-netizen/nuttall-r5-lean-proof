@@ -317,4 +317,57 @@ theorem thetaCoefficient_far_eq_explicit_one_integral_add_tail
   rw [thetaCoefficient_far_eq_one_add_tail x hx hxB i j,
     thetaAuditedSeriesTerm_one_closed]
 
+
+/-!
+## Exact diagonal of the first original Gaussian coefficient matrix
+
+At the first square index, d=0 and q=1. All off-diagonal
+coefficient polynomials vanish and the five diagonal entries
+are exactly 1, -1, 1/2, -1/6, 1/24. This is exact finite algebra
+from the original polynomial definition, checked uniformly in
+a single theorem; no interval auditor constants are duplicated.
+-/
+
+/-- All 25 first-index Gaussian base coefficients, without a
+numerical approximation: the matrix is diagonal with entries
+(-1)^i/i!. The finite Fin5 computation is closed by Mathlib
+arithmetic instead of twenty-five bespoke calculations. -/
+theorem coefficientPolynomial_zero_one_is_diagonal (i j : Fin 5) :
+    coefficientPolynomial i j 0 1 =
+      if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+      else 0 := by
+  fin_cases i <;> fin_cases j <;>
+    norm_num [coefficientPolynomial, Finset.sum_range_succ]
+
+/-- The ORIGINAL first nonzero unintegrated theta base matrix
+equals the exact signed inverse-factorial diagonal. -/
+theorem thetaCertificateBaseTerm_one_is_diagonal
+    (x : ℝ) (i j : Fin 5) :
+    thetaCertificateBaseTerm x i j 1 =
+      if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+      else 0 := by
+  rw [thetaCertificateBaseTerm_one,
+    coefficientPolynomial_zero_one_is_diagonal]
+
+/-- In the far cell the full n=1 term is precisely a known
+alternating-sign diagonal minus the true weighted correction.
+This identity retains the complete original integral and
+introduces no unverified signs or enclosures for its value. -/
+theorem thetaAuditedSeriesTerm_one_diagonal_minus_integral
+    (x : ℝ) (i j : Fin 5) :
+    thetaAuditedSeriesTerm x i j 1 =
+      (if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+       else 0) -
+      (x^2/4) *
+        (∫ w in Set.Ici (0 : ℝ),
+          Real.exp (-w) *
+            (1+w*x^2)^((1 : ℝ)/4) *
+              coefficientPolynomial i j (w*x) (1+w*x^2)
+          ∂MeasureTheory.volume) := by
+  rw [thetaAuditedSeriesTerm_one_closed,
+    coefficientPolynomial_zero_one_is_diagonal]
+
 end W5
