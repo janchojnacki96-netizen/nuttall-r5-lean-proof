@@ -263,3 +263,4 @@ import W5.ThetaAuditedCorrectionIntegral
 import W5.ThetaAuditedOriginalFullTail
 import W5.ThetaAuditedTailRationalEnclosure
 import W5.ThetaAuditedCorrectionWPolynomial
+import W5.ThetaAuditedMomentMonotonicity
