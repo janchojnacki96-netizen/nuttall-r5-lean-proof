@@ -267,3 +267,4 @@ import W5.ThetaAuditedMomentMonotonicity
 import W5.ThetaAuditedMomentGammaBox
 import W5.ThetaFirstCellGammaUniformCandidate
 import W5.ThetaFirstCellRationalPolynomialInterval
+import W5.ThetaFirstCellRationalCoefficientCertificate
