@@ -1,5 +1,6 @@
 import W5.ThetaFirstCellBinomialMajorantSound
 import W5.ThetaAudited51CellCertificateBridge
+import W5.ThetaAuditedTailRationalEnclosure
 
 /-!
 # One proved theta cell plus a generic checked residual chain
@@ -87,5 +88,41 @@ theorem analyticMatrixPositive_of_remaining_50_audited_enclosures
     (1 / 8 : ℚ) (endpoints.drop 1)
     (thetaAuditUpperCellMatrices.drop 1)
     thetaAuditRemaining50Matrices_checked hreal
+
+
+/-!
+## Shared finite-term obligation for all remaining cells
+
+The old finite-term certificate chain already handles real
+summability and the uniform exp-weighted n≥12 tail. We do not
+need to repeat those analytical proofs for individual cells.
+-/
+
+/-- All remaining 50 audited intervals use the SAME twelve-term
+prefix. This is checked once by exact rational computation against
+the original endpoint list, with no numerical approximation. -/
+theorem thetaRemaining50Cutoffs_twelve :
+    (endpoints.drop 1).map thetaAuditedCellCutoff =
+      List.replicate 50 12 := by
+  native_decide
+
+/-- A SINGLE generic finite-term certificate chain implies the
+actual theta matrix sign theorem on the entire audited range,
+once the already established first-cell theorem is inserted.
+Every remaining real correction and tail is handled by the
+previously proved term/tail real-soundness bridge. -/
+theorem analyticMatrixPositive_of_remaining_50_finite_term_certificates
+    (hfinite : ThetaAuditedFiniteCertificateChain
+      (1 / 8 : ℚ) (endpoints.drop 1)
+      (thetaAuditUpperCellMatrices.drop 1)) :
+    analyticMatrixPositive := by
+  apply analyticMatrixPositive_of_remaining_50_audited_enclosures
+  exact thetaCellMatricesEnclose_of_term_tail
+    (1 / 8 : ℚ) (endpoints.drop 1)
+    (thetaAuditUpperCellMatrices.drop 1)
+    (thetaAuditedFiniteCertificateChain_to_term_tail
+      (1 / 8 : ℚ) (endpoints.drop 1)
+      (thetaAuditUpperCellMatrices.drop 1) hfinite)
+
 
 end W5
