@@ -69,6 +69,7 @@ theorem thetaFirstCellGammaUniformMatrix_pivotSigns :
     intervalLDL5Alternating
       (thetaSymmetricIntervals thetaFirstCellGammaUniformMatrix) := by
   exact intervalLDL5Alternating_of_check
+    (thetaSymmetricIntervals thetaFirstCellGammaUniformMatrix)
     thetaFirstCellGammaUniformMatrix_checked
 
 /-- Under the one explicit, still-open bound on genuine
