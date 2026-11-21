@@ -72,7 +72,8 @@ theorem thetaAuditRemaining50Matrices_checked :
       (thetaSymmetricIntervals thetaAuditUpperCell_01) &&
       thetaCellMatricesCheck (endpoints.drop 1)
         (thetaAuditUpperCellMatrices.drop 1)) = true at hall
-  exact (Bool.and_eq_true.mp hall).2
+  simp only [Bool.and_eq_true] at hall
+  exact hall.2
 
 /-- Fully reusable 50-cell reduction using all the preexisting
 rational matrices and pivot proofs. The only open hypothesis consists
