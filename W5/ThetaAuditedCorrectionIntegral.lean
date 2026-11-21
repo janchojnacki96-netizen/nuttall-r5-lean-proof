@@ -55,6 +55,12 @@ theorem thetaCertificateCorrectionIntegrand_norm_le_audited
           ((5*4096 : ℝ)*p^12*(1/x^2)^4*(w+1)^12) := by
     exact mul_le_mul hweight hpoly (abs_nonneg _) (by linarith)
   let E : ℝ := Real.exp (-(p-1)/x^2)
+  have hE : 0 ≤ E := by
+    dsimp [E]
+    positivity
+  have hR : 0 ≤ (1+w*x^2/p)^((1:ℝ)/4) := by
+    apply Real.rpow_nonneg
+    positivity
   have hnorm :
       ‖thetaCertificateCorrectionIntegrand x i j n w‖ =
         ((x^2/4)*E*Real.exp (-w)) *
@@ -71,12 +77,6 @@ theorem thetaCertificateCorrectionIntegrand_norm_le_audited
       abs_of_nonneg (Real.exp_nonneg _),
       abs_of_nonneg hR]
     ring
-  have hE : 0 ≤ E := by
-    dsimp [E]
-    positivity
-  have hR : 0 ≤ (1+w*x^2/p)^((1:ℝ)/4) := by
-    apply Real.rpow_nonneg
-    positivity
   have hfactor : 0 ≤ (x^2/4)*E*Real.exp (-w) := by
     dsimp [E]
     positivity
