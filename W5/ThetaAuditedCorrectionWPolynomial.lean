@@ -109,7 +109,7 @@ theorem thetaAuditedSeriesTerm_one_weighted_moment_sum
     (x : ℝ) (i j : Fin 5)
     (hIntegrable : ∀ k ∈ Finset.range
         ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
-      IntegrableOn (fun w : ℝ =>
+      MeasureTheory.IntegrableOn (fun w : ℝ =>
         (Real.exp (-w) * (1+w*x^2)^((1 : ℝ)/4)) * w^k)
         (Set.Ici (0 : ℝ)) MeasureTheory.volume) :
     thetaAuditedSeriesTerm x i j 1 =
