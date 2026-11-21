@@ -269,3 +269,4 @@ import W5.ThetaFirstCellGammaUniformCandidate
 import W5.ThetaFirstCellRationalPolynomialInterval
 import W5.ThetaFirstCellRationalCoefficientCertificate
 import W5.ThetaFirstCellComputableCoefficientBound
+import W5.ThetaFirstCellBinomialMajorantSound
