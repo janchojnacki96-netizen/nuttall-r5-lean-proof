@@ -84,7 +84,14 @@ theorem thetaRationalPolynomialInterval_bounded
     (hhi : (thetaRationalPolynomialInterval p I).hi ≤ Target.hi) :
     QInterval.ContainsReal Target (p.eval₂ (Rat.castHom ℝ) x) := by
   have h := thetaRationalPolynomialInterval_containsReal p I x hx
-  exact ⟨(by exact_mod_cast hlo).trans h.1,
-    h.2.trans (by exact_mod_cast hhi)⟩
+  have hloReal :
+      (Target.lo : ℝ) ≤
+        ((thetaRationalPolynomialInterval p I).lo : ℝ) := by
+    exact_mod_cast hlo
+  have hhiReal :
+      ((thetaRationalPolynomialInterval p I).hi : ℝ) ≤
+        (Target.hi : ℝ) := by
+    exact_mod_cast hhi
+  exact ⟨hloReal.trans h.1, h.2.trans hhiReal⟩
 
 end W5
