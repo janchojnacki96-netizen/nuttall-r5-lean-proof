@@ -36,7 +36,8 @@ theorem thetaAuditedCoefficientPolynomial_shifted_abs_le
   have hdp : 0 ≤ (p-1)/x+w*x :=
     add_nonneg (div_nonneg hpx hx.le) (mul_nonneg hw hx.le)
   have hqp : 0 ≤ p+w*x^2 := by positivity
-  have hwx : w*x^2 ≤ w := mul_le_mul_of_nonneg_left hx2 hw
+  have hwx : w*x^2 ≤ w := by
+    simpa only [mul_one] using (mul_le_mul_of_nonneg_left hx2 hw)
   have hpw : w ≤ p*w := by
     nlinarith [mul_nonneg hpx hw]
   have hpre : (1+(p-1)/x+w*x)*x ≤ 2*p*(w+1) := by
@@ -86,7 +87,8 @@ theorem thetaAuditedCorrectionQuarterPower_le
     linarith
   have hratio : w*x^2/p ≤ w := by
     apply (div_le_iff₀ hp0).mpr
-    have ha : w*x^2 ≤ w := mul_le_mul_of_nonneg_left hx2 hw
+    have ha : w*x^2 ≤ w := by
+    simpa only [mul_one] using (mul_le_mul_of_nonneg_left hx2 hw)
     have hb : w ≤ w*p := by nlinarith [mul_nonneg hw (by linarith : 0 ≤ p-1)]
     linarith
   calc
