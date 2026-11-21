@@ -88,7 +88,7 @@ theorem thetaAuditedCorrectionQuarterPower_le
   have hratio : w*x^2/p ≤ w := by
     apply (div_le_iff₀ hp0).mpr
     have ha : w*x^2 ≤ w := by
-    simpa only [mul_one] using (mul_le_mul_of_nonneg_left hx2 hw)
+      simpa only [mul_one] using (mul_le_mul_of_nonneg_left hx2 hw)
     have hb : w ≤ w*p := by nlinarith [mul_nonneg hw (by linarith : 0 ≤ p-1)]
     linarith
   calc
