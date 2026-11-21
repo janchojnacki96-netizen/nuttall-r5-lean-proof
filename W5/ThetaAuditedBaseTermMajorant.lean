@@ -92,6 +92,7 @@ theorem thetaCertificateBaseTerm_abs_le_audited_majorant
   have hbase :
       |thetaCertificateBaseTerm x i j n| =
         p*E*|coefficientPolynomial i j d p| := by
+    simp only [thetaCertificateBaseTerm, if_neg hnonzero]
     change |p*E*coefficientPolynomial i j d p| =
       p*E*|coefficientPolynomial i j d p|
     rw [abs_mul, abs_mul, abs_of_nonneg hp0, abs_of_nonneg hE]
