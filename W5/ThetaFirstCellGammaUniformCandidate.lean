@@ -8,8 +8,8 @@ The existing Mathlib Gamma enclosure gives rational intervals for
 all nine TRUE weighted moments without any external numerical integration.
 Here we use a deliberately WIDE and simple rational enclosure
   |coeff_k(B_ij(wx,1+w*x²))| <= 4 / 8^k,  0 < x <= 1/8.
-We DO NOT assert this last analytic inequality as a proved theorem.
-It is packaged as a named, explicit missing obligation.
+This module exposes the coefficient inequality as a premise.
+It is discharged in ThetaFirstCellBinomialMajorantSound.
 
 Once the coefficient inequality is supplied, the imported real
 interval-soundness and exact five-pivot LDL checker certify all five
@@ -21,9 +21,8 @@ native_decide, without reproducing the 768-bit auditor's 51 matrices.
 
 namespace W5
 
-/-- The only missing analytic statement for this alternative compact
-first-cell candidate: a uniform bound on each of the nine true
-polynomial coefficients. This is NOT currently a theorem. -/
+/-- The uniform coefficient premise used by this compact candidate.
+A subsequent module establishes this proposition unconditionally. -/
 def ThetaFirstCellGammaUniformCoefficientBound : Prop :=
   ∀ x : ℝ, 0 < x → x ≤ (1 : ℝ)/8 →
     ∀ i j : Fin 5, ∀ k ∈ Finset.range 9,
@@ -72,8 +71,8 @@ theorem thetaFirstCellGammaUniformMatrix_pivotSigns :
     (thetaSymmetricIntervals thetaFirstCellGammaUniformMatrix)
     thetaFirstCellGammaUniformMatrix_checked
 
-/-- Under the one explicit, still-open bound on genuine
-polynomial coefficients, all 15 TRUE theta entries are enclosed
+/-- Given the coefficient bound proved in a subsequent module,
+all 15 TRUE theta entries are enclosed
 on the first cell by this new exact-rational matrix. -/
 theorem thetaFirstCellGammaUniformMatrix_containsReal
     (hcoeff : ThetaFirstCellGammaUniformCoefficientBound)
@@ -126,10 +125,9 @@ theorem thetaFirstCellGammaUniformMatrix_containsReal
     (by dsimp [thetaFirstCellGammaUniformMatrix]; exact le_rfl)
     (by dsimp [thetaFirstCellGammaUniformMatrix]; exact le_rfl)
 
-/-- This is the complete, explicitly CONDITIONAL first-cell
-real-matrix LDL sign result. The expensive finite rational check
-and all integrability/tail/Gamma inputs are discharged; only the
-uniform true polynomial coefficient inequality remains. -/
+/-- This modular first-cell real-matrix sign theorem accepts a
+coefficient premise. The later binomial-majorant module proves
+that premise, producing an unconditional first-cell sign result. -/
 theorem thetaFirstCellGammaUniform_realPivotSigns
     (hcoeff : ThetaFirstCellGammaUniformCoefficientBound)
     (x : ℝ) (hx : 0 < x) (hxB : x ≤ (1 : ℝ)/8) :

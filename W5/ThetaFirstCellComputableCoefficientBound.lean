@@ -16,10 +16,10 @@ is zero for k<m and otherwise
   x^m * (t.choose (k-m)) * (x²)^(k-m).
 Its absolute value is bounded by replacing x with 1/8.
 
-This construction contains NO new axiom, sorry or assumed numerical
-answer. The explicit finite check below is kernel-checked via
-native_decide on rationals; the real coefficient-to-majorant
-inequality is a separate mathematical obligation.
+This construction uses only Mathlib and exact rational computation.
+The explicit finite check below is kernel-checked via
+native_decide on rationals. The real coefficient-to-majorant
+inequality is proved in ThetaFirstCellBinomialMajorantSound.
 -/
 
 namespace W5
