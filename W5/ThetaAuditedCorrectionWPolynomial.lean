@@ -571,4 +571,92 @@ theorem thetaCoefficient_first_cell_containsReal_of_moment_intervals
       x hx hx1 i j D X C M hdiag hscale hcoeff hmoment)
     hlo hhi
 
+
+/-!
+## Fixed nine-moment rational interval soundness
+
+In contrast to the preceding general-purpose variable-degree bridge,
+these theorems use exactly N=9, matching the original independent
+768-bit auditor's nine weighted moments without any padding
+assumptions about the rational input arrays. They reuse every
+existing QInterval semantic lemma and the proved infinite-series
+tail enclosure.
+-/
+
+/-- Nine verified rational coefficient and moment enclosures,
+combined with rational four-corner arithmetic, soundly enclose
+the genuine first square-index term of the theta coefficient. -/
+theorem thetaAuditedOneTermNineMomentInterval_containsReal
+    (x : ℝ) (hx : 0 < x) (hx1 : x ≤ 1)
+    (i j : Fin 5)
+    (D X : QInterval) (C M : ℕ → QInterval)
+    (hdiag : QInterval.ContainsReal D
+      (if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+       else 0))
+    (hscale : QInterval.ContainsReal X (x^2/4))
+    (hcoeff : ∀ k ∈ Finset.range 9,
+      QInterval.ContainsReal (C k)
+        ((thetaCorrectionWPolynomial x 1 0 i j).coeff k))
+    (hmoment : ∀ k ∈ Finset.range 9,
+      QInterval.ContainsReal (M k)
+        (thetaAuditedOneWeightedMoment x k)) :
+    QInterval.ContainsReal
+      (thetaAuditedOneTermMomentInterval D X C M 9)
+      (thetaAuditedSeriesTerm x i j 1) := by
+  have hsum :=
+    QInterval.finsetSum_containsReal
+      (Finset.range 9)
+      (fun k => QInterval.mul (C k) (M k))
+      (fun k =>
+        (thetaCorrectionWPolynomial x 1 0 i j).coeff k *
+          thetaAuditedOneWeightedMoment x k)
+      (fun k hk => QInterval.mul_containsReal
+        (hcoeff k hk) (hmoment k hk))
+  have hbound :=
+    QInterval.sub_containsReal hdiag
+      (QInterval.mul_containsReal hscale hsum)
+  rw [thetaAuditedSeriesTerm_one_nine_weighted_moments
+    x hx hx1 i j]
+  exact hbound
+
+/-- Once the nine original moments and original polynomial
+coefficients are uniformly enclosed on the first x-cell, the
+previous 10^(-35) infinite-tail certificate and exact endpoint
+comparisons enclose the full original theta matrix entry.
+No additional convergence hypothesis or numerical oracle. -/
+theorem thetaCoefficient_first_cell_containsReal_of_nine_moment_intervals
+    (x : ℝ) (hx : 0 < x) (hxB : x ≤ (1 : ℝ)/8)
+    (i j : Fin 5)
+    (D X : QInterval) (C M : ℕ → QInterval)
+    (Target : QInterval)
+    (hdiag : QInterval.ContainsReal D
+      (if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+       else 0))
+    (hscale : QInterval.ContainsReal X (x^2/4))
+    (hcoeff : ∀ k ∈ Finset.range 9,
+      QInterval.ContainsReal (C k)
+        ((thetaCorrectionWPolynomial x 1 0 i j).coeff k))
+    (hmoment : ∀ k ∈ Finset.range 9,
+      QInterval.ContainsReal (M k)
+        (thetaAuditedOneWeightedMoment x k))
+    (hlo : Target.lo ≤
+      (QInterval.add
+        (thetaAuditedOneTermMomentInterval D X C M 9)
+        thetaAuditedTailErrorInterval).lo)
+    (hhi : (QInterval.add
+        (thetaAuditedOneTermMomentInterval D X C M 9)
+        thetaAuditedTailErrorInterval).hi ≤ Target.hi) :
+    QInterval.ContainsReal Target (thetaCoefficient x i j) := by
+  have hx1 : x ≤ 1 := by linarith
+  exact thetaCoefficient_far_containsReal_of_one_term
+    x hx hxB i j
+    (thetaAuditedOneTermMomentInterval D X C M 9)
+    Target
+    (thetaAuditedOneTermNineMomentInterval_containsReal
+      x hx hx1 i j D X C M hdiag hscale hcoeff hmoment)
+    hlo hhi
+
+
 end W5
