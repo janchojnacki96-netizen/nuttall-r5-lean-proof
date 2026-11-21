@@ -68,4 +68,111 @@ theorem thetaAuditedSeriesTerm_one_polynomial_integral
   simp_rw [thetaCorrectionWPolynomial_eval]
   simp only [zero_add]
 
+
+/-!
+## Exact moment expansion of the original first-term correction
+
+Mathlib already supplies the finite coefficient expansion of any
+Polynomial R, so no 25x25 manual binomial expansion is needed.
+We integrate this finite expansion using the EXISTING
+integral_finsetSum lemma. Integrability of each weighted monomial is
+an explicit premise here; proving it by domination and then proving
+its auditor-specific rational enclosure are separate obligations.
+-/
+
+/-- The true correction polynomial is a FINITE sum of its
+actual Mathlib coefficients, for arbitrary original indices. -/
+theorem coefficientPolynomial_theta_affine_eq_coefficient_sum
+    (x p d w : ℝ) (i j : Fin 5) :
+    coefficientPolynomial i j (d+w*x) (p+w*x^2) =
+      ∑ k ∈ Finset.range
+          ((thetaCorrectionWPolynomial x p d i j).natDegree + 1),
+        (thetaCorrectionWPolynomial x p d i j).coeff k * w^k := by
+  rw [← thetaCorrectionWPolynomial_eval]
+  exact Polynomial.eval_eq_sum_range w
+
+/-- The true weighted moments evaluated by the independent
+integer auditor, as ordinary Lebesgue integrals. No enclosures or
+symbolic moment evaluations are asserted by this definition. -/
+noncomputable def thetaAuditedOneWeightedMoment
+    (x : ℝ) (k : ℕ) : ℝ :=
+  ∫ w in Set.Ici (0 : ℝ),
+    (Real.exp (-w) * (1+w*x^2)^((1 : ℝ)/4)) * w^k
+    ∂MeasureTheory.volume
+
+/-- Exact integral linearity expresses the original n=1 theta
+summand as a finite linear combination of the true moments.
+Mathlib supplies polynomial coefficient expansion and finite
+integral-sum interchange; only individual moment integrability
+is required, never infinite series interchange or unverified data. -/
+theorem thetaAuditedSeriesTerm_one_weighted_moment_sum
+    (x : ℝ) (i j : Fin 5)
+    (hIntegrable : ∀ k ∈ Finset.range
+        ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
+      IntegrableOn (fun w : ℝ =>
+        (Real.exp (-w) * (1+w*x^2)^((1 : ℝ)/4)) * w^k)
+        (Set.Ici (0 : ℝ)) MeasureTheory.volume) :
+    thetaAuditedSeriesTerm x i j 1 =
+      (if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+       else 0) -
+      (x^2/4) *
+        (∑ k ∈ Finset.range
+            ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
+          (thetaCorrectionWPolynomial x 1 0 i j).coeff k *
+            thetaAuditedOneWeightedMoment x k) := by
+  let P : Polynomial ℝ := thetaCorrectionWPolynomial x 1 0 i j
+  let W : ℝ → ℝ := fun w =>
+    Real.exp (-w) * (1+w*x^2)^((1 : ℝ)/4)
+  have hexpand (w : ℝ) :
+      W w * P.eval w =
+        ∑ k ∈ Finset.range (P.natDegree + 1),
+          P.coeff k * (W w * w^k) := by
+    rw [Polynomial.eval_eq_sum_range]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro k _
+    ring
+  have hIntegral :
+      (∫ w in Set.Ici (0 : ℝ), W w * P.eval w
+        ∂MeasureTheory.volume) =
+        ∑ k ∈ Finset.range (P.natDegree + 1),
+          P.coeff k * thetaAuditedOneWeightedMoment x k := by
+    calc
+      _ = ∫ w in Set.Ici (0 : ℝ),
+            ∑ k ∈ Finset.range (P.natDegree + 1),
+              P.coeff k * (W w * w^k)
+            ∂MeasureTheory.volume := by
+          apply MeasureTheory.integral_congr_ae
+          filter_upwards [] with w
+          exact hexpand w
+      _ = ∑ k ∈ Finset.range (P.natDegree + 1),
+            (∫ w in Set.Ici (0 : ℝ),
+              P.coeff k * (W w * w^k)
+              ∂MeasureTheory.volume) := by
+          exact MeasureTheory.integral_finsetSum
+            (Finset.range (P.natDegree + 1))
+            (fun k hk => (hIntegrable k hk).const_mul (P.coeff k))
+      _ = ∑ k ∈ Finset.range (P.natDegree + 1),
+            P.coeff k * thetaAuditedOneWeightedMoment x k := by
+          apply Finset.sum_congr rfl
+          intro k _
+          rw [MeasureTheory.integral_const_mul]
+          rfl
+  rw [thetaAuditedSeriesTerm_one_polynomial_integral]
+  change
+    (if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+     else 0) -
+      (x^2/4) *
+        (∫ w in Set.Ici (0 : ℝ), W w * P.eval w
+          ∂MeasureTheory.volume) =
+    (if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+     else 0) -
+      (x^2/4) *
+        (∑ k ∈ Finset.range (P.natDegree + 1),
+          P.coeff k * thetaAuditedOneWeightedMoment x k)
+  rw [hIntegral]
+
 end W5
