@@ -99,7 +99,9 @@ theorem thetaAuditedFiniteCell_to_term_tail
     · exact hterms x hx hax hxb i j hij
     · by_cases hfar : b ≤ (1 : ℚ)/8
       · have hbfar : (b : ℝ) ≤ (1 : ℝ)/8 := by
-          exact_mod_cast hfar
+          have hmul : b * 8 ≤ (1 : ℚ) := by linarith [hfar]
+          have hmulR : (b : ℝ) * 8 ≤ 1 := by exact_mod_cast hmul
+          linarith
         simpa only [thetaAuditedCellCutoff, if_pos hfar] using
           (thetaAuditedFarTail_rational_enclosure x hx
             (hxb.trans hbfar) i j)
