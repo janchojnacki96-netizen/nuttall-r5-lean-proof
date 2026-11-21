@@ -66,5 +66,6 @@ theorem thetaAuditedSeriesTerm_one_polynomial_integral
           ∂MeasureTheory.volume) := by
   rw [thetaAuditedSeriesTerm_one_diagonal_minus_integral]
   simp_rw [thetaCorrectionWPolynomial_eval]
+  simp only [zero_add]
 
 end W5
