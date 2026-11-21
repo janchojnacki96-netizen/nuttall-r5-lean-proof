@@ -1,5 +1,5 @@
 import W5.ThetaAllCorrectionSummabilityFubini
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 
 /-!
 # Exact weighted exponential moment for the original theta correction
@@ -32,13 +32,42 @@ theorem thetaAuditedCorrectionGammaMoment (k : ℕ) :
   simpa [Real.rpow_natCast, Real.Gamma_nat_eq_factorial] using h
 
 /-- Each exponential monomial is integrable on the positive half-line.
-This follows from the already-proved nonzero Gamma integral. -/
+This uses Mathlib's independently established Gamma integrability theorem. -/
 theorem thetaAuditedCorrectionGammaMoment_integrable (k : ℕ) :
     IntegrableOn (fun w : ℝ => w^k * Real.exp (-w))
       (Set.Ioi (0 : ℝ)) volume := by
-  apply IntegrableOn.of_integral_ne_zero
-  rw [thetaAuditedCorrectionGammaMoment]
-  positivity
+  have hk : (-1 : ℝ) < (k : ℝ) := by positivity
+  simpa only [Real.rpow_natCast, Real.rpow_one] using
+    (integrableOn_rpow_mul_exp_neg_rpow
+      (s := (k : ℝ)) (p := (1 : ℝ)) hk (by norm_num))
+
+/-- Reuse binomial expansion once for both integral evaluation and
+integrability of the original weighted correction envelope. -/
+theorem thetaAuditedCorrectionShiftedEnvelope_eq_finset (w : ℝ) :
+    (w+1)^13 * Real.exp (-w) =
+      ∑ k ∈ Finset.range (13+1),
+        (w^k * Real.exp (-w)) * (Nat.choose 13 k : ℝ) := by
+  rw [add_pow, Finset.sum_mul]
+  simp only [one_pow, mul_one]
+  apply Finset.sum_congr rfl
+  intro k _
+  ring
+
+/-- Unlike a nonzero Bochner integral, this is an independently
+proved integrability statement using Mathlib's Gamma-integrability
+theorem and closure under finite sums. -/
+theorem thetaAuditedCorrectionShiftedMoment_integrable :
+    IntegrableOn (fun w : ℝ => (w+1)^13 * Real.exp (-w))
+      (Set.Ioi (0 : ℝ)) volume := by
+  have hi : IntegrableOn
+      (fun w : ℝ => ∑ k ∈ Finset.range (13+1),
+        (w^k * Real.exp (-w)) * (Nat.choose 13 k : ℝ))
+      (Set.Ioi (0 : ℝ)) volume := by
+    exact integrable_finsetSum (Finset.range (13+1))
+      (fun k _ => (thetaAuditedCorrectionGammaMoment_integrable k).mul_const _)
+  exact hi.congr_fun
+    (fun w _ => (thetaAuditedCorrectionShiftedEnvelope_eq_finset w).symm)
+    measurableSet_Ioi
 
 /-- Exact finite exponential moment of the degree-13 envelope.
 The right side is the exact integer sum
@@ -51,15 +80,6 @@ theorem thetaAuditedCorrectionShiftedMoment :
       (fun w : ℝ =>
         (w^k * Real.exp (-w)) * (Nat.choose 13 k : ℝ)) μ :=
     (thetaAuditedCorrectionGammaMoment_integrable k).mul_const _
-  have hbinom (w : ℝ) :
-      (w+1)^13 * Real.exp (-w) =
-        ∑ k ∈ Finset.range (13+1),
-          (w^k * Real.exp (-w)) * (Nat.choose 13 k : ℝ) := by
-    rw [add_pow, Finset.sum_mul]
-    simp only [one_pow, mul_one]
-    apply Finset.sum_congr rfl
-    intro k _
-    ring
   calc
     (∫ w : ℝ in Set.Ioi (0 : ℝ),
       (w+1)^13 * Real.exp (-w)) =
@@ -68,7 +88,7 @@ theorem thetaAuditedCorrectionShiftedMoment :
             (w^k * Real.exp (-w)) * (Nat.choose 13 k : ℝ) := by
           apply integral_congr_ae
           filter_upwards [] with w
-          exact hbinom w
+          exact thetaAuditedCorrectionShiftedEnvelope_eq_finset w
     _ = ∑ k ∈ Finset.range (13+1),
         (∫ w : ℝ in Set.Ioi (0 : ℝ),
           (w^k * Real.exp (-w)) * (Nat.choose 13 k : ℝ)) := by

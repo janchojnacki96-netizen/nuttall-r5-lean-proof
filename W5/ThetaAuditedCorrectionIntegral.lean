@@ -18,15 +18,6 @@ therefore use the existing audited geometric majorant machinery.
 namespace W5
 open MeasureTheory
 
-/-- Exact shifted degree-13 weight is integrable on the positive
-half-line, by its independently calculated Gamma integral. -/
-theorem thetaAuditedCorrectionShiftedMoment_integrable :
-    IntegrableOn (fun w : ℝ => (w+1)^13 * Real.exp (-w))
-      (Set.Ioi (0:ℝ)) volume := by
-  apply IntegrableOn.of_integral_ne_zero
-  rw [thetaAuditedCorrectionShiftedMoment]
-  norm_num
-
 /-- This bounds the TRUE original theta correction integrand,
 not an unrelated auxiliary function. The exact Gaussian n-decay
 survives intact; the residual w-dependence is integrable. -/
