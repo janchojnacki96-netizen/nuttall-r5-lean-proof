@@ -84,6 +84,7 @@ theorem thetaAuditedTail_abs_le_majorant_tsum
       |thetaAuditedTail N x i j| ≤
         ∑' k : ℕ, |thetaAuditedSeriesTerm x i j (k+N)| := by
     have h := norm_tsum_le_tsum_norm
+      (f := fun k : ℕ => thetaAuditedSeriesTerm x i j (k+N))
       (by simpa only [Real.norm_eq_abs] using habs)
     simpa only [thetaAuditedTail, Real.norm_eq_abs] using h
   have hcompare := habs.tsum_le_tsum hpoint hmajor
