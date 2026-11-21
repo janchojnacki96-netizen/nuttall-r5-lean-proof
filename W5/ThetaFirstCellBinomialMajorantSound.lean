@@ -92,6 +92,7 @@ private theorem thetaBinomialTermAbsolute_le_majorant
           _ = _ := by ring
       have hmu : i.val+j.val-2*t ≤ k ∧
           k-(i.val+j.val-2*t) ≤ t := ⟨hm, hu⟩
+      dsimp [m, u] at hreal
       simpa only [if_pos hm, if_pos hmu,
         Rat.cast_mul, Rat.cast_div, Rat.cast_pow,
         Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_one] using hreal
