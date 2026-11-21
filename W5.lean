@@ -249,3 +249,6 @@ import W5.ThetaAuditedNormalizedKernelBridge
 import W5.ThetaAuditedMajorantGeometricTail
 
 import W5.ThetaAuditedMajorantTailNumerical
+
+import W5.ThetaSignedFixedPointSqrt
+import W5.ThetaExpTaylor65Remainder

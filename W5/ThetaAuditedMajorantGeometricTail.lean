@@ -58,7 +58,8 @@ theorem thetaMajorantTerm_geometric_bound
   intro k
   induction k with
   | zero =>
-      simp only [Nat.add_zero, pow_zero, one_mul]
+      simpa only [Nat.add_zero, pow_zero, one_mul] using
+        (le_refl (thetaMajorantTerm y N))
   | succ k ih =>
       have hNk : 2 ≤ N+k := by omega
       have hstep := thetaMajorantTerm_succ_le_half (N+k) hNk y hy
