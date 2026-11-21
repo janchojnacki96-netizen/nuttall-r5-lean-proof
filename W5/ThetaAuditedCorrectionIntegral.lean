@@ -67,9 +67,16 @@ theorem thetaCertificateCorrectionIntegrand_norm_le_audited
     rw [Real.norm_eq_abs]
     simp only [abs_mul,
       abs_of_nonneg (show 0 ≤ x^2/4 by positivity),
+      abs_of_nonneg hE,
       abs_of_nonneg (Real.exp_nonneg _),
-      abs_of_nonneg (Real.rpow_nonneg (by positivity) _)]
+      abs_of_nonneg hR]
     ring
+  have hE : 0 ≤ E := by
+    dsimp [E]
+    positivity
+  have hR : 0 ≤ (1+w*x^2/p)^((1:ℝ)/4) := by
+    apply Real.rpow_nonneg
+    positivity
   have hfactor : 0 ≤ (x^2/4)*E*Real.exp (-w) := by
     dsimp [E]
     positivity
@@ -131,7 +138,7 @@ theorem thetaCertificateCorrectionTerm_abs_le_audited_majorant
   calc
     |thetaCertificateCorrectionTerm x i j n| =
         ‖∫ w : ℝ, thetaCertificateCorrectionIntegrand x i j n w ∂μ‖ := by
-          simp only [thetaCertificateCorrectionTerm_eq_integral, Real.norm_eq_abs]
+          simp only [thetaCertificateCorrectionTerm_eq_integral, Real.norm_eq_abs, μ]
     _ ≤ ∫ w : ℝ, C*((w+1)^13*Real.exp (-w)) ∂μ := hmain
     _ = C*(16926797486 : ℝ) := by
       rw [integral_const_mul, thetaAuditedCorrectionShiftedMoment]
