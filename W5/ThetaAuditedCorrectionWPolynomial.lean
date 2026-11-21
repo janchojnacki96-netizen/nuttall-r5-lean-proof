@@ -65,9 +65,6 @@ theorem thetaAuditedSeriesTerm_one_polynomial_integral
               (thetaCorrectionWPolynomial x 1 0 i j).eval w
           ∂MeasureTheory.volume) := by
   rw [thetaAuditedSeriesTerm_one_diagonal_minus_integral]
-  congr 1
-  apply MeasureTheory.integral_congr_ae
-  filter_upwards [] with w
-  rw [thetaCorrectionWPolynomial_eval]
+  simp_rw [thetaCorrectionWPolynomial_eval]
 
 end W5
