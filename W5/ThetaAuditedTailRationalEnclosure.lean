@@ -154,4 +154,99 @@ theorem analyticMatrixPositive_of_audited_finite_term_certificates
     (thetaAuditedFiniteCertificateChain_to_term_tail
       0 endpoints thetaAuditUpperCellMatrices h)
 
+
+/-!
+## First far cell: eliminate the vacuous index zero
+
+The first cell of the integer auditor, [0,1/8], retains only the n=1
+contribution before the already rigorously bounded N=2 tail. We reuse
+the proven correction summability and real interval-addition semantics
+without duplicating any polynomial or numerical evaluation.
+-/
+
+/-- The artificial n=0 square-index contribution is literally zero,
+including its genuine Lebesgue integral correction. -/
+theorem thetaAuditedSeriesTerm_zero
+    (x : ℝ) (i j : Fin 5) :
+    thetaAuditedSeriesTerm x i j 0 = 0 := by
+  simp [thetaAuditedSeriesTerm, thetaCertificateBaseTerm,
+    thetaCertificateCorrectionTerm]
+
+/-- The N=2 finite prefix used on the far cell consists of exactly
+one nonzero original term. This is a definitional identity, not a
+numerical approximation. -/
+theorem thetaAuditedPrefix_two_eq_one
+    (x : ℝ) (i j : Fin 5) :
+    thetaAuditedPrefix 2 x i j =
+      thetaAuditedSeriesTerm x i j 1 := by
+  simp [thetaAuditedPrefix, Finset.sum_range_succ,
+    thetaAuditedSeriesTerm_zero]
+
+/-- For x in the first audited cell, the TRUE full theta coefficient
+is exactly its n=1 contribution plus the proven tiny n≥2 tail.
+The previous all-25 Mathlib Fubini summability theorem discharges
+convergence with no additional hypothesis. -/
+theorem thetaCoefficient_far_eq_one_add_tail
+    (x : ℝ) (hx : 0 < x) (hxB : x ≤ (1 : ℝ)/8)
+    (i j : Fin 5) :
+    thetaCoefficient x i j =
+      thetaAuditedSeriesTerm x i j 1 +
+        thetaAuditedTail 2 x i j := by
+  have hx1 : x ≤ 1 := by linarith
+  rw [thetaCoefficient_eq_audited_prefix_add_tail_unconditional
+    2 x hx hx1 i j]
+  rw [thetaAuditedPrefix_two_eq_one]
+
+/-- Fully rigorous first-cell interval composition: ONLY the true
+n=1 term needs a numerical real enclosure. The infinite tail,
+its 10^(-35) rational interval, and convergence are all proved.
+The last two rational comparisons can be checked by exact arithmetic
+once a concrete first-term interval is supplied. -/
+theorem thetaCoefficient_far_containsReal_of_one_term
+    (x : ℝ) (hx : 0 < x) (hxB : x ≤ (1 : ℝ)/8)
+    (i j : Fin 5) (I C : QInterval)
+    (hfirst : QInterval.ContainsReal I
+      (thetaAuditedSeriesTerm x i j 1))
+    (hlo : C.lo ≤ (QInterval.add I thetaAuditedTailErrorInterval).lo)
+    (hhi : (QInterval.add I thetaAuditedTailErrorInterval).hi ≤ C.hi) :
+    QInterval.ContainsReal C (thetaCoefficient x i j) := by
+  have hsum : QInterval.ContainsReal
+      (QInterval.add I thetaAuditedTailErrorInterval)
+      (thetaAuditedSeriesTerm x i j 1 +
+        thetaAuditedTail 2 x i j) :=
+    QInterval.add_containsReal hfirst
+      (thetaAuditedFarTail_rational_enclosure x hx hxB i j)
+  rw [← thetaCoefficient_far_eq_one_add_tail x hx hxB i j] at hsum
+  have hlow : (C.lo : ℝ) ≤
+      ((QInterval.add I thetaAuditedTailErrorInterval).lo : ℝ) := by
+    exact_mod_cast hlo
+  have hhigh :
+      ((QInterval.add I thetaAuditedTailErrorInterval).hi : ℝ) ≤
+        (C.hi : ℝ) := by
+    exact_mod_cast hhi
+  exact ⟨hlow.trans hsum.1, hsum.2.trans hhigh⟩
+
+/-- First-cell uniform upper-triangle soundness can now be certified
+with just fifteen real interval enclosures of the genuine n=1 term.
+All n≥2 terms are covered unconditionally by the audited tail proof. -/
+theorem thetaFirstFarCell_upperEnclosure_of_one_term
+    (C J : ThetaIntervalMatrix)
+    (hinside : ∀ i j : Fin 5, i ≤ j →
+      (C i j).lo ≤
+        (QInterval.add (J i j) thetaAuditedTailErrorInterval).lo ∧
+      (QInterval.add (J i j) thetaAuditedTailErrorInterval).hi ≤
+        (C i j).hi)
+    (hterm : ∀ x : ℝ, 0 < x → x ≤ (1 : ℝ)/8 →
+      ∀ i j : Fin 5, i ≤ j →
+        QInterval.ContainsReal (J i j)
+          (thetaAuditedSeriesTerm x i j 1)) :
+    ∀ x : ℝ, 0 < x → x ≤ (1 : ℝ)/8 →
+      ∀ i j : Fin 5, i ≤ j →
+        QInterval.ContainsReal (C i j) (thetaCoefficient x i j) := by
+  intro x hx hxB i j hij
+  obtain ⟨hlo, hhi⟩ := hinside i j hij
+  exact thetaCoefficient_far_containsReal_of_one_term
+    x hx hxB i j (J i j) (C i j)
+    (hterm x hx hxB i j hij) hlo hhi
+
 end W5
