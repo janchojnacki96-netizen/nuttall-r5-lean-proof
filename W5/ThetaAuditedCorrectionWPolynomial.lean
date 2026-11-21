@@ -320,7 +320,7 @@ theorem thetaAuditedOneTermMomentInterval_containsReal
     (hcoeff : ∀ k ∈ Finset.range
         ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
       QInterval.ContainsReal (C k)
-        (thetaCorrectionWPolynomial x 1 0 i j).coeff k)
+        ((thetaCorrectionWPolynomial x 1 0 i j).coeff k))
     (hmoment : ∀ k ∈ Finset.range
         ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
       QInterval.ContainsReal (M k)
@@ -363,7 +363,7 @@ theorem thetaCoefficient_first_cell_containsReal_of_moment_intervals
     (hcoeff : ∀ k ∈ Finset.range
         ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
       QInterval.ContainsReal (C k)
-        (thetaCorrectionWPolynomial x 1 0 i j).coeff k)
+        ((thetaCorrectionWPolynomial x 1 0 i j).coeff k))
     (hmoment : ∀ k ∈ Finset.range
         ((thetaCorrectionWPolynomial x 1 0 i j).natDegree + 1),
       QInterval.ContainsReal (M k)
