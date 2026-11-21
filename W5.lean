@@ -266,3 +266,4 @@ import W5.ThetaAuditedCorrectionWPolynomial
 import W5.ThetaAuditedMomentMonotonicity
 import W5.ThetaAuditedMomentGammaBox
 import W5.ThetaFirstCellGammaUniformCandidate
+import W5.ThetaFirstCellRationalPolynomialInterval
