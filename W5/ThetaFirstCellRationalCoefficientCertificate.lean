@@ -26,7 +26,7 @@ namespace W5
 polynomial in w whose coefficients are themselves rational
 polynomials in x. The scalar formula is the ORIGINAL B_ij
 factorial coefficient from the established theta certificate. -/
-def thetaFirstCellBivariateWPolynomial
+noncomputable def thetaFirstCellBivariateWPolynomial
     (i j : Fin 5) : Polynomial (Polynomial ℚ) :=
   ∑ t ∈ Finset.range (min i.val j.val + 1),
     Polynomial.C
@@ -43,7 +43,7 @@ def thetaFirstCellBivariateWPolynomial
 
 /-- Mathlib's coefficient map gives an exact rational polynomial
 in x for every one of the nine original w-coefficients. -/
-def thetaFirstCellCoefficientRationalPolynomial
+noncomputable def thetaFirstCellCoefficientRationalPolynomial
     (i j : Fin 5) (k : ℕ) : Polynomial ℚ :=
   (thetaFirstCellBivariateWPolynomial i j).coeff k
 
@@ -91,21 +91,21 @@ def thetaFirstCellRationalXBox : QInterval :=
 /-- Each one of the 225 original w-coefficient functions receives
 a precisely computable rational interval using the proved
 REAL-semantic polynomial interval evaluator. -/
-def thetaFirstCellRationalCoefficientInterval
+noncomputable def thetaFirstCellRationalCoefficientInterval
     (i j : Fin 5) (k : ℕ) : QInterval :=
   thetaRationalPolynomialInterval
     (thetaFirstCellCoefficientRationalPolynomial i j k)
     thetaFirstCellRationalXBox
 
 /-- A SINGLE executable 225-case rational endpoint check. This
-is a finite proposition with no real analysis assumptions. -/
-theorem thetaFirstCellRationalCoefficientCheck :
+is a finite proposition, now explicitly separated from a computational
+implementation of polynomial coefficients. Its truth is not assumed. -/
+def ThetaFirstCellRationalCoefficientCheck : Prop :=
     ∀ i j : Fin 5, ∀ k : Fin 9,
       -(4 / (8 : ℚ)^k.val) ≤
         (thetaFirstCellRationalCoefficientInterval i j k.val).lo ∧
       (thetaFirstCellRationalCoefficientInterval i j k.val).hi ≤
-        4 / (8 : ℚ)^k.val := by
-  native_decide
+        4 / (8 : ℚ)^k.val
 
 /-- All rational polynomial coefficient intervals contain their
 TRUE real coefficients uniformly for the whole first cell. -/
@@ -130,34 +130,41 @@ theorem thetaFirstCellRationalCoefficientInterval_containsReal
   rw [thetaFirstCellCoefficientRationalPolynomial_eval] at h
   exact h
 
-/-- The previously explicit coefficient-bound hypothesis is
-DISCHARGED using only a 225-case exact rational certificate,
+/-- Assuming the separately stated 225-case rational check,
+the coefficient bound follows from exact interval soundness,
 its REAL soundness, and the bivariate polynomial identity. -/
-theorem thetaFirstCellGammaUniformCoefficientBound_proved :
+theorem thetaFirstCellGammaUniformCoefficientBound_of_rational_check
+    (hcheck : ThetaFirstCellRationalCoefficientCheck) :
     ThetaFirstCellGammaUniformCoefficientBound := by
   intro x hx hxB i j k hk
   have hk9 : k < 9 := Finset.mem_range.mp hk
-  have hcheck :=
-    thetaFirstCellRationalCoefficientCheck i j ⟨k, hk9⟩
+  have hcheck' := hcheck i j ⟨k, hk9⟩
+  have hratlo : -(4 / (8 : ℚ)^k) ≤
+      (thetaFirstCellRationalCoefficientInterval i j k).lo := by
+    simpa using hcheck'.1
+  have hrathi :
+      (thetaFirstCellRationalCoefficientInterval i j k).hi ≤
+        4 / (8 : ℚ)^k := by
+    simpa using hcheck'.2
   have hreal :=
     thetaFirstCellRationalCoefficientInterval_containsReal
       x hx.le hxB i j k
   have hlo :
       -(4 / (8 : ℝ)^k) ≤
         ((thetaFirstCellRationalCoefficientInterval i j k).lo : ℝ) := by
-    exact_mod_cast hcheck.1
+    exact_mod_cast hratlo
   have hhi :
       ((thetaFirstCellRationalCoefficientInterval i j k).hi : ℝ) ≤
         4 / (8 : ℝ)^k := by
-    exact_mod_cast hcheck.2
+    exact_mod_cast hrathi
   exact abs_le.mpr ⟨hlo.trans hreal.1, hreal.2.trans hhi⟩
 
-/-- Entire first x-cell: real signs of all 5 Schur pivots
-for the TRUE original theta matrix, without hypotheses on
-moment values, coefficient bounds or numerical rounding.
+/-- The true first-cell real pivot signs follow PROVIDED the
+explicit 225-case rational coefficient check has been proven.
 This does not address the other 50 cells or the final
 Wronskian/theta transformation. -/
-theorem thetaFirstCellGammaUniform_realPivotSigns_unconditional
+theorem thetaFirstCellGammaUniform_realPivotSigns_of_rational_check
+    (hcheck : ThetaFirstCellRationalCoefficientCheck)
     (x : ℝ) (hx : 0 < x) (hxB : x ≤ (1 : ℝ)/8) :
     PivotSigns
       (originalThetaRealPivot x 0)
@@ -166,6 +173,6 @@ theorem thetaFirstCellGammaUniform_realPivotSigns_unconditional
       (originalThetaRealPivot x 3)
       (originalThetaRealPivot x 4) :=
   thetaFirstCellGammaUniform_realPivotSigns
-    thetaFirstCellGammaUniformCoefficientBound_proved x hx hxB
+    (thetaFirstCellGammaUniformCoefficientBound_of_rational_check hcheck) x hx hxB
 
 end W5
