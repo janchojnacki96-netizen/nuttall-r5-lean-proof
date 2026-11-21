@@ -256,3 +256,8 @@ import W5.ThetaExpTaylor65Remainder
 import W5.ThetaAuditedMajorantUniformParameter
 
 import W5.ThetaAuditedBaseTermMajorant
+
+import W5.ThetaAuditedCorrectionMoment
+import W5.ThetaAuditedCorrectionPointwise
+import W5.ThetaAuditedCorrectionIntegral
+import W5.ThetaAuditedOriginalFullTail

@@ -57,7 +57,6 @@ theorem thetaFourthPowerExp_decay_mono
         ring
   have hfactor : y^4 = a^4*(y/a)^4 := by
     field_simp [ne_of_gt ha]
-    ring
   calc
     y^4 * Real.exp (-(c*y)) =
         a^4 * ((y/a)^4 * Real.exp (-(c*y))) := by
