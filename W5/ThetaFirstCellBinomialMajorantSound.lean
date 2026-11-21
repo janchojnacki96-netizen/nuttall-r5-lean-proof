@@ -90,10 +90,11 @@ private theorem thetaBinomialTermAbsolute_le_majorant
                 ((1/8 : ℝ)^m * ((t.choose u : ℝ) * (1/64 : ℝ)^u)) :=
             mul_le_mul_of_nonneg_left hsub (by positivity)
           _ = _ := by ring
-      simp only [if_pos hm, if_pos ⟨hm, hu⟩]
-      convert hreal using 1 <;>
-        simp only [Rat.cast_mul, Rat.cast_div, Rat.cast_pow,
-          Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_one]
+      have hmu : i.val+j.val-2*t ≤ k ∧
+          k-(i.val+j.val-2*t) ≤ t := ⟨hm, hu⟩
+      simpa only [if_pos hm, if_pos hmu,
+        Rat.cast_mul, Rat.cast_div, Rat.cast_pow,
+        Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_one] using hreal
     · have hcho : t.choose u = 0 :=
         Nat.choose_eq_zero_of_lt (by omega)
       simp [m, u, hm, hu, hcho]
@@ -140,7 +141,13 @@ theorem thetaFirstCellBinomialMajorant_sound
           else 0) : ℚ) : ℝ) := by
       apply Finset.sum_le_sum
       intro t _
-      exact thetaBinomialTermAbsolute_le_majorant x hx hxB i j t k
+      have ht := thetaBinomialTermAbsolute_le_majorant x hx hxB i j t k
+      by_cases h : i.val+j.val-2*t ≤ k ∧
+          k-(i.val+j.val-2*t) ≤ t
+      · simpa only [if_pos h, Rat.cast_mul, Rat.cast_div,
+          Rat.cast_pow, Rat.cast_natCast, Rat.cast_ofNat,
+          Rat.cast_one] using ht
+      · simpa only [if_neg h, Rat.cast_zero] using ht
     _ = (thetaFirstCellBinomialMajorant i j k : ℝ) := by
       simp only [thetaFirstCellBinomialMajorant, Rat.cast_sum]
 
@@ -158,7 +165,11 @@ theorem thetaFirstCellGammaUniformCoefficientBound_from_majorant :
     have hrat : thetaFirstCellBinomialMajorant i j k ≤
         4 / (8 : ℚ)^k := by
       simpa using hfinite
-    exact_mod_cast hrat
+    have hcast :
+        ((thetaFirstCellBinomialMajorant i j k : ℚ) : ℝ) ≤
+          ((4 / (8 : ℚ)^k : ℚ) : ℝ) := by
+      exact_mod_cast hrat
+    simpa only [Rat.cast_div, Rat.cast_pow, Rat.cast_ofNat] using hcast
   exact hmajorant.trans hreal
 
 /-- Five alternating Schur signs for the TRUE original theta
