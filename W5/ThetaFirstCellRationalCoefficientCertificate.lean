@@ -97,16 +97,6 @@ noncomputable def thetaFirstCellRationalCoefficientInterval
     (thetaFirstCellCoefficientRationalPolynomial i j k)
     thetaFirstCellRationalXBox
 
-/-- A SINGLE executable 225-case rational endpoint check. This
-is a finite proposition, now explicitly separated from a computational
-implementation of polynomial coefficients. Its truth is not assumed. -/
-def ThetaFirstCellRationalCoefficientCheck : Prop :=
-    ∀ i j : Fin 5, ∀ k : Fin 9,
-      -(4 / (8 : ℚ)^k.val) ≤
-        (thetaFirstCellRationalCoefficientInterval i j k.val).lo ∧
-      (thetaFirstCellRationalCoefficientInterval i j k.val).hi ≤
-        4 / (8 : ℚ)^k.val
-
 /-- All rational polynomial coefficient intervals contain their
 TRUE real coefficients uniformly for the whole first cell. -/
 theorem thetaFirstCellRationalCoefficientInterval_containsReal
@@ -129,50 +119,5 @@ theorem thetaFirstCellRationalCoefficientInterval_containsReal
       (Rat.castHom ℝ) x) at h
   rw [thetaFirstCellCoefficientRationalPolynomial_eval] at h
   exact h
-
-/-- Assuming the separately stated 225-case rational check,
-the coefficient bound follows from exact interval soundness,
-its REAL soundness, and the bivariate polynomial identity. -/
-theorem thetaFirstCellGammaUniformCoefficientBound_of_rational_check
-    (hcheck : ThetaFirstCellRationalCoefficientCheck) :
-    ThetaFirstCellGammaUniformCoefficientBound := by
-  intro x hx hxB i j k hk
-  have hk9 : k < 9 := Finset.mem_range.mp hk
-  have hcheck' := hcheck i j ⟨k, hk9⟩
-  have hratlo : -(4 / (8 : ℚ)^k) ≤
-      (thetaFirstCellRationalCoefficientInterval i j k).lo := by
-    simpa using hcheck'.1
-  have hrathi :
-      (thetaFirstCellRationalCoefficientInterval i j k).hi ≤
-        4 / (8 : ℚ)^k := by
-    simpa using hcheck'.2
-  have hreal :=
-    thetaFirstCellRationalCoefficientInterval_containsReal
-      x hx.le hxB i j k
-  have hlo :
-      -(4 / (8 : ℝ)^k) ≤
-        ((thetaFirstCellRationalCoefficientInterval i j k).lo : ℝ) := by
-    exact_mod_cast hratlo
-  have hhi :
-      ((thetaFirstCellRationalCoefficientInterval i j k).hi : ℝ) ≤
-        4 / (8 : ℝ)^k := by
-    exact_mod_cast hrathi
-  exact abs_le.mpr ⟨hlo.trans hreal.1, hreal.2.trans hhi⟩
-
-/-- The true first-cell real pivot signs follow PROVIDED the
-explicit 225-case rational coefficient check has been proven.
-This does not address the other 50 cells or the final
-Wronskian/theta transformation. -/
-theorem thetaFirstCellGammaUniform_realPivotSigns_of_rational_check
-    (hcheck : ThetaFirstCellRationalCoefficientCheck)
-    (x : ℝ) (hx : 0 < x) (hxB : x ≤ (1 : ℝ)/8) :
-    PivotSigns
-      (originalThetaRealPivot x 0)
-      (originalThetaRealPivot x 1)
-      (originalThetaRealPivot x 2)
-      (originalThetaRealPivot x 3)
-      (originalThetaRealPivot x 4) :=
-  thetaFirstCellGammaUniform_realPivotSigns
-    (thetaFirstCellGammaUniformCoefficientBound_of_rational_check hcheck) x hx hxB
 
 end W5
