@@ -49,6 +49,109 @@ theorem thetaCorrectionWPolynomial_eval
   simp only [div_eq_mul_inv]
   ring
 
+
+/-!
+## Audited finite moment dimension: degree at most eight
+
+The independent integer auditor uses exactly nine moments
+k=0,...,8. We prove that this is sufficient for ALL 25
+original theta correction polynomials. Only the already
+formalized Mathlib natDegree bounds for linear polynomials,
+products, powers and finite sums are used.
+-/
+
+/-- Every original affine theta correction polynomial has
+degree at most eight in the integration variable w, uniformly
+over all real x,p,d and all original coefficient indices. -/
+theorem thetaCorrectionWPolynomial_natDegree_le_eight
+    (x p d : ℝ) (i j : Fin 5) :
+    (thetaCorrectionWPolynomial x p d i j).natDegree ≤ 8 := by
+  classical
+  let D : Polynomial ℝ :=
+    Polynomial.C d + Polynomial.C x * Polynomial.X
+  let Q : Polynomial ℝ :=
+    Polynomial.C p + Polynomial.C (x^2) * Polynomial.X
+  let F : ℕ → Polynomial ℝ := fun k =>
+    Polynomial.C
+      (((-1 : ℝ) ^ (i.val+j.val-k)) /
+        ((Nat.factorial k : ℝ) *
+         (Nat.factorial (i.val-k) : ℝ) *
+         (Nat.factorial (j.val-k) : ℝ))) *
+      D ^ (i.val+j.val-2*k) * Q^k
+  have hD : D.natDegree ≤ 1 := by
+    dsimp [D]
+    rw [add_comm]
+    exact Polynomial.natDegree_linear_le
+  have hQ : Q.natDegree ≤ 1 := by
+    dsimp [Q]
+    rw [add_comm]
+    exact Polynomial.natDegree_linear_le
+  have hterm (k : ℕ) (hk : k ≤ min i.val j.val) :
+      (F k).natDegree ≤ 8 := by
+    have hfirst : (D^(i.val+j.val-2*k)).natDegree ≤
+        i.val+j.val-2*k := by
+      simpa only [mul_one] using
+        (Polynomial.natDegree_pow_le_of_le (i.val+j.val-2*k) hD)
+    have hsecond : (Q^k).natDegree ≤ k := by
+      simpa only [mul_one] using
+        (Polynomial.natDegree_pow_le_of_le k hQ)
+    have hmul : ((Polynomial.C
+        (((-1 : ℝ) ^ (i.val+j.val-k)) /
+          ((Nat.factorial k : ℝ) *
+           (Nat.factorial (i.val-k) : ℝ) *
+           (Nat.factorial (j.val-k) : ℝ)))) *
+          D^(i.val+j.val-2*k)).natDegree ≤
+        i.val+j.val-2*k := by
+      calc
+        _ ≤ (Polynomial.C
+              (((-1 : ℝ) ^ (i.val+j.val-k)) /
+                ((Nat.factorial k : ℝ) *
+                 (Nat.factorial (i.val-k) : ℝ) *
+                 (Nat.factorial (j.val-k) : ℝ)))).natDegree +
+             (D^(i.val+j.val-2*k)).natDegree :=
+          Polynomial.natDegree_mul_le
+        _ ≤ i.val+j.val-2*k := by
+          simpa using hfirst
+    have hle : (F k).natDegree ≤
+        (i.val+j.val-2*k)+k := by
+      exact Polynomial.natDegree_mul_le_of_le hmul hsecond
+    have hi : i.val < 5 := i.isLt
+    have hj : j.val < 5 := j.isLt
+    exact hle.trans (by omega)
+  have hsum : ∀ s : Finset ℕ,
+      (∀ k ∈ s, k ≤ min i.val j.val) →
+      (∑ k ∈ s, F k).natDegree ≤ 8 := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty =>
+        intro _
+        simp
+    | @insert k s hnotin ih =>
+        intro hs
+        rw [Finset.sum_insert hnotin]
+        apply Polynomial.natDegree_add_le_of_degree_le
+        · exact hterm k (hs k (Finset.mem_insert_self k s))
+        · exact ih (fun v hv =>
+            hs v (Finset.mem_insert_of_mem hv))
+  change (∑ k ∈ Finset.range (min i.val j.val + 1),
+    F k).natDegree ≤ 8
+  exact hsum _ (by
+    intro k hk
+    omega)
+
+/-- Every moment index used by the genuinely evaluated original
+theta correction is below nine. This links the generic polynomial
+bridge to the independent auditor's nine-moment layout. -/
+theorem thetaCorrectionWPolynomial_moment_index_lt_nine
+    (x p d : ℝ) (i j : Fin 5) (k : ℕ)
+    (hk : k ∈ Finset.range
+      ((thetaCorrectionWPolynomial x p d i j).natDegree + 1)) :
+    k < 9 := by
+  have hdeg := thetaCorrectionWPolynomial_natDegree_le_eight x p d i j
+  have h : k < (thetaCorrectionWPolynomial x p d i j).natDegree + 1 :=
+    Finset.mem_range.mp hk
+  omega
+
 /-- Specialization to the first nonzero square index p=1,d=0:
 the integral correction is an exact polynomial-weighted
 Lebesgue integral, with no external Gaussian factor. -/
