@@ -143,7 +143,7 @@ theorem thetaAuditedFirstCellGammaMomentInterval_containsReal
           (1/64 : ℝ) * (Nat.factorial (k+1) : ℝ) := by
             have hfac : (0 : ℝ) ≤ (Nat.factorial (k+1) : ℝ) := by
               positivity
-            exact add_le_add_left
+            exact add_le_add_right
               (mul_le_mul_of_nonneg_right hsq hfac)
               (Nat.factorial k : ℝ)
       _ = (Nat.factorial k : ℝ) +
