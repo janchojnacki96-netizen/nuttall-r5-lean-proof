@@ -273,3 +273,5 @@ import W5.ThetaFirstCellBinomialMajorantSound
 import W5.ThetaFirstCellRemaining50Bridge
 
 import W5.ThetaAllSquareIndexNineMoments
+
+import W5.ThetaCoarseGammaMomentBoxes
