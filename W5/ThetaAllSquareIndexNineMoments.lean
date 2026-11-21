@@ -155,4 +155,49 @@ theorem thetaAuditedSeriesTerm_nine_moments
   rw [hcorr]
   rfl
 
+
+/-- A real-sound, fully parametric rational interval checker for
+every ORIGINAL nonzero square-index theta term. Coefficient, moment,
+Gaussian factor and x²/4 intervals are the only explicit inputs.
+
+This reuses the EXISTING exact four-corner QInterval arithmetic and
+the finite interval sum proof, including signed coefficients.
+No independent 768-bit rounding semantics are postulated. -/
+theorem thetaAuditedSeriesTerm_nine_moment_box_containsReal
+    (x : ℝ) (hx : 0 < x) (hx1 : x ≤ 1)
+    (i j : Fin 5) (n : ℕ) (hn : 0 < n)
+    (B X E : QInterval) (C M : ℕ → QInterval)
+    (hB : QInterval.ContainsReal B (thetaCertificateBaseTerm x i j n))
+    (hX : QInterval.ContainsReal X (x^2/4))
+    (hE : QInterval.ContainsReal E
+      (Real.exp (-((n:ℝ)^2-1)/x^2)))
+    (hC : ∀ k ∈ Finset.range 9,
+      QInterval.ContainsReal (C k)
+        ((thetaCorrectionWPolynomial
+          x ((n:ℝ)^2) (((n:ℝ)^2-1)/x) i j).coeff k))
+    (hM : ∀ k ∈ Finset.range 9,
+      QInterval.ContainsReal (M k)
+        (thetaAuditedOneWeightedMoment (x/(n:ℝ)) k)) :
+    QInterval.ContainsReal
+      (QInterval.sub B
+        (QInterval.mul X
+          (QInterval.mul E
+            (QInterval.finsetSum (Finset.range 9)
+              (fun k => QInterval.mul (C k) (M k))))))
+      (thetaAuditedSeriesTerm x i j n) := by
+  have hsum := QInterval.finsetSum_containsReal
+    (Finset.range 9)
+    (fun k => QInterval.mul (C k) (M k))
+    (fun k =>
+      (thetaCorrectionWPolynomial
+        x ((n:ℝ)^2) (((n:ℝ)^2-1)/x) i j).coeff k *
+        thetaAuditedOneWeightedMoment (x/(n:ℝ)) k)
+    (fun k hk => QInterval.mul_containsReal (hC k hk) (hM k hk))
+  have hresult := QInterval.sub_containsReal hB
+    (QInterval.mul_containsReal hX
+      (QInterval.mul_containsReal hE hsum))
+  rw [thetaAuditedSeriesTerm_nine_moments x hx hx1 i j n hn]
+  exact hresult
+
+
 end W5
