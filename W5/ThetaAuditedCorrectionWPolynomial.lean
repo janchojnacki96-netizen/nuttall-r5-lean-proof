@@ -137,6 +137,8 @@ theorem thetaCorrectionWPolynomial_natDegree_le_eight
     F k).natDegree ≤ 8
   exact hsum _ (by
     intro k hk
+    have hk' : k < min i.val j.val + 1 :=
+      Finset.mem_range.mp hk
     omega)
 
 /-- Every moment index used by the genuinely evaluated original
@@ -382,6 +384,83 @@ theorem thetaCoefficient_far_eq_weighted_moment_sum
     thetaAuditedSeriesTerm_one_weighted_moment_sum_unconditional
       x hx hx1 i j]
 
+
+
+/-!
+## Canonical nine-moment form, exactly matching the integer auditor
+
+The existing Mathlib polynomial natDegree bound now makes it legal
+to pad the finite weighted-moment sum by ZERO high coefficients.
+This is an exact identity, not an approximation: all terms with
+k > natDegree vanish. The external 768-bit code uses precisely the
+same nine indices 0,...,8.
+-/
+
+/-- The original polynomial's finite weighted sum may always be
+evaluated using exactly nine moments, for *arbitrary* moment data
+g k, since all polynomial coefficients above its degree vanish.
+No analytic approximation and no individual B_ij expansion. -/
+theorem thetaCorrectionWPolynomial_sum_eq_nine
+    (x p d : ℝ) (i j : Fin 5) (g : ℕ → ℝ) :
+    (∑ k ∈ Finset.range
+      ((thetaCorrectionWPolynomial x p d i j).natDegree + 1),
+      (thetaCorrectionWPolynomial x p d i j).coeff k * g k) =
+    ∑ k ∈ Finset.range 9,
+      (thetaCorrectionWPolynomial x p d i j).coeff k * g k := by
+  let P : Polynomial ℝ := thetaCorrectionWPolynomial x p d i j
+  have hdeg : P.natDegree ≤ 8 :=
+    thetaCorrectionWPolynomial_natDegree_le_eight x p d i j
+  have hsubset : Finset.range (P.natDegree + 1) ⊆
+      Finset.range 9 :=
+    Finset.range_mono (by omega)
+  change (∑ k ∈ Finset.range (P.natDegree + 1),
+        P.coeff k * g k) =
+      ∑ k ∈ Finset.range 9, P.coeff k * g k
+  apply Finset.sum_subset hsubset
+  intro k hkbig hkout
+  have hkgt : P.natDegree < k := by
+    have hn : ¬ k < P.natDegree + 1 := by
+      intro hlt
+      exact hkout (Finset.mem_range.mpr hlt)
+    omega
+  simp only [Polynomial.coeff_eq_zero_of_natDegree_lt hkgt, zero_mul]
+
+/-- All 25 true original first-square theta coefficients reduce
+to a signed diagonal minus a sum of exactly nine already proved
+integrable weighted moments. No hidden convergence assumptions. -/
+theorem thetaAuditedSeriesTerm_one_nine_weighted_moments
+    (x : ℝ) (hx : 0 < x) (hx1 : x ≤ 1)
+    (i j : Fin 5) :
+    thetaAuditedSeriesTerm x i j 1 =
+      (if i = j then
+        (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+       else 0) -
+      (x^2/4) *
+        (∑ k ∈ Finset.range 9,
+          (thetaCorrectionWPolynomial x 1 0 i j).coeff k *
+            thetaAuditedOneWeightedMoment x k) := by
+  rw [thetaAuditedSeriesTerm_one_weighted_moment_sum_unconditional
+    x hx hx1 i j]
+  rw [thetaCorrectionWPolynomial_sum_eq_nine]
+
+/-- The genuine full theta matrix on the first audited cell is
+a NINE-moment finite combination plus the separately proved
+10^(-35) original infinite-series tail. -/
+theorem thetaCoefficient_far_eq_nine_weighted_moments
+    (x : ℝ) (hx : 0 < x) (hxB : x ≤ (1 : ℝ)/8)
+    (i j : Fin 5) :
+    thetaCoefficient x i j =
+      ((if i = j then
+          (-1 : ℝ)^i.val / (Nat.factorial i.val : ℝ)
+        else 0) -
+        (x^2/4) *
+          (∑ k ∈ Finset.range 9,
+            (thetaCorrectionWPolynomial x 1 0 i j).coeff k *
+              thetaAuditedOneWeightedMoment x k)) +
+      thetaAuditedTail 2 x i j := by
+  have hx1 : x ≤ 1 := by linarith
+  rw [thetaCoefficient_far_eq_one_add_tail x hx hxB i j,
+    thetaAuditedSeriesTerm_one_nine_weighted_moments x hx hx1 i j]
 
 /-!
 ## Exact real soundness of the first-cell moment interval composition
