@@ -252,3 +252,5 @@ import W5.ThetaAuditedMajorantTailNumerical
 
 import W5.ThetaSignedFixedPointSqrt
 import W5.ThetaExpTaylor65Remainder
+
+import W5.ThetaAuditedMajorantUniformParameter
