@@ -90,10 +90,15 @@ private theorem thetaBinomialTermAbsolute_le_majorant
                 ((1/8 : ℝ)^m * ((t.choose u : ℝ) * (1/64 : ℝ)^u)) :=
             mul_le_mul_of_nonneg_left hsub (by positivity)
           _ = _ := by ring
+      have hm' : i.val+j.val-2*t ≤ k := by
+        simpa [m] using hm
       have hmu : i.val+j.val-2*t ≤ k ∧
-          k-(i.val+j.val-2*t) ≤ t := ⟨hm, hu⟩
+          k-(i.val+j.val-2*t) ≤ t := by
+        constructor
+        · exact hm'
+        · simpa [u, m] using hu
       dsimp [m, u] at hreal
-      simpa only [if_pos hm, if_pos hmu,
+      simpa only [if_pos hm', if_pos hmu,
         Rat.cast_mul, Rat.cast_div, Rat.cast_pow,
         Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_one] using hreal
     · have hcho : t.choose u = 0 :=
