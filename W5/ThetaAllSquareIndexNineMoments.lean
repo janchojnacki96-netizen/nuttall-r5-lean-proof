@@ -1,5 +1,6 @@
 import W5.ThetaFirstCellRemaining50Bridge
 import W5.ThetaAuditedCorrectionWPolynomial
+import W5.ThetaAuditedMomentMonotonicity
 
 /-!
 # One genuine nine-moment identity for every square-index theta term
@@ -198,6 +199,39 @@ theorem thetaAuditedSeriesTerm_nine_moment_box_containsReal
       (QInterval.mul_containsReal hE hsum))
   rw [thetaAuditedSeriesTerm_nine_moments x hx hx1 i j n hn]
   exact hresult
+
+
+
+/-- The n-th moment parameter y=x/n is monotone across every
+positive x-cell. Thus two actual endpoint moment enclosures
+automatically give a UNIFORM enclosure at every interior x.
+Reuses the pre-existing genuine-integral monotonicity theorem,
+without re-proving its Gamma or measure-theoretic parts. -/
+theorem thetaNthWeightedMoment_endpoint_interval
+    (a x b : ℝ) (n : ℕ) (hn : 0 < n)
+    (ha : 0 ≤ a) (hax : a ≤ x) (hxb : x ≤ b) (hb : b ≤ 1)
+    (k : ℕ) (A B : QInterval)
+    (hA : QInterval.ContainsReal A
+      (thetaAuditedOneWeightedMoment (a/(n:ℝ)) k))
+    (hB : QInterval.ContainsReal B
+      (thetaAuditedOneWeightedMoment (b/(n:ℝ)) k)) :
+    QInterval.ContainsReal ⟨A.lo, B.hi⟩
+      (thetaAuditedOneWeightedMoment (x/(n:ℝ)) k) := by
+  have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hinv : 0 ≤ (n:ℝ)⁻¹ := inv_nonneg.mpr hnR.le
+  have hax' : a / (n:ℝ) ≤ x / (n:ℝ) := by
+    simp only [div_eq_mul_inv]
+    exact mul_le_mul_of_nonneg_right hax hinv
+  have hxb' : x / (n:ℝ) ≤ b / (n:ℝ) := by
+    simp only [div_eq_mul_inv]
+    exact mul_le_mul_of_nonneg_right hxb hinv
+  have hb' : b / (n:ℝ) ≤ 1 := by
+    apply (div_le_iff₀ hnR).2
+    nlinarith
+  exact thetaAuditedOneWeightedMoment_cell_interval
+    (a/(n:ℝ)) (x/(n:ℝ)) (b/(n:ℝ))
+    (div_nonneg ha hnR.le) hax' hxb' hb' k A B hA hB
 
 
 end W5
