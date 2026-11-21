@@ -107,7 +107,8 @@ theorem thetaAuditedSeriesTerm_nine_moments
           thetaAuditedOneWeightedMoment (x/(n:ℝ)) k) := by
   have hn0 : n ≠ 0 := Nat.ne_of_gt hn
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn
-  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn1 : 1 ≤ n := by omega
+  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn1
   have hy : 0 < x/(n:ℝ) := div_pos hx hnR
   have hy1 : x/(n:ℝ) ≤ 1 :=
     (div_le_iff₀ hnR).2 (by linarith)
@@ -218,7 +219,8 @@ theorem thetaNthWeightedMoment_endpoint_interval
     QInterval.ContainsReal ⟨A.lo, B.hi⟩
       (thetaAuditedOneWeightedMoment (x/(n:ℝ)) k) := by
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn
-  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn1 : 1 ≤ n := by omega
+  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn1
   have hinv : 0 ≤ (n:ℝ)⁻¹ := inv_nonneg.mpr hnR.le
   have hax' : a / (n:ℝ) ≤ x / (n:ℝ) := by
     simp only [div_eq_mul_inv]
