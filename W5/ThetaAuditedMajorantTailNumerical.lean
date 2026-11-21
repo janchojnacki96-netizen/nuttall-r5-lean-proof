@@ -34,7 +34,7 @@ private theorem numeric_exp_decay_from_one_factorial
       E^100 / (Nat.factorial 100 : ℝ)) :
     M * Real.exp (-E) < 1 / (10 : ℝ)^35 := by
   have hlower : E^100 / (Nat.factorial 100 : ℝ) ≤ Real.exp E :=
-    Real.pow_div_factorial_le_exp hE 100
+    Real.pow_div_factorial_le_exp E hE 100
   have hpos : 0 < Real.exp E := Real.exp_pos E
   have hden : 0 < (10 : ℝ)^35 := by positivity
   have hprod : M * (10 : ℝ)^35 < Real.exp E :=
