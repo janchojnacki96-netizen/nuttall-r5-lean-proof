@@ -36,7 +36,8 @@ This uses Mathlib's independently established Gamma integrability theorem. -/
 theorem thetaAuditedCorrectionGammaMoment_integrable (k : ℕ) :
     IntegrableOn (fun w : ℝ => w^k * Real.exp (-w))
       (Set.Ioi (0 : ℝ)) volume := by
-  have hk : (-1 : ℝ) < (k : ℝ) := by positivity
+  have hk : (-1 : ℝ) < (k : ℝ) :=
+    lt_of_lt_of_le (by norm_num) (Nat.cast_nonneg k)
   simpa only [Real.rpow_natCast, Real.rpow_one] using
     (integrableOn_rpow_mul_exp_neg_rpow
       (s := (k : ℝ)) (p := (1 : ℝ)) hk (by norm_num))

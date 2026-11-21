@@ -42,8 +42,7 @@ theorem thetaAuditedCoefficientPolynomial_shifted_abs_le
   have hpre : (1+(p-1)/x+w*x)*x ≤ 2*p*(w+1) := by
     calc
       (1+(p-1)/x+w*x)*x = x+(p-1)+w*x^2 := by
-        field_simp [ne_of_gt hx]
-        ring
+        field_simp [ne_of_gt hx] <;> ring
       _ ≤ p+w := by linarith
       _ ≤ 2*p*(w+1) := by
         nlinarith [hpw, mul_nonneg hp0 hw]
