@@ -33,7 +33,8 @@ theorem thetaNthCoarseGammaMomentBox_containsReal
     QInterval.ContainsReal (thetaNthCoarseGammaMomentBox b n k)
       (thetaAuditedOneWeightedMoment (x/(n:ℝ)) k) := by
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn
-  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn1 : 1 ≤ n := by omega
+  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn1
   let y : ℝ := x/(n:ℝ)
   let z : ℝ := (b:ℝ)/(n:ℝ)
   have hy : 0 ≤ y := div_nonneg hx hnR.le
