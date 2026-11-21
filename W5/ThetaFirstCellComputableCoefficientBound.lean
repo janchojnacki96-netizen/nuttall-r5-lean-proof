@@ -55,8 +55,7 @@ theorem thetaFirstCell_affinePower_coeff
   rw [hm, mul_assoc, Polynomial.coeff_C_mul,
     Polynomial.coeff_X_pow_mul']
   simp only [thetaFirstCell_one_add_scaled_X_pow_coeff, mul_ite, mul_zero]
-  split_ifs <;> ring
-
+ 
 /-- All 225 original theta w-coefficients are given by the
 same finite binomial sum, for arbitrary real x.
 No numerical evaluation or interpolation is used here. -/
@@ -121,6 +120,9 @@ theorem thetaFirstCellBinomialMajorant_le_box
   have hp : (0 : ℚ) < (8 : ℚ)^k.val := by positivity
   apply (le_div_iff₀ hp).2
   have hq : (129 / 128 : ℚ) ≤ 4 := by norm_num
-  exact hh.trans hq
+  calc
+    _ = (8 : ℚ)^k.val * thetaFirstCellBinomialMajorant i j k.val := by
+      ring
+    _ ≤ 4 := hh.trans hq
 
 end W5
