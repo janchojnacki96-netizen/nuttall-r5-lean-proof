@@ -262,3 +262,4 @@ import W5.ThetaAuditedCorrectionPointwise
 import W5.ThetaAuditedCorrectionIntegral
 import W5.ThetaAuditedOriginalFullTail
 import W5.ThetaAuditedTailRationalEnclosure
+import W5.ThetaAuditedCorrectionWPolynomial
