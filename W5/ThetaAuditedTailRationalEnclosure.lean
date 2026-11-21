@@ -249,4 +249,72 @@ theorem thetaFirstFarCell_upperEnclosure_of_one_term
     x hx hxB i j (J i j) (C i j)
     (hterm x hx hxB i j hij) hlo hhi
 
+
+/-!
+## The actual n=1 original theta term
+
+The first nonzero square index p=1 eliminates the external Gaussian
+and the offset d0=(p-1)/x. This is a precise one-dimensional weighted
+Lebesgue integral, not a numerical or auxiliary surrogate.
+-/
+
+/-- The genuine n=1 base term is the exact original coefficient
+polynomial evaluated at (d,q)=(0,1), independently of x. -/
+theorem thetaCertificateBaseTerm_one
+    (x : ℝ) (i j : Fin 5) :
+    thetaCertificateBaseTerm x i j 1 =
+      coefficientPolynomial i j 0 1 := by
+  simp [thetaCertificateBaseTerm]
+
+/-- The genuine n=1 correction has no square-index Gaussian
+factor. All remaining x dependence is explicit inside an original
+weighted Lebesgue integral on the nonnegative half-line. -/
+theorem thetaCertificateCorrectionTerm_one
+    (x : ℝ) (i j : Fin 5) :
+    thetaCertificateCorrectionTerm x i j 1 =
+      (x^2/4) *
+        (∫ w in Set.Ici (0 : ℝ),
+          Real.exp (-w) *
+            (1+w*x^2)^((1 : ℝ)/4) *
+              coefficientPolynomial i j (w*x) (1+w*x^2)
+          ∂MeasureTheory.volume) := by
+  simp [thetaCertificateCorrectionTerm]
+
+/-- The exact, unsubstituted first square-index contribution to
+the ORIGINAL theta matrix, including the full integral correction.
+This supplies the analytic expression that the 768-bit moment
+auditor must enclose in each of its fifteen first-cell entries. -/
+theorem thetaAuditedSeriesTerm_one_closed
+    (x : ℝ) (i j : Fin 5) :
+    thetaAuditedSeriesTerm x i j 1 =
+      coefficientPolynomial i j 0 1 -
+        (x^2/4) *
+          (∫ w in Set.Ici (0 : ℝ),
+            Real.exp (-w) *
+              (1+w*x^2)^((1 : ℝ)/4) *
+                coefficientPolynomial i j (w*x) (1+w*x^2)
+            ∂MeasureTheory.volume) := by
+  rw [thetaAuditedSeriesTerm,
+    thetaCertificateBaseTerm_one,
+    thetaCertificateCorrectionTerm_one]
+
+/-- A first-cell enclosure can therefore be checked against a
+single concrete weighted integral instead of an infinite theta
+series; the already verified summability and small-tail lemmas
+handle every other square index. No interval values are assumed. -/
+theorem thetaCoefficient_far_eq_explicit_one_integral_add_tail
+    (x : ℝ) (hx : 0 < x) (hxB : x ≤ (1 : ℝ)/8)
+    (i j : Fin 5) :
+    thetaCoefficient x i j =
+      (coefficientPolynomial i j 0 1 -
+        (x^2/4) *
+          (∫ w in Set.Ici (0 : ℝ),
+            Real.exp (-w) *
+              (1+w*x^2)^((1 : ℝ)/4) *
+                coefficientPolynomial i j (w*x) (1+w*x^2)
+            ∂MeasureTheory.volume)) +
+      thetaAuditedTail 2 x i j := by
+  rw [thetaCoefficient_far_eq_one_add_tail x hx hxB i j,
+    thetaAuditedSeriesTerm_one_closed]
+
 end W5
