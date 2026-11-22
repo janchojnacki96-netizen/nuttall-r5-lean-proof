@@ -282,3 +282,5 @@ import W5.ThetaAuditedMomentGammaQuadraticLower
 import W5.ThetaAuditedMomentGammaCellBox
 
 import W5.ThetaOneSquareCellQuadraticBridge
+
+import W5.ThetaSecondCellOneSquareZeroZeroRealWitness
