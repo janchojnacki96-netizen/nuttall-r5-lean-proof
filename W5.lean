@@ -276,3 +276,5 @@ import W5.ThetaRemaining50ReducedTermCertificate
 import W5.ThetaAllSquareIndexNineMoments
 import W5.ThetaCoarseGammaMomentBoxes
 import W5.ThetaRemaining50AllIndexGammaReuse
+
+import W5.ThetaAuditedMomentGammaQuadraticLower

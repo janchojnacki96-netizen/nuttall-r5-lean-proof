@@ -154,7 +154,8 @@ theorem thetaAuditedOneWeightedMoment_gamma_upper
       have hmul :=
         mul_le_mul_of_nonneg_right hsq
           (show (0:ℝ) ≤ (Nat.factorial (k+1) : ℝ) by positivity)
-      exact add_le_add_right hmul _
+      simpa only [add_comm] using
+        (add_le_add_right hmul (Nat.factorial k : ℝ))
 
 /-- A computable, purely rational enclosure. No floating-point
 roundoff, quadrature or 768-bit interval transport. -/
