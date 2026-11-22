@@ -273,3 +273,6 @@ import W5.ThetaFirstCellBinomialMajorantSound
 import W5.ThetaFirstCellRemaining50Bridge
 import W5.ThetaOneSquareCellGammaBridge
 import W5.ThetaRemaining50ReducedTermCertificate
+import W5.ThetaAllSquareIndexNineMoments
+import W5.ThetaCoarseGammaMomentBoxes
+import W5.ThetaRemaining50AllIndexGammaReuse

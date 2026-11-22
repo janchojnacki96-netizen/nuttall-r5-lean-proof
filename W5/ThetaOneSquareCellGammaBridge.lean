@@ -1,4 +1,4 @@
-import W5.ThetaAuditedMomentGammaBox
+import W5.ThetaCoarseGammaMomentBoxes
 import W5.ThetaFirstCellRationalCoefficientCertificate
 import W5.ThetaFirstCellGammaUniformCandidate
 
@@ -22,44 +22,12 @@ tighter imported 768-bit cell matrices, or about complete R5.
 
 namespace W5
 
-/-- Gamma enclosure for the true n=1 weighted moment, for any
-rational upper endpoint b. This extends the already-proved b=1/8
-estimate without requiring endpoint quadrature. -/
-def thetaOneSquareGammaMomentBox (b : ℚ) (k : ℕ) : QInterval :=
-  ⟨(Nat.factorial k : ℚ),
-    (Nat.factorial k : ℚ) +
-      b^2 * (Nat.factorial (k+1) : ℚ)⟩
-
-theorem thetaOneSquareGammaMomentBox_containsReal
-    (b : ℚ) (hb1 : (b : ℝ) ≤ 1)
-    (x : ℝ) (hx0 : 0 ≤ x) (hxb : x ≤ (b : ℝ))
-    (k : ℕ) :
-    QInterval.ContainsReal (thetaOneSquareGammaMomentBox b k)
-      (thetaAuditedOneWeightedMoment x k) := by
-  have hx1 : x ≤ 1 := hxb.trans hb1
-  have hb0 : (0 : ℝ) ≤ (b : ℝ) := hx0.trans hxb
-  have hsq : x^2 ≤ (b : ℝ)^2 := by
-    nlinarith [mul_nonneg (sub_nonneg.mpr hxb) (add_nonneg hx0 hb0)]
-  have hlo := thetaAuditedOneWeightedMoment_gamma_lower x hx0 hx1 k
-  have hu := thetaAuditedOneWeightedMoment_gamma_upper x hx0 hx1 k
-  have hfac : (0 : ℝ) ≤ (Nat.factorial (k+1) : ℝ) := by positivity
-  have hupper :
-      thetaAuditedOneWeightedMoment x k ≤
-        (Nat.factorial k : ℝ) +
-          (b : ℝ)^2 * (Nat.factorial (k+1) : ℝ) := by
-    calc
-      _ ≤ (Nat.factorial k : ℝ) +
-          x^2 * (Nat.factorial (k+1) : ℝ) := hu
-      _ ≤ (Nat.factorial k : ℝ) +
-          (b : ℝ)^2 * (Nat.factorial (k+1) : ℝ) := by
-            gcongr
-  simpa only [QInterval.ContainsReal, thetaOneSquareGammaMomentBox,
-    Rat.cast_natCast, Rat.cast_add, Rat.cast_mul, Rat.cast_pow] using
-    (show (Nat.factorial k : ℝ) ≤ thetaAuditedOneWeightedMoment x k ∧
-      thetaAuditedOneWeightedMoment x k ≤
-        (Nat.factorial k : ℝ) +
-          (b : ℝ)^2 * (Nat.factorial (k+1) : ℝ) from
-      ⟨hlo, hupper⟩)
+/-!
+The general Gamma enclosure for all n>0 already exists in
+ThetaCoarseGammaMomentBoxes on the earlier working branch.
+Its original Git blob is imported unchanged here. Specialize n=1
+instead of proving the same inequality a second time.
+-/
 
 /-- The same exact rational polynomial from the original first-cell
 certificate, evaluated on an arbitrary rational cell. -/
@@ -121,7 +89,7 @@ noncomputable def thetaOneSquareCellTermBox
     (thetaFirstCellGammaUniformDiagonal i j)
     (thetaOneSquareCellScaleBox a b)
     (thetaOneSquareCellCoefficientBox a b i j)
-    (thetaOneSquareGammaMomentBox b) 9
+    (thetaNthCoarseGammaMomentBox b 1) 9
 
 theorem thetaOneSquareCellTermBox_containsReal
     (a b : ℚ) (x : ℝ)
@@ -147,14 +115,14 @@ theorem thetaOneSquareCellTermBox_containsReal
     (thetaFirstCellGammaUniformDiagonal i j)
     (thetaOneSquareCellScaleBox a b)
     (thetaOneSquareCellCoefficientBox a b i j)
-    (thetaOneSquareGammaMomentBox b)
+    (thetaNthCoarseGammaMomentBox b 1)
     hdiag
     (thetaOneSquareCellScaleBox_containsReal a b x hax hxb)
     (fun k _ =>
       thetaOneSquareCellCoefficientBox_containsReal
         a b x hax hxb i j k)
     (fun k _ =>
-      thetaOneSquareGammaMomentBox_containsReal
-        b hb1 x hx.le hxb k)
+      thetaNthCoarseGammaMomentBox_containsReal
+        b x hx.le hxb hb1 1 k (by omega))
 
 end W5
