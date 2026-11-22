@@ -59,9 +59,10 @@ theorem thetaNthCoarseGammaMomentBox_containsReal
             y^2 * (Nat.factorial (k+1) : ℝ) := hu
       _ ≤ (Nat.factorial k : ℝ) +
             z^2 * (Nat.factorial (k+1) : ℝ) := by
-          exact add_le_add_left
-            (mul_le_mul_of_nonneg_right hsq (by positivity))
-            (Nat.factorial k : ℝ)
+          simpa only [add_comm] using
+            (add_le_add_left
+              (mul_le_mul_of_nonneg_right hsq (by positivity))
+              (Nat.factorial k : ℝ))
   dsimp [y, z] at hlo hupper
   simpa only [QInterval.ContainsReal,
     thetaNthCoarseGammaMomentBox,
