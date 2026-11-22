@@ -76,4 +76,67 @@ theorem thetaNthCoarseGammaMomentBox_containsReal
         ((b:ℝ)/(n:ℝ))^2 * (Nat.factorial (k+1) : ℝ)
       from ⟨hlo, hupper⟩)
 
+/-- Sharp rational Gamma-moment enclosure using the already established
+quarter-power tangent bound; no new integration or floating-point
+calculation. The older coarse interval remains a separate fallback. -/
+def thetaNthQuarterGammaMomentBox (b : ℚ) (n k : ℕ) : QInterval :=
+  ⟨(Nat.factorial k : ℚ),
+   (Nat.factorial k : ℚ) +
+     ((b / (n : ℚ))^2 / 4) * (Nat.factorial (k+1) : ℚ)⟩
+
+/-- Soundness on the WHOLE rational cell for every positive index.
+The only analytic input is the existing sharpened genuine Gamma
+moment theorem; everything else is exact rational endpoint order. -/
+theorem thetaNthQuarterGammaMomentBox_containsReal
+    (b : ℚ) (x : ℝ)
+    (hx : 0 ≤ x) (hxb : x ≤ (b : ℝ)) (hb : (b : ℝ) ≤ 1)
+    (n k : ℕ) (hn : 0 < n) :
+    QInterval.ContainsReal (thetaNthQuarterGammaMomentBox b n k)
+      (thetaAuditedOneWeightedMoment (x/(n:ℝ)) k) := by
+  have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+  have hn1 : 1 ≤ n := by omega
+  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn1
+  let y : ℝ := x/(n:ℝ)
+  let z : ℝ := (b:ℝ)/(n:ℝ)
+  have hy : 0 ≤ y := div_nonneg hx hnR.le
+  have hyz : y ≤ z := by
+    dsimp [y, z]
+    simp only [div_eq_mul_inv]
+    exact mul_le_mul_of_nonneg_right hxb (inv_nonneg.mpr hnR.le)
+  have hz1 : z ≤ 1 := by
+    dsimp [z]
+    apply (div_le_iff₀ hnR).2
+    nlinarith
+  have hy1 : y ≤ 1 := hyz.trans hz1
+  have hsq : y^2 ≤ z^2 := pow_le_pow_left₀ hy hyz 2
+  have hquarter : y^2/4 ≤ z^2/4 := by
+    exact div_le_div_of_nonneg_right hsq (by norm_num)
+  have hlo := thetaAuditedOneWeightedMoment_gamma_lower y hy hy1 k
+  have hu := thetaAuditedOneWeightedMoment_gamma_upper_quarter y hy hy1 k
+  have hupper :
+      thetaAuditedOneWeightedMoment y k ≤
+        (Nat.factorial k : ℝ) +
+        (z^2/4) * (Nat.factorial (k+1) : ℝ) := by
+    calc
+      _ ≤ (Nat.factorial k : ℝ) +
+            (y^2/4) * (Nat.factorial (k+1) : ℝ) := hu
+      _ ≤ (Nat.factorial k : ℝ) +
+            (z^2/4) * (Nat.factorial (k+1) : ℝ) := by
+          simpa only [add_comm] using
+            (add_le_add_left
+              (mul_le_mul_of_nonneg_right hquarter (by positivity))
+              (Nat.factorial k : ℝ))
+  dsimp [y, z] at hlo hupper
+  simpa only [QInterval.ContainsReal,
+    thetaNthQuarterGammaMomentBox,
+    Rat.cast_add, Rat.cast_mul, Rat.cast_pow, Rat.cast_div,
+    Rat.cast_natCast, Rat.cast_ofNat] using
+    (show
+      (Nat.factorial k : ℝ) ≤
+        thetaAuditedOneWeightedMoment (x/(n:ℝ)) k ∧
+      thetaAuditedOneWeightedMoment (x/(n:ℝ)) k ≤
+        (Nat.factorial k : ℝ) +
+        ((((b:ℝ)/(n:ℝ))^2)/4) * (Nat.factorial (k+1) : ℝ)
+      from ⟨hlo, hupper⟩)
+
 end W5
