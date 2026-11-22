@@ -84,7 +84,15 @@ theorem thetaSecondCellZeroZeroFullTheta_fits_audit
       (thetaSecondCellOneSquareZeroZeroQuadraticBox.hi : ℝ) +
           (1:ℝ)/10000000 ≤
         ((thetaAuditUpperCell_02 (0 : Fin 5) (0 : Fin 5)).hi : ℝ) := by
-    exact_mod_cast hHiQ
+    calc
+      (thetaSecondCellOneSquareZeroZeroQuadraticBox.hi : ℝ) +
+          (1:ℝ)/10000000 =
+          ((thetaSecondCellOneSquareZeroZeroQuadraticBox.hi +
+              (1:ℚ)/10000000 : ℚ) : ℝ) := by
+            push_cast
+            ring
+      _ ≤ ((thetaAuditUpperCell_02 (0 : Fin 5) (0 : Fin 5)).hi : ℝ) := by
+        exact_mod_cast hHiQ
   have hSplit :
       thetaCoefficient x (0 : Fin 5) (0 : Fin 5) =
         thetaAuditedSeriesTerm x (0 : Fin 5) (0 : Fin 5) 1 +
