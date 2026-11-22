@@ -28,7 +28,8 @@ theorem thetaAuditedSeriesTerm_one_zero_zero_eq_moment
     thetaAuditedSeriesTerm x (0 : Fin 5) (0 : Fin 5) 1 =
       1 - (x^2/4) * thetaAuditedOneWeightedMoment x 0 := by
   simpa [thetaCorrectionWPolynomial_one_zero_zero,
-    Polynomial.coeff_C, Finset.sum_range_succ] using
+    Polynomial.coeff_one, Polynomial.coeff_C,
+    Finset.sum_range_succ] using
       (thetaAuditedSeriesTerm_one_nine_weighted_moments
         x hx hx1 (0 : Fin 5) (0 : Fin 5))
 
