@@ -55,7 +55,7 @@ theorem thetaSecondCellB00Margin_checked :
 transcendental thetaCoefficient (0,0) is contained in the actual
 768-bit audited matrix entry, including all n>=2 terms.
 No per-square tail approximation, conditional transform or new
-numerical-analysis axiom is assumed. -/
+numerical-analysis postulate is assumed. -/
 theorem thetaSecondCellZeroZeroFullTheta_fits_audit
     (x : ℝ)
     (hax : (1:ℝ)/8 ≤ x)
