@@ -83,9 +83,9 @@ theorem thetaRemainingTenTermCell_to_finite
           (thetaAuditedSeriesTerm x i j 1)
         exact thetaOneSquareCellTermBox_containsReal
           a b x hx hax hxb hb1 i j
-      · change QInterval.ContainsReal (R i j n)
-          (thetaAuditedSeriesTerm x i j n)
-        exact hrest x hx hax hxb i j hij n (by omega) hn12
+      · simpa only [thetaRemainingCellTermBoxes,
+            if_neg hn0, if_neg hn1] using
+          (hrest x hx hax hxb i j hij n (by omega) hn12)
 
 /-- One list certificate for the 50 residual cells. No matrix
 entries, original endpoints or pivot checks are copied. -/
