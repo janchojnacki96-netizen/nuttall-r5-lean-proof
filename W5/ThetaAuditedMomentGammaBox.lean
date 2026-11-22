@@ -123,7 +123,7 @@ theorem thetaAuditedOneWeightedMoment_gamma_upper_quarter
           exact integral_mono_ae hf hG hpoint
     _ = (∫ w in Set.Ici (0 : ℝ),
           w^k * Real.exp (-w) ∂volume) +
-        x^2 * (∫ w in Set.Ici (0 : ℝ),
+        (x^2/4) * (∫ w in Set.Ici (0 : ℝ),
           w^(k+1) * Real.exp (-w) ∂volume) := by
           rw [integral_add hΓ0 (hΓ1.const_mul (x^2/4))]
           rw [integral_const_mul]
