@@ -120,6 +120,12 @@ theorem thetaAuditedSeriesTerm_zero_zero_nonneg_le_gaussian
   dsimp [M, y] at hbracket0 hbracketHi
   constructor
   · exact mul_nonneg (Real.exp_nonneg _) hbracket0
-  · exact mul_le_mul_of_nonneg_left hbracketHi (Real.exp_nonneg _)
+  · calc
+      Real.exp (-((n : ℝ)^2-1)/x^2) *
+          ((n : ℝ)^2 - (x^2/4) *
+            thetaAuditedOneWeightedMoment (x/(n:ℝ)) 0) ≤
+          Real.exp (-((n : ℝ)^2-1)/x^2) * (n : ℝ)^2 :=
+        mul_le_mul_of_nonneg_left hbracketHi (Real.exp_nonneg _)
+      _ = (n : ℝ)^2 * Real.exp (-((n : ℝ)^2-1)/x^2) := by ring
 
 end W5
