@@ -73,7 +73,7 @@ theorem thetaZeroZeroTail_nonneg_and_le_eight_exp
           ((k+2:ℕ) : ℝ)^2 *
             Real.exp (-(((k+2:ℕ):ℝ)^2-1)/x^2) := hterm
       _ ≤ (1/(2:ℝ)^24) * thetaMajorantTerm y (k+2) := by
-        simpa only [y, div_eq_mul_inv, neg_mul] using hmajor
+        simpa only [y, one_mul, div_eq_mul_inv, neg_mul] using hmajor
       _ = (1/(2:ℝ)^24) * thetaMajorantTerm y (2+k) := by
         rw [Nat.add_comm]
   have hg : Summable g :=
