@@ -31,15 +31,35 @@ theorem thetaAuditedOneWeightedMoment_gamma_lower
     (thetaAuditedOneWeightedMoment_mono
       0 x (le_refl 0) hx hx1 k)
 
-/-- A purely analytic upper Gamma bound:
-the 1/4-power is at most the first power for base≥1.
-Integration uses the SAME preproved factorial moments from
-Mathlib and linearity of the integrable Bochner integral. -/
-theorem thetaAuditedOneWeightedMoment_gamma_upper
+/-- Exact tangent bound for the genuine real fourth-root.
+The fourth power is reduced using Mathlib's `Real.rpow_mul`,
+and the final inequality follows from the nonnegative factorization
+(r−1)²(r²+2r+3) = r⁴−4r+3. -/
+theorem thetaFourthRoot_one_add_le_linear (t : ℝ) (ht : 0 ≤ t) :
+    (1+t)^((1:ℝ)/4) ≤ 1+t/4 := by
+  let r : ℝ := (1+t)^((1:ℝ)/4)
+  have hbase : 0 ≤ 1+t := by linarith
+  have hr4 : r^4 = 1+t := by
+    dsimp [r]
+    calc
+      ((1+t)^((1:ℝ)/4))^4 =
+          (1+t)^(((1:ℝ)/4)*(4:ℝ)) := by
+        rw [Real.rpow_mul hbase, Real.rpow_natCast]
+      _ = 1+t := by norm_num
+  have hrnonneg : 0 ≤ r := Real.rpow_nonneg hbase _
+  have hfactor : 0 ≤ (r-1)^2 * (r^2+2*r+3) :=
+    mul_nonneg (sq_nonneg _) (by positivity)
+  nlinarith
+
+/-- A sharper upper Gamma bound using the tangent line to the
+fourth-root function. The same previously formalized Lebesgue
+integration, factorial moments and Mathlib integral monotonicity
+proof are reused with x²/4 instead of x². -/
+theorem thetaAuditedOneWeightedMoment_gamma_upper_quarter
     (x : ℝ) (hx : 0 ≤ x) (hx1 : x ≤ 1) (k : ℕ) :
     thetaAuditedOneWeightedMoment x k ≤
       (Nat.factorial k : ℝ) +
-        x^2 * (Nat.factorial (k+1) : ℝ) := by
+        (x^2/4) * (Nat.factorial (k+1) : ℝ) := by
   have hf : IntegrableOn
       (fun w : ℝ =>
         (Real.exp (-w) * (1+w*x^2)^((1 : ℝ)/4)) * w^k)
@@ -58,9 +78,9 @@ theorem thetaAuditedOneWeightedMoment_gamma_upper
   have hG : IntegrableOn
       (fun w : ℝ =>
         w^k * Real.exp (-w) +
-          x^2 * (w^(k+1) * Real.exp (-w)))
+          (x^2/4) * (w^(k+1) * Real.exp (-w)))
       (Set.Ici (0 : ℝ)) volume :=
-    hΓ0.add (hΓ1.const_mul (x^2))
+    hΓ0.add (hΓ1.const_mul (x^2/4))
   have hΓ0eval :
       (∫ w in Set.Ici (0 : ℝ),
         w^k * Real.exp (-w) ∂volume) =
@@ -77,38 +97,59 @@ theorem thetaAuditedOneWeightedMoment_gamma_upper
       ∂(volume.restrict (Set.Ici (0 : ℝ))),
       (Real.exp (-w) * (1+w*x^2)^((1 : ℝ)/4)) * w^k ≤
         w^k * Real.exp (-w) +
-          x^2 * (w^(k+1) * Real.exp (-w)) := by
+          (x^2/4) * (w^(k+1) * Real.exp (-w)) := by
     filter_upwards [ae_restrict_mem measurableSet_Ici] with w hw
     have hw0 : 0 ≤ w := hw
     have hbase : 1 ≤ 1+w*x^2 := by
       nlinarith [mul_nonneg hw0 (sq_nonneg x)]
     have hroot :
-        (1+w*x^2)^((1 : ℝ)/4) ≤ 1+w*x^2 :=
-      Real.rpow_le_self_of_one_le hbase (by norm_num)
+        (1+w*x^2)^((1 : ℝ)/4) ≤ 1+w*x^2/4 :=
+      thetaFourthRoot_one_add_le_linear (w*x^2)
+        (mul_nonneg hw0 (sq_nonneg x))
     calc
       (Real.exp (-w) * (1+w*x^2)^((1 : ℝ)/4)) * w^k ≤
-          (Real.exp (-w) * (1+w*x^2)) * w^k :=
+          (Real.exp (-w) * (1+w*x^2/4)) * w^k :=
         mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hroot (Real.exp_nonneg _))
           (pow_nonneg hw0 k)
       _ = w^k * Real.exp (-w) +
-            x^2 * (w^(k+1) * Real.exp (-w)) := by ring
+            (x^2/4) * (w^(k+1) * Real.exp (-w)) := by ring
   calc
     thetaAuditedOneWeightedMoment x k ≤
         ∫ w in Set.Ici (0 : ℝ),
           (w^k * Real.exp (-w) +
-            x^2 * (w^(k+1) * Real.exp (-w))) ∂volume := by
+            (x^2/4) * (w^(k+1) * Real.exp (-w))) ∂volume := by
           unfold thetaAuditedOneWeightedMoment
           exact integral_mono_ae hf hG hpoint
     _ = (∫ w in Set.Ici (0 : ℝ),
           w^k * Real.exp (-w) ∂volume) +
         x^2 * (∫ w in Set.Ici (0 : ℝ),
           w^(k+1) * Real.exp (-w) ∂volume) := by
-          rw [integral_add hΓ0 (hΓ1.const_mul (x^2))]
+          rw [integral_add hΓ0 (hΓ1.const_mul (x^2/4))]
           rw [integral_const_mul]
     _ = (Nat.factorial k : ℝ) +
-          x^2 * (Nat.factorial (k+1) : ℝ) := by
+          (x^2/4) * (Nat.factorial (k+1) : ℝ) := by
           rw [hΓ0eval, hΓ1eval]
+
+/-- Backward-compatible coarse Gamma bound, now deduced from the
+stronger fourth-root tangent bound rather than reintegrating. -/
+theorem thetaAuditedOneWeightedMoment_gamma_upper
+    (x : ℝ) (hx : 0 ≤ x) (hx1 : x ≤ 1) (k : ℕ) :
+    thetaAuditedOneWeightedMoment x k ≤
+      (Nat.factorial k : ℝ) +
+        x^2 * (Nat.factorial (k+1) : ℝ) := by
+  calc
+    thetaAuditedOneWeightedMoment x k ≤
+        (Nat.factorial k : ℝ) +
+          (x^2/4) * (Nat.factorial (k+1) : ℝ) :=
+      thetaAuditedOneWeightedMoment_gamma_upper_quarter x hx hx1 k
+    _ ≤ (Nat.factorial k : ℝ) +
+          x^2 * (Nat.factorial (k+1) : ℝ) := by
+      have hsq : x^2/4 ≤ x^2 := by nlinarith [sq_nonneg x]
+      have hmul :=
+        mul_le_mul_of_nonneg_right hsq
+          (show (0:ℝ) ≤ (Nat.factorial (k+1) : ℝ) by positivity)
+      exact add_le_add_right hmul _
 
 /-- A computable, purely rational enclosure. No floating-point
 roundoff, quadrature or 768-bit interval transport. -/
