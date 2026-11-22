@@ -290,3 +290,5 @@ import W5.ThetaZeroZeroAllSquareGaussianTerm
 import W5.ThetaZeroZeroSharpGaussianTail
 
 import W5.ThetaSecondCellZeroZeroFullCertificate
+
+import W5.ThetaAuditedMomentGammaCubicCellBox
