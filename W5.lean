@@ -280,3 +280,5 @@ import W5.ThetaRemaining50AllIndexGammaReuse
 import W5.ThetaAuditedMomentGammaQuadraticLower
 
 import W5.ThetaAuditedMomentGammaCellBox
+
+import W5.ThetaOneSquareCellQuadraticBridge
