@@ -88,7 +88,7 @@ theorem thetaRemainingTenTermCell_to_finite
     ThetaAuditedFiniteCellCertificate a b C := by
   rcases h with ⟨hb8, J1, R, hb, hinside, hfirst, hrest⟩
   have hN : thetaAuditedCellCutoff b = 12 := by
-    simp [thetaAuditedCellCutoff, not_le.mpr hb8]
+    simp only [thetaAuditedCellCutoff, if_neg (not_le.mpr hb8)]
   have hb1 : (b : ℝ) ≤ 1 := by linarith
   refine ⟨thetaRemainingCellTermBoxes J1 R, hb, ?_, ?_⟩
   · simpa only [hN] using hinside
