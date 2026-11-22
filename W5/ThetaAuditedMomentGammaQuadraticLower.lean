@@ -36,7 +36,7 @@ theorem thetaFourthRoot_one_add_quadratic_lower
       _ = 1+t := by norm_num
   have hr1 : 1 ≤ r := by
     dsimp [r]
-    simpa only [one_rpow] using
+    simpa only [Real.one_rpow] using
       (Real.rpow_le_rpow (show (0:ℝ) ≤ 1 by norm_num)
         (show (1:ℝ) ≤ 1+t by linarith)
         (show (0:ℝ) ≤ 1/4 by norm_num))
@@ -141,10 +141,20 @@ theorem thetaAuditedOneWeightedMoment_gamma_lower_quadratic
           w^(k+1) * Real.exp (-w) ∂volume) -
         (3*x^4/32) * (∫ w in Set.Ici (0 : ℝ),
           w^(k+2) * Real.exp (-w) ∂volume) := by
-    rw [integral_sub (hΓ0.add (hΓ1.const_mul (x^2/4)))
-      (hΓ2.const_mul (3*x^4/32))]
-    rw [integral_add hΓ0 (hΓ1.const_mul (x^2/4))]
-    rw [integral_const_mul, integral_const_mul]
+    calc
+      _ =
+          (∫ w in Set.Ici (0 : ℝ),
+            w^k * Real.exp (-w) +
+              (x^2/4) * (w^(k+1) * Real.exp (-w)) ∂volume) -
+          (∫ w in Set.Ici (0 : ℝ),
+            (3*x^4/32) * (w^(k+2) * Real.exp (-w)) ∂volume) := by
+              simpa only [Pi.add_apply, Pi.sub_apply] using
+                (integral_sub
+                  (hΓ0.add (hΓ1.const_mul (x^2/4)))
+                  (hΓ2.const_mul (3*x^4/32)))
+      _ = _ := by
+        rw [integral_add hΓ0 (hΓ1.const_mul (x^2/4))]
+        rw [integral_const_mul, integral_const_mul]
   calc
     (Nat.factorial k : ℝ) +
         (x^2/4) * (Nat.factorial (k+1) : ℝ) -
