@@ -288,3 +288,5 @@ import W5.ThetaSecondCellOneSquareZeroZeroRealWitness
 import W5.ThetaZeroZeroAllSquareGaussianTerm
 
 import W5.ThetaZeroZeroSharpGaussianTail
+
+import W5.ThetaSecondCellZeroZeroFullCertificate
