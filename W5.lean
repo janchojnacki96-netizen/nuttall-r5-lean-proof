@@ -294,3 +294,8 @@ import W5.ThetaSecondCellZeroZeroFullCertificate
 import W5.ThetaAuditedMomentGammaCubicCellBox
 
 import W5.ThetaSecondCellCubicFirstSquareMatrix
+
+import W5/ThetaSecondCellAllEntriesTailFour
+import W5/ThetaSecondCellCubicFirstSquareReal
+import W5/ThetaSecondCellCubicWidenedLDL
+import W5/ThetaSecondCellCubicRealPivotBridge
