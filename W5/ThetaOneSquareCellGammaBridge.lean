@@ -121,8 +121,9 @@ theorem thetaOneSquareCellTermBox_containsReal
     (fun k _ =>
       thetaOneSquareCellCoefficientBox_containsReal
         a b x hax hxb i j k)
-    (fun k _ =>
-      thetaNthCoarseGammaMomentBox_containsReal
-        b x hx.le hxb hb1 1 k (by omega))
+    (fun k _ => by
+      simpa only [Nat.cast_one, div_one] using
+        (thetaNthCoarseGammaMomentBox_containsReal
+          b x hx.le hxb hb1 1 k (by omega)))
 
 end W5
