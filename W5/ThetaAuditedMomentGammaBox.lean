@@ -44,7 +44,8 @@ theorem thetaFourthRoot_one_add_le_linear (t : ℝ) (ht : 0 ≤ t) :
     calc
       ((1+t)^((1:ℝ)/4))^4 =
           (1+t)^(((1:ℝ)/4)*(4:ℝ)) := by
-        rw [Real.rpow_mul hbase, Real.rpow_natCast]
+        simpa only [Real.rpow_natCast] using
+          (Real.rpow_mul hbase ((1:ℝ)/4) (4:ℝ)).symm
       _ = 1+t := by norm_num
   have hrnonneg : 0 ≤ r := Real.rpow_nonneg hbase _
   have hfactor : 0 ≤ (r-1)^2 * (r^2+2*r+3) :=
