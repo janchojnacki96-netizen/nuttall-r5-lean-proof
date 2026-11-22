@@ -292,3 +292,5 @@ import W5.ThetaZeroZeroSharpGaussianTail
 import W5.ThetaSecondCellZeroZeroFullCertificate
 
 import W5.ThetaAuditedMomentGammaCubicCellBox
+
+import W5.ThetaSecondCellCubicFirstSquareMatrix
