@@ -271,3 +271,4 @@ import W5.ThetaFirstCellRationalCoefficientCertificate
 import W5.ThetaFirstCellComputableCoefficientBound
 import W5.ThetaFirstCellBinomialMajorantSound
 import W5.ThetaFirstCellRemaining50Bridge
+import W5.ThetaOneSquareCellGammaBridge
