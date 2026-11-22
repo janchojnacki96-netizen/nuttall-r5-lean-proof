@@ -179,16 +179,37 @@ theorem thetaAuditedOneWeightedMoment_gamma_upper_cubic
             (3*x^4/32) * (w^(k+2) * Real.exp (-w)) ∂volume) +
         (∫ w in Set.Ici (0:ℝ),
           (7*x^6/128) * (w^(k+3) * Real.exp (-w)) ∂volume) := by
-            simpa only [Pi.add_apply] using
+            simpa only [Pi.add_apply, Pi.sub_apply] using
               (integral_add
                 ((hΓ0.add (hΓ1.const_mul (x^2/4))).sub
                   (hΓ2.const_mul (3*x^4/32)))
                 (hΓ3.const_mul (7*x^6/128)))
       _ = _ := by
-        rw [integral_sub (hΓ0.add (hΓ1.const_mul (x^2/4)))
-          (hΓ2.const_mul (3*x^4/32))]
-        rw [integral_add hΓ0 (hΓ1.const_mul (x^2/4))]
-        rw [integral_const_mul, integral_const_mul, integral_const_mul]
+        have hSub :
+            (∫ w in Set.Ici (0:ℝ),
+              (w^k * Real.exp (-w) +
+                (x^2/4) * (w^(k+1) * Real.exp (-w))) -
+                (3*x^4/32) * (w^(k+2) * Real.exp (-w)) ∂volume) =
+              (∫ w in Set.Ici (0:ℝ),
+                w^k * Real.exp (-w) +
+                  (x^2/4) * (w^(k+1) * Real.exp (-w)) ∂volume) -
+              (∫ w in Set.Ici (0:ℝ),
+                (3*x^4/32) * (w^(k+2) * Real.exp (-w)) ∂volume) := by
+          simpa only [Pi.add_apply, Pi.sub_apply] using
+            (integral_sub (hΓ0.add (hΓ1.const_mul (x^2/4)))
+              (hΓ2.const_mul (3*x^4/32)))
+        have hAdd :
+            (∫ w in Set.Ici (0:ℝ),
+              w^k * Real.exp (-w) +
+                (x^2/4) * (w^(k+1) * Real.exp (-w)) ∂volume) =
+              (∫ w in Set.Ici (0:ℝ),
+                w^k * Real.exp (-w) ∂volume) +
+              (∫ w in Set.Ici (0:ℝ),
+                (x^2/4) * (w^(k+1) * Real.exp (-w)) ∂volume) := by
+          simpa only [Pi.add_apply] using
+            (integral_add hΓ0 (hΓ1.const_mul (x^2/4)))
+        rw [hSub, hAdd, integral_const_mul, integral_const_mul,
+          integral_const_mul]
   calc
     thetaAuditedOneWeightedMoment x k =
       (∫ w in Set.Ici (0:ℝ),
