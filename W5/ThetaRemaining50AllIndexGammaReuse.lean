@@ -22,9 +22,9 @@ or analytic proof is copied into this adapter.
 namespace W5
 
 /-- Arbitrary positive square index: exact real interval soundness
-using an already proved coarse rational Gamma enclosure. There are
+using an already proved sharper quarter-Gamma enclosure. There are
 NO unproved weighted-moment hypotheses or extra integrations. -/
-theorem thetaAuditedSeriesTerm_box_of_coarseGamma
+theorem thetaAuditedSeriesTerm_box_of_quarterGamma
     (b : ℚ) (x : ℝ) (hx : 0 < x)
     (hxb : x ≤ (b : ℝ)) (hb1 : (b : ℝ) ≤ 1)
     (i j : Fin 5) (n : ℕ) (hn : 0 < n)
@@ -43,14 +43,14 @@ theorem thetaAuditedSeriesTerm_box_of_coarseGamma
           (QInterval.mul E
             (QInterval.finsetSum (Finset.range 9)
               (fun k => QInterval.mul (C k)
-                (thetaNthCoarseGammaMomentBox b n k))))))
+                (thetaNthQuarterGammaMomentBox b n k))))))
       (thetaAuditedSeriesTerm x i j n) := by
   exact thetaAuditedSeriesTerm_nine_moment_box_containsReal
     x hx (hxb.trans hb1) i j n hn B X E C
-    (thetaNthCoarseGammaMomentBox b n)
+    (thetaNthQuarterGammaMomentBox b n)
     hB hX hE hC
     (fun k _ =>
-      thetaNthCoarseGammaMomentBox_containsReal
+      thetaNthQuarterGammaMomentBox_containsReal
         b x hx.le hxb hb1 n k hn)
 
 end W5

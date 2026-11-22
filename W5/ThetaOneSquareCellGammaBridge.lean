@@ -23,9 +23,9 @@ tighter imported 768-bit cell matrices, or about complete R5.
 namespace W5
 
 /-!
-The general Gamma enclosure for all n>0 already exists in
+The general refined Gamma enclosure for all n>0 already exists in
 ThetaCoarseGammaMomentBoxes on the earlier working branch.
-Its original Git blob is imported unchanged here. Specialize n=1
+Its original Git blob is imported unchanged here. Specialize the improved quarter-Gamma estimate to n=1
 instead of proving the same inequality a second time.
 -/
 
@@ -89,7 +89,7 @@ noncomputable def thetaOneSquareCellTermBox
     (thetaFirstCellGammaUniformDiagonal i j)
     (thetaOneSquareCellScaleBox a b)
     (thetaOneSquareCellCoefficientBox a b i j)
-    (thetaNthCoarseGammaMomentBox b 1) 9
+    (thetaNthQuarterGammaMomentBox b 1) 9
 
 theorem thetaOneSquareCellTermBox_containsReal
     (a b : ℚ) (x : ℝ)
@@ -115,7 +115,7 @@ theorem thetaOneSquareCellTermBox_containsReal
     (thetaFirstCellGammaUniformDiagonal i j)
     (thetaOneSquareCellScaleBox a b)
     (thetaOneSquareCellCoefficientBox a b i j)
-    (thetaNthCoarseGammaMomentBox b 1)
+    (thetaNthQuarterGammaMomentBox b 1)
     hdiag
     (thetaOneSquareCellScaleBox_containsReal a b x hax hxb)
     (fun k _ =>
@@ -123,7 +123,7 @@ theorem thetaOneSquareCellTermBox_containsReal
         a b x hax hxb i j k)
     (fun k _ => by
       simpa only [Nat.cast_one, div_one] using
-        (thetaNthCoarseGammaMomentBox_containsReal
+        (thetaNthQuarterGammaMomentBox_containsReal
           b x hx.le hxb hb1 1 k (by omega)))
 
 end W5
