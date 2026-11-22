@@ -155,7 +155,6 @@ theorem thetaAuditedSeriesTerm_nine_moments
     rw [hintegral]
   unfold thetaAuditedSeriesTerm
   rw [hcorr]
-  rfl
 
 
 /-- A real-sound, fully parametric rational interval checker for
@@ -199,7 +198,7 @@ theorem thetaAuditedSeriesTerm_nine_moment_box_containsReal
     (QInterval.mul_containsReal hX
       (QInterval.mul_containsReal hE hsum))
   rw [thetaAuditedSeriesTerm_nine_moments x hx hx1 i j n hn]
-  exact hresult
+  simpa only [mul_assoc] using hresult
 
 
 
