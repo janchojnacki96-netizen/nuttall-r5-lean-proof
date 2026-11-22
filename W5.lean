@@ -286,3 +286,5 @@ import W5.ThetaOneSquareCellQuadraticBridge
 import W5.ThetaSecondCellOneSquareZeroZeroRealWitness
 
 import W5.ThetaZeroZeroAllSquareGaussianTerm
+
+import W5.ThetaZeroZeroSharpGaussianTail
