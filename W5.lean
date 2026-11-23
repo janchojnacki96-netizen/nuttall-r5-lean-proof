@@ -321,3 +321,5 @@ import W5.ThetaSecondCellHeadKSoundness
 import W5.ThetaSecondCellHeadAllFiveSigns
 
 import W5.ThetaThirdCellTailFive
+
+import W5.ThetaGlobalTailSeven
