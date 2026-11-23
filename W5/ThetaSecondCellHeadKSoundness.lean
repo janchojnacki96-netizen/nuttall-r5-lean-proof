@@ -42,7 +42,8 @@ noncomputable def thetaHeadExpandedCorrectionCap
 fact justifies replacing x²/4 by b²/4 in the original correction. -/
 theorem thetaHeadExpandedCorrectionCap_nonneg
     (b : ℚ) (D p : ℝ) (n : ℕ) (i j : Fin 5)
-    (hD : 0 ≤ D) (hp : 0 ≤ p) :
+    (hD : 0 ≤ D) (hp : 0 ≤ p)
+    (hb0 : (0:ℝ) ≤ (b:ℝ)) :
     0 ≤ thetaHeadExpandedCorrectionCap b D p n i j := by
   have hmoment (k : ℕ) :
       0 ≤ (thetaHeadMomentUpper b n k : ℝ) := by
@@ -57,6 +58,7 @@ theorem thetaHeadExpandedCorrectionCap_nonneg
   intro s hs
   apply Finset.sum_nonneg
   intro u hu
+  have hm := hmoment (s+u)
   positivity
 
 /-- Integrate the whole positive polynomial by ONE Mathlib finite
@@ -185,7 +187,6 @@ theorem thetaHeadPositiveMajorant_cast_eq_expandedCap
   simp only [Rat.cast_add, Rat.cast_sub, Rat.cast_mul,
     Rat.cast_div, Rat.cast_pow, Rat.cast_sum,
     Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_one]
-  ring
 
 /-- Central semantic inequality: the ACTUAL original n-th theta
 series term is bounded by the SAME computable rational majorant K
@@ -237,6 +238,7 @@ theorem thetaHead_originalSeriesTerm_abs_le_rationalK
         b D p x n i j hD hp hx hxb hb (by omega)
   have hC : 0 ≤ C :=
     thetaHeadExpandedCorrectionCap_nonneg b D p n i j hD hp
+      (le_trans hx.le hxb)
   have hsq : x^2 ≤ (b:ℝ)^2 := by
     have hbpos : 0 ≤ (b:ℝ) + x := by linarith
     have hproduct : 0 ≤ ((b:ℝ)-x)*((b:ℝ)+x) :=
