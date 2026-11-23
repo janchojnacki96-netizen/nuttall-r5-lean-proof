@@ -319,3 +319,5 @@ import W5.ThetaSecondCellHeadOriginalIntegralComparison
 import W5.ThetaSecondCellHeadKSoundness
 
 import W5.ThetaSecondCellHeadAllFiveSigns
+
+import W5.ThetaSecondCellRemaining49Reduction
