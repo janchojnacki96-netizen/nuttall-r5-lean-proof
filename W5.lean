@@ -306,3 +306,7 @@ import W5.ThetaSecondCellPositiveCellUpper
 import W5.ThetaSecondCellTwoTermReduction
 
 import W5.ThetaSecondCellHeadMomentReuse
+
+import W5.ThetaSecondCellHeadAbsoluteFactor
+import W5.ThetaSecondCellHeadPositiveWPolynomial
+import W5.ThetaSecondCellHeadGaussianFactor
