@@ -34,7 +34,8 @@ private theorem headCoeffNonneg_X :
   by_cases hk : k = 1
   · subst k
     norm_num
-  · simp [Polynomial.coeff_X, hk]
+  · have h : 1 ≠ k := Ne.symm hk
+    simp [Polynomial.coeff_X, h]
 
 private theorem headCoeffNonneg_add
     (P Q : Polynomial ℝ)
@@ -64,7 +65,8 @@ private theorem headCoeffNonneg_pow
       by_cases hk : k = 0
       · subst k
         norm_num
-      · simp [hk]
+      · have h : 0 ≠ k := Ne.symm hk
+        simp [Polynomial.coeff_one, h]
   | succ m ih =>
       intro k
       simpa only [pow_succ] using
