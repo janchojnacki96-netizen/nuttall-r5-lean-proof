@@ -362,3 +362,6 @@ import W5.ThetaGammaAutoRootGrid
 
 import W5.ThetaGammaExactExpTail
 import W5.ThetaGammaWeightedExactUpperTail
+
+import W5.ThetaGammaWeightedExactTailBox
+import W5.ThetaGammaAutoFullMomentGrid
