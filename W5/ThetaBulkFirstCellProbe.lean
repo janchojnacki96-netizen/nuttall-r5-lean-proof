@@ -1,23 +1,25 @@
 import W5.ThetaBulk48GeneratedVerifier
 
 /-!
-# First residual cell: executable finite-certificate diagnostic
+# Boundary cell diagnostic for the common 48-cell sound Boolean checker
 
-This is a numerical diagnostic, not a theorem. It asks whether the already
-real-sound signed interval generator has sufficiently sharp bounds for
-the FIRST of the 48 remaining x-cells. It is deliberately not imported by
-W5.lean, because proving R5 requires a true result for ALL cells.
+The FIRST residual x-cell has already evaluated to true (CI #45248490166).
+This probe now checks the LAST, potentially hardest, x-cell directly.
+It is a diagnostic and is NOT imported by W5.lean; a full 48-cell
+certificate still requires a proof of the combined Boolean equality.
 -/
 
 namespace W5
 
--- If this is false, refining numerical enclosures is required before
--- attempting a global native_decide theorem.
-#eval thetaBulk48GeneratedCheck (821 / 2048 : ℚ) ((endpoints.drop 3).take 1)
+/-- The exact final audited endpoints, read from the existing 51-cell table. -/
+def thetaBulkLastCellLeft : ℚ := (endpoints.reverse.drop 1).head!
+def thetaBulkLastCellRight : ℚ := endpoints.reverse.head!
 
--- Separately identify whether failure is already caused by Gaussian
--- range eligibility rather than by the exact rational LDL test.
+-- Does the Gaussian Taylor65 generator meet its range/positivity conditions?
 #eval decide (ThetaBulkGaussianEligibility
-  (821 / 2048 : ℚ) ((endpoints.drop 3).head!))
+  thetaBulkLastCellLeft thetaBulkLastCellRight)
+
+-- If eligible, are all 5 original-theta rational LDL pivot signs certified?
+#eval thetaBulk48GeneratedCheck thetaBulkLastCellLeft [thetaBulkLastCellRight]
 
 end W5
