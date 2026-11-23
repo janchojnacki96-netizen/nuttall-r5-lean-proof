@@ -115,7 +115,9 @@ theorem thetaHeadOriginalIntegral_abs_le_positiveIntegral
     filter_upwards [ae_restrict_mem measurableSet_Ici] with w hw
     have hW : 0 ≤ W w := by
       dsimp [W]
-      positivity
+      have hbase : 0 ≤ 1+w*y^2 := by positivity
+      exact mul_nonneg (Real.exp_nonneg _)
+        (Real.rpow_nonneg hbase _)
     have hpoly :=
       thetaPositivePolynomial_cell_upper
         (a:ℝ) (b:ℝ) x ((n:ℝ)^2) w ha hax hxb hp hw i j
