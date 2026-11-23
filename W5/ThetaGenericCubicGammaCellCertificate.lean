@@ -53,7 +53,7 @@ theorem thetaGeneralCellCubicBinomialCoefficientBox_containsReal
     (hxb : x ≤ (b:ℝ))
     (i j : Fin 5) (k : ℕ) :
     QInterval.ContainsReal
-      (thetaGeneralCellCubicBinomialCoefficientBox i j k)
+      (thetaGeneralCellCubicBinomialCoefficientBox a b i j k)
       ((thetaCorrectionWPolynomial x 1 0 i j).coeff k) := by
   have hxBox : QInterval.ContainsReal
       (⟨a,b⟩ : QInterval) x := ⟨hax, hxb⟩
