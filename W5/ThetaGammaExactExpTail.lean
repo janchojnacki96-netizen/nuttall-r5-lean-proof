@@ -60,7 +60,7 @@ theorem thetaGammaExpMoment_tail_exact
     exact thetaAuditedCorrectionGammaMoment k
   have hBin := thetaGammaBinIntegral_exact k 0 H
   rw [integral_Ici_eq_integral_Ioi]
-  rw [hBin, hFull, Real.neg_zero, Real.exp_zero,
+  rw [hBin, hFull, neg_zero, Real.exp_zero,
       one_mul, thetaGammaBinPolyR_zero_factorial] at hSplit
   linarith
 
