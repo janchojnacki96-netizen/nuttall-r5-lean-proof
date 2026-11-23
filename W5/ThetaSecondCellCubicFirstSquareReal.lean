@@ -78,13 +78,13 @@ theorem thetaSecondCellCubicBinomialCoefficientBox_containsReal
                  (t.choose u : ℚ)))
             (QInterval.pow (⟨1/8,177/512⟩ : QInterval) (m+2*u))
           else QInterval.point 0)
-        (((-1 : ℝ)^(i.val+j.val-t)) /
+        (((( -1 : ℝ)^(i.val+j.val-t)) /
           ((Nat.factorial t : ℝ) *
            (Nat.factorial (i.val-t) : ℝ) *
            (Nat.factorial (j.val-t) : ℝ))) *
         (if m ≤ k then
           x^m * ((t.choose u : ℝ) * (x^2)^u)
-         else 0)
+         else 0))
       by_cases hmk : m ≤ k
       · simp only [if_pos hmk]
         have hc :=
@@ -129,6 +129,10 @@ theorem thetaSecondCellCubicFirstSquareMatrix_containsReal
         QInterval.ContainsReal, Rat.cast_div, Rat.cast_pow]
     · simp [thetaFirstCellGammaUniformDiagonal,
         QInterval.ContainsReal, hij]
+  have haxQ : ((1/8:ℚ):ℝ) ≤ x := by
+    simpa only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using hax
+  have hxbQ : x ≤ ((177/512:ℚ):ℝ) := by
+    simpa only [Rat.cast_div, Rat.cast_ofNat] using hxb
   exact thetaAuditedOneTermNineMomentInterval_containsReal
     x hx hx1 i j
     (thetaFirstCellGammaUniformDiagonal i j)
@@ -137,7 +141,7 @@ theorem thetaSecondCellCubicFirstSquareMatrix_containsReal
     (thetaNthCubicGammaMomentBox (1/8) (177/512) 1)
     hdiag
     (thetaOneSquareCellScaleBox_containsReal
-      (1/8) (177/512) x hax hxb)
+      (1/8) (177/512) x haxQ hxbQ)
     (fun k _ =>
       thetaSecondCellCubicBinomialCoefficientBox_containsReal
         x hax hxb i j k)
@@ -145,7 +149,7 @@ theorem thetaSecondCellCubicFirstSquareMatrix_containsReal
       simpa only [Nat.cast_one, div_one] using
         (thetaNthCubicGammaMomentBox_containsReal
           (1/8) (177/512) x
-          (by norm_num) hax hxb
+          (by norm_num) haxQ hxbQ
           (by norm_num) 1 k (by omega)))
 
 end W5
