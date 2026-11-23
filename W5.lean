@@ -365,3 +365,8 @@ import W5.ThetaGammaWeightedExactUpperTail
 
 import W5.ThetaGammaWeightedExactTailBox
 import W5.ThetaGammaAutoFullMomentGrid
+
+import W5.ThetaGammaAutoMomentCheck
+import W5.ThetaGammaAutoCellMomentBox
+import W5.ThetaGammaSharperFirstSquare
+import W5.ThetaBulk48SharpGammaChecker
