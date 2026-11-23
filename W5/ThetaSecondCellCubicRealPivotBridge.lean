@@ -43,7 +43,7 @@ theorem thetaSecondCellCubicWidenedMatrix_containsReal_of_tail
         (thetaAuditedTail 2 x i j) := by
     have h := abs_le.mp (htail i j)
     simpa [thetaSecondCellUniformTailAllowance,
-      QInterval.ContainsReal] using h
+      QInterval.ContainsReal, div_eq_mul_inv] using h
   have hSplit :
       thetaCoefficient x i j =
         thetaAuditedSeriesTerm x i j 1 +
