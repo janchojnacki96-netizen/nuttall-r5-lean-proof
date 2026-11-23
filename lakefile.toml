@@ -9,3 +9,9 @@ name = "W5"
 name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.35.0"
+
+# Isolated certified-numerics experiment. Pin to LeanCert's Lean 4.35 / Mathlib 4.35 revision.
+[[require]]
+name = "LeanCert"
+git = "https://github.com/alerad/leancert.git"
+rev = "44b323a0d6af00211d5013f6e021432db032087c"
