@@ -355,3 +355,7 @@ import W5.ThetaBulkFixedExponential
 import W5.ThetaBulk48GeneratedVerifier
 
 import W5.ThetaGammaSignedShiftedBin
+
+import W5.ThetaGammaRecenteredCertifiedBin
+import W5.ThetaGammaRecenteredCertifiedChain
+import W5.ThetaGammaAutoRootGrid

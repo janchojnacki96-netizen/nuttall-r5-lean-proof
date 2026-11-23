@@ -125,4 +125,95 @@ theorem thetaGammaShiftedSignedBinBox_containsReal_integral
   rw [← thetaGammaShiftedSignedBinReal_eq_integral]
   exact thetaGammaShiftedSignedBinBox_containsReal_sum k N c L U h
 
+
+/-!
+## Explicit exact rational vectors for the recentered envelopes
+
+Each original theta moment has weight w^k, and the recentered lower
+and upper fourth-root polynomials are degree two and three.
+The coefficient vectors below are rational whenever the interval
+origin L and t = q/(1+qL) are rational. They preserve all signs.
+-/
+
+/-- Rational coefficients for the quadratic lower fourth-root envelope. -/
+def thetaGammaRecenteredLowerCoeffs (t L : ℚ) (i : Fin 3) : ℚ :=
+  if i.val = 0 then
+    1 - t*L/4 - 3*t^2*L^2/32
+  else if i.val = 1 then
+    t/4 + 3*t^2*L/16
+  else
+    -(3*t^2/32)
+
+/-- Rational coefficients for the cubic upper fourth-root envelope. -/
+def thetaGammaRecenteredUpperCoeffs (t L : ℚ) (i : Fin 4) : ℚ :=
+  if i.val = 0 then
+    1 - t*L/4 - 3*t^2*L^2/32 - 7*t^3*L^3/128
+  else if i.val = 1 then
+    t/4 + 3*t^2*L/16 + 21*t^3*L^2/128
+  else if i.val = 2 then
+    -(3*t^2/32) - 21*t^3*L/128
+  else
+    7*t^3/128
+
+/-- The true lower polynomial equals its signed rational coefficient sum. -/
+theorem thetaGammaRecenteredLowerPoly_eq_coeffSum
+    (t L : ℚ) (w : ℝ) :
+    thetaGammaRecenteredLowerPoly (t:ℝ) (L:ℝ) w =
+      ∑ i : Fin 3,
+        ((thetaGammaRecenteredLowerCoeffs t L i):ℝ) * w^i.val := by
+  simp [thetaGammaRecenteredLowerPoly,
+    thetaGammaRecenteredLowerCoeffs, Fin.sum_univ_succ,
+    Rat.cast_add, Rat.cast_sub, Rat.cast_mul,
+    Rat.cast_div, Rat.cast_pow]
+  ring
+
+/-- The true upper polynomial equals its signed rational coefficient sum. -/
+theorem thetaGammaRecenteredUpperPoly_eq_coeffSum
+    (t L : ℚ) (w : ℝ) :
+    thetaGammaRecenteredUpperPoly (t:ℝ) (L:ℝ) w =
+      ∑ i : Fin 4,
+        ((thetaGammaRecenteredUpperCoeffs t L i):ℝ) * w^i.val := by
+  simp [thetaGammaRecenteredUpperPoly,
+    thetaGammaRecenteredUpperCoeffs, Fin.sum_univ_succ,
+    Rat.cast_add, Rat.cast_sub, Rat.cast_mul,
+    Rat.cast_div, Rat.cast_pow]
+  ring
+
+/-- Uniform real-sound certified enclosure for a recentered lower
+polynomial multiplied by the actual Gamma moment weight w^k. -/
+theorem thetaGammaRecenteredLowerPoly_weighted_containsReal
+    (k : ℕ) (t L U : ℚ)
+    (h : thetaGammaCertifiedBinEligible L U) :
+    QInterval.ContainsReal
+      (thetaGammaShiftedSignedBinBox k 3
+        (thetaGammaRecenteredLowerCoeffs t L) L U)
+      (∫ w in (L:ℝ)..(U:ℝ),
+        thetaGammaBinDensity k w *
+          thetaGammaRecenteredLowerPoly (t:ℝ) (L:ℝ) w) := by
+  have hmain :=
+    thetaGammaShiftedSignedBinBox_containsReal_integral
+      k 3 (thetaGammaRecenteredLowerCoeffs t L) L U h
+  convert hmain using 1
+  congr 1
+  funext w
+  rw [thetaGammaRecenteredLowerPoly_eq_coeffSum]
+
+/-- The same uniform signed Gamma certificate for the upper cubic. -/
+theorem thetaGammaRecenteredUpperPoly_weighted_containsReal
+    (k : ℕ) (t L U : ℚ)
+    (h : thetaGammaCertifiedBinEligible L U) :
+    QInterval.ContainsReal
+      (thetaGammaShiftedSignedBinBox k 4
+        (thetaGammaRecenteredUpperCoeffs t L) L U)
+      (∫ w in (L:ℝ)..(U:ℝ),
+        thetaGammaBinDensity k w *
+          thetaGammaRecenteredUpperPoly (t:ℝ) (L:ℝ) w) := by
+  have hmain :=
+    thetaGammaShiftedSignedBinBox_containsReal_integral
+      k 4 (thetaGammaRecenteredUpperCoeffs t L) L U h
+  convert hmain using 1
+  congr 1
+  funext w
+  rw [thetaGammaRecenteredUpperPoly_eq_coeffSum]
+
 end W5
