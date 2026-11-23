@@ -40,6 +40,12 @@ def ThetaBulkGaussianEligibility (a b : ℚ) : Prop :=
     0 < (thetaBulkExpTaylorBox
       (thetaBulkReducedExpArgBox a b n.val)).lo
 
+/-- Constructive finite decision procedure for the seven-index Gaussian
+eligibility condition; no classical oracle or untrusted numerical data. -/
+instance thetaBulkGaussianEligibility_decidable (a b : ℚ) :
+    Decidable (ThetaBulkGaussianEligibility a b) :=
+  Fintype.decidableForallFintype
+
 /-- A general real-enclosure lemma for the original n-th signed
 term. Only the rational Gaussian eligibility is required. -/
 theorem thetaBulkGeneratedSignedTerm_containsReal
