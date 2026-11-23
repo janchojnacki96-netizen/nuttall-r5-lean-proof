@@ -98,24 +98,7 @@ jobs:
           elif [[ "$GITHUB_EVENT_NAME" == pull_request && "$PR_NUMBER" != 133 && -n "$PR_BASE" && -n "$PR_HEAD" ]]; then
             # Build every changed leaf module plus its graph of dependencies.
             # Full W5 remains the canonical PR #133 build and manual dispatch.
-            mapfile -t changed < <(git diff --name-only --diff-filter=ACMR "$PR_BASE" "$PR_HEAD" -- 'W5/*.lean' | grep -E '^W5/[A-Za-z0-9_]+[.]lean
-      - name: Check for admitted proofs
-        shell: bash
-        run: |
-          if grep -RnE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' --include='*.lean' W5 W5.lean; then
-            echo 'Prohibited sorry/admit/axiom detected'; exit 1
-          fi
-      - name: Report formal proof status
-        shell: bash
-        run: |
-          echo "This CI currently checks ONLY compilation of partial lemmas."
-          echo "It DOES NOT certify the order-five Nuttall conjecture."
-          if grep -R -Eq 'theorem[[:space:]]+nuttall_r5[[:space:]]*:' --include='*.lean' W5; then
-            echo "A theorem named nuttall_r5 exists; its hypotheses/axioms still require auditing."
-          else
-            echo "Unconditional theorem W5.nuttall_r5 : MainClaim is NOT present."
-          fi
- || true)
+            mapfile -t changed < <(git diff --name-only --diff-filter=ACMR "$PR_BASE" "$PR_HEAD" -- 'W5/*.lean' || true)
             if (( ${#changed[@]} > 0 && ${#changed[@]} <= 12 )); then
               targets=''
               for file in "${changed[@]}"; do
