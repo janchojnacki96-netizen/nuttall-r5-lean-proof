@@ -15,7 +15,7 @@ One single Boolean checker tests every cell's parameter eligibility,
 all five Gaussian exponential ranges n=2..6, and five matrix pivots.
 One Lean induction proves the checker sound for ALL 48 cells.
 
-Important: the final Boolean equality is a goal, NOT an axiom or a
+Important: the final Boolean equality is an unproved goal, not a theorem or a
 claimed success. The computed intervals might be too wide to pass
 the LDL test even if the original theorem is true. The checker
 reports such failure rather than hiding it.
