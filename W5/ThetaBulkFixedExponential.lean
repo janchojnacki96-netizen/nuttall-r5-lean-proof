@@ -134,7 +134,10 @@ theorem thetaBulkFixedGaussianExpBox_containsReal
       (mul_nonneg (by norm_num) (sq_nonneg x))
   have hz3 : z ≤ (1:ℝ)/3 := by
     have hQ : ((thetaBulkReducedExpArgBox a b n).hi:ℝ) ≤
-        (1:ℝ)/3 := by exact_mod_cast hRange
+        (1:ℝ)/3 := by
+      have hc : ((thetaBulkReducedExpArgBox a b n).hi:ℝ) ≤
+          (((1:ℚ)/3):ℝ) := by exact_mod_cast hRange
+      simpa only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using hc
     exact hz.2.trans hQ
   have hExp := thetaBulkExpTaylorBox_containsReal Z z hz hz0 hz3
   have hInv :=
@@ -151,11 +154,11 @@ theorem thetaBulkFixedGaussianExpBox_containsReal
     dsimp [z]
     have hx2 : x^2 ≠ 0 := ne_of_gt (sq_pos_of_pos hx)
     field_simp [hx2]
-    ring
   have hEpow :
       (Real.exp z)^1024 =
         Real.exp (((n:ℝ)^2-1)/x^2) := by
-    rw [← Real.exp_nat_mul, hscale]
+    rw [← Real.exp_nat_mul]
+    exact congrArg Real.exp hscale
   have hEq : (Real.exp z)⁻¹ ^ (2^10) =
       Real.exp (-((n:ℝ)^2-1)/x^2) := by
     calc
@@ -163,7 +166,7 @@ theorem thetaBulkFixedGaussianExpBox_containsReal
           ((Real.exp z)^1024)⁻¹ := by norm_num [inv_pow]
       _ = (Real.exp (((n:ℝ)^2-1)/x^2))⁻¹ := by rw [hEpow]
       _ = Real.exp (-((n:ℝ)^2-1)/x^2) := by
-        rw [Real.exp_neg, neg_div]
+        rw [neg_div, Real.exp_neg]
   simpa only [thetaBulkFixedGaussianExpBox, Z, hEq] using hPower
 
 end W5
