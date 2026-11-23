@@ -169,12 +169,8 @@ jobs:
           if [ -f /tmp/w5-build.log ]; then
             echo "W5 build operations: $(grep -Ec '(Built|Building) W5[.]' /tmp/w5-build.log || true)" | tee -a "$GITHUB_STEP_SUMMARY"
           fi
-      - name: Check for admitted proofs
-        shell: bash
-        run: |
-          if grep -RnE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' --include='*.lean' W5 W5.lean; then
-            echo 'Prohibited sorry/admit/axiom detected'; exit 1
-          fi
+      - name: Check Lean admissions (ignore doc comments, never ignore source tokens)
+        run: python3 certificate/check_lean_admissions.py
       - name: Report formal proof status
         shell: bash
         run: |
