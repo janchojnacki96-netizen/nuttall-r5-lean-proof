@@ -334,3 +334,5 @@ import W5.ThetaBulkSignedMomentExpansion
 import W5.ThetaBulkSignedIntervalEvaluator
 
 import W5.ThetaBulkExponentialTaylor
+
+import W5.ThetaGammaBinExpNegBox
