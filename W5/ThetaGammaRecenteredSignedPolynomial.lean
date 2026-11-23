@@ -89,4 +89,68 @@ theorem thetaGammaRecenteredPoly_gap
     thetaGammaRecenteredLowerPoly_expansion]
   ring
 
+
+/-!
+## One exact integral bridge for every recentered Gamma bin
+
+Compose the existing signed-polynomial expansion with Mathlib's
+intervalIntegral.integral_const_mul. This works for any moment degree
+and both lower/upper roots, without reproducing analytic integration.
+It is an exact identity; numerical interval evaluation is separate.
+-/
+
+/-- Pull a constant recentered fourth-root factor outside any
+weighted finite Gamma integral. -/
+theorem thetaGammaWeightedIntegral_constFactor
+    (k : ℕ) (L U A : ℝ) (f g : ℝ → ℝ)
+    (hfg : ∀ w : ℝ, f w = A * g w) :
+    (∫ w in L..U, thetaGammaBinDensity k w * f w) =
+      A * (∫ w in L..U, thetaGammaBinDensity k w * g w) := by
+  have heq :
+      (fun w : ℝ => thetaGammaBinDensity k w * f w) =
+      (fun w : ℝ => A * (thetaGammaBinDensity k w * g w)) := by
+    funext w
+    rw [hfg w]
+    ring
+  calc
+    (∫ w in L..U, thetaGammaBinDensity k w * f w) =
+      (∫ w in L..U, A * (thetaGammaBinDensity k w * g w)) :=
+        congrArg (fun h : ℝ → ℝ => ∫ w in L..U, h w) heq
+    _ = A * (∫ w in L..U, thetaGammaBinDensity k w * g w) := by
+      rw [intervalIntegral.integral_const_mul]
+
+/-- Every lower recentered Gamma-bin integral is exactly the
+constant fourth root times an integral of a SIGNED quadratic. -/
+theorem thetaGammaBinLowerWeightedIntegral_eq_signed_poly
+    (q L U : ℝ) (k : ℕ) :
+    (∫ w in L..U,
+      thetaGammaBinDensity k w * thetaGammaBinLowerRoot q L w) =
+      (thetaGammaBinBase q L)^((1:ℝ)/4) *
+        (∫ w in L..U, thetaGammaBinDensity k w *
+          thetaGammaRecenteredLowerPoly
+            (q/(thetaGammaBinBase q L)) L w) := by
+  exact thetaGammaWeightedIntegral_constFactor k L U
+    ((thetaGammaBinBase q L)^((1:ℝ)/4))
+    (thetaGammaBinLowerRoot q L)
+    (thetaGammaRecenteredLowerPoly
+      (q/(thetaGammaBinBase q L)) L)
+    (thetaGammaBinLowerRoot_eq_signed_poly q L)
+
+/-- Every upper recentered Gamma-bin integral is exactly the
+constant fourth root times an integral of a SIGNED cubic. -/
+theorem thetaGammaBinUpperWeightedIntegral_eq_signed_poly
+    (q L U : ℝ) (k : ℕ) :
+    (∫ w in L..U,
+      thetaGammaBinDensity k w * thetaGammaBinUpperRoot q L w) =
+      (thetaGammaBinBase q L)^((1:ℝ)/4) *
+        (∫ w in L..U, thetaGammaBinDensity k w *
+          thetaGammaRecenteredUpperPoly
+            (q/(thetaGammaBinBase q L)) L w) := by
+  exact thetaGammaWeightedIntegral_constFactor k L U
+    ((thetaGammaBinBase q L)^((1:ℝ)/4))
+    (thetaGammaBinUpperRoot q L)
+    (thetaGammaRecenteredUpperPoly
+      (q/(thetaGammaBinBase q L)) L)
+    (thetaGammaBinUpperRoot_eq_signed_poly q L)
+
 end W5
