@@ -20,6 +20,27 @@ def thetaBulkLastCellRight : ℚ := endpoints.reverse.head!
   thetaBulkLastCellLeft thetaBulkLastCellRight)
 
 -- If eligible, are all 5 original-theta rational LDL pivot signs certified?
-#eval thetaBulk48GeneratedCheck thetaBulkLastCellLeft [thetaBulkLastCellRight]
+/-- The actual generated 5-by-5 rational interval matrix at the last cell. -/
+def thetaBulkLastCellMatrix : Matrix (Fin 5) (Fin 5) QInterval :=
+  thetaSymmetricIntervals
+    (thetaBulkSevenCellMatrix thetaBulkGeneratedSignedTerm
+      thetaBulkLastCellLeft thetaBulkLastCellRight)
+
+-- Diagnose EACH exact pivot separately. This identifies where
+-- the interval width prevents a proof rather than retrying 48 cells.
+#eval
+  let B := thetaBulkLastCellMatrix
+  [
+    decide (0 < ((intervalLDL5 B 0)
+      (pivotIndexFive 0) (pivotIndexFive 0)).lo),
+    decide (((intervalLDL5 B 1)
+      (pivotIndexFive 1) (pivotIndexFive 1)).hi < 0),
+    decide (0 < ((intervalLDL5 B 2)
+      (pivotIndexFive 2) (pivotIndexFive 2)).lo),
+    decide (((intervalLDL5 B 3)
+      (pivotIndexFive 3) (pivotIndexFive 3)).hi < 0),
+    decide (0 < ((intervalLDL5 B 4)
+      (pivotIndexFive 4) (pivotIndexFive 4)).lo)
+  ]
 
 end W5
