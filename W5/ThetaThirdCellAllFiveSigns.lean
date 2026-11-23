@@ -2,6 +2,7 @@ import W5.ThetaGenericCubicGammaCellCertificate
 import W5.ThetaThirdCellTailFive
 import W5.ThetaSecondCellHeadKSoundness
 import W5.ThetaSecondCellHeadGaussianFactor
+import W5.ThetaSecondCellTwoTermReduction
 
 /-!
 # Original Nuttall theta matrix: unconditional third x-cell signs
