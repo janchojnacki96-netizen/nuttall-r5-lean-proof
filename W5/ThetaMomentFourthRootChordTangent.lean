@@ -97,7 +97,7 @@ theorem thetaQuarterRoot_chord_step
     dsimp [u,v]
     field_simp [ne_of_gt hden]
     ring
-  simpa only [ht] using hchord
+  simpa only [smul_eq_mul, ht, u, v] using hchord
 
 /-- One generic piecewise upper integrand, for any nonnegative
 w-bin [L,U] and any nonnegative scaled theta parameter q.
