@@ -65,8 +65,7 @@ private theorem headCoeffNonneg_pow
       by_cases hk : k = 0
       · subst k
         norm_num
-      · have h : 0 ≠ k := Ne.symm hk
-        simp [Polynomial.coeff_one, h]
+      · simp [Polynomial.coeff_one, hk]
   | succ m ih =>
       intro k
       simpa only [pow_succ] using
