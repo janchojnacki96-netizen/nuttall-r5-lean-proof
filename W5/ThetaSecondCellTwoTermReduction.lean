@@ -36,7 +36,6 @@ theorem thetaSecondCell_tail_two_eq_two_terms_add_tail_four
           thetaAuditedSeriesTerm x i j 2 +
           thetaAuditedSeriesTerm x i j 3 := by
     simp [thetaAuditedPrefix, Finset.sum_range_succ]
-    ring
   linarith
 
 /-- Common n=2 and n=3 term bounds are enough for the complete
@@ -67,7 +66,11 @@ theorem thetaSecondCell_tail_two_abs_lt_oneHundred
       _ ≤ |thetaAuditedSeriesTerm x i j 2 +
            thetaAuditedSeriesTerm x i j 3| +
            |thetaAuditedTail 4 x i j| := abs_add_le _ _
-      _ ≤ _ := add_le_add_right (abs_add_le _ _) _
+      _ ≤ _ := by
+        have hab := abs_add_le
+          (thetaAuditedSeriesTerm x i j 2)
+          (thetaAuditedSeriesTerm x i j 3)
+        linarith
   have hn : (1:ℝ)/200 + 2/(10:ℝ)^12 < 1/100 := by
     norm_num
   linarith
