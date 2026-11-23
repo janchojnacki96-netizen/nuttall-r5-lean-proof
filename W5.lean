@@ -340,3 +340,5 @@ import W5.ThetaGammaFiniteBinMassBox
 import W5.ThetaGammaRecenteredFourthRoot
 import W5.ThetaGammaRecenteredBinIntegral
 import W5.ThetaGammaBinExpNegBox
+
+import W5.ThetaGammaUniformMarkovTail
