@@ -1,7 +1,7 @@
 name: Lean 4 — partial formalization
 on:
   push:
-    branches: [main, work/lean-ci-bootstrap]
+    branches: [main, work/lean-ci-bootstrap, integration/r5-one-canonical-certificate]
   pull_request:
   workflow_dispatch:
     inputs:
@@ -20,6 +20,9 @@ permissions:
 
 jobs:
   cpp-certificate:
+    # PR #133 already builds the same canonical SHA on push. Skip duplicate job.
+    # The canonical push is the shared cache source for PRs based on it.
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.number != 133 }}
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -48,6 +51,9 @@ jobs:
           grep -Fx "Certified all five signs; intervals = 51, max depth = 10" /tmp/w5_clang.log
 
   lake-build:
+    # PR #133 already builds the same canonical SHA on push. Skip duplicate job.
+    # The canonical push is the shared cache source for PRs based on it.
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.number != 133 }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
