@@ -353,3 +353,5 @@ import W5.ThetaGammaRationalFourthRootBounds
 import W5.ThetaGammaArbitraryBinChain
 import W5.ThetaBulkFixedExponential
 import W5.ThetaBulk48GeneratedVerifier
+
+import W5.ThetaGammaSignedShiftedBin
