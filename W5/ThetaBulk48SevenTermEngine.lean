@@ -163,14 +163,14 @@ theorem thetaBulkSevenMatricesCheck_sound
   | cons b bs ih =>
       intro a hcheck
       have hsplit :
-          ((0:ℚ) ≤ a ∧ b ≤ (145:ℚ)/256) ∧
-          intervalLDL5AlternatingCheck
-            (thetaSymmetricIntervals
-              (thetaBulkSevenCellMatrix J a b)) = true ∧
+          (((0:ℚ) ≤ a ∧ b ≤ (145:ℚ)/256) ∧
+            intervalLDL5AlternatingCheck
+              (thetaSymmetricIntervals
+                (thetaBulkSevenCellMatrix J a b)) = true) ∧
           thetaBulkSevenMatricesCheck J b bs = true := by
         simpa only [thetaBulkSevenMatricesCheck,
           Bool.and_eq_true, decide_eq_true_eq] using hcheck
-      rcases hsplit with ⟨⟨ha, hb⟩, hldl, hrest⟩
+      rcases hsplit with ⟨⟨⟨ha, hb⟩, hldl⟩, hrest⟩
       change ThetaUpperRealCellCertificate a b ∧
         ThetaUpperRealCellCertificateChain b bs
       refine ⟨?_, ih b hrest⟩
