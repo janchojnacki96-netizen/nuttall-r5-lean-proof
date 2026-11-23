@@ -67,7 +67,7 @@ theorem thetaBulkReducedExpArgBox_containsReal
     nlinarith [mul_le_mul_of_nonneg_left hAX hnum]
   simpa only [thetaBulkReducedExpArgBox, QInterval.ContainsReal,
     Rat.cast_div, Rat.cast_sub, Rat.cast_pow,
-    Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_one] using
+    Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_one, Rat.cast_mul] using
     (show
       ((n:ℝ)^2-1)/(1024*(b:ℝ)^2) ≤
         ((n:ℝ)^2-1)/(1024*x^2) ∧
@@ -137,11 +137,13 @@ theorem thetaBulkExpTaylorBox_containsReal
           2 / ((3:ℝ)^65 * (Nat.factorial 65:ℝ)) := hBounds.2
         _ ≤ ((thetaBulkExpTaylorPolynomialBox Z).hi:ℝ) +
             2 / ((3:ℝ)^65 * (Nat.factorial 65:ℝ)) :=
-              add_le_add_right hP.2 _
+              (by simpa only [add_comm] using
+                (add_le_add_right hP.2
+                  (2 / ((3:ℝ)^65 * (Nat.factorial 65:ℝ)))))
         _ = ((thetaBulkExpTaylorPolynomialBox Z).hi:ℝ) +
             (thetaBulkExpTaylorError:ℝ) := by
               simp only [thetaBulkExpTaylorError, Rat.cast_div,
-                Rat.cast_pow, Rat.cast_natCast, Rat.cast_ofNat]
+                Rat.cast_pow, Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_mul]
   simpa only [thetaBulkExpTaylorBox, QInterval.ContainsReal,
     Rat.cast_add] using hresult
 
@@ -205,7 +207,9 @@ theorem thetaBulkOriginalGaussianExpBox_containsReal
   have hz3 : z ≤ (1:ℝ)/3 := by
     have hQ :
         ((thetaBulkReducedExpArgBox a b n).hi:ℝ) ≤ (1:ℝ)/3 := by
-      exact_mod_cast hRange
+      have hc : ((thetaBulkReducedExpArgBox a b n).hi:ℝ) ≤
+          (((1:ℚ)/3):ℝ) := by exact_mod_cast hRange
+      simpa only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using hc
     exact hz.2.trans hQ
   have hExp := thetaBulkExpTaylorBox_containsReal Z z hz hz0 hz3
   have hInv :=
@@ -217,11 +221,11 @@ theorem thetaBulkOriginalGaussianExpBox_containsReal
     dsimp [z]
     have hx2 : x^2 ≠ 0 := ne_of_gt (sq_pos_of_pos hx)
     field_simp [hx2]
-    ring
   have hEpow :
       (Real.exp z)^1024 =
         Real.exp (((n:ℝ)^2-1)/x^2) := by
-    rw [← Real.exp_nat_mul, hscale]
+    rw [← Real.exp_nat_mul]
+    exact congrArg Real.exp hscale
   have hEq :
       (Real.exp z)⁻¹ ^ (2^10) =
         Real.exp (-((n:ℝ)^2-1)/x^2) := by
@@ -230,7 +234,7 @@ theorem thetaBulkOriginalGaussianExpBox_containsReal
           ((Real.exp z)^1024)⁻¹ := by norm_num [inv_pow]
       _ = (Real.exp (((n:ℝ)^2-1)/x^2))⁻¹ := by rw [hEpow]
       _ = Real.exp (-((n:ℝ)^2-1)/x^2) := by
-        rw [Real.exp_neg, neg_div]
+        rw [neg_div, Real.exp_neg]
   simpa only [thetaBulkOriginalGaussianExpBox, Z, hEq] using hPower
 
 end W5
