@@ -336,3 +336,5 @@ import W5.ThetaBulkSignedIntervalEvaluator
 import W5.ThetaBulkExponentialTaylor
 
 import W5.ThetaBulkFixedExponential
+
+import W5.ThetaBulk48GeneratedVerifier
