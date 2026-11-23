@@ -310,3 +310,7 @@ import W5.ThetaSecondCellHeadMomentReuse
 import W5.ThetaSecondCellHeadAbsoluteFactor
 import W5.ThetaSecondCellHeadPositiveWPolynomial
 import W5.ThetaSecondCellHeadGaussianFactor
+
+import W5.ThetaSecondCellHeadDoubleBinomial
+
+import W5.ThetaSecondCellHeadDoubleBinomialGammaIntegral
