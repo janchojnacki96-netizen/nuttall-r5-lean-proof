@@ -77,7 +77,8 @@ theorem thetaAuditRemaining49Matrices_checked :
       (thetaSymmetricIntervals thetaAuditUpperCell_02) &&
       thetaCellMatricesCheck (endpoints.drop 2)
         (thetaAuditUpperCellMatrices.drop 2)) = true at h50
-  exact (Bool.and_eq_true.mp h50).2
+  simp only [Bool.and_eq_true] at h50
+  exact h50.2
 
 /-- Single final real-semantic obligation for the 49 imported 768-bit
 interval matrices. Their exact rational LDL signs, the first two
