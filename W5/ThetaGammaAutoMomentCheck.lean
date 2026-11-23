@@ -55,8 +55,9 @@ theorem thetaGammaAutoMomentBox_containsReal_of_check
     (hcheck : thetaGammaAutoMomentCheck steps y us = true) :
     QInterval.ContainsReal (thetaGammaAutoMomentBox steps k y us)
       (thetaAuditedOneWeightedMoment (y:ℝ) k) := by
-  dsimp [thetaGammaAutoMomentCheck] at hcheck
-  rcases Bool.and_eq_true.mp hcheck with ⟨hnumeric, hgrid⟩
+  simp only [thetaGammaAutoMomentCheck,
+    Bool.and_eq_true] at hcheck
+  rcases hcheck with ⟨hnumeric, hgrid⟩
   have hp : (0:ℚ) ≤ y ∧ y ≤ 1 ∧
       (0:ℚ) ≤ thetaGammaRationalLast 0 us ∧
       thetaGammaRationalLast 0 us ≤ (1024:ℚ)/3 ∧
