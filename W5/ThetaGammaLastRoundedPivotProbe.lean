@@ -36,9 +36,21 @@ def thetaGammaLastRoundedSelectedMatrix :
 but memoize intermediate matrices once during diagnostic evaluation.
 The values are *only diagnostic* until a separate Boolean checker
 is proved true using its established soundness theorem. -/
+/-- Cache each of the 25 entries ONCE using a fixed 5x5 array.
+A Matrix is a function, so naively evaluating five nested Schur
+updates repeatedly recomputes expensive Gamma integrals. This
+helper is used only for an #eval diagnostic, never as a proof step. -/
+def thetaGammaMemoMatrix
+    (B : Matrix (Fin 5) (Fin 5) QInterval) :
+    Matrix (Fin 5) (Fin 5) QInterval :=
+  let rows : Array (Array QInterval) :=
+    Array.ofFn (fun i : Fin 5 =>
+      Array.ofFn (fun j : Fin 5 => B i j))
+  fun i j => rows[i.val]![j.val]!
+
 def thetaGammaLastRoundedSelectedPivotBooleans : List Bool :=
   Id.run do
-    let mut B := thetaGammaLastRoundedSelectedMatrix
+    let mut B := thetaGammaMemoMatrix thetaGammaLastRoundedSelectedMatrix
     let mut checks : List Bool := []
     for k in List.range 5 do
       let i := pivotIndexFive k
@@ -48,7 +60,7 @@ def thetaGammaLastRoundedSelectedPivotBooleans : List Bool :=
         else decide (P.hi < 0)
       checks := checks ++ [good]
       if k < 4 then
-        B := intervalSchurStep B i
+        B := thetaGammaMemoMatrix (intervalSchurStep B i)
     return checks
 
 -- All side conditions are independent of the matrix LDL computation.
