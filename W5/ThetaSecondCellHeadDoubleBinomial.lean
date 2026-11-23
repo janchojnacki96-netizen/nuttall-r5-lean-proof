@@ -72,7 +72,12 @@ theorem thetaHeadPositiveWPolynomial_eval_double_binomial
   unfold thetaCoefficientPositivePolynomial
   apply Finset.sum_congr rfl
   intro t ht
-  rw [thetaHead_affine_product_double_binomial]
-  ring
+  calc
+    _ = (1 / ((Nat.factorial t : ℝ) *
+          (Nat.factorial (i.val-t) : ℝ) *
+          (Nat.factorial (j.val-t) : ℝ))) *
+          ((D+w*b)^(i.val+j.val-2*t) *
+            (p+w*b^2)^t) := by ring
+    _ = _ := by rw [thetaHead_affine_product_double_binomial]
 
 end W5
