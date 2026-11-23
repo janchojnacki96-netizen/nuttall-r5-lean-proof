@@ -314,3 +314,4 @@ import W5.ThetaSecondCellHeadGaussianFactor
 import W5.ThetaSecondCellHeadDoubleBinomial
 
 import W5.ThetaSecondCellHeadDoubleBinomialGammaIntegral
+import W5.ThetaSecondCellHeadOriginalIntegralComparison
