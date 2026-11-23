@@ -27,6 +27,11 @@ jobs:
         run: lake update
       - name: Get precompiled Mathlib
         run: lake exe cache get
+      - name: Restore compiled LeanCert code for iterative proof checks
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake/packages/LeanCert/.lake/build
+          key: lean4-35-leancert-44b323a-cached-tactic-v1
       - name: Smoke-test actual LeanCert tactic
         shell: bash
         run: |
@@ -39,3 +44,9 @@ jobs:
           set -o pipefail
           lake build W5.ThetaSecondCellLeanCertEnclosure | tee /tmp/leancert-theta.log
           if grep -E 'sorryAx|sorry|admit' /tmp/leancert-theta.log; then exit 1; fi
+      - name: Preserve compiled LeanCert artifacts even if experiment fails
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .lake/packages/LeanCert/.lake/build
+          key: lean4-35-leancert-44b323a-cached-tactic-v1
