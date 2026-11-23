@@ -371,3 +371,4 @@ import W5.ThetaGammaAutoCellMomentBox
 import W5.ThetaGammaSharperFirstSquare
 import W5.ThetaBulk48SharpGammaChecker
 import W5.ThetaBulkSelectedGammaCells
+import W5.ThetaBulkDegreeSelectedGammaCells
