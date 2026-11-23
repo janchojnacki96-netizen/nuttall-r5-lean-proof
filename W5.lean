@@ -359,3 +359,6 @@ import W5.ThetaGammaSignedShiftedBin
 import W5.ThetaGammaRecenteredCertifiedBin
 import W5.ThetaGammaRecenteredCertifiedChain
 import W5.ThetaGammaAutoRootGrid
+
+import W5.ThetaGammaExactExpTail
+import W5.ThetaGammaWeightedExactUpperTail
