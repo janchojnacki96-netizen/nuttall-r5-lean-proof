@@ -32,7 +32,7 @@ namespace W5
 def thetaGammaBinBase (q L : ℝ) : ℝ := 1+q*L
 
 /-- The local nonnegative Taylor parameter in a Gamma integration bin. -/
-def thetaGammaBinOffset (q L w : ℝ) : ℝ :=
+noncomputable def thetaGammaBinOffset (q L w : ℝ) : ℝ :=
   q*(w-L)/(thetaGammaBinBase q L)
 
 /-- Positivity of both parameters for every original theta w-bin. -/
