@@ -68,11 +68,14 @@ theorem thetaGammaBinPolyR_hasDerivAt (k : ℕ) (x : ℝ) :
       have hpow :
           HasDerivAt (fun y : ℝ => y^(k+1))
             (((k+1:ℕ):ℝ) * x^k) x := by
-        simpa only [Nat.add_sub_cancel_right, mul_one]
+        simpa only [Pi.pow_apply, id_eq, Nat.add_sub_cancel_right, mul_one]
           using (hasDerivAt_id x).pow (k+1)
       have hsum := hmul.add hpow
-      convert hsum using 1 <;>
-        simp [thetaGammaBinPolyR] <;> ring
+      convert hsum using 1
+      · funext y
+        simp only [thetaGammaBinPolyR, Pi.add_apply]
+      · simp only [thetaGammaBinPolyR]
+        ring
 
 /-- The exact elementary antiderivative for the Gamma(k+1,1)
 density. The polynomial recurrence makes all k uniform. -/
