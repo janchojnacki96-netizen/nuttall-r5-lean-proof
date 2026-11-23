@@ -325,3 +325,6 @@ import W5.ThetaGenericCubicGammaCellCertificate
 import W5.ThetaThirdCellTailFive
 import W5.ThetaThirdCellAllFiveSigns
 import W5.ThetaGlobalTailSeven
+
+import W5.ThetaThirdCellRemaining48Reduction
+import W5.ThetaBulk48SevenTermEngine
