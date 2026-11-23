@@ -146,7 +146,8 @@ theorem thetaBulkSignedAffineMomentBox_containsReal
     (QInterval.mul_containsReal hd
       (QInterval.mul_containsReal hx hM))
   convert hprod using 1
-  · push_cast
+  · rfl
+  · simp only [Rat.cast_mul, Rat.cast_pow, Rat.cast_natCast]
     rw [pow_add]
     ring
 
