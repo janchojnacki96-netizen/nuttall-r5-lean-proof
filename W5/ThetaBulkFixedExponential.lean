@@ -101,11 +101,10 @@ theorem thetaBulkFixedPow2_containsReal
 /-- SAME exact-R5 exponential enclosure, but all ten squarings
 are rounded outward to 768 bits, preventing denominator explosion. -/
 def thetaBulkFixedGaussianExpBox (a b : ℚ) (n : ℕ) : QInterval :=
-  ((thetaBulkFixedPow2 10
-    (thetaBulkRoundToAuditScale
-      (QInterval.inversePositive
-        (thetaBulkExpTaylorBox (thetaBulkReducedExpArgBox a b n))))).
-    asQInterval thetaAuditScale)
+  let E := QInterval.inversePositive
+    (thetaBulkExpTaylorBox (thetaBulkReducedExpArgBox a b n))
+  (thetaBulkFixedPow2 10 (thetaBulkRoundToAuditScale E)).asQInterval
+    thetaAuditScale
 
 /-- The compact 768-bit Gaussian enclosure still contains the
 true original exp(-(n²-1)/x²), with precisely the same two
