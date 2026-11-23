@@ -34,11 +34,18 @@ def thetaGammaRootGridEligible_decidable (q : ℚ)
     (R : ℚ → ℚ × ℚ) :
     ∀ (L : ℚ) (us : List ℚ),
       Decidable (thetaGammaRootGridEligible q R L us)
-  | L, [] => inferInstance
-  | L, U :: us =>
+  | L, [] => by
+      change Decidable ((0:ℚ) ≤ L)
+      infer_instance
+  | L, U :: us => by
+      change Decidable
+        (thetaGammaCertifiedBinEligible L U ∧
+          0 ≤ (R L).1 ∧ 0 ≤ (R L).2 ∧
+          (R L).1^4 ≤ 1+q*L ∧ 1+q*L ≤ (R L).2^4 ∧
+          thetaGammaRootGridEligible q R U us)
       letI : Decidable (thetaGammaRootGridEligible q R U us) :=
         thetaGammaRootGridEligible_decidable q R U us
-      inferInstance
+      infer_instance
 
 instance thetaGammaRootGridEligible_instDecidable
     (q : ℚ) (R : ℚ → ℚ × ℚ) (L : ℚ) (us : List ℚ) :
