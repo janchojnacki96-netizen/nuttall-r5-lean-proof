@@ -4,6 +4,9 @@ import W5.ThetaGammaBinExpNegBox
 /-!
 # One fully generated Γ-bin mass from rational endpoint data
 
+CI incremental-cache probe (2026-11-23): documentation-only edit.
+This changes the source hash without changing theorem statements or proof bodies.
+
 The earlier generic Γ mass theorem accepted *any* real-sound
 exp(-L), exp(-U) enclosures, while the separate Mathlib-backed
 Taylor/rational theorem supplies exact such enclosures for every
