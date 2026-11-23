@@ -347,3 +347,5 @@ import W5.ThetaGammaUniformMarkovTailIntegral
 
 import W5.ThetaGammaCertifiedBinMass
 import W5.ThetaGammaSignedPolynomialBin
+
+import W5.ThetaGammaRecenteredSignedPolynomial
