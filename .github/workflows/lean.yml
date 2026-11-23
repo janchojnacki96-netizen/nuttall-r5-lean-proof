@@ -149,7 +149,9 @@ jobs:
             else
               changed=()
             fi
-            if (( ${#changed[@]} > 0 && ${#changed[@]} <= 12 )); then
+            # Even 13+ changed modules must be checked: a full W5 build
+            # omits unimported diagnostic targets and can be falsely green.
+            if (( ${#changed[@]} > 0 )); then
               targets=''
               for file in "${changed[@]}"; do
                 module="${file%.lean}"
