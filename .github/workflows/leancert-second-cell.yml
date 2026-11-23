@@ -1,0 +1,52 @@
+name: LeanCert — second-cell certified exponential probe
+
+on:
+  pull_request:
+    paths:
+      - 'lakefile.toml'
+      - 'W5/LeanCertSmoke.lean'
+      - 'W5/ThetaSecondCellLeanCertEnclosure.lean'
+      - '.github/workflows/leancert-second-cell.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  leancert-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install matching Lean 4.35.0 toolchain
+        shell: bash
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve pinned Mathlib and LeanCert
+        run: lake update
+      - name: Get precompiled Mathlib
+        run: lake exe cache get
+      - name: Restore compiled LeanCert code for iterative proof checks
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake/packages/LeanCert/.lake/build
+          key: lean4-35-leancert-44b323a-cached-tactic-v1
+      - name: Smoke-test actual LeanCert tactic
+        shell: bash
+        run: |
+          set -o pipefail
+          lake build W5.LeanCertSmoke | tee /tmp/leancert-smoke.log
+          if grep -E 'sorryAx|sorry|admit' /tmp/leancert-smoke.log; then exit 1; fi
+      - name: Prove second-cell theta-head real enclosure
+        shell: bash
+        run: |
+          set -o pipefail
+          lake build W5.ThetaSecondCellLeanCertEnclosure | tee /tmp/leancert-theta.log
+          if grep -E 'sorryAx|sorry|admit' /tmp/leancert-theta.log; then exit 1; fi
+      - name: Preserve compiled LeanCert artifacts even if experiment fails
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .lake/packages/LeanCert/.lake/build
+          key: lean4-35-leancert-44b323a-cached-tactic-v1
