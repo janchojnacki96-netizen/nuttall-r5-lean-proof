@@ -28,8 +28,12 @@ def thetaBulkLastCellMatrix : Matrix (Fin 5) (Fin 5) QInterval :=
 
 -- Diagnose EACH exact pivot separately. This identifies where
 -- the interval width prevents a proof rather than retrying 48 cells.
-#eval
-  let B := thetaBulkLastCellMatrix
+-- Giving the large expression a named Boolean value avoids expensive
+-- elaborator reduction of the full matrix during #eval's type inference.
+-- Higher heartbeat budget affects only this diagnostic, not proof soundness.
+set_option maxHeartbeats 2000000 in
+def thetaBulkLastCellPivotChecks : List Bool :=
+  let B : Matrix (Fin 5) (Fin 5) QInterval := thetaBulkLastCellMatrix
   [
     decide (0 < ((intervalLDL5 B 0)
       (pivotIndexFive 0) (pivotIndexFive 0)).lo),
@@ -42,5 +46,7 @@ def thetaBulkLastCellMatrix : Matrix (Fin 5) (Fin 5) QInterval :=
     decide (0 < ((intervalLDL5 B 4)
       (pivotIndexFive 4) (pivotIndexFive 4)).lo)
   ]
+
+#eval thetaBulkLastCellPivotChecks
 
 end W5
