@@ -18,23 +18,23 @@ This is a single theorem for every k,q,L,U, not 48 cell proofs.
 namespace W5
 
 /-- Original real fourth-root theta weight, no approximation. -/
-def thetaGammaBinOriginalRoot (q w : ℝ) : ℝ :=
+noncomputable def thetaGammaBinOriginalRoot (q w : ℝ) : ℝ :=
   (1+q*w)^((1:ℝ)/4)
 
 /-- Recentered quadratic lower fourth-root polynomial. -/
-def thetaGammaBinLowerRoot (q L w : ℝ) : ℝ :=
+noncomputable def thetaGammaBinLowerRoot (q L w : ℝ) : ℝ :=
   let A := thetaGammaBinBase q L
   let v := thetaGammaBinOffset q L w
   A^((1:ℝ)/4)*(1+v/4-3*v^2/32)
 
 /-- Recentered cubic upper fourth-root polynomial. -/
-def thetaGammaBinUpperRoot (q L w : ℝ) : ℝ :=
+noncomputable def thetaGammaBinUpperRoot (q L w : ℝ) : ℝ :=
   let A := thetaGammaBinBase q L
   let v := thetaGammaBinOffset q L w
   A^((1:ℝ)/4)*(1+v/4-3*v^2/32+7*v^3/128)
 
 /-- One nonnegative Gamma density, for any moment index k. -/
-def thetaGammaBinDensity (k : ℕ) (w : ℝ) : ℝ :=
+noncomputable def thetaGammaBinDensity (k : ℕ) (w : ℝ) : ℝ :=
   Real.exp (-w)*w^k
 
 /-- Global continuity in the integration variable w; all divisions
