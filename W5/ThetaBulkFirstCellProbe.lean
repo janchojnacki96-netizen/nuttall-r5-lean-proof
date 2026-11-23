@@ -49,4 +49,18 @@ def thetaBulkLastCellPivotChecks : List Bool :=
 
 #eval thetaBulkLastCellPivotChecks
 
+/-- Determine whether the fifth-pivot failure is caused primarily by
+the width of the final x-cell. The SAME proved real-sound Boolean
+generator runs on its left/right halves, with no new proof premises.
+This is a diagnostic; the actual 48-cell certificate is still open. -/
+def thetaBulkLastCellMidpoint : ℚ :=
+  (thetaBulkLastCellLeft + thetaBulkLastCellRight)/2
+
+set_option maxHeartbeats 2000000 in
+def thetaBulkLastCellHalves : List Bool :=
+  [thetaBulk48GeneratedCheck thetaBulkLastCellLeft [thetaBulkLastCellMidpoint],
+   thetaBulk48GeneratedCheck thetaBulkLastCellMidpoint [thetaBulkLastCellRight]]
+
+#eval thetaBulkLastCellHalves
+
 end W5
