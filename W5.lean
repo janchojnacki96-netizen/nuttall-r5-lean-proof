@@ -317,3 +317,5 @@ import W5.ThetaSecondCellHeadDoubleBinomialGammaIntegral
 
 import W5.ThetaSecondCellHeadOriginalIntegralComparison
 import W5.ThetaSecondCellHeadKSoundness
+
+import W5.ThetaSecondCellHeadAllFiveSigns
