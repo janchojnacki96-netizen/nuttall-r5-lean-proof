@@ -299,3 +299,10 @@ import W5.ThetaSecondCellAllEntriesTailFour
 import W5.ThetaSecondCellCubicFirstSquareReal
 import W5.ThetaSecondCellCubicWidenedLDL
 import W5.ThetaSecondCellCubicRealPivotBridge
+
+import W5.ThetaSecondCellPositivePolynomial
+import W5.ThetaSecondCellHeadFiniteMajorants
+import W5.ThetaSecondCellPositiveCellUpper
+import W5.ThetaSecondCellTwoTermReduction
+
+import W5.ThetaSecondCellHeadMomentReuse
