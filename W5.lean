@@ -372,3 +372,4 @@ import W5.ThetaGammaSharperFirstSquare
 import W5.ThetaBulk48SharpGammaChecker
 import W5.ThetaBulkSelectedGammaCells
 import W5.ThetaBulkDegreeSelectedGammaCells
+import W5.ThetaAuditedMatrixRefinementReuse
