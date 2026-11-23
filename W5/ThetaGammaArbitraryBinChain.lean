@@ -104,7 +104,7 @@ theorem thetaGammaBinArbitraryChain_bounds
               thetaGammaBinOriginalRoot q w) :=
         intervalIntegral.integral_add_adjacent_intervals
           (hMid.intervalIntegrable L U)
-          (hMid.intervalIntegrable U (thetaGammaBinLast U us))
+          (hMid.intervalIntegrable U (thetaGammaBinLast U us)) |>.symm
       change
         (∫ w in L..U, thetaGammaBinDensity k w *
           thetaGammaBinLowerRoot q L w) +
