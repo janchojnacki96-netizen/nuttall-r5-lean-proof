@@ -18,20 +18,42 @@ yet a refinement of the imported audit box.
 
 namespace W5
 
+/-- Concentrate the expensive certified Gamma grid on those moments
+which have the largest first-order influence on the last LDL pivot. -/
+def thetaLastAuditPilotDegrees : Finset ℕ := {4, 5, 6, 7, 8}
+
 def thetaLastAuditPilotSource : ThetaIntervalMatrix :=
   thetaBulkDegreeSelectedCellMatrix
-    8 thetaGammaPilotGrid ({7, 8} : Finset ℕ) ∅
+    8 thetaGammaPilotGrid thetaLastAuditPilotDegrees ∅
     thetaGammaPilotLastLeft thetaGammaPilotLastRight
 
-/-- Return lower and upper inclusion checks separately, identifying
-which side of the original audited interval needs better precision. -/
+/-- Four exact rational inequalities: both sides of the old box. -/
 def thetaLastAuditPilotBounds (i j : Fin 5) : List Bool :=
   let A := thetaAuditUpperCell_51 i j
   let B := thetaLastAuditPilotSource i j
   [decide (A.lo ≤ B.lo), decide (B.hi ≤ A.hi)]
 
+/-- Human-readable integer micro-units, computed from exact rationals.
+Order: old lower, old upper, NEW lower, NEW upper. The floor on
+each number is only for diagnosis, never for a soundness argument. -/
+def thetaLastAuditPilotMicros (i j : Fin 5) : List ℤ :=
+  let A := thetaAuditUpperCell_51 i j
+  let B := thetaLastAuditPilotSource i j
+  [(A.lo * 1000000).floor, (A.hi * 1000000).floor,
+   (B.lo * 1000000).floor, (B.hi * 1000000).floor]
+
+/-- Make the four comparisons and four integer coordinates in
+one diagnostic pass per entry, without a giant rational printout. -/
+def thetaLastAuditPilotReport (i j : Fin 5) :
+    List Bool × List ℤ :=
+  let A := thetaAuditUpperCell_51 i j
+  let B := thetaLastAuditPilotSource i j
+  ( [decide (A.lo ≤ B.lo), decide (B.hi ≤ A.hi)],
+    [(A.lo * 1000000).floor, (A.hi * 1000000).floor,
+     (B.lo * 1000000).floor, (B.hi * 1000000).floor] )
+
 set_option maxHeartbeats 3000000 in
 set_option maxRecDepth 4096 in
-#eval [thetaLastAuditPilotBounds 4 4, thetaLastAuditPilotBounds 3 4]
+#eval [thetaLastAuditPilotReport 4 4, thetaLastAuditPilotReport 3 4]
 
 end W5
