@@ -163,14 +163,14 @@ theorem thetaBulkSevenMatricesCheck_sound
   | cons b bs ih =>
       intro a hcheck
       have hsplit :
-          (0:ℚ) ≤ a ∧ b ≤ (145:ℚ)/256 ∧
+          ((0:ℚ) ≤ a ∧ b ≤ (145:ℚ)/256) ∧
           intervalLDL5AlternatingCheck
             (thetaSymmetricIntervals
               (thetaBulkSevenCellMatrix J a b)) = true ∧
           thetaBulkSevenMatricesCheck J b bs = true := by
         simpa only [thetaBulkSevenMatricesCheck,
           Bool.and_eq_true, decide_eq_true_eq] using hcheck
-      rcases hsplit with ⟨ha, hb, hldl, hrest⟩
+      rcases hsplit with ⟨⟨ha, hb⟩, hldl, hrest⟩
       change ThetaUpperRealCellCertificate a b ∧
         ThetaUpperRealCellCertificateChain b bs
       refine ⟨?_, ih b hrest⟩
@@ -180,7 +180,10 @@ theorem thetaBulkSevenMatricesCheck_sound
           hldl, ?_⟩
       intro x hx hax hxb i j _
       have haR : (0:ℝ) ≤ (a:ℝ) := by exact_mod_cast ha
-      have hbR : (b:ℝ) ≤ (145:ℝ)/256 := by exact_mod_cast hb
+      have hcast : (b:ℝ) ≤ (((145:ℚ)/256):ℝ) := by
+        exact_mod_cast hb
+      have hbR : (b:ℝ) ≤ (145:ℝ)/256 := by
+        simpa only [Rat.cast_div, Rat.cast_ofNat] using hcast
       exact thetaBulkSevenCellMatrix_containsReal
         J hJ a b x haR hx hax hxb hbR i j
 
