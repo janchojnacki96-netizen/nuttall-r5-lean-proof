@@ -1,4 +1,4 @@
-import W5.ThetaGammaRecenteredFourthRoot
+import W5.ThetaGammaRecenteredBinIntegral
 
 /-!
 # EXACT signed cubic polynomial for every locally recentered theta Γ bin
