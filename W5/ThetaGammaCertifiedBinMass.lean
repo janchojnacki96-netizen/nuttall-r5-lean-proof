@@ -50,6 +50,12 @@ theorem thetaGammaCertifiedBinMassBox_containsReal
     (thetaGammaBinExpNegBox_containsReal L hL hL3 hLP)
     (thetaGammaBinExpNegBox_containsReal U hU0 hU hUP)
 
+/-- Exact decidability of the purely rational endpoint requirements. -/
+instance thetaGammaCertifiedBinEligible_decidable (L U : ℚ) :
+    Decidable (thetaGammaCertifiedBinEligible L U) := by
+  unfold thetaGammaCertifiedBinEligible
+  infer_instance
+
 /-- The final eligibility check is a finite rational Boolean.
 Proving a list of bins eligible needs ONLY one native_decide pass
 over this fixed predicate, never one theorem per bin. -/
