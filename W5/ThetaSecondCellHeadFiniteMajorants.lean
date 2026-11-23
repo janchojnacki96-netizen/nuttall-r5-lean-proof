@@ -90,17 +90,17 @@ private theorem thetaExpNeg_small_of_one_factorial
 
 theorem thetaExpNeg48_lt_oneE18 :
     Real.exp (-48) < 1/(10:ℝ)^18 :=
-  thetaExpNeg_small_of_one_factorial 48 (10:ℝ)^18 48
+  thetaExpNeg_small_of_one_factorial 48 ((10:ℝ)^18) 48
     (by norm_num) (by positivity) (by norm_num)
 
 theorem thetaExpNeg25_lt_oneE9 :
     Real.exp (-25) < 1/(10:ℝ)^9 :=
-  thetaExpNeg_small_of_one_factorial 25 (10:ℝ)^9 25
+  thetaExpNeg_small_of_one_factorial 25 ((10:ℝ)^9) 25
     (by norm_num) (by positivity) (by norm_num)
 
 theorem thetaExpNeg64_lt_oneE25 :
     Real.exp (-64) < 1/(10:ℝ)^25 :=
-  thetaExpNeg_small_of_one_factorial 64 (10:ℝ)^25 64
+  thetaExpNeg_small_of_one_factorial 64 ((10:ℝ)^25) 64
     (by norm_num) (by positivity) (by norm_num)
 
 end W5

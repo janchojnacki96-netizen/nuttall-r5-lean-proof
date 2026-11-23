@@ -45,14 +45,14 @@ theorem thetaPositivePolynomial_cell_upper
       (p-1)/x+w*x ≤ (p-1)/a+w*b := by
     exact add_le_add hD (mul_le_mul_of_nonneg_left hxb hw)
   have hp0 : 0 ≤ p+w*x^2 := by positivity
-  have hx² : x^2 ≤ b^2 := by
+  have hx_sq : x^2 ≤ b^2 := by
     have hplus : 0 ≤ b+x := by linarith
     have hprod : 0 ≤ (b-x)*(b+x) :=
       mul_nonneg (sub_nonneg.mpr hxb) hplus
     nlinarith
   have hq :
       p+w*x^2 ≤ p+w*b^2 := by
-    nlinarith [mul_nonneg hw (sub_nonneg.mpr hx²)]
+    nlinarith [mul_nonneg hw (sub_nonneg.mpr hx_sq)]
   exact (thetaCoefficientPolynomial_abs_le_positive
     i j _ _ hd0 hp0).trans
     (thetaCoefficientPositivePolynomial_mono
