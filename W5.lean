@@ -342,3 +342,5 @@ import W5.ThetaGammaRecenteredBinIntegral
 import W5.ThetaGammaBinExpNegBox
 
 import W5.ThetaGammaCertifiedBinMass
+
+import W5.ThetaGammaSignedPolynomialBin
