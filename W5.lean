@@ -333,3 +333,5 @@ import W5.ThetaBulkSignedMomentExpansion
 import W5.ThetaMomentFourthRootChordTangent
 
 import W5.ThetaGammaRecenteredFourthRoot
+
+import W5.ThetaGammaRecenteredBinIntegral
