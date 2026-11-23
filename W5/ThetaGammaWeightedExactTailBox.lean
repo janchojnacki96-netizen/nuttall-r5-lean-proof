@@ -90,7 +90,7 @@ theorem thetaGammaWeightedExactTailBox_containsReal
       (∫ w in Set.Ici (H:ℝ),
         (Real.exp (-w) *
           (1+w*(y:ℝ)^2)^((1:ℝ)/4)) * w^k ∂volume) := by
-    apply integral_nonneg_ae
+    apply integral_nonneg_of_ae
     filter_upwards [ae_restrict_mem measurableSet_Ici] with w hw
     have hw0 : 0 ≤ w := hHR.trans hw
     have hbase : 0 ≤ 1+w*(y:ℝ)^2 := by positivity
@@ -99,8 +99,7 @@ theorem thetaGammaWeightedExactTailBox_containsReal
         (Real.rpow_nonneg hbase _))
       (pow_nonneg hw0 k)
   constructor
-  · exact hLower
-  · simpa only [thetaGammaWeightedExactTailBox, Q,
-      Rat.cast_mul] using hUpper
+  · simpa [thetaGammaWeightedExactTailBox] using hLower
+  · simpa [thetaGammaWeightedExactTailBox, Q, Rat.cast_mul] using hUpper
 
 end W5
