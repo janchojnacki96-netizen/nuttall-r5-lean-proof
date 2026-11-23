@@ -30,7 +30,7 @@ theorem thetaFourthRoot_fourthPower_cancel
   calc
     (x^4)^((1:ℝ)/4) =
         (x^(4:ℝ))^((1:ℝ)/4) := by
-          simp only [Real.rpow_natCast]
+          rfl
     _ = x^((4:ℝ)*((1:ℝ)/4)) :=
           (Real.rpow_mul hx (4:ℝ) ((1:ℝ)/4)).symm
     _ = x := by norm_num
