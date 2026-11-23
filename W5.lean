@@ -312,3 +312,5 @@ import W5.ThetaSecondCellHeadPositiveWPolynomial
 import W5.ThetaSecondCellHeadGaussianFactor
 
 import W5.ThetaSecondCellHeadDoubleBinomial
+
+import W5.ThetaSecondCellHeadDoubleBinomialGammaIntegral
