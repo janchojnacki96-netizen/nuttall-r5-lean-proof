@@ -344,3 +344,6 @@ import W5.ThetaGammaBinExpNegBox
 import W5.ThetaGammaUniformMarkovTail
 
 import W5.ThetaGammaUniformMarkovTailIntegral
+
+import W5.ThetaGammaCertifiedBinMass
+import W5.ThetaGammaSignedPolynomialBin
