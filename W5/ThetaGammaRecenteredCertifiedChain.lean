@@ -27,6 +27,24 @@ def thetaGammaRootGridEligible (q : ℚ) (R : ℚ → ℚ × ℚ) :
       (R L).1^4 ≤ 1+q*L ∧ 1+q*L ≤ (R L).2^4 ∧
       thetaGammaRootGridEligible q R U us
 
+/-- One constructive decision procedure for eligibility of an
+arbitrary-length rational Gamma grid. The recursion is on the list,
+and each local requirement uses exact decidable rational inequalities. -/
+def thetaGammaRootGridEligible_decidable (q : ℚ)
+    (R : ℚ → ℚ × ℚ) :
+    ∀ (L : ℚ) (us : List ℚ),
+      Decidable (thetaGammaRootGridEligible q R L us)
+  | L, [] => inferInstance
+  | L, U :: us =>
+      letI : Decidable (thetaGammaRootGridEligible q R U us) :=
+        thetaGammaRootGridEligible_decidable q R U us
+      inferInstance
+
+instance thetaGammaRootGridEligible_instDecidable
+    (q : ℚ) (R : ℚ → ℚ × ℚ) (L : ℚ) (us : List ℚ) :
+    Decidable (thetaGammaRootGridEligible q R L us) :=
+  thetaGammaRootGridEligible_decidable q R L us
+
 /-- Computable sum of rational intervals enclosing the true
 quadratic-LOWER recentered integrals over a w-grid. -/
 def thetaGammaLowerGridBox (k : ℕ) (q : ℚ)
