@@ -66,10 +66,15 @@ theorem thetaGammaAutoMomentBox_containsReal_of_check
           (thetaGammaRationalLast 0 us / 1024))).lo :=
     of_decide_eq_true hnumeric
   rcases hp with ⟨hy, hy1, hH, hHmax, hexp⟩
+  have hLast :
+      thetaGammaBinLast (0:ℝ)
+        (us.map (fun z : ℚ => (z:ℝ))) =
+      ((thetaGammaRationalLast 0 us):ℝ) := by
+    simpa only [Rat.cast_zero] using
+      (thetaGammaRationalLast_cast (0:ℚ) us).symm
   unfold thetaGammaAutoMomentBox
   exact thetaGammaAutoFullMomentGridBox_containsReal
     steps k y (thetaGammaRationalLast 0 us) us
-    hy hy1 hgrid (thetaGammaRationalLast_cast 0 us).symm
-    hH hHmax hexp
+    hy hy1 hgrid hLast hH hHmax hexp
 
 end W5
