@@ -4,10 +4,16 @@ on:
     branches: [main, work/lean-ci-bootstrap]
   pull_request:
   workflow_dispatch:
+    inputs:
+      build_target:
+        description: 'Optional W5.Module to check (blank means full build)'
+        required: false
+        default: ''
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+# Keep successful .olean artifacts from long-running builds even when new commits arrive.
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -47,6 +53,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Install Lean toolchain with elan
         shell: bash
         run: |
@@ -54,10 +62,108 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Resolve pinned Mathlib dependency and generate manifest
         run: ~/.elan/bin/lake update
+      # Cache both .olean and Lake's hashed build traces: isolated .olean are not enough.
+      - name: Restore W5 incremental build cache
+        id: w5-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake/build
+          key: w5-lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            w5-lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
       - name: Download compiled Mathlib cache
         run: ~/.elan/bin/lake exe cache get
-      - name: Compile partial formalization
-        run: ~/.elan/bin/lake build
+      - name: Select Lean build targets
+        id: targets
+        shell: bash
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          REQUESTED_TARGET: ${{ inputs.build_target }}
+        run: |
+          set -euo pipefail
+          targets=W5
+          mode=full
+          if [[ -n "$REQUESTED_TARGET" ]]; then
+            if [[ "$REQUESTED_TARGET" != W5 && ! "$REQUESTED_TARGET" =~ ^W5\.[a-zA-Z0-9_]+$ ]]; then
+              echo 'Invalid target (expected W5 or W5.Module)' >&2; exit 1
+            fi
+            if [[ "$REQUESTED_TARGET" != W5 ]]; then
+              module_path="${REQUESTED_TARGET//./\/}.lean"
+              test -f "$module_path" || { echo 'Missing module source' >&2; exit 1; }
+            fi
+            targets="$REQUESTED_TARGET"
+            mode=manual-target
+          elif [[ "$GITHUB_EVENT_NAME" == pull_request && "$PR_NUMBER" != 133 && -n "$PR_BASE" && -n "$PR_HEAD" ]]; then
+            # Build every changed leaf module plus its graph of dependencies.
+            # Full W5 remains the canonical PR #133 build and manual dispatch.
+            mapfile -t changed < <(git diff --name-only --diff-filter=ACMR "$PR_BASE" "$PR_HEAD" -- 'W5/*.lean' | grep -E '^W5/[A-Za-z0-9_]+[.]lean
+      - name: Check for admitted proofs
+        shell: bash
+        run: |
+          if grep -RnE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' --include='*.lean' W5 W5.lean; then
+            echo 'Prohibited sorry/admit/axiom detected'; exit 1
+          fi
+      - name: Report formal proof status
+        shell: bash
+        run: |
+          echo "This CI currently checks ONLY compilation of partial lemmas."
+          echo "It DOES NOT certify the order-five Nuttall conjecture."
+          if grep -R -Eq 'theorem[[:space:]]+nuttall_r5[[:space:]]*:' --include='*.lean' W5; then
+            echo "A theorem named nuttall_r5 exists; its hypotheses/axioms still require auditing."
+          else
+            echo "Unconditional theorem W5.nuttall_r5 : MainClaim is NOT present."
+          fi
+ || true)
+            if (( ${#changed[@]} > 0 && ${#changed[@]} <= 12 )); then
+              targets=''
+              for file in "${changed[@]}"; do
+                module="${file%.lean}"
+                targets+="${module//\//.} "
+              done
+              targets="${targets% }"
+              mode=focused-pr
+            fi
+          fi
+          echo "targets=$targets" >> "$GITHUB_OUTPUT"
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "Checking $targets ($mode); focused success is NOT full R5 verification"
+      - name: Compile selected Lean modules and their dependencies
+        shell: bash
+        env:
+          LAKE_TARGETS: ${{ steps.targets.outputs.targets }}
+        run: |
+          set -o pipefail
+          read -ra targets <<< "$LAKE_TARGETS"
+          /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
+            ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log
+          exit "${PIPESTATUS[0]}"
+      # GitHub caches are immutable: each run gets its own key. Restore by
+      # compatibility prefix; a failing Lean target still saves completed modules.
+      - name: Save partial or complete W5 build cache
+        if: ${{ always() && steps.w5-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: .lake/build
+          key: w5-lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Report incremental build performance
+        if: always()
+        shell: bash
+        env:
+          BUILD_MODE: ${{ steps.targets.outputs.mode }}
+          BUILD_TARGETS: ${{ steps.targets.outputs.targets }}
+          RESTORED_CACHE_KEY: ${{ steps.w5-cache.outputs.cache-matched-key }}
+        run: |
+          echo "### W5 incremental compilation" >> "$GITHUB_STEP_SUMMARY"
+          echo "Mode: $BUILD_MODE; targets: $BUILD_TARGETS" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "Restored cache key: $RESTORED_CACHE_KEY" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ -f /tmp/w5-build-seconds.txt ]; then
+            echo "Lake build seconds: $(cat /tmp/w5-build-seconds.txt)" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f /tmp/w5-build.log ]; then
+            echo "W5 build operations: $(grep -Ec '(Built|Building) W5[.]' /tmp/w5-build.log || true)" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Check for admitted proofs
         shell: bash
         run: |
