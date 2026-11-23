@@ -68,8 +68,8 @@ theorem thetaGammaBinPolyR_hasDerivAt (k : ℕ) (x : ℝ) :
       have hpow :
           HasDerivAt (fun y : ℝ => y^(k+1))
             (((k+1:ℕ):ℝ) * x^k) x := by
-        simpa only [Pi.pow_apply, id_eq, Nat.add_sub_cancel_right, mul_one]
-          using (hasDerivAt_id x).pow (k+1)
+        simpa only [Nat.add_sub_cancel_right]
+          using (hasDerivAt_pow (k+1) x)
       have hsum := hmul.add hpow
       convert hsum using 1
       · funext y
