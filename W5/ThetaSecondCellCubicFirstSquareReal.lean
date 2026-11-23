@@ -105,7 +105,8 @@ theorem thetaSecondCellCubicBinomialCoefficientBox_containsReal
           rw [pow_add, pow_mul]
           ring
       · simp only [if_neg hmk, mul_zero]
-        exact thetaRationalPoint_containsReal 0)
+        simpa only [Rat.cast_zero] using
+          (thetaRationalPoint_containsReal (0:ℚ)))
 
 /-- The entire 5x5 candidate interval matrix encloses the
 TRUE first square-index theta summand, not a sampled proxy. -/
