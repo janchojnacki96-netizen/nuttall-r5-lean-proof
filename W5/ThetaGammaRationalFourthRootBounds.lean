@@ -27,7 +27,7 @@ for the rational bounds of all future w-bin endpoints. -/
 theorem thetaFourthRoot_fourthPower_cancel
     (x : ℝ) (hx : 0 ≤ x) :
     (x^4)^((1:ℝ)/4) = x := by
-  simpa only [one_div] using
+  simpa only [one_div, Nat.cast_ofNat] using
     (Real.pow_rpow_inv_natCast hx (by decide : (4:ℕ) ≠ 0))
 
 /-- A single real-semantic QInterval proof from only rational fourth
