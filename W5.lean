@@ -332,4 +332,13 @@ import W5.ThetaBulkSignedMomentExpansion
 
 import W5.ThetaMomentFourthRootChordTangent
 
+import W5.ThetaBulkSignedIntervalEvaluator
+
+import W5.ThetaBulkExponentialTaylor
+import W5.ThetaGammaFiniteBinIntegral
+import W5.ThetaGammaFiniteBinMassBox
+import W5.ThetaGammaRecenteredFourthRoot
+import W5.ThetaGammaRecenteredBinIntegral
+import W5.ThetaGammaBinExpNegBox
+
 import W5.ThetaGammaRationalFourthRootBounds
