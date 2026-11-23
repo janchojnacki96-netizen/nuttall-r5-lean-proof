@@ -62,12 +62,14 @@ theorem thetaBulkRoundToAuditScale_containsReal
       ((((⌈I.hi*(thetaAuditScale:ℚ)⌉ : ℤ):ℚ) /
         (thetaAuditScale:ℚ)):ℝ) := by
     exact_mod_cast hhiq
-  change
-    ((((⌊I.lo*(thetaAuditScale:ℚ)⌋ : ℤ):ℚ) /
-      (thetaAuditScale:ℚ)):ℝ) ≤ x ∧
-    x ≤ ((((⌈I.hi*(thetaAuditScale:ℚ)⌉ : ℤ):ℚ) /
-      (thetaAuditScale:ℚ)):ℝ)
-  exact ⟨hloR.trans hx.1, hx.2.trans hhiR⟩
+  simpa only [QInterval.ContainsReal, FixedIntInterval.asQInterval,
+    thetaBulkRoundToAuditScale] using
+    (show
+      ((((⌊I.lo*(thetaAuditScale:ℚ)⌋ : ℤ):ℚ) /
+        (thetaAuditScale:ℚ)):ℝ) ≤ x ∧
+      x ≤ ((((⌈I.hi*(thetaAuditScale:ℚ)⌉ : ℤ):ℚ) /
+        (thetaAuditScale:ℚ)):ℝ) from
+      ⟨hloR.trans hx.1, hx.2.trans hhiR⟩)
 
 /-- Repeated certified 768-bit SQUARING. One generic soundness
 induction covers any depth, and the original exponential
