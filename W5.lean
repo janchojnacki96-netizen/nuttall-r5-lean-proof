@@ -349,3 +349,5 @@ import W5.ThetaGammaCertifiedBinMass
 import W5.ThetaGammaSignedPolynomialBin
 
 import W5.ThetaGammaRecenteredSignedPolynomial
+import W5.ThetaGammaRationalFourthRootBounds
+import W5.ThetaGammaArbitraryBinChain
