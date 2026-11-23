@@ -28,7 +28,8 @@ theorem thetaHeadGaussian_le_exp_of_cell
     nlinarith [mul_le_mul_of_nonneg_left hsq hE]
   have hrec : E ≤ ((n:ℝ)^2-1)/x^2 :=
     (le_div_iff₀ (sq_pos_of_pos hx)).2 hnum
-  exact Real.exp_le_exp.mpr (by linarith)
+  apply Real.exp_le_exp.mpr
+  simpa only [neg_div] using (neg_le_neg hrec)
 
 /-- Once a common real-sound K bound is supplied, its exact
 rational check plus the Gaussian endpoint inequality transports

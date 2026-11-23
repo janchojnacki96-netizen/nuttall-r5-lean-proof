@@ -40,10 +40,11 @@ theorem thetaHeadPositiveWPolynomial_eval
   classical
   unfold thetaHeadPositiveWPolynomial
     thetaCoefficientPositivePolynomial
-  simp only [map_sum, Polynomial.eval_mul, Polynomial.eval_pow,
-    Polynomial.eval_add, Polynomial.eval_C, Polynomial.eval_X]
+  rw [Polynomial.eval_finsetSum]
   apply Finset.sum_congr rfl
   intro t ht
+  simp only [Polynomial.eval_mul, Polynomial.eval_pow,
+    Polynomial.eval_add, Polynomial.eval_C, Polynomial.eval_X]
   ring
 
 end W5
