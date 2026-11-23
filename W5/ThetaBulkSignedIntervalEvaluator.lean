@@ -315,12 +315,14 @@ theorem thetaBulkSignedOriginalTermBox_containsReal
     have hn0 : n ≠ 0 := Nat.ne_of_gt hn
     simpa only [thetaCertificateBaseTerm, if_neg hn0,
       hp, d, mul_assoc] using hB0
+  have haR : (0:ℝ) ≤ (a:ℝ) := by
+    exact_mod_cast ha.le
   have hM : ∀ k : ℕ,
       QInterval.ContainsReal (thetaNthCubicGammaMomentBox a b n k)
         (thetaAuditedOneWeightedMoment y k) := by
     intro k
     exact thetaNthCubicGammaMomentBox_containsReal
-      a b x (le_of_lt ha |>.trans hax) hax hxb hb1 n k hn
+      a b x haR hax hxb hb1 n k hn
   have hIntegral := thetaBulkSignedMomentInterval_containsReal
     D X p (thetaNthCubicGammaMomentBox a b n)
     y d x hD hX hM i j
