@@ -63,7 +63,7 @@ theorem thetaBulkRoundToAuditScale_containsReal
         (thetaAuditScale:ℚ)):ℝ) := by
     exact_mod_cast hhiq
   simpa only [QInterval.ContainsReal, FixedIntInterval.asQInterval,
-    thetaBulkRoundToAuditScale] using
+    thetaBulkRoundToAuditScale, Rat.cast_div] using
     (show
       ((((⌊I.lo*(thetaAuditScale:ℚ)⌋ : ℤ):ℚ) /
         (thetaAuditScale:ℚ)):ℝ) ≤ x ∧
