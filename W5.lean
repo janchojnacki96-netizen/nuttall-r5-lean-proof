@@ -330,3 +330,5 @@ import W5.ThetaThirdCellRemaining48Reduction
 import W5.ThetaBulk48SevenTermEngine
 
 import W5.ThetaBulkSignedMomentExpansion
+
+import W5.ThetaBulkSignedIntervalEvaluator
