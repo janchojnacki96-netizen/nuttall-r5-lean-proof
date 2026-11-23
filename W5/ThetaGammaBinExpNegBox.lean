@@ -1,4 +1,4 @@
-import W5.ThetaBulkExponentialTaylor
+import W5.ThetaBulkFixedExponential
 
 /-!
 # One rational exponential certificate for ALL Gamma w-bin boundaries
@@ -25,10 +25,10 @@ namespace W5
 /-- One computable exact-rational enclosure for exp(-t), where
 t is a nonnegative rational argument. No floating-point inputs. -/
 def thetaGammaBinExpNegBox (t : ℚ) : QInterval :=
-  thetaBulkPow2 10
-    (QInterval.inversePositive
-      (thetaBulkExpTaylorBox
-        (QInterval.point (t/1024))))
+  let E := QInterval.inversePositive
+    (thetaBulkExpTaylorBox (QInterval.point (t/1024)))
+  (thetaBulkFixedPow2 10 (thetaBulkRoundToAuditScale E)).asQInterval
+    thetaAuditScale
 
 /-- A single verified real-semantic theorem for ALL nonnegative
 rational Gamma integration endpoints up to 1024/3. -/
@@ -65,10 +65,13 @@ theorem thetaGammaBinExpNegBox_containsReal
       (QInterval.inversePositive (thetaBulkExpTaylorBox Z))
       (Real.exp z)⁻¹ :=
     QInterval.inversePositive_containsReal hExp hPos
-  have hPower :=
-    thetaBulkPow2_containsReal
-      (QInterval.inversePositive (thetaBulkExpTaylorBox Z))
-      (Real.exp z)⁻¹ hInv 10
+  have hSnap := thetaBulkRoundToAuditScale_containsReal
+    (QInterval.inversePositive (thetaBulkExpTaylorBox Z))
+    (Real.exp z)⁻¹ hInv
+  have hPower := thetaBulkFixedPow2_containsReal
+    (thetaBulkRoundToAuditScale
+      (QInterval.inversePositive (thetaBulkExpTaylorBox Z)))
+    (Real.exp z)⁻¹ hSnap 10
   have hscale : (1024:ℝ)*z = (t:ℝ) := by
     dsimp [z]
     ring
