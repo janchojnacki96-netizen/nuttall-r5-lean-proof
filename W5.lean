@@ -304,3 +304,5 @@ import W5.ThetaSecondCellPositivePolynomial
 import W5.ThetaSecondCellHeadFiniteMajorants
 import W5.ThetaSecondCellPositiveCellUpper
 import W5.ThetaSecondCellTwoTermReduction
+
+import W5.ThetaSecondCellHeadMomentReuse
