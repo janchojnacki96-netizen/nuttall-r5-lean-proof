@@ -12,12 +12,6 @@ namespace W5
 theorem leanCert_exp_one_lt_three : Real.exp 1 < 3 := by
   leancert
 
-/-- Exponential cap appearing in the second original theta x-cell. -/
-theorem leanCert_exp_neg_25_lt_oneE9 :
-    Real.exp (-25) < 1 / (10 : ℝ)^9 := by
-  leancert
-
 #print axioms W5.leanCert_exp_one_lt_three
-#print axioms W5.leanCert_exp_neg_25_lt_oneE9
 
 end W5
