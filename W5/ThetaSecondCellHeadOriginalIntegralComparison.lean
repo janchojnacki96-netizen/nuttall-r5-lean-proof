@@ -115,6 +115,7 @@ theorem thetaHeadOriginalIntegral_abs_le_positiveIntegral
     filter_upwards [ae_restrict_mem measurableSet_Ici] with w hw
     have hW : 0 ≤ W w := by
       dsimp [W]
+      have hw0 : (0 : ℝ) ≤ w := Set.mem_Ici.mp hw
       have hbase : 0 ≤ 1+w*y^2 := by positivity
       exact mul_nonneg (Real.exp_nonneg _)
         (Real.rpow_nonneg hbase _)
