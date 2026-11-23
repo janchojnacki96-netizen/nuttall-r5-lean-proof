@@ -28,22 +28,44 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect certificate changes (full audit on push)
+        id: cpp-changes
+        shell: bash
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" != pull_request ]] || [[ -z "$PR_BASE_SHA" || -z "$PR_HEAD_SHA" ]]; then
+            echo 'run_audit=true' >> "$GITHUB_OUTPUT"
+          elif git diff --quiet "$PR_BASE_SHA" "$PR_HEAD_SHA" -- certificate/ .github/workflows/lean.yml; then
+            echo 'run_audit=false' >> "$GITHUB_OUTPUT"
+            echo 'C++ audit skipped: no certificate or audit-workflow changes. Canonical push checks full certificate.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'run_audit=true' >> "$GITHUB_OUTPUT"
+          fi
       - name: Build and run GCC checker
+        if: ${{ steps.cpp-changes.outputs.run_audit == 'true' }}
         shell: bash
         run: |
           g++ -O2 -std=c++17 -fno-fast-math -ffp-contract=off certificate/certyfikat_theta_W5.cpp -o /tmp/w5_gcc
           /tmp/w5_gcc | tee /tmp/w5_gcc.log
           grep -Fx "Certified all five signs; intervals = 51, max depth = 10" /tmp/w5_gcc.log
       - name: Independent 768-bit integer interval audit
+        if: ${{ steps.cpp-changes.outputs.run_audit == 'true' }}
         shell: bash
         run: |
           set -o pipefail
           python3 certificate/audyt_theta_W5_integer.py | tee /tmp/w5_integer.log
           grep -Fx "PASS: exact integer fixed-point interval proof verified 255 signs" /tmp/w5_integer.log
       - name: Exact polynomial majorant audit
+        if: ${{ steps.cpp-changes.outputs.run_audit == 'true' }}
         shell: bash
         run: python3 certificate/verify_polynomial_majorant_w5.py
       - name: Build and run Clang checker
+        if: ${{ steps.cpp-changes.outputs.run_audit == 'true' }}
         shell: bash
         run: |
           clang++ -O2 -std=c++17 -fno-fast-math -ffp-contract=off certificate/certyfikat_theta_W5.cpp -o /tmp/w5_clang
