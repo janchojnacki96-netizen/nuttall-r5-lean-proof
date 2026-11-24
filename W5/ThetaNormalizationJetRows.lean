@@ -52,7 +52,7 @@ theorem thetaNormGauge_hasDerivAt (x u : ℝ) (h : 1+x*u ≠ 0) :
   have hh := (Real.hasDerivAt_exp (u/x-5*thetaNormShift x u)).comp u hsub
   convert hh using 1
   · funext z
-    simp only [thetaNormGauge, thetaNormShift, Function.comp_def]
+    simp only [thetaNormGauge, thetaNormShift, Function.comp_def, Pi.sub_apply]
     congr 1
     ring
   · unfold thetaNormGauge thetaNormShift
@@ -91,8 +91,8 @@ theorem thetaNormJetSection_zero (f : ℕ → ℝ → ℝ) (x t : ℝ) (m : ℕ)
 
 theorem thetaNormJetSection_hasDerivAt
     (f : ℕ → ℝ → ℝ)
-    (hf : ∀ m < 8, ∀ t : ℝ, HasDerivAt (f m) (f (m+1) t) t)
-    (x t u : ℝ) (m k : ℕ) (hk : k < 4) (hm : m+k < 8)
+    (N : ℕ) (hf : ∀ m < N, ∀ t : ℝ, HasDerivAt (f m) (f (m+1) t) t)
+    (x t u : ℝ) (m k : ℕ) (hk : k < 4) (hm : m+k < N)
     (hu : 1+x*u ≠ 0) :
     HasDerivAt (thetaNormJetSection f x t m k)
       (thetaNormJetSection f x t m (k+1) u) u := by
@@ -115,7 +115,7 @@ theorem thetaNormJetSection_hasDerivAt
       dsimp [a, b] <;> ring
     · simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
         thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def,
-        Nat.add_zero, Nat.cast_zero, Nat.cast_one, Nat.cast_ofNat, pow_zero, pow_one,
+        Nat.add_zero, Nat.cast_zero, Nat.cast_one, pow_zero, pow_one,
         one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> dsimp [a,b] <;> ring
   · -- order 1
     have hP0 := ((hb.pow 0).const_mul ((1:ℝ) * a^1)).add ((hb.pow 1).const_mul ((-5:ℝ) * a^0))
@@ -128,11 +128,11 @@ theorem thetaNormJetSection_hasDerivAt
     convert h using 1
     · funext z
       simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
-        thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Function.comp_def, one_mul, zero_add, add_zero, pow_zero] <;>
+        thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def, Nat.add_zero, one_mul, zero_add, add_zero, pow_zero] <;>
       dsimp [a, b] <;> ring
     · simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
         thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def,
-        Nat.add_zero, Nat.cast_zero, Nat.cast_one, Nat.cast_ofNat, pow_zero, pow_one,
+        Nat.add_zero, Nat.cast_zero, Nat.cast_one, pow_zero, pow_one,
         one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> dsimp [a,b] <;> ring
   · -- order 2
     have hP0 := (((hb.pow 0).const_mul ((1:ℝ) * a^2)).add ((hb.pow 1).const_mul ((-10:ℝ) * a^1))).add ((hb.pow 2).const_mul ((45:ℝ) * a^0))
@@ -148,11 +148,11 @@ theorem thetaNormJetSection_hasDerivAt
     convert h using 1
     · funext z
       simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
-        thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Function.comp_def, one_mul, zero_add, add_zero, pow_zero] <;>
+        thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def, Nat.add_zero, one_mul, zero_add, add_zero, pow_zero] <;>
       dsimp [a, b] <;> ring
     · simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
         thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def,
-        Nat.add_zero, Nat.cast_zero, Nat.cast_one, Nat.cast_ofNat, pow_zero, pow_one,
+        Nat.add_zero, Nat.cast_zero, Nat.cast_one, pow_zero, pow_one,
         one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> dsimp [a,b] <;> ring
   · -- order 3
     have hP0 := ((((hb.pow 0).const_mul ((1:ℝ) * a^3)).add ((hb.pow 1).const_mul ((-15:ℝ) * a^2))).add ((hb.pow 2).const_mul ((135:ℝ) * a^1))).add ((hb.pow 3).const_mul ((-585:ℝ) * a^0))
@@ -171,11 +171,11 @@ theorem thetaNormJetSection_hasDerivAt
     convert h using 1
     · funext z
       simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
-        thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Function.comp_def, one_mul, zero_add, add_zero, pow_zero] <;>
+        thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def, Nat.add_zero, one_mul, zero_add, add_zero, pow_zero] <;>
       dsimp [a, b] <;> ring
     · simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
         thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def,
-        Nat.add_zero, Nat.cast_zero, Nat.cast_one, Nat.cast_ofNat, pow_zero, pow_one,
+        Nat.add_zero, Nat.cast_zero, Nat.cast_one, pow_zero, pow_one,
         one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> dsimp [a,b] <;> ring
 
 
@@ -199,5 +199,49 @@ theorem thetaNormPsiJet_hasDerivAt (m : ℕ) (hm : m < 8) (t : ℝ) :
   · exact (Psi1_fifth_differentiable t)
   · exact (Psi1_sixth_differentiable t)
   · exact (Psi1_seventh_differentiable t)
+
+/-- Iterate the common row recurrence on the genuine open logarithm patch. -/
+theorem thetaNormJetSection_iterated
+    (f : ℕ → ℝ → ℝ) (N : ℕ)
+    (hf : ∀ m < N, ∀ t : ℝ, HasDerivAt (f m) (f (m+1) t) t)
+    (x t u : ℝ) (m k : ℕ) (hk : k ≤ 4) (hm : m+k ≤ N)
+    (hu : 0 < 1+x*u) :
+    iteratedDeriv k (fun z => thetaNormGauge x z *
+      f m (t+thetaNormShift x z)) u = thetaNormJetSection f x t m k u := by
+  induction k generalizing u with
+  | zero => simp only [iteratedDeriv_zero, thetaNormJetSection_zero]
+  | succ k ih =>
+      rw [iteratedDeriv_succ]
+      have hopen : IsOpen {z : ℝ | 0 < 1+x*z} :=
+        isOpen_lt continuous_const (by fun_prop)
+      have heq : iteratedDeriv k (fun z => thetaNormGauge x z *
+          f m (t+thetaNormShift x z)) =ᶠ[𝓝 u] thetaNormJetSection f x t m k := by
+        filter_upwards [hopen.mem_nhds hu] with z hz
+        exact ih (by omega) (by omega) z hz
+      rw [Filter.EventuallyEq.deriv_eq heq]
+      exact (thetaNormJetSection_hasDerivAt f N hf x t u m k (by omega)
+        (by omega) (ne_of_gt hu)).deriv
+
+noncomputable def thetaNormRow (x : ℝ) (i l : ℕ) : ℝ :=
+  thetaNormJetPolynomial (1/x) (x/4) i l
+
+theorem thetaNormRow_diag (x : ℝ) (i : ℕ) (hi : i ≤ 4) :
+    thetaNormRow x i i = (x/4)^i := by
+  interval_cases i <;> simp [thetaNormRow, thetaNormJetPolynomial]
+
+theorem thetaNormRow_above (x : ℝ) (i l : ℕ) (hi : i ≤ 4) (hil : i < l) :
+    thetaNormRow x i l = 0 := by
+  interval_cases i <;>
+    (rcases l with _ | l; · omega) <;>
+    first | rfl | (rcases l with _ | l; · omega) <;>
+    first | rfl | (rcases l with _ | l; · omega) <;>
+    first | rfl | (rcases l with _ | l; · omega) <;>
+    first | rfl | (rcases l with _ | l; · omega) <;> rfl
+
+theorem thetaNormJetSection_origin (f : ℕ → ℝ → ℝ) (x t : ℝ) (m k : ℕ) :
+    thetaNormJetSection f x t m k 0 =
+      ∑ l ∈ Finset.range (k+1), thetaNormRow x k l * f (m+l) t := by
+  simp [thetaNormJetSection, thetaNormGauge, thetaNormShift, thetaNormSlope, thetaNormRow]
+
 
 end W5
