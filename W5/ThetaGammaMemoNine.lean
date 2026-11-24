@@ -90,4 +90,53 @@ theorem thetaBulkMemoSharpHigherSquareTermBox_containsReal
     steps us a b x ha hx hax hxb hb hExp i j n
     hn2 hn7 hA hB
 
+/-- Construct the entire n-th 5x5 matrix with ONE shared
+nine-moment array and ONE Gaussian exponential interval. The
+mathematical entry formula is identical to the original term box;
+the outer let-bindings avoid recomputing Gamma-grid quadratures
+for every independent coefficient. -/
+def thetaBulkMemoSharpHigherSquareMatrix
+    (steps : ℕ) (us : List ℚ) (a b : ℚ)
+    (n : ℕ) : ThetaIntervalMatrix :=
+  let E := thetaBulkFixedGaussianExpBox a b n
+  let M := thetaGammaMemoNine steps a b n us
+  Matrix.of (fun i j =>
+    thetaBulkSignedParameterizedTermBox a b n i j E M)
+
+/-- Exact equality of each entry, proved using the existing
+pointwise cached-term equality. No extra numerical checker. -/
+theorem thetaBulkMemoSharpHigherSquareMatrix_apply
+    (steps : ℕ) (us : List ℚ) (a b : ℚ)
+    (n : ℕ) (i j : Fin 5) :
+    thetaBulkMemoSharpHigherSquareMatrix steps us a b n i j =
+      thetaBulkSharpHigherSquareTermBox steps us a b i j n := by
+  change thetaBulkMemoSharpHigherSquareTermBox
+      steps us a b i j n =
+    thetaBulkSharpHigherSquareTermBox steps us a b i j n
+  exact thetaBulkMemoSharpHigherSquareTermBox_eq
+    steps us a b i j n
+
+/-- The original real-soundness result transfers to the entire
+shared-array matrix without copying any analytic derivative,
+Gamma-integral or signed-polynomial proof. -/
+theorem thetaBulkMemoSharpHigherSquareMatrix_containsReal
+    (steps : ℕ) (us : List ℚ) (a b : ℚ) (x : ℝ)
+    (ha : (0 : ℚ) < a) (hx : 0 < x)
+    (hax : (a : ℝ) ≤ x) (hxb : x ≤ (b : ℝ))
+    (hb : (b : ℝ) ≤ (145 : ℝ) / 256)
+    (hExp : ThetaBulkGaussianEligibility a b)
+    (n : ℕ) (hn2 : 2 ≤ n) (hn7 : n < 7)
+    (hA : thetaGammaAutoMomentCheck
+      steps (a/(n:ℚ)) us = true)
+    (hB : thetaGammaAutoMomentCheck
+      steps (b/(n:ℚ)) us = true)
+    (i j : Fin 5) :
+    QInterval.ContainsReal
+      (thetaBulkMemoSharpHigherSquareMatrix steps us a b n i j)
+      (thetaAuditedSeriesTerm x i j n) := by
+  rw [thetaBulkMemoSharpHigherSquareMatrix_apply]
+  exact thetaBulkSharpHigherSquareTermBox_containsReal
+    steps us a b x ha hx hax hxb hb hExp i j n
+    hn2 hn7 hA hB
+
 end W5
