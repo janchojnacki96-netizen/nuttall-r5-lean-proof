@@ -77,10 +77,12 @@ def cubic(a,b,n,k):
 def factor(i,j,t): return Q((-1)**(i+j-t),fac(t)*fac(i-t)*fac(j-t))
 def choose(n,k): return comb(n,k) if 0<=k<=n else 0
 
-def matrix(a,b,h,steps,sharp=(1,2),degrees=range(9)):
+def matrix(a,b,h,steps,sharp=(1,2),degrees=range(9),moment_table=None,exp_table=None):
     X=(a,b); scale=mul(ipow(X,2),point(Q(1,4)))
     M={n:[rnd((moment(a/n,k,h,steps)[0], moment(b/n,k,h,steps)[1])) if n in sharp and (n!=1 or k in degrees) else cubic(a,b,n,k) for k in range(9)] for n in range(1,7)}
     E={n:expneg(Q(n*n-1)/b**2,Q(n*n-1)/a**2) for n in range(2,7)}
+    if moment_table is not None: M[1]=moment_table
+    if exp_table is not None: E=exp_table
     def first(i,j):
         def coeff(k):
             return isum(mul(point(factor(i,j,t)*choose(t,k-(i+j-2*t))),ipow(X,(i+j-2*t)+2*(k-(i+j-2*t)))) for t in range(min(i,j)+1) if i+j-2*t<=k)
@@ -120,6 +122,23 @@ if __name__=='__main__':
         for j in range(i,5):
             l,u=C[i,j]; print(i,j,int(l*10**6),int(u*10**6))
             assert l<=B[i,j][0]<=B[i,j][1]<=u
+    # Independent replay with compact input witnesses, exactly as used in Lean.
+    ms,es=10**8,10**40
+    moment_ints=[]
+    for k in range(9):
+        z=rnd((moment(a,k,4,8)[0],moment(b,k,4,8)[1]))
+        moment_ints.append((floor(z[0]*ms),ceil(z[1]*ms)))
+    exp_ints={}
+    for n in range(2,7):
+        z=expneg(Q(n*n-1)/b**2,Q(n*n-1)/a**2)
+        exp_ints[n]=(floor(z[0]*es),ceil(z[1]*es))
+    replay=matrix(a,b,4,8,sharp=(1,),
+        moment_table=[(Q(l,ms),Q(u,ms)) for l,u in moment_ints],
+        exp_table={n:(Q(l,es),Q(u,es)) for n,(l,u) in exp_ints.items()})
+    assert all(C[ij][0]<=replay[ij][0]<=replay[ij][1]<=C[ij][1] for ij in C)
+    print('moment witnesses / 10^8:',moment_ints)
+    print('Gaussian witnesses / 10^40:',exp_ints)
+    print('PASS: all 15 compact replay intervals fit the original witness')
     print('exact, unrounded Schur replay of compact witness:')
     for k in range(5):
         A=C[k,k]; ok=A[0]>0 if k%2==0 else A[1]<0

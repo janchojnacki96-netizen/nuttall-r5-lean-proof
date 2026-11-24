@@ -192,55 +192,63 @@ jobs:
         run: |
           set -o pipefail
           if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
-            # This PR has its own already saved, compatible W5 cache. No
-            # single numerical test may consume the whole job budget again.
+            # Reuse all already-certified numerical and analytic modules.
+            # Replay the tiny input table and rows in independent groups.
             : > /tmp/w5-build.log
             start=$SECONDS
-            run_one() {
-              local target="$1" limit="$2" rc stage_start
+            run_group() {
+              local label="$1" limit="$2" rc stage_start
+              shift 2
               stage_start=$SECONDS
-              echo "::group::$target (wall-clock limit ${limit}s)"
+              echo "::group::$label (wall-clock limit ${limit}s)"
               set +e
-              timeout --kill-after=5s "${limit}s" ~/.elan/bin/lake build "$target" 2>&1 | tee -a /tmp/w5-build.log
+              timeout --kill-after=5s "${limit}s" ~/.elan/bin/lake build "$@" 2>&1 | tee -a /tmp/w5-build.log
               rc="${PIPESTATUS[0]}"
               set -e
               echo "::endgroup::"
-              echo "| $target | $((SECONDS-stage_start))s | $rc |" | tee -a "$GITHUB_STEP_SUMMARY"
+              echo "| $label | $((SECONDS-stage_start))s | $rc |" | tee -a "$GITHUB_STEP_SUMMARY"
               if [[ "$rc" == 124 || "$rc" == 137 ]]; then
-                echo "::error title=Numerical stage timed out::$target exceeded ${limit}s; no theorem was certified."
+                echo "::error title=Numerical stage timed out::$label exceeded ${limit}s; no theorem was certified by this group."
               elif [[ "$rc" != 0 ]]; then
-                echo "::error title=Lean stage failed::$target exited $rc."
+                echo "::error title=Lean stage failed::$label exited $rc."
               fi
               return "$rc"
             }
-            echo "### Last-cell independent stage timings (exit 0 = compiled)" >> "$GITHUB_STEP_SUMMARY"
-            echo "| Module | Wall time | Exit code |" >> "$GITHUB_STEP_SUMMARY"
+            echo "### Last-cell compact input replay timings (exit 0 = compiled)" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Stage | Wall time | Exit code |" >> "$GITHUB_STEP_SUMMARY"
             echo "| --- | --- | --- |" >> "$GITHUB_STEP_SUMMARY"
-            if ! run_one W5.ThetaLastCellCompactDyadicBase 180; then
+            # Do not silently skip unexpected Lean changes.
+            read -ra changed_targets <<< "$LAKE_TARGETS"
+            for target in "${changed_targets[@]}"; do
+              case "$target" in
+                W5.ThetaLastCellCompactDyadicBase|W5.ThetaLastCellCompactDyadicPivot|W5.ThetaLastCellCompactDyadicGaussian|W5.ThetaLastCellCompactDyadicGammaA|W5.ThetaLastCellCompactDyadicGammaB|W5.ThetaLastCellCompactDyadicFit|W5.ThetaLastCellCompactDyadicWitness|W5.ThetaLastCellReplayInputs|W5.ThetaLastCellReplayGamma0|W5.ThetaLastCellReplayGamma1|W5.ThetaLastCellReplayGamma2|W5.ThetaLastCellReplayExp|W5.ThetaLastCellReplayRow0|W5.ThetaLastCellReplayRow1|W5.ThetaLastCellReplayRow2|W5.ThetaLastCellReplayRow3|W5.ThetaLastCellReplayRow4|W5.ThetaLastCellReplaySoundness) ;;
+                *) echo "::error::Unscheduled changed module $target; extend the staged graph before running." ; exit 1 ;;
+              esac
+            done
+            if ! run_group cached-base-and-pivots 90 W5.ThetaLastCellCompactDyadic{Base,Pivot,Gaussian,GammaA,GammaB}; then
+              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
+              exit 1
+            fi
+            if ! run_group compact-input-definitions 90 W5.ThetaLastCellReplayInputs; then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
               exit 1
             fi
             failed=0
-            # Refuse to report success if a future change introduces a
-            # selected module not covered by this explicit staged graph.
-            read -ra changed_targets <<< "$LAKE_TARGETS"
-            for target in "${changed_targets[@]}"; do
-              case "$target" in
-                W5.ThetaLastCellCompactDyadicBase|W5.ThetaLastCellCompactDyadicPivot|W5.ThetaLastCellCompactDyadicGaussian|W5.ThetaLastCellCompactDyadicGammaA|W5.ThetaLastCellCompactDyadicGammaB|W5.ThetaLastCellCompactDyadicFit|W5.ThetaLastCellCompactDyadicWitness) ;;
-                *) echo "::error::Unscheduled changed module $target; extend the staged graph before running." ; exit 1 ;;
-              esac
-            done
-            for target in Pivot Gaussian GammaA GammaB Fit; do
-              if ! run_one "W5.ThetaLastCellCompactDyadic$target" 90; then
-                failed=$((failed+1))
-              fi
-            done
+            if ! run_group gaussian-input-table 90 W5.ThetaLastCellReplayExp; then
+              failed=$((failed+1))
+            fi
+            if ! run_group gamma-input-triplets 150 W5.ThetaLastCellReplayGamma{0,1,2}; then
+              failed=$((failed+1))
+            fi
+            if ! run_group five-compact-matrix-rows 150 W5.ThetaLastCellReplayRow{0,1,2,3,4}; then
+              failed=$((failed+1))
+            fi
             if (( failed > 0 )); then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              echo "::error::$failed independent last-cell check(s) did not compile; final proof not attempted."
+              echo "::error::$failed independent replay group(s) did not compile; final proof not attempted."
               exit 1
             fi
-            if ! run_one W5.ThetaLastCellCompactDyadicWitness 60; then
+            if ! run_group final-proof-composition 90 W5.ThetaLastCellReplaySoundness W5.ThetaLastCellCompactDyadicFit W5.ThetaLastCellCompactDyadicWitness; then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
               exit 1
             fi
