@@ -381,3 +381,6 @@ import W5.ThetaEarlyRoundedGammaMoments
 import W5.ThetaEarlyRoundedBothCellMatrix
 import W5.ThetaGenericAuditedSubgridChecker
 import W5.ThetaMemoBothAuditedSubgridsCheck
+
+import W5.ThetaEarlyRoundedPriorityAuditCheck
+import W5.ThetaPriorityAudited48Certificate
