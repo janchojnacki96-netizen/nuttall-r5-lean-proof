@@ -32,10 +32,6 @@ def thetaGammaLastRoundedSelectedMatrix :
       8 thetaGammaPilotGrid thetaGammaLastProbeDegrees
       ∅ thetaGammaPilotLastLeft thetaGammaPilotLastRight)
 
-/-- Execute the same five signed Schur steps as intervalLDL5,
-but memoize intermediate matrices once during diagnostic evaluation.
-The values are *only diagnostic* until a separate Boolean checker
-is proved true using its established soundness theorem. -/
 /-- Cache each of the 25 entries ONCE using a fixed 5x5 array.
 A Matrix is a function, so naively evaluating five nested Schur
 updates repeatedly recomputes expensive Gamma integrals. This
@@ -46,7 +42,7 @@ def thetaGammaMemoMatrix
   let rows : Array (Array QInterval) :=
     Array.ofFn (fun i : Fin 5 =>
       Array.ofFn (fun j : Fin 5 => B i j))
-  fun i j => rows[i.val]![j.val]!
+  fun i j => (rows[i.val]!)[j.val]!
 
 /-- Evaluation-only cache: the initial matrix is symmetric by
 thetaSymmetricIntervals. Calculate only its 15 upper-triangle entries;
@@ -59,8 +55,8 @@ def thetaGammaMemoSymmetricUpper
       Array.ofFn (fun j : Fin 5 =>
         if i.val ≤ j.val then B i j else QInterval.point 0))
   fun i j =>
-    if i.val ≤ j.val then upper[i.val]![j.val]!
-    else upper[j.val]![i.val]!
+    if i.val ≤ j.val then (upper[i.val]!)[j.val]!
+    else (upper[j.val]!)[i.val]!
 
 /-- Future pivots only use the strict trailing principal submatrix.
 Compute its Schur updates (16+9+4+1 = 30 entries across four steps),
@@ -76,7 +72,7 @@ def thetaGammaMemoTrailingSchur
           QInterval.schurUpdate
             (B i j) (B i pivot) (B pivot j) (B pivot pivot)
         else B i j))
-  fun i j => rows[i.val]![j.val]!
+  fun i j => (rows[i.val]!)[j.val]!
 
 def thetaGammaLastRoundedSelectedPivotBooleans : List Bool :=
   Id.run do
