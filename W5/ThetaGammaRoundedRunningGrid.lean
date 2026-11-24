@@ -170,26 +170,18 @@ theorem thetaGammaRunningAutoMomentBox_encloses_old
   rw [thetaGammaPlainLower_eq] at hL
   rw [thetaGammaPlainUpper_eq] at hU
   constructor
-  · change
-      (thetaGammaRoundedBinSum
-        (thetaGammaLowerRunningBin steps k (y^2)) 0 us).lo +
+  · simpa only [thetaGammaRunningAutoMomentBox,
+        thetaGammaAutoMomentBox, thetaGammaAutoFullMomentGridBox,
+        QInterval.add] using
+      (add_le_add_left hL
         (thetaGammaWeightedExactTailBox k y
-          (thetaGammaRationalLast 0 us)).lo ≤
-      (thetaGammaLowerGridBox k (y^2)
-        (thetaGammaAutoRootGrid steps (y^2)) 0 us).lo +
+          (thetaGammaRationalLast 0 us)).lo)
+  · simpa only [thetaGammaRunningAutoMomentBox,
+        thetaGammaAutoMomentBox, thetaGammaAutoFullMomentGridBox,
+        QInterval.add] using
+      (add_le_add_left hU
         (thetaGammaWeightedExactTailBox k y
-          (thetaGammaRationalLast 0 us)).lo
-    exact add_le_add_left hL _
-  · change
-      (thetaGammaUpperGridBox k (y^2)
-        (thetaGammaAutoRootGrid steps (y^2)) 0 us).hi +
-        (thetaGammaWeightedExactTailBox k y
-          (thetaGammaRationalLast 0 us)).hi ≤
-      (thetaGammaRoundedBinSum
-        (thetaGammaUpperRunningBin steps k (y^2)) 0 us).hi +
-        (thetaGammaWeightedExactTailBox k y
-          (thetaGammaRationalLast 0 us)).hi
-    exact add_le_add_left hU _
+          (thetaGammaRationalLast 0 us)).hi)
 
 /-- TRUE original Gamma-integral soundness, without re-proving any
 integrals: verified exact grid and outward fixedpoint inclusion. -/
