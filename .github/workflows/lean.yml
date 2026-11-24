@@ -12,8 +12,10 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-# Keep successful .olean artifacts from long-running builds even when new commits arrive.
-  cancel-in-progress: false
+# Obsolete focused PR diagnostics should not consume minutes after a newer
+# commit supersedes them. Preserve long canonical push builds (and PR #133)
+# to retain the complete .olean cache and avoid redundant integrations.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.pull_request.number != 133 }}
 
 permissions:
   contents: read
