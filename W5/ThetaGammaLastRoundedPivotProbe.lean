@@ -48,9 +48,39 @@ def thetaGammaMemoMatrix
       Array.ofFn (fun j : Fin 5 => B i j))
   fun i j => rows[i.val]![j.val]!
 
+/-- Evaluation-only cache: the initial matrix is symmetric by
+thetaSymmetricIntervals. Calculate only its 15 upper-triangle entries;
+reflect the other ten, avoiding duplicate expensive Gamma grids. -/
+def thetaGammaMemoSymmetricUpper
+    (B : Matrix (Fin 5) (Fin 5) QInterval) :
+    Matrix (Fin 5) (Fin 5) QInterval :=
+  let upper : Array (Array QInterval) :=
+    Array.ofFn (fun i : Fin 5 =>
+      Array.ofFn (fun j : Fin 5 =>
+        if i.val ≤ j.val then B i j else QInterval.point 0))
+  fun i j =>
+    if i.val ≤ j.val then upper[i.val]![j.val]!
+    else upper[j.val]![i.val]!
+
+/-- Future pivots only use the strict trailing principal submatrix.
+Compute its Schur updates (16+9+4+1 = 30 entries across four steps),
+not all 25 entries at every step. This changes only the evaluation
+strategy of this exploratory #eval, not the audited checker. -/
+def thetaGammaMemoTrailingSchur
+    (B : Matrix (Fin 5) (Fin 5) QInterval)
+    (pivot : Fin 5) : Matrix (Fin 5) (Fin 5) QInterval :=
+  let rows : Array (Array QInterval) :=
+    Array.ofFn (fun i : Fin 5 =>
+      Array.ofFn (fun j : Fin 5 =>
+        if pivot.val < i.val ∧ pivot.val < j.val then
+          QInterval.schurUpdate
+            (B i j) (B i pivot) (B pivot j) (B pivot pivot)
+        else B i j))
+  fun i j => rows[i.val]![j.val]!
+
 def thetaGammaLastRoundedSelectedPivotBooleans : List Bool :=
   Id.run do
-    let mut B := thetaGammaMemoMatrix thetaGammaLastRoundedSelectedMatrix
+    let mut B := thetaGammaMemoSymmetricUpper thetaGammaLastRoundedSelectedMatrix
     let mut checks : List Bool := []
     for k in List.range 5 do
       let i := pivotIndexFive k
@@ -60,7 +90,7 @@ def thetaGammaLastRoundedSelectedPivotBooleans : List Bool :=
         else decide (P.hi < 0)
       checks := checks ++ [good]
       if k < 4 then
-        B := thetaGammaMemoMatrix (intervalSchurStep B i)
+        B := thetaGammaMemoTrailingSchur B i
     return checks
 
 -- All side conditions are independent of the matrix LDL computation.
