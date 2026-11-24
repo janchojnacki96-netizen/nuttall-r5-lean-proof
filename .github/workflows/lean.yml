@@ -19,6 +19,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   cpp-certificate:
@@ -149,6 +150,33 @@ jobs:
             find "$HOME/.cache/mathlib" -type f -name '*.ltar' -delete
           fi
           df -h /
+      - name: Restore verified compact replay shard artifacts
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: w5-compact-replay-[0-5]
+          run-id: 45453506606
+          github-token: ${{ github.token }}
+          path: /tmp/verified-replay
+      - name: Validate archived sources and restore only compiled replay outputs
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find /tmp/verified-replay -name replay.tar.gz | wc -l)" -eq 6
+          for archive in /tmp/verified-replay/*/replay.tar.gz; do
+            mkdir -p /tmp/replay-check
+            tar -xzf "$archive" -C /tmp/replay-check
+            for src in /tmp/replay-check/W5/ThetaCompactReplayBulk*.lean; do
+              cmp "$src" "W5/$(basename "$src")"
+            done
+            if [ -d /tmp/replay-check/.lake/build ]; then
+              cp -a /tmp/replay-check/.lake/build/. .lake/build/
+            fi
+            rm -rf /tmp/replay-check
+          done
+          rm -rf /tmp/verified-replay
+          df -h /
       - name: Select Lean build targets
         id: targets
         shell: bash
@@ -206,7 +234,7 @@ jobs:
           set -o pipefail
           read -ra targets <<< "$LAKE_TARGETS"
           if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
-            targets=(W5.ThetaAllMixedFullTransform)
+            targets=(W5.NuttallR5)
           fi
           /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
             ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log

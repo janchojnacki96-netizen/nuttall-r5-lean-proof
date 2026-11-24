@@ -392,3 +392,4 @@ import W5.ThetaRunningSinglePassAuditGate
 import W5.ThetaSymmetricFirstRowJets
 import W5.ThetaCompactReplayBulkComplete
 import W5.ThetaAllMixedFullTransform
+import W5.NuttallR5
