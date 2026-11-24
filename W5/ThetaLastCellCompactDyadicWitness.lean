@@ -80,11 +80,13 @@ theorem thetaLastCellN1OnlySource_containsReal
         QInterval.ContainsReal, QInterval.point]
     · by_cases hn1 : n = 1
       · subst n
-        have h := thetaRunningFirstSquareMatrix_containsReal
+        change QInterval.ContainsReal
+          (thetaRunningMaterializedFirstSquareMatrix steps a b us (Finset.range 9) i j)
+          (thetaAuditedSeriesTerm x i j 1)
+        rw [thetaRunningMaterializedFirstSquareMatrix_eq,
+          thetaRunningSharedFirstSquareMatrix_apply]
+        exact thetaRunningFirstSquareMatrix_containsReal
           steps a b us (Finset.range 9) x ha.le hx hax hxb hb1 hA hB i j
-        simpa only [thetaLastCellTermBox, Nat.one_ne_zero, if_false, if_true,
-          N1, thetaRunningMaterializedFirstSquareMatrix_eq,
-          thetaRunningSharedFirstSquareMatrix_apply] using h
       · have hn2 : 2 ≤ n := by omega
         have hn7 : n < 7 := Finset.mem_range.mp hn
         simpa only [thetaLastCellTermBox, if_neg hn0, if_neg hn1, E,
