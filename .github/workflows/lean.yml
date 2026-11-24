@@ -192,8 +192,8 @@ jobs:
         run: |
           set -o pipefail
           if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
-            # Reuse all certified matrix rows. Only the Gamma primitives
-            # and the remaining compositional proofs are new work.
+            # The verified last-cell certificate is cached. Test the
+            # generic replay method on four representative cells.
             : > /tmp/w5-build.log
             start=$SECONDS
             run_group() {
@@ -214,39 +214,44 @@ jobs:
               fi
               return "$rc"
             }
-            echo "### Last-cell Gamma primitive replay timings (exit 0 = compiled)" >> "$GITHUB_STEP_SUMMARY"
+            echo "### Bulk compact replay pilot timings (exit 0 = compiled)" >> "$GITHUB_STEP_SUMMARY"
             echo "| Stage | Wall time | Exit code |" >> "$GITHUB_STEP_SUMMARY"
             echo "| --- | --- | --- |" >> "$GITHUB_STEP_SUMMARY"
             read -ra changed_targets <<< "$LAKE_TARGETS"
             for target in "${changed_targets[@]}"; do
               case "$target" in
-                W5.ThetaLastCellCompactDyadicBase|W5.ThetaLastCellCompactDyadicPivot|W5.ThetaLastCellCompactDyadicGaussian|W5.ThetaLastCellCompactDyadicGammaA|W5.ThetaLastCellCompactDyadicGammaB|W5.ThetaLastCellCompactDyadicFit|W5.ThetaLastCellCompactDyadicWitness|W5.ThetaLastCellReplayInputs|W5.ThetaLastCellReplayExp|W5.ThetaLastCellReplayGamma0|W5.ThetaLastCellReplayGamma1|W5.ThetaLastCellReplayGamma2|W5.ThetaLastCellReplayRow0|W5.ThetaLastCellReplayRow1|W5.ThetaLastCellReplayRow2|W5.ThetaLastCellReplayRow3|W5.ThetaLastCellReplayRow4|W5.ThetaLastCellReplaySoundness|W5.ThetaLastCellGammaReplayData|W5.ThetaLastCellGammaWExpChecked|W5.ThetaLastCellGammaBin0|W5.ThetaLastCellGammaBin1|W5.ThetaLastCellGammaBin2|W5.ThetaLastCellGammaBin3|W5.ThetaLastCellGammaBin4|W5.ThetaLastCellGammaBin5|W5.ThetaLastCellGammaBin6|W5.ThetaLastCellGammaBin7|W5.ThetaLastCellGammaBin8|W5.ThetaLastCellGammaBin9|W5.ThetaLastCellGammaBin10|W5.ThetaLastCellGammaBin11|W5.ThetaLastCellGammaMomentSums|W5.ThetaLastCellGammaReplaySoundness) ;;
+                W5.ThetaLastCellCompactDyadicBase|W5.ThetaLastCellCompactDyadicPivot|W5.ThetaLastCellCompactDyadicGaussian|W5.ThetaLastCellCompactDyadicGammaA|W5.ThetaLastCellCompactDyadicGammaB|W5.ThetaLastCellCompactDyadicFit|W5.ThetaLastCellCompactDyadicWitness|W5.ThetaLastCellReplayInputs|W5.ThetaLastCellReplayExp|W5.ThetaLastCellReplayGamma0|W5.ThetaLastCellReplayGamma1|W5.ThetaLastCellReplayGamma2|W5.ThetaLastCellReplayRow0|W5.ThetaLastCellReplayRow1|W5.ThetaLastCellReplayRow2|W5.ThetaLastCellReplayRow3|W5.ThetaLastCellReplayRow4|W5.ThetaLastCellReplaySoundness|W5.ThetaLastCellGammaReplayData|W5.ThetaLastCellGammaWExpChecked|W5.ThetaLastCellGammaBin0|W5.ThetaLastCellGammaBin1|W5.ThetaLastCellGammaBin2|W5.ThetaLastCellGammaBin3|W5.ThetaLastCellGammaBin4|W5.ThetaLastCellGammaBin5|W5.ThetaLastCellGammaBin6|W5.ThetaLastCellGammaBin7|W5.ThetaLastCellGammaBin8|W5.ThetaLastCellGammaBin9|W5.ThetaLastCellGammaBin10|W5.ThetaLastCellGammaBin11|W5.ThetaLastCellGammaMomentSums|W5.ThetaLastCellGammaReplaySoundness|W5.ThetaCompactReplayData|W5.ThetaCompactReplaySoundness|W5.ThetaRemaining47Reduction|W5.ThetaCompactReplayPilotData|W5.ThetaCompactReplayPilotArith04|W5.ThetaCompactReplayPilotGamma04|W5.ThetaCompactReplayPilotArith27|W5.ThetaCompactReplayPilotGamma27|W5.ThetaCompactReplayPilotArith39|W5.ThetaCompactReplayPilotGamma39|W5.ThetaCompactReplayPilotArith50|W5.ThetaCompactReplayPilotGamma50|W5.ThetaCompactReplayPilotCertificates) ;;
                 *) echo "::error::Unscheduled changed module $target; extend the staged graph before running." ; exit 1 ;;
               esac
             done
-            if ! run_group cached-numerical-certificates 120 W5.ThetaLastCellCompactDyadic{Base,Pivot,Gaussian,GammaA,GammaB} W5.ThetaLastCellReplay{Inputs,Exp,Row0,Row1,Row2,Row3,Row4,Gamma0,Gamma1,Gamma2} W5.ThetaLastCellGamma{ReplayData,WExpChecked,MomentSums}; then
+            if ! run_group cached-complete-cell51 90 W5.ThetaLastCellCompactDyadicWitness; then
+              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
+              exit 1
+            fi
+            if ! run_group generic-compact-replay-data 90 W5.ThetaCompactReplayData; then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
               exit 1
             fi
             failed=0
-            if ! run_group compose-verified-matrix-rows 90 W5.ThetaLastCellCompactDyadicFit; then
+            if ! run_group generic-soundness-and-47-cell-reduction 120 W5.ThetaCompactReplaySoundness W5.ThetaRemaining47Reduction; then
               failed=$((failed+1))
             fi
-            # Gamma soundness is independent of the matrix-row proof.
-            # Attempt it even if matrix composition has failed.
-            if run_group compose-verified-gamma-bins 120 W5.ThetaLastCellGammaReplaySoundness; then
-              if ! run_group compose-analytic-source 120 W5.ThetaLastCellReplaySoundness; then
-                failed=$((failed+1))
-              fi
-            else
+            if ! run_group pilot-data-four-cells 90 W5.ThetaCompactReplayPilotData; then
+              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
+              exit 1
+            fi
+            if ! run_group pilot-matrix-and-pivot-checks 120 W5.ThetaCompactReplayPilotArith{04,27,39,50}; then
+              failed=$((failed+1))
+            fi
+            if ! run_group pilot-gamma-checks 180 W5.ThetaCompactReplayPilotGamma{04,27,39,50}; then
               failed=$((failed+1))
             fi
             if (( failed > 0 )); then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              echo "::error::$failed compositional group(s) did not compile; final proof not attempted."
+              echo "::error::$failed independent generic replay group(s) did not compile; pilot certificates not composed."
               exit 1
             fi
-            if ! run_group final-cell-certificate 90 W5.ThetaLastCellCompactDyadicWitness; then
+            if ! run_group pilot-cell-certificates 90 W5.ThetaCompactReplayPilotCertificates; then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
               exit 1
             fi
