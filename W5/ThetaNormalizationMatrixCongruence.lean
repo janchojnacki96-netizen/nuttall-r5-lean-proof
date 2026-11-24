@@ -158,7 +158,7 @@ theorem thetaNorm_finite_bilinear {r : ℕ}
     (∑ a : Fin r, R a * (∑ b : Fin r, S b * (c * H a b))) /
         (d*e) =
       c * (∑ b : Fin r, (∑ a : Fin r, R a / d * H a b) * (S b / e)) := by
-  simp only [div_eq_mul_inv, Finset.mul_sum, Finset.sum_mul]
+  simp only [div_eq_mul_inv, mul_inv_rev, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl
   intro b _
