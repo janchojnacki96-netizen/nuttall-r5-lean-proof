@@ -77,6 +77,7 @@ theorem normalizedKernel_right_normRows
       (fun v => thetaNormGauge x v *
         f 0 (thetaTimeOfX x+thetaNormShift x u+thetaNormShift x v)) S := by
     intro v hv
+    change normalizedKernel x u v = _
     rw [normalizedKernel_eq_normGauge x u v hu hv]
     dsimp [f, originalPsiJet]
     ring
@@ -135,7 +136,38 @@ theorem thetaNormTriangular_diag_pos (r : ℕ) (hr : r ≤ 5) (x : ℝ) (hx : 0 
   rw [thetaNormRow_diag x i.val (by have := i.isLt; omega)]
   exact div_pos (pow_pos (by positivity) _) (by positivity)
 
+/-- Extending a triangular row by zeros leaves its sum unchanged.
+Keeping the row coefficients opaque avoids expanding the actual
+fourth order derivative polynomials inside the matrix calculation. -/
+theorem thetaNormRow_sum_extend
+    (x : ℝ) (i r : ℕ) (hi : i ≤ 4) (hir : i < r)
+    (f : ℕ → ℝ) :
+    (∑ a ∈ Finset.range (i+1), thetaNormRow x i a * f a) =
+      ∑ a ∈ Finset.range r, thetaNormRow x i a * f a := by
+  apply Finset.sum_subset (Finset.range_mono (by omega))
+  intro a ha hnot
+  have hia : i < a := by
+    have hh : ¬ a < i+1 := by simpa only [Finset.mem_range] using hnot
+    omega
+  rw [thetaNormRow_above x i a hi hia, zero_mul]
+
+/-- Generic bilinear identity over a finite index type, independent
+of the numerical row coefficients or of any analytic expression. -/
+theorem thetaNorm_finite_bilinear {r : ℕ}
+    (R S : Fin r → ℝ) (H : Fin r → Fin r → ℝ) (c d e : ℝ) :
+    (∑ a : Fin r, R a * (∑ b : Fin r, S b * (c * H a b))) /
+        (d*e) =
+      c * (∑ b : Fin r, (∑ a : Fin r, R a / d * H a b) * (S b / e)) := by
+  simp only [div_eq_mul_inv, Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro b _
+  apply Finset.sum_congr rfl
+  intro a _
+  ring
+
 /-- Finite matrix assembly, with the factorial normalization on the two rows. -/
+set_option maxHeartbeats 1000000 in
 theorem analyticLeadingMatrix_eq_normalization_congruence
     (r : ℕ) (hr : r ≤ 5) (x : ℝ) :
     analyticLeadingMatrix r hr x =
@@ -145,13 +177,44 @@ theorem analyticLeadingMatrix_eq_normalization_congruence
           (thetaNormTriangular r x).transpose) := by
   apply Matrix.ext
   intro i j
+  have hi : i.val ≤ 4 := by have := i.isLt; omega
+  have hj : j.val ≤ 4 := by have := j.isLt; omega
   change analyticCoeff x ⟨i.val, by omega⟩ ⟨j.val, by omega⟩ = _
   unfold analyticCoeff
-  rw [normalizedKernel_mixed_normRows x i.val j.val (by have := i.isLt; omega)
-    (by have := j.isLt; omega)]
-  interval_cases r <;> fin_cases i <;> fin_cases j <;>
-    simp [thetaNormTriangular, Matrix.mul_apply, Matrix.transpose_apply,
-      Fin.sum_univ_succ, Finset.sum_range_succ, thetaNormRow, thetaNormJetPolynomial,
-      Matrix.smul_apply, smul_eq_mul, Nat.factorial] <;> ring
+  rw [normalizedKernel_mixed_normRows x i.val j.val hi hj]
+  let R : ℕ → ℝ := thetaNormRow x i.val
+  let S : ℕ → ℝ := thetaNormRow x j.val
+  let H : ℕ → ℕ → ℝ := fun a b =>
+    originalPsiJet (a+b) (thetaTimeOfX x)
+  let c : ℝ := kernelNormalization x
+  let d : ℝ := Nat.factorial i.val
+  let e : ℝ := Nat.factorial j.val
+  change (∑ a ∈ Finset.range (i.val+1), R a *
+    (∑ b ∈ Finset.range (j.val+1), S b * (c * H a b))) / (d*e) = _
+  have hext :
+      (∑ a ∈ Finset.range (i.val+1), R a *
+        (∑ b ∈ Finset.range (j.val+1), S b * (c * H a b))) =
+      ∑ a ∈ Finset.range r, R a * (∑ b ∈ Finset.range r, S b * (c * H a b)) := by
+    calc
+      _ = ∑ a ∈ Finset.range r, R a *
+          (∑ b ∈ Finset.range (j.val+1), S b * (c * H a b)) :=
+        thetaNormRow_sum_extend x i.val r hi i.isLt _
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro a _
+        congr 1
+        exact thetaNormRow_sum_extend x j.val r hj j.isLt _
+  rw [hext]
+  have hfin :
+      (∑ a : Fin r, R a.val * (∑ b : Fin r, S b.val * (c * H a.val b.val))) =
+      ∑ a ∈ Finset.range r, R a * (∑ b ∈ Finset.range r, S b * (c * H a b)) := by
+    simp only [Fin.sum_univ_eq_sum_range]
+  rw [← hfin]
+  simp only [Matrix.smul_apply, smul_eq_mul, Matrix.mul_apply,
+    Matrix.transpose_apply, thetaNormTriangular, Matrix.of_apply]
+  change _ = c * (∑ b : Fin r, (∑ a : Fin r, R a.val / d * H a.val b.val) *
+    (S b.val / e))
+  exact thetaNorm_finite_bilinear (fun a : Fin r => R a.val)
+    (fun b : Fin r => S b.val) (fun a b : Fin r => H a.val b.val) c d e
 
 end W5
