@@ -91,6 +91,19 @@ def thetaLastAuditSharpN2TermWidths (i j : Fin 5) : List ℤ :=
    (N.lo * 1000000).floor,
    (N.hi * 1000000).floor]
 
+/-- Avoid recomputing the full signed double-binomial n=2 matrix
+twice (previous attempt exceeded the CI time budget). Instead
+measure the 3 moment degrees most representative of its error
+and determine whether sharp n=2 Gamma warrants a cached evaluator. -/
+def thetaLastAuditN2MomentWidths (k : ℕ) : List ℤ :=
+  let O := thetaNthCubicGammaMomentBox
+    thetaGammaPilotLastLeft thetaGammaPilotLastRight 2 k
+  let N := thetaGammaAutoCellMomentBox
+    8 k thetaGammaPilotLastLeft thetaGammaPilotLastRight
+    2 thetaGammaPilotGrid
+  [((O.hi - O.lo) * 1000000).floor,
+   ((N.hi - N.lo) * 1000000).floor]
+
 set_option maxHeartbeats 3000000 in
 #eval decide (ThetaBulkSelectedGammaEligibility
   8 thetaGammaPilotGrid ({2} : Finset ℕ)
@@ -98,7 +111,8 @@ set_option maxHeartbeats 3000000 in
 
 set_option maxHeartbeats 3000000 in
 set_option maxRecDepth 4096 in
-#eval [thetaLastAuditSharpN2TermWidths 4 4,
-       thetaLastAuditSharpN2TermWidths 3 4]
+#eval [thetaLastAuditN2MomentWidths 0,
+       thetaLastAuditN2MomentWidths 4,
+       thetaLastAuditN2MomentWidths 8]
 
 end W5
