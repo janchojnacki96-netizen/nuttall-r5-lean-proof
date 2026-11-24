@@ -74,91 +74,57 @@ jobs:
           /tmp/w5_clang | tee /tmp/w5_clang.log
           grep -Fx "Certified all five signs; intervals = 51, max depth = 10" /tmp/w5_clang.log
 
-  bulk-replay:
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
-    strategy:
-      fail-fast: false
-      max-parallel: 6
-      matrix:
-        group: [0, 1, 2, 3, 4, 5]
+  publish-verified-replay:
+    # One-time materialization of the exact source from the green run.
+    # The only write-enabled job is confined to the owner's existing work branch.
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'work/r5-last-cell-compact-dyadic-witness' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 8
+    permissions:
+      contents: write
+      actions: read
     steps:
-      - name: Checkout
+      - name: Checkout exact PR head
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
-      - name: Install Lean toolchain with elan
-        shell: bash
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      # The pinned manifest and source checkout are one immutable unit.
-      # Cache by Lean toolchain + lakefile.toml, both of which determine the pins.
-      # v2 intentionally avoids older source-only caches with no manifest.
-      - name: Restore pinned Lake package sources and manifest
-        id: packages-cache
-        uses: actions/cache/restore@v4
+      - name: Download exact previously verified Lean sources
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            .lake/packages
-            lake-manifest.json
-          key: w5-lake-sources-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}
-      - name: Resolve pinned Mathlib dependency only when required
+          github-token: ${{ github.token }}
+          run-id: 45453506606
+          name: w5-compact-replay-complete-source
+          path: /tmp/verified-replay
+      - name: Check source completeness and reproduce exact verified tables
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -s lake-manifest.json && -d .lake/packages/mathlib ]]; then
-            echo "Pinned Lake source tree + manifest restored; skip lake update"
-          else
-            ~/.elan/bin/lake update
-          fi
-          test -s lake-manifest.json
-          test -d .lake/packages/mathlib
-      # Cache both .olean and Lake's hashed build traces: isolated .olean are not enough.
-      - name: Restore W5 incremental build cache
-        id: w5-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .lake/build
-          key: w5-lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.run_id }}-${{ github.run_attempt }}-bulk-${{ matrix.group }}
-          restore-keys: |
-            w5-lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
-      # Keep the pinned-source and incremental-W5 caches. The attempted
-      # full transitive dependency build cache exceeded available runner
-      # disk space while creating its tar archive; use Lake's native
-      # compressed Mathlib download instead of a second huge archive.
-      - name: Download compiled Mathlib cache
-        run: ~/.elan/bin/lake exe cache get
-      - name: Generate exact replay data and Lean source for shard
-        run: python3 tools/r5_compact_replay_modules.py --group ${{ matrix.group }}
-      - name: Check independent shard with Lake
+          git merge-base --is-ancestor 7277971c6111b23dce778b0272069eb6e2d403d6 HEAD
+          test "$(find /tmp/verified-replay -maxdepth 1 -name 'ThetaCompactReplayBulk*.lean' | wc -l)" -eq 179
+          python3 tools/r5_compact_replay_modules.py --all
+          for f in /tmp/verified-replay/ThetaCompactReplayBulk*.lean; do
+            cmp "$f" "W5/$(basename "$f")"
+          done
+          python3 certificate/check_lean_admissions.py
+      - name: Commit only reproduced and verified Lean source on PR work branch
         shell: bash
         run: |
-          set -o pipefail
-          timeout --kill-after=15s 900s ~/.elan/bin/lake build W5.ThetaCompactReplayBulkGroup${{ matrix.group }} 2>&1 | tee /tmp/w5-bulk.log
-      - name: Check generated Lean admission tokens
-        run: python3 certificate/check_lean_admissions.py
-      - name: Archive generated source and incremental build traces
-        if: always()
-        shell: bash
-        run: |
-          mkdir -p /tmp/bulk
-          find W5 .lake/build -type f -name 'ThetaCompactReplayBulk*' -print0 | tar --null -T - -czf /tmp/bulk/replay.tar.gz
-          cp /tmp/w5-bulk.log /tmp/bulk/ 2>/dev/null || true
-      - name: Upload source and partial or complete Lean outputs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: w5-compact-replay-${{ matrix.group }}
-          path: /tmp/bulk/
-          if-no-files-found: error
+          set -euo pipefail
+          git add -- W5/ThetaCompactReplayBulk*.lean
+          if git diff --cached --quiet; then exit 0; fi
+          git diff --cached --name-only | grep -v '^W5/ThetaCompactReplayBulk[A-Za-z0-9]*\.lean$' > /tmp/unexpected || true
+          test ! -s /tmp/unexpected
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Materialize all 179 CI-verified compact replay proof modules'
+          git push origin HEAD:refs/heads/work/r5-last-cell-compact-dyadic-witness
 
   lake-build:
-    needs: bulk-replay
+    permissions:
+      contents: read
+      actions: read
     # PR #133 already builds the same canonical SHA on push. Skip duplicate job.
     # The canonical push is the shared cache source for PRs based on it.
-    if: ${{ always() && (github.event_name != 'pull_request' || github.event.pull_request.number != 133) && (github.event_name != 'pull_request' || github.event.pull_request.number != 202 || needs.bulk-replay.result == 'success') }}
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.number != 133 }}
     runs-on: ubuntu-latest
     # Keep the last-cell pilot bounded while retaining existing general CI limits.
     timeout-minutes: 45
@@ -217,20 +183,14 @@ jobs:
       # compressed Mathlib download instead of a second huge archive.
       - name: Download compiled Mathlib cache
         run: ~/.elan/bin/lake exe cache get
-      - name: Download all verified shard outputs
+      - name: Restore exact green generated source for PR 202
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
         uses: actions/download-artifact@v4
         with:
-          pattern: w5-compact-replay-*
-          path: /tmp/bulk-shards
-      - name: Restore generated source and Lean traces, then compose
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$(find /tmp/bulk-shards -name replay.tar.gz | wc -l)" -eq 6
-          for a in /tmp/bulk-shards/*/replay.tar.gz; do tar -xzf "$a"; done
-          python3 tools/r5_compact_replay_modules.py --compose
+          github-token: ${{ github.token }}
+          run-id: 45453506606
+          name: w5-compact-replay-complete-source
+          path: W5
       - name: Select Lean build targets
         id: targets
         shell: bash
