@@ -19,6 +19,10 @@ pivot cannot be mistaken for a counterexample or a proof.
 
 namespace W5
 
+-- Only this diagnostic uses unchecked array indexing with an explicit
+-- fallback; the actual interval soundness theorems do not depend on it.
+private instance : Inhabited QInterval := ⟨QInterval.point 0⟩
+
 /-- The two moment degrees identified as the most expensive
 uncertainty sources in the original last x-cell. -/
 def thetaGammaLastProbeDegrees : Finset ℕ := {7, 8}
