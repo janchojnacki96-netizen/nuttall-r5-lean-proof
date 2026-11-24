@@ -1,5 +1,6 @@
 import W5.ThetaEarlyRoundedGammaMoments
 import W5.ThetaBulkDegreeSelectedGammaCells
+import W5.ThetaAuditedMatrixRefinementReuse
 
 /-!
 # Genuine original theta coefficient matrix with early-rounded n1/n2
