@@ -37,7 +37,14 @@ theorem analyticLeadingMatrix_negative_iff_W
     (r : ℕ) (hr : r ≤ 5) (t : ℝ) (ht : 0 ≤ t) :
     (analyticLeadingMatrix r hr (xOfT t)).det < 0 ↔ W r t < 0 := by
   rw [analyticLeadingMatrix_det_factor r hr t ht]
-  exact mul_neg_iff_of_pos_left (analyticLeadingMatrix_det_factor_pos r hr t ht)
+  have hp := analyticLeadingMatrix_det_factor_pos r hr t ht
+  constructor
+  · intro h
+    by_contra hn
+    have hz := mul_nonneg hp.le (le_of_not_gt hn)
+    exact (not_lt_of_ge hz) h
+  · intro h
+    exact mul_neg_of_pos_of_neg hp h
 
 /-- Only the two already independently verified analytic/numeric
 propositions remain as explicit arguments; no assumed congruence. -/
