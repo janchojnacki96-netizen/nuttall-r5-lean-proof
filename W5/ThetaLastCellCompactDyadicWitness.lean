@@ -8,7 +8,7 @@ import W5.ThetaLastCellReplaySoundness
 namespace W5
 
 -- The final composition must not expand either numerical matrix.
-local attribute [irreducible] thetaLastCellWitness thetaLastCellReplaySource
+attribute [local irreducible] thetaLastCellWitness thetaLastCellReplaySource
 
 theorem thetaLastCellN1Eligible_checked : thetaLastCellN1Eligible = true := by
   have h : (0:ℚ) < thetaLastCellA ∧ thetaLastCellA ≤ thetaLastCellB ∧

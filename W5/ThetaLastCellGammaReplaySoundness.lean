@@ -48,7 +48,7 @@ private theorem thetaLastCellFin12Cases (P : Fin 12 → Prop)
   · exact h11
 
 -- Do not unfold the numerical tables or bin evaluators during elaboration.
-local attribute [irreducible] thetaLastCellBinLower thetaLastCellBinUpper
+attribute [local irreducible] thetaLastCellBinLower thetaLastCellBinUpper
   thetaLastCellWExp thetaGammaMemoLowerNineBin thetaGammaMemoUpperNineBin
   thetaGammaLowerRootSignedBinBox thetaGammaUpperRootSignedBinBox
   thetaGammaAutoRootGrid thetaGammaBinExpNegBox
@@ -140,6 +140,13 @@ theorem thetaLastCellReplayMoment_containsReal
     (thetaLastCellA:ℝ) x (thetaLastCellB:ℝ)
     (by norm_num [thetaLastCellA]) hax hxb (by norm_num [thetaLastCellB])
     k _ _ hA hB
-  exact thetaLastCellReplayWiden (hfit.1.trans hlo) (hhi.trans hfit.2) hcell
+  -- The lower and upper endpoints come from different y values.
+  -- Make the intermediate interval explicit: inference must not pick
+  -- the entire left endpoint interval from the first projection.
+  exact thetaLastCellReplayWiden
+    (A := thetaLastCellReplayMomentWitness k)
+    (B := (⟨(thetaGammaAutoMomentBox 8 k thetaLastCellA thetaLastCellGrid).lo,
+      (thetaGammaAutoMomentBox 8 k thetaLastCellB thetaLastCellGrid).hi⟩ : QInterval))
+    (hfit.1.trans hlo) (hhi.trans hfit.2) hcell
 
 end W5

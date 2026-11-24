@@ -20,7 +20,7 @@ private theorem thetaLastCellFin5Cases (P : Fin 5 → Prop)
   · exact h4
 
 -- Keep the checked computational objects symbolic in this proof-only module.
-local attribute [irreducible] thetaLastCellWitness thetaLastCellReplaySource
+attribute [local irreducible] thetaLastCellWitness thetaLastCellReplaySource
   thetaLastCellReplayRowSource
 
 theorem thetaLastCellReplayRowsFit (i : Fin 5) :
