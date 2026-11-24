@@ -231,12 +231,9 @@ theorem thetaNormRow_diag (x : ℝ) (i : ℕ) (hi : i ≤ 4) :
 
 theorem thetaNormRow_above (x : ℝ) (i l : ℕ) (hi : i ≤ 4) (hil : i < l) :
     thetaNormRow x i l = 0 := by
-  interval_cases i <;>
-    (rcases l with _ | l; · omega) <;>
-    first | rfl | (rcases l with _ | l; · omega) <;>
-    first | rfl | (rcases l with _ | l; · omega) <;>
-    first | rfl | (rcases l with _ | l; · omega) <;>
-    first | rfl | (rcases l with _ | l; · omega) <;> rfl
+  have he : l = (l-(i+1))+(i+1) := by omega
+  rw [he]
+  interval_cases i <;> rfl
 
 theorem thetaNormJetSection_origin (f : ℕ → ℝ → ℝ) (x t : ℝ) (m k : ℕ) :
     thetaNormJetSection f x t m k 0 =
