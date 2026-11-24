@@ -80,7 +80,7 @@ theorem thetaGammaRoundedBinSum_encloses_plain
           _ ≤ (QInterval.add (f a b)
               (thetaGammaPlainBinSum f b bs)).lo := by
             simpa only [QInterval.add] using
-              (add_le_add_left hlo (f a b).lo)
+              (add_le_add_right hlo (f a b).lo)
       · change
           (QInterval.add (f a b)
             (thetaGammaPlainBinSum f b bs)).hi ≤
@@ -91,7 +91,7 @@ theorem thetaGammaRoundedBinSum_encloses_plain
           _ ≤ (QInterval.add (f a b)
               (thetaGammaRoundedBinSum f b bs)).hi := by
             simpa only [QInterval.add] using
-              (add_le_add_left hhi (f a b).hi)
+              (add_le_add_right hhi (f a b).hi)
           _ ≤ _ := thetaGammaRunningRound_hi_ge _
 
 /-- The exact original signed lower-root w-bin. -/
@@ -179,7 +179,7 @@ theorem thetaGammaRunningAutoMomentBox_encloses_old
         (thetaGammaAutoRootGrid steps (y^2)) 0 us).lo +
         (thetaGammaWeightedExactTailBox k y
           (thetaGammaRationalLast 0 us)).lo
-    exact add_le_add_right hL _
+    exact add_le_add_left hL _
   · change
       (thetaGammaUpperGridBox k (y^2)
         (thetaGammaAutoRootGrid steps (y^2)) 0 us).hi +
@@ -189,7 +189,7 @@ theorem thetaGammaRunningAutoMomentBox_encloses_old
         (thetaGammaUpperRunningBin steps k (y^2)) 0 us).hi +
         (thetaGammaWeightedExactTailBox k y
           (thetaGammaRationalLast 0 us)).hi
-    exact add_le_add_right hU _
+    exact add_le_add_left hU _
 
 /-- TRUE original Gamma-integral soundness, without re-proving any
 integrals: verified exact grid and outward fixedpoint inclusion. -/
