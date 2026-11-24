@@ -16,21 +16,58 @@ theorem thetaLastCellReplayWiden {A B : QInterval} {x : ℝ}
   have hhiR : (B.hi:ℝ) ≤ (A.hi:ℝ) := by exact_mod_cast hhi
   exact ⟨hloR.trans h.1, h.2.trans hhiR⟩
 
-theorem thetaLastCellGammaAllBins_checked (i : Fin 12) :
-    ThetaLastCellGammaBinFits i := by
+/-- Case split an abstract predicate before instantiating it with
+the large already-checked Gamma-bin propositions. -/
+private theorem thetaLastCellFin12Cases (P : Fin 12 → Prop)
+    (h0 : P 0)
+    (h1 : P 1)
+    (h2 : P 2)
+    (h3 : P 3)
+    (h4 : P 4)
+    (h5 : P 5)
+    (h6 : P 6)
+    (h7 : P 7)
+    (h8 : P 8)
+    (h9 : P 9)
+    (h10 : P 10)
+    (h11 : P 11) :
+    ∀ i : Fin 12, P i := by
+  intro i
   fin_cases i
-  · exact thetaLastCellGammaBin0_checked
-  · exact thetaLastCellGammaBin1_checked
-  · exact thetaLastCellGammaBin2_checked
-  · exact thetaLastCellGammaBin3_checked
-  · exact thetaLastCellGammaBin4_checked
-  · exact thetaLastCellGammaBin5_checked
-  · exact thetaLastCellGammaBin6_checked
-  · exact thetaLastCellGammaBin7_checked
-  · exact thetaLastCellGammaBin8_checked
-  · exact thetaLastCellGammaBin9_checked
-  · exact thetaLastCellGammaBin10_checked
-  · exact thetaLastCellGammaBin11_checked
+  · exact h0
+  · exact h1
+  · exact h2
+  · exact h3
+  · exact h4
+  · exact h5
+  · exact h6
+  · exact h7
+  · exact h8
+  · exact h9
+  · exact h10
+  · exact h11
+
+-- Do not unfold the numerical tables or bin evaluators during elaboration.
+local attribute [irreducible] thetaLastCellBinLower thetaLastCellBinUpper
+  thetaLastCellWExp thetaGammaMemoLowerNineBin thetaGammaMemoUpperNineBin
+  thetaGammaLowerRootSignedBinBox thetaGammaUpperRootSignedBinBox
+  thetaGammaAutoRootGrid thetaGammaBinExpNegBox
+
+theorem thetaLastCellGammaAllBins_checked (i : Fin 12) :
+    ThetaLastCellGammaBinFits i :=
+  thetaLastCellFin12Cases ThetaLastCellGammaBinFits
+    thetaLastCellGammaBin0_checked
+    thetaLastCellGammaBin1_checked
+    thetaLastCellGammaBin2_checked
+    thetaLastCellGammaBin3_checked
+    thetaLastCellGammaBin4_checked
+    thetaLastCellGammaBin5_checked
+    thetaLastCellGammaBin6_checked
+    thetaLastCellGammaBin7_checked
+    thetaLastCellGammaBin8_checked
+    thetaLastCellGammaBin9_checked
+    thetaLastCellGammaBin10_checked
+    thetaLastCellGammaBin11_checked i
 
 /-- The memoized bin calculator is exactly the old proved bin formula
 when the endpoint exponential table has passed its equality check. -/

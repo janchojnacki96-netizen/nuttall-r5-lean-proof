@@ -224,33 +224,29 @@ jobs:
                 *) echo "::error::Unscheduled changed module $target; extend the staged graph before running." ; exit 1 ;;
               esac
             done
-            if ! run_group cached-matrix-and-eligibility 90 W5.ThetaLastCellCompactDyadic{Base,Pivot,Gaussian,GammaA,GammaB} W5.ThetaLastCellReplay{Inputs,Exp,Row0,Row1,Row2,Row3,Row4}; then
+            if ! run_group cached-numerical-certificates 120 W5.ThetaLastCellCompactDyadic{Base,Pivot,Gaussian,GammaA,GammaB} W5.ThetaLastCellReplay{Inputs,Exp,Row0,Row1,Row2,Row3,Row4,Gamma0,Gamma1,Gamma2} W5.ThetaLastCellGamma{ReplayData,WExpChecked,MomentSums}; then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
               exit 1
             fi
             failed=0
-            if ! run_group compose-verified-matrix-rows 60 W5.ThetaLastCellCompactDyadicFit; then
+            if ! run_group compose-verified-matrix-rows 90 W5.ThetaLastCellCompactDyadicFit; then
               failed=$((failed+1))
             fi
-            if ! run_group gamma-primitive-data 90 W5.ThetaLastCellGammaReplayData; then
-              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              exit 1
-            fi
-            if ! run_group gamma-exponential-table-and-moment-sums 90 W5.ThetaLastCellGamma{WExpChecked,MomentSums}; then
-              failed=$((failed+1))
-            fi
-            # Each of the twelve bins is a separate module, with one left
-            # lower and one right upper bound per moment. Lake schedules
-            # them independently and retains successful .oleans.
-            if ! run_group twelve-gamma-bin-checks 240 W5.ThetaLastCellReplayGamma{0,1,2}; then
+            # Gamma soundness is independent of the matrix-row proof.
+            # Attempt it even if matrix composition has failed.
+            if run_group compose-verified-gamma-bins 120 W5.ThetaLastCellGammaReplaySoundness; then
+              if ! run_group compose-analytic-source 120 W5.ThetaLastCellReplaySoundness; then
+                failed=$((failed+1))
+              fi
+            else
               failed=$((failed+1))
             fi
             if (( failed > 0 )); then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              echo "::error::$failed independent replay group(s) did not compile; final proof not attempted."
+              echo "::error::$failed compositional group(s) did not compile; final proof not attempted."
               exit 1
             fi
-            if ! run_group gamma-and-final-proof-composition 120 W5.ThetaLastCellGammaReplaySoundness W5.ThetaLastCellReplaySoundness W5.ThetaLastCellCompactDyadicWitness; then
+            if ! run_group final-cell-certificate 90 W5.ThetaLastCellCompactDyadicWitness; then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
               exit 1
             fi

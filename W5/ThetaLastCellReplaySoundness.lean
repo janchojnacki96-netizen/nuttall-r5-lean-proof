@@ -4,6 +4,10 @@ import W5.ThetaLastCellCompactDyadicGaussian
 
 namespace W5
 
+-- Treat the literal numerical inputs as symbolic checked intervals.
+local attribute [irreducible] thetaLastCellReplayMomentWitness
+  thetaLastCellReplayExpWitness thetaLastCellCachedExp
+
 theorem thetaLastCellReplayExp_containsReal
     (x : ℝ) (hax : (thetaLastCellA:ℝ) ≤ x)
     (hxb : x ≤ (thetaLastCellB:ℝ)) (n : ℕ) (hn2 : 2 ≤ n) (hn7 : n < 7) :

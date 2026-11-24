@@ -7,12 +7,19 @@ import W5.ThetaLastCellReplaySoundness
 
 namespace W5
 
+-- The final composition must not expand either numerical matrix.
+local attribute [irreducible] thetaLastCellWitness thetaLastCellReplaySource
+
 theorem thetaLastCellN1Eligible_checked : thetaLastCellN1Eligible = true := by
-  unfold thetaLastCellN1Eligible
-  apply decide_eq_true
-  exact ⟨by norm_num [thetaLastCellA], by norm_num [thetaLastCellA, thetaLastCellB],
-    by norm_num [thetaLastCellB], thetaLastCellGaussianEligible_checked,
-    thetaLastCellGammaA_checked, thetaLastCellGammaB_checked⟩
+  have h : (0:ℚ) < thetaLastCellA ∧ thetaLastCellA ≤ thetaLastCellB ∧
+      thetaLastCellB ≤ (145:ℚ)/256 ∧
+      ThetaBulkGaussianEligibility thetaLastCellA thetaLastCellB ∧
+      thetaGammaAutoMomentCheck 8 thetaLastCellA thetaLastCellGrid = true ∧
+      thetaGammaAutoMomentCheck 8 thetaLastCellB thetaLastCellGrid = true :=
+    ⟨by norm_num [thetaLastCellA], by norm_num [thetaLastCellA, thetaLastCellB],
+      by norm_num [thetaLastCellB], thetaLastCellGaussianEligible_checked,
+      thetaLastCellGammaA_checked, thetaLastCellGammaB_checked⟩
+  exact decide_eq_true h
 
 theorem thetaLastCellDyadicCertificate :
     ThetaUpperRealCellCertificate thetaLastCellA thetaLastCellB := by
