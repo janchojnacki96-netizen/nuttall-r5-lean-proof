@@ -384,3 +384,5 @@ import W5.ThetaMemoBothAuditedSubgridsCheck
 
 import W5.ThetaEarlyRoundedPriorityAuditCheck
 import W5.ThetaPriorityAudited48Certificate
+
+import W5.ThetaGammaRoundedRunningGrid
