@@ -116,7 +116,7 @@ theorem thetaNormJetSection_hasDerivAt
     · simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
         thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def,
         Nat.add_zero, Nat.cast_zero, Nat.cast_one, pow_zero, pow_one,
-        one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> dsimp [a,b] <;> ring
+        one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> (try dsimp [a,b]) <;> ring
   · -- order 1
     have hP0 := ((hb.pow 0).const_mul ((1:ℝ) * a^1)).add ((hb.pow 1).const_mul ((-5:ℝ) * a^0))
     have hF0 := (hf (m+0) (by omega) (t+thetaNormShift x u)).comp u hs'
@@ -133,7 +133,7 @@ theorem thetaNormJetSection_hasDerivAt
     · simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
         thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def,
         Nat.add_zero, Nat.cast_zero, Nat.cast_one, pow_zero, pow_one,
-        one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> dsimp [a,b] <;> ring
+        one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> (try dsimp [a,b]) <;> ring
   · -- order 2
     have hP0 := (((hb.pow 0).const_mul ((1:ℝ) * a^2)).add ((hb.pow 1).const_mul ((-10:ℝ) * a^1))).add ((hb.pow 2).const_mul ((45:ℝ) * a^0))
     have hF0 := (hf (m+0) (by omega) (t+thetaNormShift x u)).comp u hs'
@@ -153,7 +153,7 @@ theorem thetaNormJetSection_hasDerivAt
     · simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
         thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def,
         Nat.add_zero, Nat.cast_zero, Nat.cast_one, pow_zero, pow_one,
-        one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> dsimp [a,b] <;> ring
+        one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> (try dsimp [a,b]) <;> ring
   · -- order 3
     have hP0 := ((((hb.pow 0).const_mul ((1:ℝ) * a^3)).add ((hb.pow 1).const_mul ((-15:ℝ) * a^2))).add ((hb.pow 2).const_mul ((135:ℝ) * a^1))).add ((hb.pow 3).const_mul ((-585:ℝ) * a^0))
     have hF0 := (hf (m+0) (by omega) (t+thetaNormShift x u)).comp u hs'
@@ -176,7 +176,7 @@ theorem thetaNormJetSection_hasDerivAt
     · simp only [thetaNormJetSection, Finset.sum_range_succ, Finset.sum_range_zero,
         thetaNormJetPolynomial, Pi.mul_apply, Pi.add_apply, Pi.pow_apply, Function.comp_def,
         Nat.add_zero, Nat.cast_zero, Nat.cast_one, pow_zero, pow_one,
-        one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> dsimp [a,b] <;> ring
+        one_mul, zero_mul, zero_add, add_zero] <;> norm_num <;> (try dsimp [a,b]) <;> ring
 
 
 theorem thetaNormPsiJet_hasDerivAt (m : ℕ) (hm : m < 8) (t : ℝ) :
@@ -217,7 +217,7 @@ theorem thetaNormJetSection_iterated
       have heq : iteratedDeriv k (fun z => thetaNormGauge x z *
           f m (t+thetaNormShift x z)) =ᶠ[𝓝 u] thetaNormJetSection f x t m k := by
         filter_upwards [hopen.mem_nhds hu] with z hz
-        exact ih (by omega) (by omega) z hz
+        exact ih z (by omega) (by omega) hz
       rw [Filter.EventuallyEq.deriv_eq heq]
       exact (thetaNormJetSection_hasDerivAt f N hf x t u m k (by omega)
         (by omega) (ne_of_gt hu)).deriv
