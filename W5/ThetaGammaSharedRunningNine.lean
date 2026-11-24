@@ -80,25 +80,131 @@ theorem thetaGammaUpperNineBin_apply
       thetaGammaUpperRunningBin steps k.val q L U := by
   rfl
 
+/-- Lookup a precomputed rational endpoint exponential, with a
+definitionally correct fallback for endpoints not in the table. -/
+def thetaGammaMemoExpLookup (f : ℚ → QInterval) :
+    List (ℚ × QInterval) → ℚ → QInterval
+  | [], t => f t
+  | p :: ps, t =>
+      if t = p.1 then p.2 else thetaGammaMemoExpLookup f ps t
+
+theorem thetaGammaMemoExpLookup_map_eq (f : ℚ → QInterval)
+    (xs : List ℚ) (t : ℚ) :
+    thetaGammaMemoExpLookup f (xs.map (fun a => (a, f a))) t = f t := by
+  induction xs with
+  | nil => rfl
+  | cons a xs ih =>
+      by_cases h : t = a
+      · simp [thetaGammaMemoExpLookup, h]
+      · simp [thetaGammaMemoExpLookup, h, ih]
+
+/-- The expensive endpoint exponentials are evaluated once per grid,
+not once for each shifted moment and each polynomial coefficient. -/
+def thetaGammaMemoExp (us : List ℚ) : ℚ → QInterval :=
+  let table := ((0:ℚ) :: us).map (fun t => (t, thetaGammaBinExpNegBox t))
+  thetaGammaMemoExpLookup thetaGammaBinExpNegBox table
+
+theorem thetaGammaMemoExp_eq (us : List ℚ) (t : ℚ) :
+    thetaGammaMemoExp us t = thetaGammaBinExpNegBox t :=
+  thetaGammaMemoExpLookup_map_eq _ _ _
+
+/-- Degrees 0..11 suffice for k=0..8 and cubic envelopes.
+Both endpoint exponentials and all twelve Gamma masses are materialized. -/
+def thetaGammaMemoMass (E : ℚ → QInterval) (L U : ℚ) : ℕ → QInterval :=
+  let eL := E L
+  let eU := E U
+  let cached : Array QInterval := Array.ofFn (fun k : Fin 12 =>
+    thetaGammaBinMassBox k.val L U eL eU)
+  fun k =>
+    if hk : k < 12 then cached[k]'(by simpa [cached] using hk)
+    else thetaGammaBinMassBox k L U eL eU
+
+theorem thetaGammaMemoMass_eq (E : ℚ → QInterval)
+    (L U : ℚ) (k : ℕ) :
+    thetaGammaMemoMass E L U k = thetaGammaBinMassBox k L U (E L) (E U) := by
+  by_cases hk : k < 12
+  · simp [thetaGammaMemoMass, hk]
+  · simp [thetaGammaMemoMass, hk]
+
+def thetaGammaMemoSignedBin (M : ℕ → QInterval)
+    (k N : ℕ) (c : Fin N → ℚ) : QInterval :=
+  QInterval.finsetSum (Finset.univ : Finset (Fin N))
+    (fun i => QInterval.mul (QInterval.point (c i)) (M (k+i.val)))
+
+theorem thetaGammaMemoSignedBin_eq (E : ℚ → QInterval)
+    (hE : ∀ t, E t = thetaGammaBinExpNegBox t)
+    (L U : ℚ) (k N : ℕ) (c : Fin N → ℚ) :
+    thetaGammaMemoSignedBin (thetaGammaMemoMass E L U) k N c =
+      thetaGammaShiftedSignedBinBox k N c L U := by
+  simp only [thetaGammaMemoSignedBin, thetaGammaShiftedSignedBinBox,
+    thetaGammaMemoMass_eq, hE, thetaGammaCertifiedBinMassBox]
+
+def thetaGammaMemoLowerNineBin (E : ℚ → QInterval)
+    (steps : ℕ) (q L U : ℚ) : Fin 9 → QInterval :=
+  let root := thetaGammaAutoRootGrid steps q L
+  let M := thetaGammaMemoMass E L U
+  fun k => QInterval.mul ⟨root.1, root.2⟩
+    (thetaGammaMemoSignedBin M k.val 3
+      (thetaGammaRecenteredLowerCoeffs (q/(1+q*L)) L))
+
+def thetaGammaMemoUpperNineBin (E : ℚ → QInterval)
+    (steps : ℕ) (q L U : ℚ) : Fin 9 → QInterval :=
+  let root := thetaGammaAutoRootGrid steps q L
+  let M := thetaGammaMemoMass E L U
+  fun k => QInterval.mul ⟨root.1, root.2⟩
+    (thetaGammaMemoSignedBin M k.val 4
+      (thetaGammaRecenteredUpperCoeffs (q/(1+q*L)) L))
+
+theorem thetaGammaMemoLowerNineBin_eq (E : ℚ → QInterval)
+    (hE : ∀ t, E t = thetaGammaBinExpNegBox t)
+    (steps : ℕ) (q L U : ℚ) :
+    thetaGammaMemoLowerNineBin E steps q L U =
+      thetaGammaLowerNineBin steps q L U := by
+  funext k
+  simp only [thetaGammaMemoLowerNineBin, thetaGammaLowerNineBin,
+    thetaGammaLowerRootSignedBinBox, thetaGammaMemoSignedBin_eq E hE]
+
+theorem thetaGammaMemoUpperNineBin_eq (E : ℚ → QInterval)
+    (hE : ∀ t, E t = thetaGammaBinExpNegBox t)
+    (steps : ℕ) (q L U : ℚ) :
+    thetaGammaMemoUpperNineBin E steps q L U =
+      thetaGammaUpperNineBin steps q L U := by
+  funext k
+  simp only [thetaGammaMemoUpperNineBin, thetaGammaUpperNineBin,
+    thetaGammaUpperRootSignedBinBox, thetaGammaMemoSignedBin_eq E hE]
+
 /-- Entire verified original Gamma moment at ONE rational y,
 but with all nine k-values computed against shared root bins. -/
 def thetaGammaRunningAutoMomentNine
     (steps : ℕ) (y : ℚ) (us : List ℚ) : Fin 9 → QInterval :=
+  let E := thetaGammaMemoExp us
   let lower := thetaGammaRoundedNineBinSum
-    (thetaGammaLowerNineBin steps (y^2)) 0 us
+    (thetaGammaMemoLowerNineBin E steps (y^2)) 0 us
   let upper := thetaGammaRoundedNineBinSum
-    (thetaGammaUpperNineBin steps (y^2)) 0 us
+    (thetaGammaMemoUpperNineBin E steps (y^2)) 0 us
+  let H := thetaGammaRationalLast 0 us
+  let eH := E H
   fun k => QInterval.add
     ⟨(lower k).lo, (upper k).hi⟩
-    (thetaGammaWeightedExactTailBox k.val y
-      (thetaGammaRationalLast 0 us))
+    ⟨0, eH.hi * (thetaGammaBinPolyQ k.val H +
+      (y^2/4) * thetaGammaBinPolyQ (k.val+1) H)⟩
 
 theorem thetaGammaRunningAutoMomentNine_apply
     (steps : ℕ) (y : ℚ) (us : List ℚ) (k : Fin 9) :
     thetaGammaRunningAutoMomentNine steps y us k =
       thetaGammaRunningAutoMomentBox steps k.val y us := by
+  have hE := thetaGammaMemoExp_eq us
+  have hL : thetaGammaMemoLowerNineBin (thetaGammaMemoExp us) steps (y^2) =
+      thetaGammaLowerNineBin steps (y^2) := by
+    funext L U
+    exact thetaGammaMemoLowerNineBin_eq _ hE steps _ L U
+  have hU : thetaGammaMemoUpperNineBin (thetaGammaMemoExp us) steps (y^2) =
+      thetaGammaUpperNineBin steps (y^2) := by
+    funext L U
+    exact thetaGammaMemoUpperNineBin_eq _ hE steps _ L U
   simp only [thetaGammaRunningAutoMomentNine,
-    thetaGammaRunningAutoMomentBox,
+    thetaGammaRunningAutoMomentBox, hL, hU,
+    thetaGammaMemoExp_eq, thetaGammaWeightedExactTailBox,
     thetaGammaRoundedNineBinSum_apply,
     thetaGammaLowerNineBin_apply,
     thetaGammaUpperNineBin_apply]
