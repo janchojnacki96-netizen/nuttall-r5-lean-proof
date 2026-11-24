@@ -19,6 +19,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   cpp-certificate:
@@ -79,6 +80,7 @@ jobs:
     # The canonical push is the shared cache source for PRs based on it.
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.number != 133 }}
     runs-on: ubuntu-latest
+    # Keep the last-cell pilot bounded while retaining existing general CI limits.
     timeout-minutes: 45
     steps:
       - name: Checkout
@@ -112,8 +114,8 @@ jobs:
           fi
           test -s lake-manifest.json
           test -d .lake/packages/mathlib
-      - name: Save pinned Lake sources and manifest on canonical push
-        if: ${{ success() && github.event_name == 'push' && steps.packages-cache.outputs.cache-hit != 'true' }}
+      - name: Save pinned Lake sources and manifest on canonical push or last-cell pilot
+        if: ${{ success() && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.number == 202)) && steps.packages-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
         with:
           path: |
@@ -133,8 +135,48 @@ jobs:
       # full transitive dependency build cache exceeded available runner
       # disk space while creating its tar archive; use Lake's native
       # compressed Mathlib download instead of a second huge archive.
+      - name: Reclaim runner disk space before Lean cache extraction
+        shell: bash
+        run: |
+          df -h /
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/share/boost || true
+          df -h /
       - name: Download compiled Mathlib cache
-        run: ~/.elan/bin/lake exe cache get
+        run: |
+          ~/.elan/bin/lake exe cache get
+          df -h /
+          # Download archives are redundant after successful extraction.
+          if [ -d "$HOME/.cache/mathlib" ]; then
+            find "$HOME/.cache/mathlib" -type f -name '*.ltar' -delete
+          fi
+          df -h /
+      - name: Restore verified compact replay shard artifacts
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: w5-compact-replay-[0-5]
+          run-id: 45453506606
+          github-token: ${{ github.token }}
+          path: /tmp/verified-replay
+      - name: Validate archived sources and restore only compiled replay outputs
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find /tmp/verified-replay -name replay.tar.gz | wc -l)" -eq 6
+          for archive in /tmp/verified-replay/*/replay.tar.gz; do
+            mkdir -p /tmp/replay-check
+            tar -xzf "$archive" -C /tmp/replay-check
+            for src in /tmp/replay-check/W5/ThetaCompactReplayBulk*.lean; do
+              cmp "$src" "W5/$(basename "$src")"
+            done
+            if [ -d /tmp/replay-check/.lake/build ]; then
+              cp -a /tmp/replay-check/.lake/build/. .lake/build/
+            fi
+            rm -rf /tmp/replay-check
+          done
+          rm -rf /tmp/verified-replay
+          df -h /
       - name: Select Lean build targets
         id: targets
         shell: bash
@@ -186,9 +228,14 @@ jobs:
         shell: bash
         env:
           LAKE_TARGETS: ${{ steps.targets.outputs.targets }}
+          BUILD_MODE: ${{ steps.targets.outputs.mode }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -o pipefail
           read -ra targets <<< "$LAKE_TARGETS"
+          if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
+            targets=(W5.NuttallR5)
+          fi
           /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
             ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log
           exit "${PIPESTATUS[0]}"
