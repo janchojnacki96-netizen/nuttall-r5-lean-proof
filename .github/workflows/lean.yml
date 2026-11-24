@@ -74,13 +74,94 @@ jobs:
           /tmp/w5_clang | tee /tmp/w5_clang.log
           grep -Fx "Certified all five signs; intervals = 51, max depth = 10" /tmp/w5_clang.log
 
+  bulk-replay:
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        group: [0, 1, 2, 3, 4, 5]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Lean toolchain with elan
+        shell: bash
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      # The pinned manifest and source checkout are one immutable unit.
+      # Cache by Lean toolchain + lakefile.toml, both of which determine the pins.
+      # v2 intentionally avoids older source-only caches with no manifest.
+      - name: Restore pinned Lake package sources and manifest
+        id: packages-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .lake/packages
+            lake-manifest.json
+          key: w5-lake-sources-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}
+      - name: Resolve pinned Mathlib dependency only when required
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -s lake-manifest.json && -d .lake/packages/mathlib ]]; then
+            echo "Pinned Lake source tree + manifest restored; skip lake update"
+          else
+            ~/.elan/bin/lake update
+          fi
+          test -s lake-manifest.json
+          test -d .lake/packages/mathlib
+      # Cache both .olean and Lake's hashed build traces: isolated .olean are not enough.
+      - name: Restore W5 incremental build cache
+        id: w5-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake/build
+          key: w5-lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.run_id }}-${{ github.run_attempt }}-bulk-${{ matrix.group }}
+          restore-keys: |
+            w5-lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
+      # Keep the pinned-source and incremental-W5 caches. The attempted
+      # full transitive dependency build cache exceeded available runner
+      # disk space while creating its tar archive; use Lake's native
+      # compressed Mathlib download instead of a second huge archive.
+      - name: Download compiled Mathlib cache
+        run: ~/.elan/bin/lake exe cache get
+      - name: Generate exact replay data and Lean source for shard
+        run: python3 tools/r5_compact_replay_modules.py --group ${{ matrix.group }}
+      - name: Check independent shard with Lake
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout --kill-after=15s 900s ~/.elan/bin/lake build W5.ThetaCompactReplayBulkGroup${{ matrix.group }} 2>&1 | tee /tmp/w5-bulk.log
+      - name: Check generated Lean admission tokens
+        run: python3 certificate/check_lean_admissions.py
+      - name: Archive generated source and incremental build traces
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p /tmp/bulk
+          find W5 .lake/build -type f -name 'ThetaCompactReplayBulk*' -print0 | tar --null -T - -czf /tmp/bulk/replay.tar.gz
+          cp /tmp/w5-bulk.log /tmp/bulk/ 2>/dev/null || true
+      - name: Upload source and partial or complete Lean outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: w5-compact-replay-${{ matrix.group }}
+          path: /tmp/bulk/
+          if-no-files-found: error
+
   lake-build:
+    needs: bulk-replay
     # PR #133 already builds the same canonical SHA on push. Skip duplicate job.
     # The canonical push is the shared cache source for PRs based on it.
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.number != 133 }}
+    if: ${{ always() && (github.event_name != 'pull_request' || github.event.pull_request.number != 133) && (github.event_name != 'pull_request' || github.event.pull_request.number != 202 || needs.bulk-replay.result == 'success') }}
     runs-on: ubuntu-latest
     # Keep the last-cell pilot bounded while retaining existing general CI limits.
-    timeout-minutes: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 && 15 || 45 }}
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -136,6 +217,20 @@ jobs:
       # compressed Mathlib download instead of a second huge archive.
       - name: Download compiled Mathlib cache
         run: ~/.elan/bin/lake exe cache get
+      - name: Download all verified shard outputs
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: w5-compact-replay-*
+          path: /tmp/bulk-shards
+      - name: Restore generated source and Lean traces, then compose
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find /tmp/bulk-shards -name replay.tar.gz | wc -l)" -eq 6
+          for a in /tmp/bulk-shards/*/replay.tar.gz; do tar -xzf "$a"; done
+          python3 tools/r5_compact_replay_modules.py --compose
       - name: Select Lean build targets
         id: targets
         shell: bash
@@ -191,77 +286,20 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -o pipefail
+          read -ra targets <<< "$LAKE_TARGETS"
           if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
-            # The verified last-cell certificate is cached. Test the
-            # generic replay method on four representative cells.
-            : > /tmp/w5-build.log
-            start=$SECONDS
-            run_group() {
-              local label="$1" limit="$2" rc stage_start
-              shift 2
-              stage_start=$SECONDS
-              echo "::group::$label (wall-clock limit ${limit}s)"
-              set +e
-              timeout --kill-after=5s "${limit}s" ~/.elan/bin/lake build "$@" 2>&1 | tee -a /tmp/w5-build.log
-              rc="${PIPESTATUS[0]}"
-              set -e
-              echo "::endgroup::"
-              echo "| $label | $((SECONDS-stage_start))s | $rc |" | tee -a "$GITHUB_STEP_SUMMARY"
-              if [[ "$rc" == 124 || "$rc" == 137 ]]; then
-                echo "::error title=Numerical stage timed out::$label exceeded ${limit}s; inspect completed bin checks."
-              elif [[ "$rc" != 0 ]]; then
-                echo "::error title=Lean stage failed::$label exited $rc."
-              fi
-              return "$rc"
-            }
-            echo "### Bulk compact replay pilot timings (exit 0 = compiled)" >> "$GITHUB_STEP_SUMMARY"
-            echo "| Stage | Wall time | Exit code |" >> "$GITHUB_STEP_SUMMARY"
-            echo "| --- | --- | --- |" >> "$GITHUB_STEP_SUMMARY"
-            read -ra changed_targets <<< "$LAKE_TARGETS"
-            for target in "${changed_targets[@]}"; do
-              case "$target" in
-                W5.ThetaLastCellCompactDyadicBase|W5.ThetaLastCellCompactDyadicPivot|W5.ThetaLastCellCompactDyadicGaussian|W5.ThetaLastCellCompactDyadicGammaA|W5.ThetaLastCellCompactDyadicGammaB|W5.ThetaLastCellCompactDyadicFit|W5.ThetaLastCellCompactDyadicWitness|W5.ThetaLastCellReplayInputs|W5.ThetaLastCellReplayExp|W5.ThetaLastCellReplayGamma0|W5.ThetaLastCellReplayGamma1|W5.ThetaLastCellReplayGamma2|W5.ThetaLastCellReplayRow0|W5.ThetaLastCellReplayRow1|W5.ThetaLastCellReplayRow2|W5.ThetaLastCellReplayRow3|W5.ThetaLastCellReplayRow4|W5.ThetaLastCellReplaySoundness|W5.ThetaLastCellGammaReplayData|W5.ThetaLastCellGammaWExpChecked|W5.ThetaLastCellGammaBin0|W5.ThetaLastCellGammaBin1|W5.ThetaLastCellGammaBin2|W5.ThetaLastCellGammaBin3|W5.ThetaLastCellGammaBin4|W5.ThetaLastCellGammaBin5|W5.ThetaLastCellGammaBin6|W5.ThetaLastCellGammaBin7|W5.ThetaLastCellGammaBin8|W5.ThetaLastCellGammaBin9|W5.ThetaLastCellGammaBin10|W5.ThetaLastCellGammaBin11|W5.ThetaLastCellGammaMomentSums|W5.ThetaLastCellGammaReplaySoundness|W5.ThetaCompactReplayData|W5.ThetaCompactReplaySoundness|W5.ThetaRemaining47Reduction|W5.ThetaCompactReplayPilotData|W5.ThetaCompactReplayPilotArith04|W5.ThetaCompactReplayPilotGamma04|W5.ThetaCompactReplayPilotArith27|W5.ThetaCompactReplayPilotGamma27|W5.ThetaCompactReplayPilotArith39|W5.ThetaCompactReplayPilotGamma39|W5.ThetaCompactReplayPilotArith50|W5.ThetaCompactReplayPilotGamma50|W5.ThetaCompactReplayPilotCertificates) ;;
-                *) echo "::error::Unscheduled changed module $target; extend the staged graph before running." ; exit 1 ;;
-              esac
-            done
-            if ! run_group cached-complete-cell51 90 W5.ThetaLastCellCompactDyadicWitness; then
-              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              exit 1
-            fi
-            if ! run_group generic-compact-replay-data 90 W5.ThetaCompactReplayData; then
-              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              exit 1
-            fi
-            failed=0
-            if ! run_group generic-soundness-and-47-cell-reduction 120 W5.ThetaCompactReplaySoundness W5.ThetaRemaining47Reduction; then
-              failed=$((failed+1))
-            fi
-            if ! run_group pilot-data-four-cells 90 W5.ThetaCompactReplayPilotData; then
-              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              exit 1
-            fi
-            if ! run_group pilot-matrix-and-pivot-checks 120 W5.ThetaCompactReplayPilotArith{04,27,39,50}; then
-              failed=$((failed+1))
-            fi
-            if ! run_group pilot-gamma-checks 180 W5.ThetaCompactReplayPilotGamma{04,27,39,50}; then
-              failed=$((failed+1))
-            fi
-            if (( failed > 0 )); then
-              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              echo "::error::$failed independent generic replay group(s) did not compile; pilot certificates not composed."
-              exit 1
-            fi
-            if ! run_group pilot-cell-certificates 90 W5.ThetaCompactReplayPilotCertificates; then
-              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              exit 1
-            fi
-            echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-          else
-            read -ra targets <<< "$LAKE_TARGETS"
-            /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
-              ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log
-            exit "${PIPESTATUS[0]}"
+            targets+=(W5.ThetaCompactReplayBulkComplete)
           fi
+          /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
+            ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log
+          exit "${PIPESTATUS[0]}"
+      - name: Upload complete generated Lean source
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: w5-compact-replay-complete-source
+          path: W5/ThetaCompactReplayBulk*.lean
+          if-no-files-found: error
       # GitHub caches are immutable: each run gets its own key. Restore by
       # compatibility prefix; a failing Lean target still saves completed modules.
       - name: Save partial or complete W5 build cache
