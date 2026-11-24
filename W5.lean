@@ -378,3 +378,4 @@ import W5.ThetaAuditedSubcellRefinementReuse
 import W5.ThetaGammaMemoNine
 import W5.ThetaMemoN1N2SelectedCellMatrix
 import W5.ThetaEarlyRoundedGammaMoments
+import W5.ThetaMemoBothAuditedSubgridsCheck
