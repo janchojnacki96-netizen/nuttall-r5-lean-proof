@@ -90,24 +90,36 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      # Reuse the Git checkouts for the pinned Lake dependencies. Save this
-      # immediately after lake update, BEFORE downloading Mathlib .olean files:
-      # the cache stays compact and persists despite a later Lean failure.
-      # Re-run lake update even on a hit so changed transitive pins are checked.
-      - name: Restore pinned Lake package sources
+      # The pinned manifest and source checkout are one immutable unit.
+      # Cache by Lean toolchain + lakefile.toml, both of which determine the pins.
+      # v2 intentionally avoids older source-only caches with no manifest.
+      - name: Restore pinned Lake package sources and manifest
         id: packages-cache
         uses: actions/cache/restore@v4
         with:
-          path: .lake/packages
-          key: w5-lake-sources-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}
-      - name: Resolve pinned Mathlib dependency and generate manifest
-        run: ~/.elan/bin/lake update
-      - name: Save pinned Lake package sources on canonical push
+          path: |
+            .lake/packages
+            lake-manifest.json
+          key: w5-lake-sources-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}
+      - name: Resolve pinned Mathlib dependency only when required
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -s lake-manifest.json && -d .lake/packages/mathlib ]]; then
+            echo "Pinned Lake source tree + manifest restored; skip lake update"
+          else
+            ~/.elan/bin/lake update
+          fi
+          test -s lake-manifest.json
+          test -d .lake/packages/mathlib
+      - name: Save pinned Lake sources and manifest on canonical push
         if: ${{ success() && github.event_name == 'push' && steps.packages-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
         with:
-          path: .lake/packages
-          key: w5-lake-sources-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}
+          path: |
+            .lake/packages
+            lake-manifest.json
+          key: w5-lake-sources-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}
       # Cache both .olean and Lake's hashed build traces: isolated .olean are not enough.
       - name: Restore W5 incremental build cache
         id: w5-cache
