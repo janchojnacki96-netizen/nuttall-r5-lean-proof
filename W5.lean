@@ -379,4 +379,5 @@ import W5.ThetaGammaMemoNine
 import W5.ThetaMemoN1N2SelectedCellMatrix
 import W5.ThetaEarlyRoundedGammaMoments
 import W5.ThetaEarlyRoundedBothCellMatrix
+import W5.ThetaGenericAuditedSubgridChecker
 import W5.ThetaMemoBothAuditedSubgridsCheck
