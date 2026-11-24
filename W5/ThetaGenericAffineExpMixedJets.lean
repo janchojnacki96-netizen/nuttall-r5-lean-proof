@@ -39,13 +39,13 @@ theorem thetaAffineExpJet_hasDerivAt (A B C : ℝ) :
       have hexp : HasDerivAt (fun z : ℝ => Real.exp (C*z))
           (C * Real.exp (C*u)) u := by
         convert (Real.hasDerivAt_exp (C*u)).comp u hscale using 1 <;>
-          simp only [Function.comp_def] <;> ring
+          first | rfl | simp only [Function.comp_def] <;> ring
       have h := (hlin.pow j).mul hexp
       change HasDerivAt
         (fun z : ℝ => (A+B*z)^j * Real.exp (C*z))
         (C * ((A+B*u)^j * Real.exp (C*u)) +
           ((j:ℝ)*B) * ((A+B*u)^(j-1) * Real.exp (C*u))) u
-      convert h using 1 <;> ring
+      convert h using 1 <;> simp only [Pi.pow_apply, Pi.mul_apply] <;> ring
   | succ i ih =>
       intro j u
       have h := ((ih j u).const_mul C).add
