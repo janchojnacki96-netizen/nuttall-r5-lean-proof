@@ -129,8 +129,26 @@ jobs:
           key: w5-lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             w5-lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
-      - name: Download compiled Mathlib cache
+      # The W5 .olean cache does not contain dependency .olean files.
+      # Without a second cache, every focused PR redownloads the entire
+      # Mathlib build even when none of the dependency pins changed.
+      - name: Restore compiled Mathlib and dependency oleans
+        id: mathlib-build-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake/packages/*/.lake/build
+          key: w5-dependency-oleans-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
+      - name: Download compiled Mathlib cache on dependency-cache miss
+        if: ${{ steps.mathlib-build-cache.outputs.cache-hit != 'true' }}
         run: ~/.elan/bin/lake exe cache get
+      # Persist this before any user-module compilation so a failing
+      # exploratory Lean file cannot throw away the downloaded Mathlib.
+      - name: Save compiled dependencies on canonical push
+        if: ${{ success() && github.event_name == 'push' && steps.mathlib-build-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: .lake/packages/*/.lake/build
+          key: w5-dependency-oleans-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
       - name: Select Lean build targets
         id: targets
         shell: bash
