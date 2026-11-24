@@ -58,7 +58,7 @@ theorem thetaTransformCorrect_of_remaining_20_rows
         _ = thetaCoefficient x j 0 :=
           hrows x hx hbound j hj 0
         _ = thetaCoefficient x 0 j :=
-          (thetaCoefficient_symmetric x j 0).symm
+          thetaCoefficient_symmetric x j 0
   · exact hrows x hx hbound i hi j
 
 /-- The remaining twenty obligations can be stated entirely in
