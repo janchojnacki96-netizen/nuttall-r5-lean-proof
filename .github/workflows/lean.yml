@@ -79,7 +79,8 @@ jobs:
     # The canonical push is the shared cache source for PRs based on it.
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.number != 133 }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # Keep the last-cell pilot bounded while retaining existing general CI limits.
+    timeout-minutes: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 && 15 || 45 }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -112,8 +113,8 @@ jobs:
           fi
           test -s lake-manifest.json
           test -d .lake/packages/mathlib
-      - name: Save pinned Lake sources and manifest on canonical push
-        if: ${{ success() && github.event_name == 'push' && steps.packages-cache.outputs.cache-hit != 'true' }}
+      - name: Save pinned Lake sources and manifest on canonical push or last-cell pilot
+        if: ${{ success() && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.number == 202)) && steps.packages-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
         with:
           path: |
@@ -186,12 +187,70 @@ jobs:
         shell: bash
         env:
           LAKE_TARGETS: ${{ steps.targets.outputs.targets }}
+          BUILD_MODE: ${{ steps.targets.outputs.mode }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -o pipefail
-          read -ra targets <<< "$LAKE_TARGETS"
-          /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
-            ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log
-          exit "${PIPESTATUS[0]}"
+          if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
+            # This PR has its own already saved, compatible W5 cache. No
+            # single numerical test may consume the whole job budget again.
+            : > /tmp/w5-build.log
+            start=$SECONDS
+            run_one() {
+              local target="$1" limit="$2" rc stage_start
+              stage_start=$SECONDS
+              echo "::group::$target (wall-clock limit ${limit}s)"
+              set +e
+              timeout --kill-after=5s "${limit}s" ~/.elan/bin/lake build "$target" 2>&1 | tee -a /tmp/w5-build.log
+              rc="${PIPESTATUS[0]}"
+              set -e
+              echo "::endgroup::"
+              echo "| $target | $((SECONDS-stage_start))s | $rc |" | tee -a "$GITHUB_STEP_SUMMARY"
+              if [[ "$rc" == 124 || "$rc" == 137 ]]; then
+                echo "::error title=Numerical stage timed out::$target exceeded ${limit}s; no theorem was certified."
+              elif [[ "$rc" != 0 ]]; then
+                echo "::error title=Lean stage failed::$target exited $rc."
+              fi
+              return "$rc"
+            }
+            echo "### Last-cell independent stage timings (exit 0 = compiled)" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Module | Wall time | Exit code |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| --- | --- | --- |" >> "$GITHUB_STEP_SUMMARY"
+            if ! run_one W5.ThetaLastCellCompactDyadicBase 180; then
+              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
+              exit 1
+            fi
+            failed=0
+            # Refuse to report success if a future change introduces a
+            # selected module not covered by this explicit staged graph.
+            read -ra changed_targets <<< "$LAKE_TARGETS"
+            for target in "${changed_targets[@]}"; do
+              case "$target" in
+                W5.ThetaLastCellCompactDyadicBase|W5.ThetaLastCellCompactDyadicPivot|W5.ThetaLastCellCompactDyadicGaussian|W5.ThetaLastCellCompactDyadicGammaA|W5.ThetaLastCellCompactDyadicGammaB|W5.ThetaLastCellCompactDyadicFit|W5.ThetaLastCellCompactDyadicWitness) ;;
+                *) echo "::error::Unscheduled changed module $target; extend the staged graph before running." ; exit 1 ;;
+              esac
+            done
+            for target in Pivot Gaussian GammaA GammaB Fit; do
+              if ! run_one "W5.ThetaLastCellCompactDyadic$target" 90; then
+                failed=$((failed+1))
+              fi
+            done
+            if (( failed > 0 )); then
+              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
+              echo "::error::$failed independent last-cell check(s) did not compile; final proof not attempted."
+              exit 1
+            fi
+            if ! run_one W5.ThetaLastCellCompactDyadicWitness 60; then
+              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
+              exit 1
+            fi
+            echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
+          else
+            read -ra targets <<< "$LAKE_TARGETS"
+            /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
+              ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log
+            exit "${PIPESTATUS[0]}"
+          fi
       # GitHub caches are immutable: each run gets its own key. Restore by
       # compatibility prefix; a failing Lean target still saves completed modules.
       - name: Save partial or complete W5 build cache
