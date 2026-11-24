@@ -1,0 +1,392 @@
+import W5.Statement
+import W5.FiniteCore
+import W5.ConditionalBridge
+import W5.Range
+import W5.CurvatureBridge
+import W5.BoundaryPivots
+import W5.AnalyticTargets
+
+import W5.DeterminantCongruence
+
+import W5.BoundaryCoefficients
+
+import W5.VerifiedIntervalCore
+
+import W5.VerifiedIntervalMultiplication
+
+import W5.DirectedRounding
+
+import W5.TailExponentialRatio
+
+import W5.TailRatioGeneral
+
+import W5.PositiveTriangularCongruence
+
+import W5.PositiveScalarCongruence
+
+
+import W5.CoefficientTailBound
+
+import W5.ThetaCoordinateIdentity
+import W5.SingleSummandCalculus
+import W5.ThetaCoordinateAlgebra
+import W5.ThetaTermIntegrability
+import W5.ThetaGaussianSummability
+import W5.ThetaExponentialDomination
+import W5.ThetaPhiSummability
+import W5.PhiPositivity
+import W5.ThetaIntegrandMajorant
+import W5.ThetaSeparableFubini
+import W5.ThetaMajorantWeights
+import W5.ThetaYFubini
+import W5.ThetaFiniteBoundaryIntegral
+import W5.ThetaFiniteIntegrationByParts
+import W5.ThetaImproperBoundaryIntegral
+import W5.ThetaImproperIntegrationByParts
+import W5.ThetaGammaScaling
+import W5.ThetaSingleTermClosedForm
+import W5.ThetaIntegratedClosedForm
+import W5.ThetaOriginalCoordinate
+
+import W5.ThetaExpSubstitution
+
+import W5.ThetaDensityClosedForm
+import W5.ThetaDerivativeTerms
+import W5.PhiFirstDerivative
+
+import W5.ThetaDerivativeBridge
+
+import W5.ThetaIteratedChainRule
+
+import W5.WronskianLowOrder
+
+import W5.ThetaIntegralStrictPositivity
+
+import W5.ThetaWronskianCoordinate
+
+import W5.ThetaInverseCoordinate
+
+import W5.ThetaLocalWronskian
+
+import W5.PhiTailIntegrability
+
+import W5.PsiFundamentalDerivative
+
+import W5.PsiMonotonicity
+
+import W5.PhiSecondDerivative
+
+import W5.PsiThirdDerivative
+
+import W5.WronskianRatio
+
+import W5.PhiThirdDerivative
+import W5.PhiFourthDerivative
+import W5.PhiFifthDerivative
+import W5.PhiSixthDerivative
+import W5.PhiSeventhDerivative
+import W5.OriginalPsiJet
+import W5.OriginalJetSignBridge
+import W5.NormalizedKernelZeroth
+import W5.ThetaCoefficientSymmetry
+import W5.NormalizedKernelOrderTwo
+import W5.NormalizedKernelSymmetry
+import W5.NormalizedKernelFirstOrder
+
+import W5.OrderTwoThetaCertificateBridge
+
+import W5.VerifiedIntervalPolynomials
+
+import W5.OrderTwoPolynomialCoefficients
+
+import W5.OrderTwoSingleDiagonalCriterion
+
+import W5.OrderTwoThetaIntegralForms
+
+import W5.ThetaGaussianModelLowOrder
+
+import W5.ThetaGaussianIntegralCoefficient
+
+import W5.ThetaGaussianUniformDecay
+
+import W5.ThetaGaussianPolynomialIntegrability
+
+import W5.ThetaGaussianWeightedMajorant
+
+import W5.ThetaGaussianFirstDerivativeBound
+
+import W5.ThetaGaussianNeighborhoodEnvelope
+
+import W5.ThetaSquareIndexDecay
+import W5.ThetaGaussianProductMajorant
+import W5.ThetaGaussianActualDerivativeProductBound
+import W5.ThetaGaussianIntegratedIndexBridge
+import W5.ThetaGaussianFirstDerivativeFubini
+import W5.ThetaGaussianOpenPatchIntegralDerivative
+import W5.ThetaGaussianIntegratedDerivativeBound
+import W5.ThetaGaussianSummableOpenPatch
+import W5.ThetaGaussianBaseTermMajorant
+import W5.ThetaGaussianIntegratedSeriesDerivative
+import W5.ThetaGaussianFullFirstDerivativeFubini
+import W5.ThetaGaussianIntegratedSeriesLocalDerivative
+import W5.ThetaWeightedGaussianHigherRightJets
+import W5.ThetaGaussianHigherRightJetBound
+import W5.ThetaWeightedGaussianMixedJets
+import W5.ThetaHigherJetPolynomialTail
+import W5.ThetaHigherJetSeparableEnvelope
+import W5.ThetaHigherJetShiftedPolynomialTails
+import W5.ThetaHigherRightJetFubini
+import W5.ThetaHigherRightJetIntegratedBound
+import W5.ThetaHigherRightJetIntegralDerivative
+import W5.ThetaHigherRightJetSeriesDerivative
+import W5.ThetaHigherRightJetIteratedDerivative
+import W5.ThetaAllOrdersTransformedSeriesBridge
+
+import W5.ThetaAllOrdersLeftSeriesSymmetry
+
+import W5.ThetaMixedRightJetSeriesDerivative
+
+import W5.ThetaMixedJetNeighborMajorant
+
+import W5.ThetaMixedJetSeparableEnvelope
+
+import W5.ThetaMixedJetFubini
+
+import W5.ThetaMixedJetIntegralAndSeriesDerivative
+
+import W5.ThetaActualMixedElevenCoefficientBridge
+
+import W5.ThetaActualMixedOneZeroCoefficientBridge
+
+import W5.ThetaActualZeroOneSymmetryCoefficientBridge
+
+import W5.ThetaActualZeroZeroCoefficientBridge
+
+import W5.ThetaCertificateBaseCorrectionSplit
+
+import W5.ThetaB00CorrectionEqualsIntegratedSeries
+
+import W5.ThetaB11CorrectionEqualsMixedDerivative
+
+import W5.ThetaB00BaseSeriesSummability
+
+import W5.ThetaB11BaseAndCorrectionSummability
+
+import W5.ThetaB10B01FullCoefficientSplitting
+
+import W5.ThetaLeadingTwoActualJetMatrixBridge
+
+import W5.ThetaMathlibTwoVariableOrderEightTsum
+
+import W5.ThetaMathlibLocalTwoVariableDerivative
+
+import W5.ThetaArbitraryPolynomialGaussianSummability
+
+import W5.ThetaAllBaseCoefficientsSummability
+
+import W5.ThetaAllCoefficientGenericSplitting
+
+import W5.VerifiedIntervalDivision
+
+import W5.VerifiedIntervalLDL5
+
+import W5.VerifiedIntervalRealLDL5
+
+import W5.ThetaRealPivotProductSigns
+
+import W5.ThetaActualLeadingMinorOneTwoFromPivots
+
+import W5.MathlibGenericSchurDeterminant
+
+import W5.RealSchurTrailingDeterminantBridge
+
+import W5.RealSchurSubmatrix
+
+import W5.MathlibFiveSchurPivotDeterminant
+
+import W5.RealLDL5PivotSchurIdentification
+
+import W5.ThetaActualFullFiveDeterminantFromInterval
+
+import W5.LeadingThreeFourRealLDLDeterminants
+
+import W5.ThetaAllFiveActualLeadingMinorSigns
+
+import W5.Theta51CellRealCertificateReduction
+
+import W5.ThetaSymmetric15EntryCellCertificates
+
+import W5.ThetaAudited768IntervalMatrices
+
+import W5.ThetaFiniteDecidableLDLChecker
+
+import W5.ThetaAuditedFirstCellFinitePivotCheck
+
+import W5.ThetaAuditedAll255FinitePivotChecks
+
+import W5.Theta51ExplicitMatrixChecker
+
+import W5.ThetaAudited51CellCertificateBridge
+
+import W5.ThetaSeriesPrefixTailEnclosure
+
+import W5.ThetaFiniteTermIntervalFold
+
+import W5.ThetaAllCoefficientPolynomialEnvelope
+import W5.ThetaAllCoefficientPolynomialLocalSeparation
+import W5.ThetaAllCorrectionSummabilityFubini
+import W5.ThetaTermwiseCellRealCertificates
+
+import W5.ThetaSignedFixedPointRounding
+import W5.ThetaSignedFixedPointMultiplication
+
+import W5.ThetaActualAnalyticZeroZeroIdentification
+import W5.ThetaOriginalKernelAllMixedJetsFromLocalEqOn
+import W5.ThetaOriginalKernelExistingIntegratedSeries
+import W5.ThetaActualAnalyticCoefficientSignsFrom51Cells
+import W5.ThetaAuditedNormalizedKernelBridge
+
+import W5.ThetaAuditedMajorantGeometricTail
+
+import W5.ThetaAuditedMajorantTailNumerical
+
+import W5.ThetaSignedFixedPointSqrt
+import W5.ThetaExpTaylor65Remainder
+
+import W5.ThetaAuditedMajorantUniformParameter
+
+import W5.ThetaAuditedBaseTermMajorant
+
+import W5.ThetaAuditedCorrectionMoment
+import W5.ThetaAuditedCorrectionPointwise
+import W5.ThetaAuditedCorrectionIntegral
+import W5.ThetaAuditedOriginalFullTail
+import W5.ThetaAuditedTailRationalEnclosure
+import W5.ThetaAuditedCorrectionWPolynomial
+import W5.ThetaAuditedMomentMonotonicity
+import W5.ThetaAuditedMomentGammaBox
+import W5.ThetaFirstCellGammaUniformCandidate
+import W5.ThetaFirstCellRationalPolynomialInterval
+import W5.ThetaFirstCellRationalCoefficientCertificate
+import W5.ThetaFirstCellComputableCoefficientBound
+import W5.ThetaFirstCellBinomialMajorantSound
+import W5.ThetaFirstCellRemaining50Bridge
+import W5.ThetaOneSquareCellGammaBridge
+import W5.ThetaRemaining50ReducedTermCertificate
+import W5.ThetaAllSquareIndexNineMoments
+import W5.ThetaCoarseGammaMomentBoxes
+import W5.ThetaRemaining50AllIndexGammaReuse
+
+import W5.ThetaAuditedMomentGammaQuadraticLower
+
+import W5.ThetaAuditedMomentGammaCellBox
+
+import W5.ThetaOneSquareCellQuadraticBridge
+
+import W5.ThetaSecondCellOneSquareZeroZeroRealWitness
+
+import W5.ThetaZeroZeroAllSquareGaussianTerm
+
+import W5.ThetaZeroZeroSharpGaussianTail
+
+import W5.ThetaSecondCellZeroZeroFullCertificate
+
+import W5.ThetaAuditedMomentGammaCubicCellBox
+
+import W5.ThetaSecondCellCubicFirstSquareMatrix
+
+import W5.ThetaSecondCellAllEntriesTailFour
+import W5.ThetaSecondCellCubicFirstSquareReal
+import W5.ThetaSecondCellCubicWidenedLDL
+import W5.ThetaSecondCellCubicRealPivotBridge
+
+import W5.ThetaSecondCellPositivePolynomial
+import W5.ThetaSecondCellHeadFiniteMajorants
+import W5.ThetaSecondCellPositiveCellUpper
+import W5.ThetaSecondCellTwoTermReduction
+
+import W5.ThetaSecondCellHeadMomentReuse
+
+import W5.ThetaSecondCellHeadAbsoluteFactor
+import W5.ThetaSecondCellHeadPositiveWPolynomial
+import W5.ThetaSecondCellHeadGaussianFactor
+
+import W5.ThetaSecondCellHeadDoubleBinomial
+
+import W5.ThetaSecondCellHeadDoubleBinomialGammaIntegral
+import W5.ThetaSecondCellHeadOriginalIntegralComparison
+
+import W5.ThetaSecondCellHeadKSoundness
+
+import W5.ThetaSecondCellHeadAllFiveSigns
+
+import W5.ThetaSecondCellRemaining49Reduction
+import W5.ThetaGenericCubicGammaCellCertificate
+import W5.ThetaThirdCellTailFive
+import W5.ThetaThirdCellAllFiveSigns
+import W5.ThetaGlobalTailSeven
+
+import W5.ThetaThirdCellRemaining48Reduction
+import W5.ThetaBulk48SevenTermEngine
+import W5.ThetaBulkSignedMomentExpansion
+
+import W5.ThetaMomentFourthRootChordTangent
+
+import W5.ThetaBulkSignedIntervalEvaluator
+
+import W5.ThetaBulkExponentialTaylor
+import W5.ThetaGammaFiniteBinIntegral
+import W5.ThetaGammaFiniteBinMassBox
+import W5.ThetaGammaRecenteredFourthRoot
+import W5.ThetaGammaRecenteredBinIntegral
+import W5.ThetaGammaBinExpNegBox
+
+import W5.ThetaGammaUniformMarkovTail
+
+import W5.ThetaGammaUniformMarkovTailIntegral
+
+import W5.ThetaGammaCertifiedBinMass
+import W5.ThetaGammaSignedPolynomialBin
+
+import W5.ThetaGammaRecenteredSignedPolynomial
+import W5.ThetaGammaRationalFourthRootBounds
+import W5.ThetaGammaArbitraryBinChain
+import W5.ThetaBulkFixedExponential
+import W5.ThetaBulk48GeneratedVerifier
+
+import W5.ThetaGammaSignedShiftedBin
+
+import W5.ThetaGammaRecenteredCertifiedBin
+import W5.ThetaGammaRecenteredCertifiedChain
+import W5.ThetaGammaAutoRootGrid
+
+import W5.ThetaGammaExactExpTail
+import W5.ThetaGammaWeightedExactUpperTail
+
+import W5.ThetaGammaWeightedExactTailBox
+import W5.ThetaGammaAutoFullMomentGrid
+
+import W5.ThetaGammaAutoMomentCheck
+import W5.ThetaGammaAutoCellMomentBox
+import W5.ThetaGammaSharperFirstSquare
+import W5.ThetaBulk48SharpGammaChecker
+import W5.ThetaBulkSelectedGammaCells
+import W5.ThetaBulkDegreeSelectedGammaCells
+import W5.ThetaAuditedMatrixRefinementReuse
+import W5.ThetaBulkRoundedDegreeSelectedCells
+import W5.ThetaAuditedSubcellRefinementReuse
+import W5.ThetaGammaMemoNine
+import W5.ThetaMemoN1N2SelectedCellMatrix
+import W5.ThetaEarlyRoundedGammaMoments
+import W5.ThetaEarlyRoundedBothCellMatrix
+import W5.ThetaGenericAuditedSubgridChecker
+import W5.ThetaMemoBothAuditedSubgridsCheck
+
+import W5.ThetaEarlyRoundedPriorityAuditCheck
+import W5.ThetaPriorityAudited48Certificate
+
+import W5.ThetaGammaRoundedRunningGrid
+import W5.ThetaGammaRunningCellMoments
+import W5.ThetaRunningOriginalMatrix
+import W5.ThetaRunningSinglePassAuditGate
+import W5.ThetaSymmetricFirstRowJets
