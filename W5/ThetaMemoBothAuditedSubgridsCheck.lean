@@ -163,14 +163,14 @@ theorem thetaMemoBothAuditedSubgridsCheck_sound
               simp [thetaMemoBothAuditedSubgridsCheck] at h
           | cons grid grids =>
               have hparts :
-                  (lastFrom a grid = b ∧ grid ≠ []) ∧
-                  thetaMemoBothSubgridAuditCheck
-                    steps us K target a grid = true ∧
+                  ((lastFrom a grid = b ∧ grid ≠ []) ∧
+                    thetaMemoBothSubgridAuditCheck
+                      steps us K target a grid = true) ∧
                   thetaMemoBothAuditedSubgridsCheck
                     steps us K b bs targets grids = true := by
                 simpa only [thetaMemoBothAuditedSubgridsCheck,
                   Bool.and_eq_true, decide_eq_true_eq] using h
-              rcases hparts with ⟨⟨hlast, hne⟩, hcell, hrest⟩
+              rcases hparts with ⟨⟨⟨hlast, hne⟩, hcell⟩, hrest⟩
               have hsub : ThetaCellMatricesEnclose a grid
                   (List.replicate grid.length target) :=
                 thetaMemoBothSubgridAuditCheck_sound
