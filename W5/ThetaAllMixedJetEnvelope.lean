@@ -134,7 +134,7 @@ theorem thetaAllMixedJetTerm_norm_le_cap
             (((n:ℝ)^2-1)/x) v w *
             thetaAllMixedJetTerm x u v n w i j‖ := norm_add_le _ _
         _ ≤ (k:ℝ)*(P*T)*B + C*(P*T)*B := by
-          simp only [norm_mul, Real.norm_eq_abs, abs_neg, abs_of_nonneg (Nat.cast_nonneg j)]
+          simp only [norm_mul, Real.norm_eq_abs, abs_neg, abs_of_nonneg (show (0:ℝ) ≤ (j:ℝ) from Nat.cast_nonneg j)]
           exact add_le_add hfirst hsecond
         _ ≤ ((k:ℝ)+1)*C*(P*T)*B := by
           have hk : 0 ≤ (k:ℝ) := Nat.cast_nonneg k
@@ -144,7 +144,7 @@ theorem thetaAllMixedJetTerm_norm_le_cap
             (mul_nonneg (mul_nonneg hP hT) hBn)
           calc
             _ = ((k:ℝ)+C)*((P*T)*B) := by ring
-            _ ≤ ((k:ℝ)*C+C)*((P*T)*B) := hh
+            _ ≤ ((k:ℝ)*C+C)*((P*T)*B) := by simpa only [add_comm C] using hh
             _ = _ := by ring
         _ = _ := hshift
 
