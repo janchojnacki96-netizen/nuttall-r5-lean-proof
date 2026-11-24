@@ -102,10 +102,13 @@ set_option maxHeartbeats 3000000 in
        decide (ThetaBulkGaussianEligibility
          thetaGammaPilotLastLeft thetaGammaPilotLastRight)]
 
--- The first direct check of all five pivots after targeted k=7,8
--- refinement. A false is diagnostic, not a mathematical counterexample.
-set_option maxHeartbeats 3000000 in
-set_option maxRecDepth 4096 in
-#eval thetaGammaLastRoundedSelectedPivotBooleans
+-- Evaluating five Schur pivots on the current K={7,8} source has
+-- already exceeded the focused CI budget. The exact real-sound
+-- audited-inclusion pilot also showed that the current interval is NOT
+-- a refinement, so this costly pivot computation is not yet decisive.
+-- Keep the full diagnostic as a callable definition, but compile it
+-- without running the 45-minute #eval. Once all 15 interval inclusions
+-- pass after cached n=2 refinement, restore the full pivot diagnostic.
+#check thetaGammaLastRoundedSelectedPivotBooleans
 
 end W5
