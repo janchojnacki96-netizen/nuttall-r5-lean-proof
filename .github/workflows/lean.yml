@@ -74,54 +74,7 @@ jobs:
           /tmp/w5_clang | tee /tmp/w5_clang.log
           grep -Fx "Certified all five signs; intervals = 51, max depth = 10" /tmp/w5_clang.log
 
-  publish-verified-replay:
-    # One-time materialization of the exact source from the green run.
-    # The only write-enabled job is confined to the owner's existing work branch.
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'work/r5-last-cell-compact-dyadic-witness' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 8
-    permissions:
-      contents: write
-      actions: read
-    steps:
-      - name: Checkout exact PR head
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-      - name: Download exact previously verified Lean sources
-        uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ github.token }}
-          run-id: 45453506606
-          name: w5-compact-replay-complete-source
-          path: /tmp/verified-replay
-      - name: Check source completeness and reproduce exact verified tables
-        shell: bash
-        run: |
-          set -euo pipefail
-          git merge-base --is-ancestor 7277971c6111b23dce778b0272069eb6e2d403d6 HEAD
-          test "$(find /tmp/verified-replay -maxdepth 1 -name 'ThetaCompactReplayBulk*.lean' | wc -l)" -eq 179
-          python3 tools/r5_compact_replay_modules.py --all
-          for f in /tmp/verified-replay/ThetaCompactReplayBulk*.lean; do
-            cmp "$f" "W5/$(basename "$f")"
-          done
-          python3 certificate/check_lean_admissions.py
-      - name: Commit only reproduced and verified Lean source on PR work branch
-        shell: bash
-        run: |
-          set -euo pipefail
-          git add -- W5/ThetaCompactReplayBulk*.lean
-          if git diff --cached --quiet; then exit 0; fi
-          git diff --cached --name-only | grep -v '^W5/ThetaCompactReplayBulk[A-Za-z0-9]*\.lean$' > /tmp/unexpected || true
-          test ! -s /tmp/unexpected
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Materialize all 179 CI-verified compact replay proof modules'
-          git push origin HEAD:refs/heads/work/r5-last-cell-compact-dyadic-witness
-
   lake-build:
-    permissions:
-      contents: read
-      actions: read
     # PR #133 already builds the same canonical SHA on push. Skip duplicate job.
     # The canonical push is the shared cache source for PRs based on it.
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.number != 133 }}
@@ -183,14 +136,6 @@ jobs:
       # compressed Mathlib download instead of a second huge archive.
       - name: Download compiled Mathlib cache
         run: ~/.elan/bin/lake exe cache get
-      - name: Restore exact green generated source for PR 202
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
-        uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ github.token }}
-          run-id: 45453506606
-          name: w5-compact-replay-complete-source
-          path: W5
       - name: Select Lean build targets
         id: targets
         shell: bash
@@ -248,18 +193,11 @@ jobs:
           set -o pipefail
           read -ra targets <<< "$LAKE_TARGETS"
           if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
-            targets+=(W5.ThetaCompactReplayBulkComplete)
+            targets+=(W5)
           fi
           /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
             ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log
           exit "${PIPESTATUS[0]}"
-      - name: Upload complete generated Lean source
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 202 }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: w5-compact-replay-complete-source
-          path: W5/ThetaCompactReplayBulk*.lean
-          if-no-files-found: error
       # GitHub caches are immutable: each run gets its own key. Restore by
       # compatibility prefix; a failing Lean target still saves completed modules.
       - name: Save partial or complete W5 build cache

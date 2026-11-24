@@ -390,3 +390,4 @@ import W5.ThetaGammaRunningCellMoments
 import W5.ThetaRunningOriginalMatrix
 import W5.ThetaRunningSinglePassAuditGate
 import W5.ThetaSymmetricFirstRowJets
+import W5.ThetaCompactReplayBulkComplete
