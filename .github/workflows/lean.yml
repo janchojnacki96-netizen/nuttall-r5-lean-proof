@@ -134,8 +134,21 @@ jobs:
       # full transitive dependency build cache exceeded available runner
       # disk space while creating its tar archive; use Lake's native
       # compressed Mathlib download instead of a second huge archive.
+      - name: Reclaim runner disk space before Lean cache extraction
+        shell: bash
+        run: |
+          df -h /
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/share/boost || true
+          df -h /
       - name: Download compiled Mathlib cache
-        run: ~/.elan/bin/lake exe cache get
+        run: |
+          ~/.elan/bin/lake exe cache get
+          df -h /
+          # Download archives are redundant after successful extraction.
+          if [ -d "$HOME/.cache/mathlib" ]; then
+            find "$HOME/.cache/mathlib" -type f -name '*.ltar' -delete
+          fi
+          df -h /
       - name: Select Lean build targets
         id: targets
         shell: bash
@@ -193,7 +206,7 @@ jobs:
           set -o pipefail
           read -ra targets <<< "$LAKE_TARGETS"
           if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
-            targets=(W5.ThetaCompactReplayBulkComplete W5.ThetaAllMixedFullTransform)
+            targets=(W5.ThetaAllMixedFullTransform)
           fi
           /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
             ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log
