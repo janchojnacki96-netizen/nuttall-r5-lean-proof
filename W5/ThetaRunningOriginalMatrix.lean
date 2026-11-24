@@ -1,4 +1,5 @@
 import W5.ThetaGammaRunningCellMoments
+import W5.ThetaGenericAuditedSubgridChecker
 
 /-!
 # True original theta matrix with fast per-bin rounded Gamma integrals
@@ -289,5 +290,56 @@ theorem thetaRunningBothCellAuditCheck_sound
       steps us K a b x ha hx hax hxb hbR
       hExp hA hB hSel i j)
 
+
+/-- Prioritize the two restrictive matrix entries before spending time
+on the other thirteen comparisons. This changes no real semantics. -/
+def thetaRunningPriorityAuditCheck
+    (steps : ℕ) (us : List ℚ) (K : Finset ℕ)
+    (target : ThetaIntervalMatrix) (a b : ℚ) : Bool :=
+  let source := thetaRunningBothCellMatrix steps us K a b
+  decide ((target 4 4).lo ≤ (source 4 4).lo ∧
+    (source 4 4).hi ≤ (target 4 4).hi) &&
+  decide ((target 3 4).lo ≤ (source 3 4).lo ∧
+    (source 3 4).hi ≤ (target 3 4).hi) &&
+  thetaRunningBothCellAuditCheck steps us K target a b
+
+theorem thetaRunningPriorityAuditCheck_sound
+    (steps : ℕ) (us : List ℚ) (K : Finset ℕ)
+    (target : ThetaIntervalMatrix) (a b : ℚ)
+    (h : thetaRunningPriorityAuditCheck steps us K target a b = true) :
+    ∀ x : ℝ, 0 < x → (a:ℝ) ≤ x → x ≤ (b:ℝ) →
+      ∀ i j : Fin 5, i ≤ j →
+        QInterval.ContainsReal (target i j) (thetaCoefficient x i j) := by
+  have hmain : thetaRunningBothCellAuditCheck
+      steps us K target a b = true := by
+    simp only [thetaRunningPriorityAuditCheck,
+      Bool.and_eq_true] at h
+    exact h.2
+  exact thetaRunningBothCellAuditCheck_sound steps us K target a b hmain
+
+/-- The existing generic 48-cell soundness bridge accepts the faster
+per-bin-rounded real-sound evaluator without any new cellwise proof. -/
+def thetaRunningPriority48Check
+    (steps : ℕ) (us : List ℚ) (K : Finset ℕ)
+    (grids : List (List ℚ)) : Bool :=
+  thetaGenericAuditedSubgridsCheck
+    (thetaRunningPriorityAuditCheck steps us K)
+    (821/2048 : ℚ) (endpoints.drop 3)
+    (thetaAuditUpperCellMatrices.drop 3) grids
+
+/-- Strict conditional certificate. The 48-cell finite Boolean is NOT
+yet known true; this lemma does not establish W5.MainClaim. -/
+theorem analyticMatrixPositive_of_running_priority48
+    (steps : ℕ) (us : List ℚ) (K : Finset ℕ)
+    (grids : List (List ℚ))
+    (h : thetaRunningPriority48Check steps us K grids = true) :
+    analyticMatrixPositive := by
+  apply analyticMatrixPositive_of_remaining_48_audited_enclosures
+  exact thetaGenericAuditedSubgridsCheck_sound
+    (thetaRunningPriorityAuditCheck steps us K)
+    (fun target a b =>
+      thetaRunningPriorityAuditCheck_sound steps us K target a b)
+    (endpoints.drop 3) (821/2048 : ℚ)
+    (thetaAuditUpperCellMatrices.drop 3) grids h
 
 end W5
