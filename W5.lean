@@ -376,3 +376,4 @@ import W5.ThetaAuditedMatrixRefinementReuse
 import W5.ThetaBulkRoundedDegreeSelectedCells
 import W5.ThetaAuditedSubcellRefinementReuse
 import W5.ThetaGammaMemoNine
+import W5.ThetaMemoN1N2SelectedCellMatrix
