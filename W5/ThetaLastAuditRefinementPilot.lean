@@ -75,13 +75,30 @@ def thetaLastAuditHigherTermWidthMicros (i j : Fin 5) : List ℤ :=
       thetaGammaPilotLastLeft thetaGammaPilotLastRight i j n
     ((I.hi - I.lo) * 1000000).floor)
 
+/-- Compare the exact-rational original n=2 box against the
+existing certified sharp n=2 Gamma generator. Both are sound
+provided the checked endpoint eligibility below is true. -/
+def thetaLastAuditSharpN2TermWidths (i j : Fin 5) : List ℤ :=
+  let O := thetaBulkDegreeSelectedTermBox
+    8 thetaGammaPilotGrid thetaLastAuditPilotDegrees ∅
+    thetaGammaPilotLastLeft thetaGammaPilotLastRight i j 2
+  let N := thetaBulkDegreeSelectedTermBox
+    8 thetaGammaPilotGrid thetaLastAuditPilotDegrees
+    ({2} : Finset ℕ)
+    thetaGammaPilotLastLeft thetaGammaPilotLastRight i j 2
+  [((O.hi - O.lo) * 1000000).floor,
+   ((N.hi - N.lo) * 1000000).floor,
+   (N.lo * 1000000).floor,
+   (N.hi * 1000000).floor]
+
 set_option maxHeartbeats 3000000 in
-set_option maxRecDepth 4096 in
-#eval (List.range 4).map thetaLastAuditLowMomentWidthMicros
+#eval decide (ThetaBulkSelectedGammaEligibility
+  8 thetaGammaPilotGrid ({2} : Finset ℕ)
+  thetaGammaPilotLastLeft thetaGammaPilotLastRight)
 
 set_option maxHeartbeats 3000000 in
 set_option maxRecDepth 4096 in
-#eval [thetaLastAuditHigherTermWidthMicros 4 4,
-       thetaLastAuditHigherTermWidthMicros 3 4]
+#eval [thetaLastAuditSharpN2TermWidths 4 4,
+       thetaLastAuditSharpN2TermWidths 3 4]
 
 end W5
