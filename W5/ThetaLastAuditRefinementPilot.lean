@@ -109,10 +109,32 @@ set_option maxHeartbeats 3000000 in
   8 thetaGammaPilotGrid ({2} : Finset ℕ)
   thetaGammaPilotLastLeft thetaGammaPilotLastRight)
 
+/-- The original last x-cell is now split exactly in half.
+The signed theta term generator and original 768-bit audit target
+remain unchanged; only each source x-range becomes narrower.
+The previously proved audited-subgrid theorem allows all five
+existing LDL pivot certificates to be reused for both halves. -/
+def thetaLastAuditMidpoint : ℚ :=
+  (thetaGammaPilotLastLeft + thetaGammaPilotLastRight) / 2
+
+def thetaLastAuditRightHalfSource : ThetaIntervalMatrix :=
+  thetaBulkDegreeSelectedCellMatrix
+    8 thetaGammaPilotGrid thetaLastAuditPilotDegrees ∅
+    thetaLastAuditMidpoint thetaGammaPilotLastRight
+
+/-- Four exact-rational inclusion inequalities and their values
+scaled by 10^6; integer printing is ONLY a readable diagnostic. -/
+def thetaLastAuditRightHalfReport (i j : Fin 5) :
+    List Bool × List ℤ :=
+  let A := thetaAuditUpperCell_51 i j
+  let B := thetaLastAuditRightHalfSource i j
+  ([decide (A.lo ≤ B.lo), decide (B.hi ≤ A.hi)],
+   [(A.lo * 1000000).floor, (A.hi * 1000000).floor,
+    (B.lo * 1000000).floor, (B.hi * 1000000).floor])
+
 set_option maxHeartbeats 3000000 in
 set_option maxRecDepth 4096 in
-#eval [thetaLastAuditN2MomentWidths 0,
-       thetaLastAuditN2MomentWidths 4,
-       thetaLastAuditN2MomentWidths 8]
+#eval [thetaLastAuditRightHalfReport 4 4,
+       thetaLastAuditRightHalfReport 3 4]
 
 end W5
