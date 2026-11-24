@@ -52,8 +52,36 @@ def thetaLastAuditPilotReport (i j : Fin 5) :
     [(A.lo * 1000000).floor, (A.hi * 1000000).floor,
      (B.lo * 1000000).floor, (B.hi * 1000000).floor] )
 
+/-- Separate the cost of the unselected k=0,1,2,3 moments:
+integer micro-units of OLD cubic width and NEW certified Gamma width.
+These probes are cheaper than recomputing the complete five-pivot LDL. -/
+def thetaLastAuditLowMomentWidthMicros (k : ℕ) : List ℤ :=
+  let old := thetaNthCubicGammaMomentBox
+    thetaGammaPilotLastLeft thetaGammaPilotLastRight 1 k
+  let fresh := thetaGammaAutoCellMomentBox
+    8 k thetaGammaPilotLastLeft thetaGammaPilotLastRight 1
+    thetaGammaPilotGrid
+  [((old.hi - old.lo) * 1000000).floor,
+   ((fresh.hi - fresh.lo) * 1000000).floor]
+
+/-- In parallel inspect n=2,...,6 term-by-term without recomputing
+the expensive selected n=1 Gamma grid. For each term return its
+certified rational enclosure width in micro-units. -/
+def thetaLastAuditHigherTermWidthMicros (i j : Fin 5) : List ℤ :=
+  (List.range 5).map (fun t =>
+    let n := t + 2
+    let I := thetaBulkDegreeSelectedTermBox
+      8 thetaGammaPilotGrid thetaLastAuditPilotDegrees ∅
+      thetaGammaPilotLastLeft thetaGammaPilotLastRight i j n
+    ((I.hi - I.lo) * 1000000).floor)
+
 set_option maxHeartbeats 3000000 in
 set_option maxRecDepth 4096 in
-#eval [thetaLastAuditPilotReport 4 4, thetaLastAuditPilotReport 3 4]
+#eval (List.range 4).map thetaLastAuditLowMomentWidthMicros
+
+set_option maxHeartbeats 3000000 in
+set_option maxRecDepth 4096 in
+#eval [thetaLastAuditHigherTermWidthMicros 4 4,
+       thetaLastAuditHigherTermWidthMicros 3 4]
 
 end W5
