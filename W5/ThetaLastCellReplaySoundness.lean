@@ -1,69 +1,8 @@
-import W5.ThetaLastCellReplayGamma0
-import W5.ThetaLastCellReplayGamma1
-import W5.ThetaLastCellReplayGamma2
+import W5.ThetaLastCellGammaReplaySoundness
 import W5.ThetaLastCellReplayExp
 import W5.ThetaLastCellCompactDyadicGaussian
-import W5.ThetaLastCellCompactDyadicGammaA
-import W5.ThetaLastCellCompactDyadicGammaB
 
 namespace W5
-
-/-- Enlarging a rational enclosure preserves genuine real containment. -/
-theorem thetaLastCellReplayWiden {A B : QInterval} {x : ℝ}
-    (hlo : A.lo ≤ B.lo) (hhi : B.hi ≤ A.hi)
-    (h : QInterval.ContainsReal B x) : QInterval.ContainsReal A x := by
-  have hloR : (A.lo:ℝ) ≤ (B.lo:ℝ) := by exact_mod_cast hlo
-  have hhiR : (B.hi:ℝ) ≤ (A.hi:ℝ) := by exact_mod_cast hhi
-  exact ⟨hloR.trans h.1, h.2.trans hhiR⟩
-
-theorem thetaLastCellReplayMomentFit (k : Fin 9) :
-    (thetaLastCellReplayMomentWitness k.val).lo ≤
-      (thetaGammaRunningCellNine 8 thetaLastCellA thetaLastCellB 1 thetaLastCellGrid k).lo ∧
-    (thetaGammaRunningCellNine 8 thetaLastCellA thetaLastCellB 1 thetaLastCellGrid k).hi ≤
-      (thetaLastCellReplayMomentWitness k.val).hi := by
-  fin_cases k
-  · have h := thetaLastCellReplayGamma0_checked (0:Fin 3)
-    rw [thetaLastCellReplayGammaGroupSource_apply] at h
-    exact h
-  · have h := thetaLastCellReplayGamma0_checked (1:Fin 3)
-    rw [thetaLastCellReplayGammaGroupSource_apply] at h
-    exact h
-  · have h := thetaLastCellReplayGamma0_checked (2:Fin 3)
-    rw [thetaLastCellReplayGammaGroupSource_apply] at h
-    exact h
-  · have h := thetaLastCellReplayGamma1_checked (0:Fin 3)
-    rw [thetaLastCellReplayGammaGroupSource_apply] at h
-    exact h
-  · have h := thetaLastCellReplayGamma1_checked (1:Fin 3)
-    rw [thetaLastCellReplayGammaGroupSource_apply] at h
-    exact h
-  · have h := thetaLastCellReplayGamma1_checked (2:Fin 3)
-    rw [thetaLastCellReplayGammaGroupSource_apply] at h
-    exact h
-  · have h := thetaLastCellReplayGamma2_checked (0:Fin 3)
-    rw [thetaLastCellReplayGammaGroupSource_apply] at h
-    exact h
-  · have h := thetaLastCellReplayGamma2_checked (1:Fin 3)
-    rw [thetaLastCellReplayGammaGroupSource_apply] at h
-    exact h
-  · have h := thetaLastCellReplayGamma2_checked (2:Fin 3)
-    rw [thetaLastCellReplayGammaGroupSource_apply] at h
-    exact h
-
-theorem thetaLastCellReplayMoment_containsReal
-    (x : ℝ) (hax : (thetaLastCellA:ℝ) ≤ x)
-    (hxb : x ≤ (thetaLastCellB:ℝ)) (k : ℕ) (hk : k < 9) :
-    QInterval.ContainsReal (thetaLastCellReplayMomentWitness k)
-      (thetaAuditedOneWeightedMoment x k) := by
-  have hfit := thetaLastCellReplayMomentFit ⟨k,hk⟩
-  rw [thetaGammaRunningCellNine_apply] at hfit
-  have h := thetaGammaRunningRoundedCellMomentBox_containsReal
-    8 k thetaLastCellA thetaLastCellB 1 thetaLastCellGrid x
-    (by norm_num [thetaLastCellA]) (by norm_num) hax hxb
-    (by norm_num [thetaLastCellB])
-    (by simpa using thetaLastCellGammaA_checked)
-    (by simpa using thetaLastCellGammaB_checked)
-  exact thetaLastCellReplayWiden hfit.1 hfit.2 (by simpa using h)
 
 theorem thetaLastCellReplayExp_containsReal
     (x : ℝ) (hax : (thetaLastCellA:ℝ) ≤ x)

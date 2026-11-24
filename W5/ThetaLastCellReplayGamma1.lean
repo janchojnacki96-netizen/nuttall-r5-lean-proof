@@ -1,10 +1,6 @@
-import W5.ThetaLastCellReplayInputs
+import W5.ThetaLastCellGammaBin4
+import W5.ThetaLastCellGammaBin5
+import W5.ThetaLastCellGammaBin6
+import W5.ThetaLastCellGammaBin7
 
-namespace W5
-
-set_option maxRecDepth 4096 in
-set_option maxHeartbeats 3000000 in
-theorem thetaLastCellReplayGamma1_checked : ThetaLastCellReplayGammaGroupFits (1:Fin 3) := by
-  native_decide
-
-end W5
+/-! Import four independently verified Gamma-bin certificates. -/

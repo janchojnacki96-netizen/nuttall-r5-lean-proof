@@ -192,8 +192,8 @@ jobs:
         run: |
           set -o pipefail
           if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
-            # Reuse all already-certified numerical and analytic modules.
-            # Replay the tiny input table and rows in independent groups.
+            # Reuse all certified matrix rows. Only the Gamma primitives
+            # and the remaining compositional proofs are new work.
             : > /tmp/w5-build.log
             start=$SECONDS
             run_group() {
@@ -208,39 +208,41 @@ jobs:
               echo "::endgroup::"
               echo "| $label | $((SECONDS-stage_start))s | $rc |" | tee -a "$GITHUB_STEP_SUMMARY"
               if [[ "$rc" == 124 || "$rc" == 137 ]]; then
-                echo "::error title=Numerical stage timed out::$label exceeded ${limit}s; no theorem was certified by this group."
+                echo "::error title=Numerical stage timed out::$label exceeded ${limit}s; inspect completed bin checks."
               elif [[ "$rc" != 0 ]]; then
                 echo "::error title=Lean stage failed::$label exited $rc."
               fi
               return "$rc"
             }
-            echo "### Last-cell compact input replay timings (exit 0 = compiled)" >> "$GITHUB_STEP_SUMMARY"
+            echo "### Last-cell Gamma primitive replay timings (exit 0 = compiled)" >> "$GITHUB_STEP_SUMMARY"
             echo "| Stage | Wall time | Exit code |" >> "$GITHUB_STEP_SUMMARY"
             echo "| --- | --- | --- |" >> "$GITHUB_STEP_SUMMARY"
-            # Do not silently skip unexpected Lean changes.
             read -ra changed_targets <<< "$LAKE_TARGETS"
             for target in "${changed_targets[@]}"; do
               case "$target" in
-                W5.ThetaLastCellCompactDyadicBase|W5.ThetaLastCellCompactDyadicPivot|W5.ThetaLastCellCompactDyadicGaussian|W5.ThetaLastCellCompactDyadicGammaA|W5.ThetaLastCellCompactDyadicGammaB|W5.ThetaLastCellCompactDyadicFit|W5.ThetaLastCellCompactDyadicWitness|W5.ThetaLastCellReplayInputs|W5.ThetaLastCellReplayGamma0|W5.ThetaLastCellReplayGamma1|W5.ThetaLastCellReplayGamma2|W5.ThetaLastCellReplayExp|W5.ThetaLastCellReplayRow0|W5.ThetaLastCellReplayRow1|W5.ThetaLastCellReplayRow2|W5.ThetaLastCellReplayRow3|W5.ThetaLastCellReplayRow4|W5.ThetaLastCellReplaySoundness) ;;
+                W5.ThetaLastCellCompactDyadicBase|W5.ThetaLastCellCompactDyadicPivot|W5.ThetaLastCellCompactDyadicGaussian|W5.ThetaLastCellCompactDyadicGammaA|W5.ThetaLastCellCompactDyadicGammaB|W5.ThetaLastCellCompactDyadicFit|W5.ThetaLastCellCompactDyadicWitness|W5.ThetaLastCellReplayInputs|W5.ThetaLastCellReplayExp|W5.ThetaLastCellReplayGamma0|W5.ThetaLastCellReplayGamma1|W5.ThetaLastCellReplayGamma2|W5.ThetaLastCellReplayRow0|W5.ThetaLastCellReplayRow1|W5.ThetaLastCellReplayRow2|W5.ThetaLastCellReplayRow3|W5.ThetaLastCellReplayRow4|W5.ThetaLastCellReplaySoundness|W5.ThetaLastCellGammaReplayData|W5.ThetaLastCellGammaWExpChecked|W5.ThetaLastCellGammaBin0|W5.ThetaLastCellGammaBin1|W5.ThetaLastCellGammaBin2|W5.ThetaLastCellGammaBin3|W5.ThetaLastCellGammaBin4|W5.ThetaLastCellGammaBin5|W5.ThetaLastCellGammaBin6|W5.ThetaLastCellGammaBin7|W5.ThetaLastCellGammaBin8|W5.ThetaLastCellGammaBin9|W5.ThetaLastCellGammaBin10|W5.ThetaLastCellGammaBin11|W5.ThetaLastCellGammaMomentSums|W5.ThetaLastCellGammaReplaySoundness) ;;
                 *) echo "::error::Unscheduled changed module $target; extend the staged graph before running." ; exit 1 ;;
               esac
             done
-            if ! run_group cached-base-and-pivots 90 W5.ThetaLastCellCompactDyadic{Base,Pivot,Gaussian,GammaA,GammaB}; then
-              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
-              exit 1
-            fi
-            if ! run_group compact-input-definitions 90 W5.ThetaLastCellReplayInputs; then
+            if ! run_group cached-matrix-and-eligibility 90 W5.ThetaLastCellCompactDyadic{Base,Pivot,Gaussian,GammaA,GammaB} W5.ThetaLastCellReplay{Inputs,Exp,Row0,Row1,Row2,Row3,Row4}; then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
               exit 1
             fi
             failed=0
-            if ! run_group gaussian-input-table 90 W5.ThetaLastCellReplayExp; then
+            if ! run_group compose-verified-matrix-rows 60 W5.ThetaLastCellCompactDyadicFit; then
               failed=$((failed+1))
             fi
-            if ! run_group gamma-input-triplets 150 W5.ThetaLastCellReplayGamma{0,1,2}; then
+            if ! run_group gamma-primitive-data 90 W5.ThetaLastCellGammaReplayData; then
+              echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
+              exit 1
+            fi
+            if ! run_group gamma-exponential-table-and-moment-sums 90 W5.ThetaLastCellGamma{WExpChecked,MomentSums}; then
               failed=$((failed+1))
             fi
-            if ! run_group five-compact-matrix-rows 150 W5.ThetaLastCellReplayRow{0,1,2,3,4}; then
+            # Each of the twelve bins is a separate module, with one left
+            # lower and one right upper bound per moment. Lake schedules
+            # them independently and retains successful .oleans.
+            if ! run_group twelve-gamma-bin-checks 240 W5.ThetaLastCellReplayGamma{0,1,2}; then
               failed=$((failed+1))
             fi
             if (( failed > 0 )); then
@@ -248,7 +250,7 @@ jobs:
               echo "::error::$failed independent replay group(s) did not compile; final proof not attempted."
               exit 1
             fi
-            if ! run_group final-proof-composition 90 W5.ThetaLastCellReplaySoundness W5.ThetaLastCellCompactDyadicFit W5.ThetaLastCellCompactDyadicWitness; then
+            if ! run_group gamma-and-final-proof-composition 120 W5.ThetaLastCellGammaReplaySoundness W5.ThetaLastCellReplaySoundness W5.ThetaLastCellCompactDyadicWitness; then
               echo "$((SECONDS-start))" > /tmp/w5-build-seconds.txt
               exit 1
             fi
