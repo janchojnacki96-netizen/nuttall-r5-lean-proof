@@ -193,7 +193,7 @@ jobs:
           set -o pipefail
           read -ra targets <<< "$LAKE_TARGETS"
           if [[ "$PR_NUMBER" == 202 && "$BUILD_MODE" == focused-pr ]]; then
-            targets+=(W5)
+            targets=(W5.ThetaCompactReplayBulkComplete W5.ThetaAllMixedFullTransform)
           fi
           /usr/bin/time -f '%e' -o /tmp/w5-build-seconds.txt \
             ~/.elan/bin/lake build "${targets[@]}" 2>&1 | tee /tmp/w5-build.log
