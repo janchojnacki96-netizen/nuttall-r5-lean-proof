@@ -166,8 +166,8 @@ theorem thetaNorm_finite_bilinear {r : ℕ}
   intro a _
   ring
 
-/-- Finite matrix assembly, with the factorial normalization on the two rows. -/
 set_option maxHeartbeats 1000000 in
+/-- Finite matrix assembly, with the factorial normalization on the two rows. -/
 theorem analyticLeadingMatrix_eq_normalization_congruence
     (r : ℕ) (hr : r ≤ 5) (x : ℝ) :
     analyticLeadingMatrix r hr x =
@@ -208,7 +208,18 @@ theorem analyticLeadingMatrix_eq_normalization_congruence
   have hfin :
       (∑ a : Fin r, R a.val * (∑ b : Fin r, S b.val * (c * H a.val b.val))) =
       ∑ a ∈ Finset.range r, R a * (∑ b ∈ Finset.range r, S b * (c * H a b)) := by
-    simp only [Fin.sum_univ_eq_sum_range]
+    have hinner (a : ℕ) :
+        (∑ b : Fin r, S b.val * (c * H a b.val)) =
+        ∑ b ∈ Finset.range r, S b * (c * H a b) :=
+      Fin.sum_univ_eq_sum_range (fun b : ℕ => S b * (c * H a b)) r
+    calc
+      _ = ∑ a : Fin r, R a.val *
+          (∑ b ∈ Finset.range r, S b * (c * H a.val b)) := by
+        apply Finset.sum_congr rfl
+        intro a _
+        rw [hinner]
+      _ = _ := Fin.sum_univ_eq_sum_range
+        (fun a : ℕ => R a * (∑ b ∈ Finset.range r, S b * (c * H a b))) r
   rw [← hfin]
   simp only [Matrix.smul_apply, smul_eq_mul, Matrix.mul_apply,
     Matrix.transpose_apply, thetaNormTriangular, Matrix.of_apply]
