@@ -386,3 +386,5 @@ import W5.ThetaEarlyRoundedPriorityAuditCheck
 import W5.ThetaPriorityAudited48Certificate
 
 import W5.ThetaGammaRoundedRunningGrid
+import W5.ThetaGammaRunningCellMoments
+import W5.ThetaRunningOriginalMatrix
