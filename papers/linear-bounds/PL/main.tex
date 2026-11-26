@@ -1,0 +1,661 @@
+% !TeX program = pdflatex
+\documentclass[11pt,a4paper,reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,amssymb,booktabs,longtable,array,calc}
+\usepackage[margin=27mm,top=26mm,bottom=29mm]{geometry}
+\usepackage[hidelinks,unicode]{hyperref}
+\newtheorem{theorem}{Twierdzenie}[section]
+\newtheorem{lemma}[theorem]{Lemat}
+\newtheorem{corollary}[theorem]{Wniosek}
+\newcommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\numberwithin{equation}{section}
+\setlength{\emergencystretch}{2em}
+\allowdisplaybreaks[1]
+\renewcommand{\abstractname}{Streszczenie}
+\renewcommand{\proofname}{Dowód}
+\renewcommand{\refname}{Literatura}
+\renewcommand{\appendixname}{Dodatek}
+\renewcommand{\keywordsname}{Słowa kluczowe}
+\renewcommand{\datename}{Data}
+\hypersetup{pdftitle={Liniowe ograniczenia na liczbę całkowań jądra theta Riemanna},pdfauthor={Jan Chojnacki}}
+\title[LICZBA CAŁKOWAŃ JĄDRA THETA RIEMANNA]{LINIOWE OGRANICZENIA NA LICZBĘ CAŁKOWAŃ JĄDRA THETA RIEMANNA}
+\author{Jan Chojnacki}
+\date{26 listopada 2026 (wersja 7)}
+\keywords{jądro theta Riemanna, regularność znakowa, wrońskiany, całkowita dodatniość, arytmetyka przedziałowa}
+
+
+\begin{document}
+
+\begin{abstract}
+
+Niech \(m(r)\) oznacza najmniejszą liczbę całkowań ogonowych, po której jądro theta Riemanna ma na dodatniej półosi regularność znakową typu \(RR_r\). Dla każdego \(\varepsilon>0\) dowodzimy nierówności \(m(r)\ge r-(\pi^2/2+\varepsilon)r/\log r\) dla wszystkich dostatecznie dużych \(r\), zliczając zmiany znaku wysokich pochodnych. Wykazujemy ponadto \(m(r)\le2r\) dla każdego \(r\ge1\). Tożsamość Andréiefa i oszacowania potęg symetrycznych dają analityczny dowód hipotezy Nuttalla o istnieniu oraz nierówność \(m(r)\le2r\) dla dostatecznie dużych \(r\). Certyfikaty przedziałowe rozszerzają tę jawną granicę na wszystkie rzędy. Na całej półosi otrzymujemy \(m(1)=\cdots=m(4)=0\), \(m(5)=m(6)=m(7)=1\) oraz \(m(8)=2\). Ujemne podpisane wrońskiany dają \(m(142)\ge197\) i \(m(500)\ge768\). Dla wyznaczników momentów \(D(n,r)\) oszacowanie sektorowe daje ścisłą dodatniość przy każdym przesunięciu \(n\ge0\) do rzędu \(9\,561\,277\,002\,984\) włącznie. Z twierdzenia Sry o gęstości z transformatą Laplace’a równą odwrotności funkcji \(\xi(1/2+\sqrt{s})\) wyprowadzamy ścisłą dodatniość dla każdego rzędu przy \(n\le1\,810\,540\,931\,075\). Istnienie granicy \(\lim_{r\to\infty}m(r)/r\) pozostaje otwarte.
+
+\end{abstract}
+
+\maketitle
+
+\section{Wprowadzenie}\label{sec:intro}
+
+
+Nuttall zapytał, czy dla każdego ustalonego rzędu skończona liczba całkowań ogonowych jądra theta Riemanna zapewnia regularność znakową \cite[hipoteza~1]{nuttall}. Jego obliczenia do rzędu \(142\) wskazywały, że w rzędach od piątego do siódmego wystarcza jedno całkowanie, a w ósmym potrzebne są dwa \cite[\S4.7]{nuttall}. Przejście od takiej tabeli do oszacowania dla dowolnego rzędu wymaga dwóch argumentów. Przy ustalonym \(r\) nierówności muszą zachodzić dla wszystkich rzeczywistych argumentów. Przy rosnącym \(r\) trzeba ponadto kontrolować wszystkie mniejsze minory na tym samym poziomie całkowania.
+
+Dla \(t\ge0\) definiujemy \[X=\pi e^{4t},\quad x_n=n^2X,\quad \Phi(t)=\sum_{n=1}^{\infty}e^t x_n(2x_n-3)e^{-x_n},\qquad \Psi_0=\Phi,\] \[\Psi_{m+1}(t)=\int_t^\infty\Psi_m(s)\,ds,\qquad
+H_p(f;t)=[f^{(i+j)}(t)]_{i,j=0}^{p-1},\qquad W_p(f;t)=\det H_p(f;t).\] Szereg i jego pochodne każdego ustalonego rzędu są lokalnie jednostajnie zbieżne, gdyż wykładnik zawiera ujemną wielokrotność \(n^2\). Wszystkie występujące całki zbiegają w nieskończoności. Piszemy \(\epsilon_p=(-1)^{p(p-1)/2}\). Jądro \(f(u+v)\) jest \(RR_r\), gdy dla \(p\le r\) i rosnących układów dodatnich węzłów zachodzi \(\epsilon_p\det[f(u_i+v_j)]\ge0\). Przez \(m(r)\) rozumiemy najmniejszy skuteczny poziom, dopuszczając początkowo nieskończoność. Stosujemy silniejszy test 
+\begin{equation}\label{eq:criterion}
+\epsilon_p W_p(\Psi_m;t)>0 \qquad(1\le p\le r,\ t\ge0).
+\end{equation}
+ Kryterium wrońskianowe Nuttalla \cite[lemat 2.1]{nuttall} daje z \eqref{eq:criterion} regularność znakową. Ściśle niewłaściwy znak wrońskianu wyklucza nawet słabe \(RR_r\). Po zlaniu dwóch układów węzłów i podzieleniu wyznacznika przez ich dodatnie czynniki Vandermonde'a otrzymujemy wyznacznik pochodnych z dokładnością do dodatnich silni. Błędny znak w zerze zachowuje się dla małych dodatnich \(t\) przez ciągłość. Na przykład test rzędu dwa ma postać \((f^{\prime})^2-ff^{\prime\prime}>0\), czyli \((\log f)^{\prime\prime}<0\), gdy \(f>0\). Górne granice uzyskujemy, wykazując warunek ścisły. Dolne wynikają z niewłaściwego znaku lub z własności zmniejszania liczby zmian znaku w przypadku słabym. Granice obowiązują zatem przy obu konwencjach.
+
+Liczba całkowań potrzebnych dla jądra \(\Phi\) rośnie liniowo z rzędem \(r\). Twierdzenie~\ref{th:lower} daje górne ograniczenie różnicy \(r-m(r)\). Po pomnożeniu przez \(\log r/r\) jej granica górna wynosi co najwyżej \(\pi^2/2\). Wynika to z jawnego oszacowania liczby zmian znaku w lemacie~\ref{lem:osc}. Od góry część~\ref{sec:shift} pokazuje analitycznie, że \(2R\) całkowań wystarcza dla wszystkich rzędów do \(R\), gdy \(R\) jest dostatecznie duże. Dla ustalonego \(r\) można więc wybrać takie \(R\ge r\), co dowodzi hipotezy Nuttalla o istnieniu \(m(r)\). Certyfikaty dla pozostałych rzędów pozwalają w twierdzeniu~\ref{th:upper} przyjąć \(m=2r\) dla każdego \(r\ge1\). Twierdzenie~\ref{th:firstknot} opisuje, co dzieje się po odjęciu jednego całkowania od tej granicy. Dla nieparzystych \(r\ge3\) pomocniczy wrońskian w dowodzie opartym na tożsamości Andréiefa zmienia znak przy pierwszym dodatnim węźle. Twierdzenie~\ref{th:exact} wyznacza wszystkie minima do rzędu ósmego. Pierwsze całkowanie staje się konieczne w rzędzie piątym, a drugie w ósmym. W części~\ref{sec:witness} otrzymujemy \(m(142)\ge197\) i \(m(500)\ge768\).
+
+Dla pokrewnego jądra \(\Theta_1\) Nuttall wykazał istnienie odpowiedniego poziomu całkowania dla dowolnego zadanego rzędu \cite{thetaone}. Twierdzenie~\ref{th:upper} podaje jawny poziom dla \(\Phi\). W części~\ref{sec:dtable} wskazujemy, które zakresy dodatniości wyznaczników wynikają z tej granicy, a które z informacji o zerach dzety.
+
+\begin{lemma}\label{lem:persist}
+Załóżmy, że \(\epsilon_p W_p(g;t)>0\) dla \(1\le p\le r\) oraz \(t\ge T\), a \(g\) wraz z pochodnymi do rzędu \(2r-2\) jest tam całkowalna i dąży do zera w nieskończoności. Wtedy jej całka ogonowa spełnia te same ścisłe nierówności na \([T,\infty)\).
+\end{lemma}
+
+
+\begin{proof}
+Całkowanie zachowuje słabą regularność \cite[uwaga 4.1]{nuttall}, przez złożenie z całkowicie nieujemnym jądrem schodkowym. Dla wersji ścisłej weźmy \(g\) spełniającą \eqref{eq:criterion} na \([T,\infty)\) oraz \(f=\int_t^\infty g\). W \(H_p(f;t)\) pierwszy wiersz zapisujemy jako całkę z \((g,\ldots,g^{(p-1)})(s)\) i przesuwamy na dół. Znak permutacji znosi \(p-1\) minusów od różniczkowania pozostałych wierszy. Pod całką stoi wyznacznik z węzłem \(t\) o krotności \(p-1\) i węzłem \(s>t\). Funkcje \(g,\ldots,g^{(p-1)}\) tworzą rozszerzony układ Czebyszewa, gdyż wszystkie początkowe wrońskiany są niezerowe. Po podzieleniu przez pierwszą funkcję i zróżniczkowaniu każdy nowy początkowy wrońskian jest kolejnym starym podzielonym przez potęgę pierwszej funkcji. Indukcja i twierdzenie Rolle'a z krotnościami ograniczają liczbę zer nietrywialnej kombinacji do \(p-1\). Wyznacznik ma więc stały znak, który przy \(s\downarrow t\) z rozwinięcia Taylora jest znakiem \(W_p(g;t)\). Całkowanie zachowuje znak ścisły.
+\end{proof}
+
+
+\begin{theorem}[Hipoteza Nuttalla o istnieniu]\label{th:existence}
+Dla każdej liczby całkowitej \(r\ge1\) istnieje skończone \(m\), dla którego \(\epsilon_pW_p(\Psi_m;t)>0\) przy wszystkich \(1\le p\le r\) i \(t\ge0\). W szczególności \(m(r)<\infty\).
+\end{theorem}
+\begin{proof}
+Z oszacowania analitycznego w części~\ref{sec:shift} wynika istnienie stałej \(R_0\) takiej, że dla każdej liczby całkowitej \(R\ge R_0\) funkcja \(\Psi_{2R}\) spełnia ścisły test wrońskianowy do rzędu \(R\). Dla zadanego \(r\) wybierzmy liczbę całkowitą \(R\ge\max(r,R_0)\). Test obejmuje wszystkie rzędy \(1\le p\le r\), więc z kryterium Nuttalla wystarcza \(m=2R\).
+\end{proof}
+Certyfikaty z części~\ref{sec:finite}--\ref{sec:schur} pozwalają przyjąć \(m=2r\) również dla \(r<R_0\).
+
+\section{Dokładne minima do rzędu ósmego}\label{sec:exact}
+
+
+\begin{theorem}\label{th:exact}
+Na całej półosi podpisane wrońskiany są ściśle dodatnie do rzędu czwartego dla \(\Phi\), do siódmego dla \(\Psi_1\) i do ósmego dla \(\Psi_2\). Pierwsze osiem minimów wynosi
+\[m(1)=m(2)=m(3)=m(4)=0,\qquad m(5)=m(6)=m(7)=1,\qquad m(8)=2.\]
+\end{theorem}
+
+Dla \(r=5\) twierdzenie \href{https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/blob/dfaede6d37bb019d97a223d500cbade407e0f994/W5/NuttallR5.lean}{\texttt{W5.nuttall\_r5}} w Lean~4 wykazuje wymagane znaki dla \(\Psi_1\) na całej półosi. Wcześniejszą pracę o rzędzie piątym, opis założeń zaufania i źródła weryfikacji części zwartej zawiera katalog \texttt{r5/} suplementu (dodatek~\ref{sec:replay}).
+
+
+Nuttall podał te wartości na podstawie obliczeń na siatce \cite[\S4.7]{nuttall}. Tutaj rząd czwarty dotyczy jądra \(\Phi(u+v)\). Sra wykazał regularność znakową do rzędu czwartego i jej załamanie w rzędzie piątym dla jądra \(\Phi(\sqrt{u+v})\) \cite{sra4}.
+
+\subsection{Przedział zwarty}\label{sec:compact}
+
+
+Do wykluczenia poziomu zerowego wystarcza piąty wyznacznik w jednym punkcie. Przedziały dla pierwszych dziewięciu wartości \(\Phi,\ldots,\Phi^{(8)}\) w zerze oraz 120 składników wzoru permutacyjnego dają \[-3993243730834984210\ \le W_5(\Phi;0)\le\ -3993243730834984209.\] Ponieważ \(\epsilon_5=1\), poziom zerowy zawodzi w każdym rzędzie co najmniej pięć. Dla wystarczalności na \(0\le t\le1/2\) niech \(D_{ii}=16^{-i}\) i \(A(t)=D H_7(\Psi_1;t)D\). Na każdej komórce wymiernej \([c-h,c+h]\) tworzymy dolnotrójkątną macierz dyadyczną \(U\) o dodatniej przekątnej. Jej wiersze proponuje przybliżona ortogonalizacja oparta na momentach Hankela w środku komórki. Otrzymane liczby dyadyczne sprawdzamy iloczynami całkowitoliczbowymi. Dla \(J=\operatorname{diag}(1,-1,1,-1,1,-1,1)\) zweryfikowaliśmy 
+\begin{equation}\label{eq:cell}
+\sup_{|v|\le1}\|U A(c+hv)U^\top-J\|_\infty
+ \le 801559662/10^9<1.
+\end{equation}
+ Norma jest największą sumą modułów wiersza. Każdy blok początkowy spełnia tę samą granicę. Odcinek od jego macierzy znaków do przekształconego bloku składa się z macierzy odwracalnych na mocy szeregu Neumanna. Wyznacznik bloku ma zatem znak \(\det J_p=\epsilon_p\). Trójkątność sprawia, że każdy taki blok jest kongruencją odpowiadającego mu bloku pierwotnego. Otrzymaliśmy 67 przylegających komórek obejmujących oba końce. Generator zaczyna od 64 przedziałów długości \(1/128\) i dzieli na połowy te, których zweryfikowana granica przekracza \(7/8\). Resztę analityczną wyjaśnia \S\ref{sec:jet}, a nieskończony ogon \S\ref{sec:tail}.
+
+\textbf{Przedziały dla danych.} W rzeczywistym \(c\) pochodna rzędu \(k\) składnika o indeksie \(n\) wynosi \(e^{c-y}P_k(y)\), gdzie \(y=\pi n^2e^{4c}\), \(P_0=2y^2-3y\), \(P_{k+1}=(1-4y)P_k+4yP'_k\). Współczynniki są dokładnymi liczbami całkowitymi. Pierwsze 24 składniki liczymy z zaokrągleniem na zewnątrz. Dla \(0\le c\le2\), \(|z-c|\le1/8\) mamy \(|e^z|<9\), \(|x_n(z)|<2y\), \(\Re x_n(z)>y/2\). Moduł składnika jest więc najwyżej \(9(8y^2+6y)e^{-y/2}\le20000e^{-y/3}\) (maksymalizujemy oddzielnie oba jednomiany). Z sumowania mamy \(|\Phi(z)|<10^6\). Suma dla \(n\ge25\) jest mniejsza od \(2^{-900}\), gdyż ilorazy kolejnych wyrazów majoranty są poniżej \(1/2\) i \(40000e^{-625\pi/3}<2^{-900}\). Z nierówności Cauchy'ego błąd pochodnej wynosi najwyżej \(2^{-900}k!8^k\).
+
+\subsection{Przedziały Taylora i kongruencje całkowitoliczbowe}\label{sec:jet}
+
+
+Brakującym wpisem jest \(\Psi_1(c)\). Zaczynamy w \(t=2\) z przedziałem \(0\le\Psi_1(2)\le2^{-500}\). Dla jednego składnika podstawiamy \(x=\pi n^2e^{4s}\), \(y=\pi n^2e^8\). Całkę od 2 ogranicza \((e^2/2)y^{-1/4}\int_y^\infty x^{5/4}e^{-x}dx\le e^2e^{-y/2}\), gdyż \(y>9000\). Sumę ogranicza dwukrotność pierwszego wyrazu majoranty. Cofamy się przez 64 panele długości \(1/32\). Dla dodatniego przesunięcia \(h\) przybliżenie całki z \(\Phi\) wynosi \[\sum_{j=0}^{89}\frac{\Phi^{(j)}(c)h^{j+1}}{(j+1)!},\qquad
+|\text{error}|\le h\,10^6\,\frac{(8h)^{90}}{1-8h}.\] Oszacowanie wynika ze scałkowania majoranty Cauchy'ego z \S\ref{sec:compact}. Aby otrzymać wartość w środku komórki, odejmujemy całkę obliczoną od jej lewego punktu odniesienia. Dla \(j\ge1\) mamy \(\Psi_1^{(j)}=-\Phi^{(j-1)}\). Przy \(a+b=i\) współczynnik przy \(v^k\) we wpisie \(A_{ab}(c+hv)\) wynosi \[16^{-i}\,\Psi_1^{(i+k)}(c)\,h^k/k!.\] Wykonujemy kongruencję każdego współczynnika do stopnia 24 i sumujemy górne granice ich norm, odejmując \(J\) od wyrazu stałego. Na \(|z-c|\le1/16\) każdy wpis \(A(z)\) ma moduł najwyżej \(M_A=2\cdot10^6\,12!\). Funkcja \(\Phi\) jest ograniczona na większym dysku o promieniu \(1/8\). Do każdej pochodnej stosujemy nierówność Cauchy'ego na pozostałym promieniu \(1/16\), po czym uwzględniamy \(16^{-i}\). Dla \(i=0\) wystarcza całka od 2 i odcinek prosty od \(c\). Dodatkowa reszta macierzowa wynosi najwyżej \[7\|U\|_\infty\|U^\top\|_\infty\,M_A(16h)^{25}/(1-16h).\] 
+
+\textit{Całkowitoliczbowa kontrola normy.} Wpisy Hankela przechowujemy jako przedziały w skali \(S=2^{300}\), a \(U\) jako trójkątną tablicę całkowitą podzieloną przez \(S\). Na każdej antyprzekątnej bierzemy część całkowitą środka przedziału. Suma odchyleń górnych po antyprzekątnych ogranicza błąd każdego wiersza na wejściu. Mnożymy ją przez \(\|U\|_\infty\|U^\top\|_\infty\). W każdym z dwóch zaokrąglanych iloczynów błąd jednego wpisu jest mniejszy od jednostki siatki. Ich łączny błąd wiersza, w jednostkach siatki, nie przekracza \(7\|U^\top\|_\infty+7\). Kod używa dzielenia całkowitoliczbowego w górę. Przybliżona baza może się zmieniać wraz z arytmetyką maszyny, a wniosek z udanego testu pozostaje ten sam. Pochodne liczymy osobno na siatce o kroku \(2^{-1150}\). Razem ze ścisłym testem \eqref{eq:cell} określa to znaczenie każdego wiersza CSV.
+
+\textit{Rząd czwarty bez całkowania.}
+Dzielimy \([0,1/2]\) na 64 przedziały \([i/128,(i+1)/128]\), \(0\le i<64\). Przy środku \(c\) i promieniu \(h=1/256\) kładziemy \(A_4=DH_4(\Phi)D\), gdzie \(D_{ii}=16^{-i}\). Dla \(\ell=i+j\le6\) współczynnik przy \(v^q\) we wpisie \(A_4(c+hv)_{ij}\) wynosi \(16^{-\ell}\Phi^{(\ell+q)}(c)h^q/q!\). Do stopnia \(q=24\) wystarczają więc pochodne do rzędu 30, obliczone jak w \S\ref{sec:compact}. Z granicy \(|\Phi|\le10^6\) na dysku o promieniu \(1/8\) i nierówności Cauchy'ego wynika, że na dysku o promieniu \(1/16\) każdy wpis ma moduł co najwyżej \(10^6\,6!\). Po kongruencji reszta szeregu ma zatem normę nie większą niż
+\[
+4\|U\|_\infty\|U^\top\|_\infty\,10^6\,6!\,
+\frac{(16h)^{25}}{1-16h}.
+\]
+W każdej komórce procedura dobiera własne dolnotrójkątne \(U\) i dodaje tę resztę do sumy norm pierwszych 25 współczynników macierzy \(UA_4U^\top-J_4\), gdzie \(J_4=\operatorname{diag}(1,-1,1,-1)\). Największa granica po zaokrągleniu w górę, osiągnięta w ostatniej komórce, wynosi \(637776742/10^9<1\). Argument dla bloków początkowych po \eqref{eq:cell} daje na całym przedziale wszystkie cztery ścisłe znaki.
+
+\subsection{Przejście do rzędu ósmego}\label{sec:eight}
+
+Na poziomie pierwszym ścisły test rzędu ósmego zawodzi już w punkcie \(t_0=5/64\). Wartość \(\Psi_1(t_0)\) zamykamy w przedziale za pomocą kwadratury z \S\ref{sec:jet}, a dla \(1\le j\le14\) korzystamy z \(\Psi_1^{(j)}=-\Phi^{(j-1)}\). Rozwinięcie wyznacznika w arytmetyce przedziałów całkowitych daje
+\[
+ -6{,}015\cdot10^{49}<W_8(\Psi_1;t_0)<-6{,}014\cdot10^{49}.
+\]
+Program grupuje iloczyny permutacyjne według zbioru użytych kolumn. Dołączenie kolumny \(j\) daje jedną inwersję za każdą wcześniej użytą kolumnę o indeksie większym od \(j\). Na każdym etapie przedział obejmuje sumę z odpowiednimi znakami. Ponieważ \(\epsilon_8=1\), ściśle ujemny wyznacznik wyklucza poziom pierwszy.
+
+Niezależne sprawdzenie liczbowe można wykonać, podstawiając \(y=\pi n^2 e^{4s}\) w całce ogonowej każdego składnika. Otrzymujemy
+\[
+ \Psi_1(t)=\sum_{n\ge1}\frac{2\Gamma(9/4,x_n)-3\Gamma(5/4,x_n)}
+ {4(\pi n^2)^{1/4}},\qquad \Gamma(b,x)=\int_x^\infty y^{b-1}e^{-y}\,dy .
+\]
+Dla \(t_0=5/64\) sumujemy pierwszych dwanaście składników. Wyższe pochodne uzyskujemy przez różniczkowanie odpowiadającej im skończonej sumy theta. Przy precyzjach 75 i 110 cyfr dziesiętnych otrzymujemy zgodnie \(W_8\simeq-6{,}0143958728\cdot10^{49}\). Ścisły znak wynika z podanego wyżej przedziału.
+
+Aby sprawdzić poziom drugi, przyjmijmy \(b=c+h\), \(0\le h\le1/32\). Rozbicie całki \(\Psi_2(c)=\int_c^\infty(s-c)\Phi(s)\,ds\) w punkcie \(b\) daje
+\[
+ \Psi_2(c)=\Psi_2(b)+h\Psi_1(b)+\int_0^h u\Phi(c+u)\,du .
+\]
+Z oszacowania ogona na osi rzeczywistej w dodatku~\ref{sec:errors} wynika \(\Phi(2+u)\le2\exp[-4096(1+4u)]\) dla \(u\ge0\). Całkując z wagami \(1,u\), otrzymujemy \(0\le\Psi_1(2),\Psi_2(2)\le2^{-500}\). Obie wartości przenosimy kolejno do punktów siatki \(j/32\), a następnie od najbliższego punktu siatki po prawej stronie do środka każdej komórki. W całce z wagą \(u\) współczynnik przy \(\Phi^{(j)}(c)\) wynosi \(h^{j+2}/[j!(j+2)]\). Po uwzględnieniu wyrazów \(j=0,\ldots,89\) reszta jest ograniczona przez \(10^6h^2(8h)^{90}/(1-8h)\) na mocy oszacowania Cauchy'ego z \S\ref{sec:compact}.
+
+Niech \(A_8=DH_8(\Psi_2)D\), gdzie \(D_{ii}=16^{-i}\), oraz \(J_8=\operatorname{diag}((-1)^i)_{i=0}^7\). Wpisy obliczamy z \(\Psi_2'=-\Psi_1\) i \(\Psi_2^{(j)}=\Phi^{(j-2)}\) dla \(j\ge2\). Na dysku zespolonym o promieniu \(1/16\) wokół środka komórki moduł każdego wpisu jest ograniczony przez \(M_8=10^7\,14!\). Dla \(j\ge2\) stosujemy nierówność Cauchy'ego na pozostałym promieniu \(1/16\) i uwzględniamy czynnik \(16^{-j}\). Dla \(j=0,1\) całkujemy najpierw na osi rzeczywistej do punktu 2, a następnie wzdłuż odcinka od środka do argumentu zespolonego, korzystając z \(|\Phi|\le10^6\). Reszta macierzowa po stopniu 24 wynosi najwyżej
+\[
+ 8\|U\|_\infty\|U^\top\|_\infty M_8(16h)^{25}/(1-16h),
+\]
+gdzie \(h\) oznacza teraz promień komórki. Na 86 przylegających domkniętych przedziałach pokrywających \([0,1/2]\) największa zaokrąglona w górę granica dla \(\|UA_8U^\top-J_8\|_\infty\), wraz z resztą, wynosi \(823252099/10^9<1\). Argument dla bloków początkowych po \eqref{eq:cell} daje na całym przedziale wszystkie osiem wymaganych znaków. Dodatek~\ref{sec:replay} podaje polecenie odtwarzające zarówno ujemny wyznacznik, jak i całą tabelę komórek.
+
+\subsection{Oszacowanie na ogonie}\label{sec:tail}
+
+
+\begin{lemma}\label{lem:tail}
+Jeżeli \(p\le8\) i \(X\ge16\), to \(\epsilon_p W_p(\Phi;t)>0\). Ponadto \(X\ge\max(144,r+2)\) wystarcza jednocześnie dla każdego \(p\le r\).
+\end{lemma}
+
+
+\begin{proof}
+Ustalmy \(t\) i rozwińmy \(\Phi(t+s+h)\) po podstawieniu \(u=\sqrt X(e^{4s}-1)\) i \(v=\sqrt X(e^{4h}-1)\). Podstawienia i mnożenie przez jednowymiarowe czynniki dodatnie w zerze działają trójkątnie z dodatnimi przekątnymi. Wyłączamy czynnik \(Xe^te^{s+h}(1+u/\sqrt X)(1+v/\sqrt X)e^{-X-\sqrt X(u+v)}\). W obustronnej bazie \(u^i/\sqrt{i!}\) blok początkowy składnika \(n\) ma postać \[B_n=q(2qX PG_qP^\top-3G_q),\quad q=n^2,\quad P=I+S/\sqrt X,\quad S_{i,i-1}=\sqrt i,\] \[G_q\ \longleftrightarrow\ g_q(u,v)=\exp[-(q-1)X-(q-1)\sqrt X(u+v)-quv].\] Wszystkie bloki mają rozmiar \(p\), a strzałka oznacza macierz współczynników. Mamy \(G_1=J_p\). Ponieważ \(J_p S J_p=-S\), część symetryczna \(B_1J_p\) to \((2X-3)I-2SS^\top\), o najmniejszej wartości własnej \(2X-2p-1\). Do kontroli reszty weźmy niezależne standardowe zmienne zespolone Gaussa \(U,V\) o gęstości \(e^{-|z|^2}/\pi\) oraz \(\rho=9/(10q)\). Ortogonalność jednomianów i domknięcie kwadratów dają \[\|G_q\|_2^2\le \rho^{-2(p-1)}\mathbb E|g_q(\sqrt\rho U,\sqrt\rho V)|^2
+ =\frac{\rho^{-2(p-1)}}{1-q^2\rho^2}
+  \exp\left[-2(q-1)X+\frac{2(q-1)^2X\rho}{1+q\rho}\right].\] Całka z kwadratu modułu szeregu jest sumą kwadratów współczynników z wagami \(\rho^{i+j}\) i dominuje ważoną normę Frobeniusa bloku. W częściach rzeczywistej i urojonej formy kwadratowe mają współczynniki pozadiagonalne \(q\rho\) oraz \(-q\rho\). Wyraz liniowy występuje tylko przy sumie współrzędnych rzeczywistych. To dowodzi równości. Po wyciągnięciu pierwiastka normę ogranicza \(3(10q/9)^{p-1}\exp[-(q-q^{-1})X/2]\).
+
+Dla \(p\le8\), \(X\ge16\) i \(q\ge4\) korzystamy z \(7\log(10q/9)\le4(q-q^{-1})\le X(q-q^{-1})/4\). W \(q=4\) pierwszy wyraz jest mniejszy od \(10{,}45\), a środkowy wynosi \(15\). Pochodna różnicy środkowego i pierwszego wyrazu wynosi \(4(1+q^{-2})-7/q>0\). Zatem \(\|G_q\|\le3e^{-15qX/64}\). Ponieważ \(\|P\|\le1+\sqrt{7/X}<2\), sumę \(\|B_n\|\) dla \(n\ge2\) ogranicza \(27X\sum_{n\ge2}n^4e^{-15n^2X/64}<1\). Każdy składnik maleje względem \(X\). W \(X=16\) pierwszy wynosi \(6912e^{-15}\), a kolejne ilorazy są poniżej \(1/2\). Margines \(2X-2p-1\ge15\) przewyższa zaburzenie. Część symetryczna \((\sum B_n)J_p\) jest dodatnio określona, więc odcinek od pełnej macierzy do identyczności jest odwracalny. Jej wyznacznik jest dodatni. Otrzymujemy znak \(W_p(\Phi;t)\).
+
+Przy \(X\ge p\) z nierówności \((q-q^{-1})/2-\log(10q/9)>q/12\) dla \(q\ge4\) mamy też \(\|G_q\|\le3e^{-qX/12}\). Dla \(X\ge144\) odpowiednia suma jest poniżej 1 (w 144 pierwszy składnik to \(27\cdot144\cdot16e^{-48}\), a ilorazy są poniżej \(1/2\)). Zatem \(X\ge\max(144,r+2)\) wystarcza do rzędu \(r\) już dla \(m=0\).
+\end{proof}
+
+
+\begin{proof}[Dowód twierdzenia~\ref{th:exact}]
+Dla \(t\ge1/2\) mamy \(X\ge\pi e^2>16\). Lemat~\ref{lem:tail} daje na tym ogonie ścisłe znaki dla \(\Phi\) do rzędu ósmego. Dwukrotne zastosowanie lematu~\ref{lem:persist} przenosi je na \(\Psi_1\) i \(\Psi_2\). Wraz z certyfikatami na przedziale zwartym daje to żądane górne granice na całej półosi. Ujemny \(W_5(\Phi;0)\) wyklucza poziom zerowy od rzędu piątego. Ujemny \(W_8(\Psi_1;5/64)\) wyklucza także poziom pierwszy w rzędzie ósmym, więc \(m(8)=2\).
+\end{proof}
+
+
+\section{Dolne ograniczenie z oscylacji pochodnych}\label{sec:lower}
+
+
+\begin{theorem}\label{th:lower}
+Dla każdego \(\varepsilon>0\) i wszystkich dostatecznie dużych liczb całkowitych \(r\) (zależnie od \(\varepsilon\)) zachodzi
+\[m(r)\ge r-\left(\frac{\pi^2}{2}+\varepsilon\right)\frac{r}{\log r}.\]
+\end{theorem}
+
+
+Niech \(S(g)\) oznacza supremum liczby ścisłych zmian znaku \(g\) na skończonych rosnących ciągach dodatnich argumentów.
+
+Jeśli \(f(u+v)\) jest \(RR_r\), to \(S(f^{(p)})\le p\) dla \(p<r\). Na dowolnym skończonym ciągu \(t_i\) odwracamy \(p+1\) kolumn macierzy \([f(t_i+jh)]\). Każdy minor rzędu \(q\) zyskuje czynnik \(\epsilon_q\), więc macierz prostokątna jest całkowicie nieujemna. Twierdzenie o niepowiększaniu liczby zmian znaku \cite{ckk} ogranicza ich liczbę w iloczynie tej macierzy z naprzemiennym wektorem dwumianowym przez \(p\). Po podzieleniu przez \(h^p\) i przejściu z \(h\) do zera otrzymujemy \(f^{(p)}\) z dokładnością do wspólnego znaku. Ścisłe znaki w skończenie wielu niezerowych współrzędnych granicy utrzymują się przy przejściu. Bierzemy \(p=r-1=m+k\) i korzystamy z \(\Psi_m^{(p)}=(-1)^m\Phi^{(k)}\). Nierówność \(S(\Phi^{(k)})>r-1\) wyklucza więc poziom \(m=r-1-k\).
+
+\begin{lemma}[Zmiany znaku wysokich pochodnych]\label{lem:osc}
+\[\liminf_{k\to\infty}\frac{S(\Phi^{(k)})}{k\log k}\ge \frac{2}{\pi^2}.\]
+\end{lemma}
+Sprzężone siodła pojedynczego składnika theta z \S\ref{sec:saddle} występują również w asymptotyce wielomianów Toucharda \cite{paris}. W \S\ref{sec:count} wybieramy rozłączne przedziały, na których jeden składnik wyznacza znak pełnej pochodnej w kolejnych punktach o naprzemiennych fazach. Odstępy między środkami przedziałów i pochodna fazy dają jawny współczynnik.
+
+\subsection{Lokalna asymptotyka siodłowa}\label{sec:saddle}
+
+
+Niech \(s=4t\), \(a_j=\pi j^2 e^s/k\). Symbol \([w^k]\) oznacza współczynnik Taylora. Różniczkowanie daje dokładnie \[ F_k(a)=[w^k](2k^2a^2 e^{9w/4}-3ka e^{5w/4})e^{-kae^w},\qquad
+\Phi^{(k)}(t)=4^k k! e^{s/4}\sum_{j\ge1}F_k(a_j).\] Piszemy \(R=\pi/2\), \(a_*=1/R\), \(a=a_*e^x\). W całce Cauchy'ego faza to \(-ae^w-\log w\). Przy \(x=0\) jej siodła na \(|w|=R\) to \(\pm iR\), jedyne maksima części rzeczywistej, gdyż tu \(\Re(e^w)\ge0\) z równością jedynie w tych punktach. Górne siodło jest rozwiązaniem analitycznym \(we^w=-1/a\). Na pobliskim okręgu \(|w|=|w(x)|\) ono i jego sprzężenie pozostają jedynymi maksimami, dzięki ściśle ujemnej krzywiźnie kątowej \(-\Re(1+w)\) w siodle i zwartości dopełnienia otoczeń. Niech \(H+i\Theta=1/w-\log w\). Z różniczkowania równania siodła mamy \[(H+i\Theta)'=1/w,\quad H'(0)=0,\quad H''(0)=-1/(1+R^2),\quad \Theta'(0)=-1/R.\] Dla ustalonej małej \(\delta>0\), \(|x|\le\delta\), otrzymujemy \(b_1x^2\le H(0)-H(x)\le b_2x^2\) i \(\Theta'(x)\le-d<0\) z dodatnimi stałymi. Jednostajnie na tym przedziale \[F_k(a)=2k^{3/2}e^{kH(x)}\big(\Re[A(x)e^{ik\Theta(x)}]+o(1)\big),\quad
+ A(x)=\frac{2a^2 e^{9w(x)/4}}{\sqrt{2\pi(1+w(x))}}.\] Dla odchylenia kątowego \(v\) składnik kwadratowy to \(-(1+w)v^2/2\), a reszta wynosi jednostajnie \(O(|v|^3)\). Przy \(|v|\le k^{-2/5}\) błąd wykładnika wynosi \(O(k^{-1/5})\). Po przeskalowaniu \(v\) przez \(\sqrt{k}\) całkujemy funkcję Gaussa. Na reszcie otoczenia tracimy czynnik \(e^{-c k^{1/5}}\), a poza otoczeniami \(e^{-ck}\). Sumujemy oba siodła, a \(\min|A|>0\). Uzasadnia to bezwzględny błąd wewnątrz nawiasu.
+
+\subsection{Rozdzielenie składników szeregu theta}\label{sec:count}
+
+
+Do oszacowania pojedynczego składnika potrzebna jest kontrola wszystkich pozostałych tam, gdzie zmienia się znak fazy. Dla \(B(\rho)=\max_{|w|=\rho}(-\Re e^w)\) mamy \(B(R)=0\), \(B'(R)=1\) dzięki sprzężonym niezdegenerowanym maksimom i pochodnej radialnej w \(iR\). Pochodna \(aB(\rho)-\log\rho\) w \(R\) wynosi więc \(a-a_*\). Dla \(a_\pm=a_*e^{\pm\delta}\) wybieramy stałe \(\rho_+>R\) dla \(a\le a_-\) i \(\rho_-<R\) dla \(a\ge a_+\). Dla pewnych \(\gamma,\beta>0\) wykładnik nie przekracza odpowiednio \[H(0)-\gamma,\qquad H(0)-\gamma-\beta(a-a_+).\] Istotnie \(H(0)=-\log R\), \(B(\rho_+)>0\) oraz \(B(\rho_-)=-\beta<0\). Nierówność Cauchy'ego ogranicza \(|F_k|\) przez \(Ck^2(1+a)^2\) pomnożone przez eksponentę z \(k\) razy odpowiedni wykładnik. W lokalnym obszarze siodła można użyć \(Ck^2e^{kH(x)}\). Każdy składnik jest funkcją całkowitą, więc wolno użyć większego konturu przed sumowaniem.
+
+Ustalmy \(0<h<1\). Dla dużych \(k\) weźmy liczby całkowite i przedziały
+\[
+ \mathcal N_k=\{n:\lceil\log k\rceil\le n\le\lfloor\sqrt{k}/\log k\rfloor\},
+ \qquad s_n=\log\frac{ka_*}{\pi n^2},\qquad I_n=[s_n-h/n,s_n+h/n].
+\]
+Najmniejszy środek wynosi co najmniej \(2\log\log k+\log(a_*/\pi)\). Odstęp między sąsiednimi środkami to \(2\log(1+1/n)=(2+o(1))/n\), jednostajnie dla \(n\in\mathcal N_k\). Suma odpowiednich promieni nie przekracza \(2h/n\), więc dla wszystkich dostatecznie dużych \(k\) przedziały są rozłączne i leżą na dodatniej półosi.
+
+Niech \(s=s_n+x\in I_n\). Dla składnika o indeksie \(j\) parametr siodła wynosi \(x_j=x+2\log(j/n)\). Przy \(j\ne n\) najmniejsza możliwa wartość \(|2\log(j/n)|\) to \(2\log(1+1/n)\). Stąd \(|x_j|\ge(2-h-o(1))/n\). Z wartości \(H''(0)\) w \S\ref{sec:saddle} wynika, że po zmniejszeniu \(\delta\) obie stałe \(b_1,b_2\) można przybliżyć dowolnie do \(1/[2(1+R^2)]\). Wybierzmy je tak, aby \(b_1(2-h)^2>b_2h^2\). Dla każdego konkurencyjnego składnika z \(|x_j|\le\delta\) mamy wówczas
+\[
+ H(x)-H(x_j)\ge b_1x_j^2-b_2x^2\ge c_h/n^2,
+\]
+gdzie \(c_h>0\) jest niezależne od \(k,n,j\) dla dużych \(k\). Takich indeksów jest \(O(n)\), podobnie jak indeksów poniżej \(a_-\). Poza obszarem lokalnym stosujemy dwa powyższe kontury dla tak wybranej \(\delta\). Strata względem \(H(0)\) wynosi co najmniej \(\gamma>0\), podczas gdy \(H(0)-H(x)=O(1/\log^2 k)\). Dla \(a_j\ge a_+\) suma \((1+a_j)^2e^{-k\beta(a_j-a_+)}\) jest rzędu \(O(n)\). W każdym przedziale jednostkowym zmiennej \(j/n\) leży co najwyżej \(n+1\) indeksów, a dla dużych \(j/n\) majoranty na tych przedziałach maleją jak wielomian pomnożony przez funkcję Gaussa. Po ewentualnym zmniejszeniu \(c_h\) dostajemy jednostajnie
+\[
+ \frac{\sum_{j\ne n}|F_k(a_j)|}{k^{3/2}e^{kH(x)}}
+ \le C_h n\sqrt{k}\,e^{-c_h k/n^2}=o(1),
+\]
+gdyż \(k/n^2\ge(\log k)^2\).
+
+Na \(I_n\) mamy \(|x|\le h/\log k\), więc pochodna fazy \(k\Theta(x)+\arg A(x)\) wynosi jednostajnie \(-k/R+o(k)\). Amplituda \(|A|\) jest ograniczona od dołu przez stałą dodatnią. W punktach, w których faza osiąga kolejne całkowite wielokrotności \(\pi\), pełna pochodna ma zatem naprzemienne znaki. Zakres fazy daje co najmniej \((2h/(\pi R)+o(1))k/n-O(1)\) ścisłych zmian na \(I_n\). Zmiany na rozłącznych przedziałach można sumować. Mamy \(\sum_{n\in\mathcal N_k}1/n=(1/2+o(1))\log k\) i \(|\mathcal N_k|=o(k\log k)\). Po podzieleniu przez \(k\log k\) otrzymujemy granicę dolną co najmniej \(h/(\pi R)\). Przejście \(h\uparrow1\) daje \(1/(\pi R)=2/\pi^2\) i kończy dowód lematu~\ref{lem:osc}.
+
+\begin{proof}[Dowód twierdzenia~\ref{th:lower}]
+Ustalmy \(\varepsilon>0\) i połóżmy \(k=\lfloor(\pi^2/2+\varepsilon)r/\log r\rfloor\). Mamy \(k\log k/r\to\pi^2/2+\varepsilon\). Z lematu~\ref{lem:osc} wynika \(\liminf_{r\to\infty}S(\Phi^{(k)})/r\ge(2/\pi^2)(\pi^2/2+\varepsilon)>1\). Dla wszystkich dostatecznie dużych \(r\) poziom \(r-1-k\) nie spełnia więc warunku na liczbę zmian znaku. Zachowanie słabej regularności znakowej przy całkowaniu ogonowym wyklucza również każdy niższy poziom. Stąd \(m(r)\ge r-k\ge r-(\pi^2/2+\varepsilon)r/\log r\).
+\end{proof}
+
+\section{Górne ograniczenie z tożsamości Andréiefa}\label{sec:upper}
+
+
+\begin{theorem}\label{th:upper}
+Dla wszystkich całkowitych \(r\ge1\), \(1\le p\le r\) oraz wszystkich \(t\ge0\) zachodzi \(\epsilon_p W_p(\Psi_{2r};t)>0\). W szczególności \(m(r)\le2r\).
+\end{theorem}
+
+
+W dowodzie ustalamy rząd \(p\le r\) i badamy początkowe wrońskiany rzędów \(k\le p\). W części~\ref{sec:shift} przesunięcie o \(a_n=\tfrac12\log n\), dla \(0<a_n<u\), daje w oszacowaniu normy czynnik \(s^{2r-p-k}\), gdzie \(s=\sqrt{(1-a_n/u)/(1+a_n/u)}<1\). Wykładnik zeruje się dokładnie dla \(p=k=r\). W tym przypadku dla dużych \(r\) wydzielamy ostatni aktywny składnik theta, korzystamy z jego wagi \(n^{-1/2}\), a wcześniejsze przesunięcia szacujemy łącznie. W rzędach \(33\le r\le649\) zachowujemy znak środkowego wpisu macierzy i stosujemy dopełnienie Schura w części~\ref{sec:schur}.
+
+Ustalmy \(m=2r\), \(p\le r\) i oznaczmy \(L=m-p\), \(a_n=\frac12\log n\). Poza progami definiujemy \[R_j(u)=\sum_{a_n<u}\frac{1}{\sqrt n}\left(\frac{(u-a_n)^{j-1}}{(j-1)!}-\frac{(u-a_n)^j}{j!}\right),\qquad \Delta(y)=\prod_{i<j}(y_j-y_i).\] Dla \(p=1\) dodatniość jest bezpośrednia. Dla \(p\ge2\) podpisany wrońskian ma znak całki po \((0,\infty)^p\) z funkcji 
+\begin{equation}\label{eq:andreief}
+I(\mathbf u)=\det[R_{L+j}(u_i)]_{1\le i\le p,\ 0\le j<p}\,
+ \Delta(e^{4u_1},\ldots,e^{4u_p})\prod_i e^{5u_i-Xe^{4u_i}}.
+\end{equation}
+Z pełnym czynnikiem normalizacyjnym otrzymujemy
+\begin{equation}\label{eq:anorm}
+ \epsilon_p W_p(\Psi_{2r};t)=
+ \frac{(Xe^t/2)^p(4X)^{p(p-1)/2}}{p!}
+ \int_{(0,\infty)^p} I(\mathbf u)\,d\mathbf u .
+\end{equation}
+
+ Dla wyprowadzenia przyjmijmy \(g=\sum e^t x_ne^{-x_n}\), wtedy \(2\Phi=-(g'+g)\). Niech \(b_j^f\) będzie \(j\)-tą całką ogonową z \(f\). Odwrócenie wierszy \(H_p\) i usunięcie znaków pochodnych daje \(\epsilon_pW_p=\det[b^\Phi_{L+1+i-j}]\). Wzór \(2b_{L+1+i}^\Phi=b^g_{L+i}-b^g_{L+1+i}\) daje czynniki momentowe \(s^{L+i-1}(L+i-s)/(L+i)!\) sprzężone z \((-1)^j g^{(j)}(t+s)\). Tożsamość Andréiefa wynika z rozwinięcia obu wyznaczników i twierdzenia Fubiniego. Rozwijamy indeksy theta w wyznaczniku pochodnych. Po wyjęciu dodatnich czynników kolumny są wielomianami stopni \(j\) w \(n_i^2e^{4s_i}\) o dodatnich współczynnikach wiodących. Dostajemy wyznacznik Vandermonde'a. Podstawienie \(u_i=s_i+a_{n_i}\) i zsumowanie indeksów daje \eqref{eq:andreief}. W zmiennej \(e^{4u_i}\) współczynnik wiodący w kolumnie \(j\) wynosi \((4X)^j\). Po podstawieniu każdy wiersz wnosi czynnik \(Xe^t/2\), a całkowanie po całej dodatniej ortancie daje czynnik \(1/p!\) w \eqref{eq:anorm}. Nadwykładniczy zanik uzasadnia zbieżność bezwzględną i różniczkowanie ustalonego rzędu.
+
+\textbf{Względna kontrola pominiętego obszaru.} Ustalamy wszystkie węzły \(v_j\) poza jednym, oznaczonym \(u\). Z dokładnością do stałej \(|I|=|f(u)|\prod_j|e^{4u}-e^{4v_j}|e^{5u-Xe^{4u}}\), gdzie \(f=\sum_j c_jR_{L+j}\). Niech \(F=\max |c_j|/(L+j)!\), \(H=F\prod_j(1+e^{4v_j})\). Gdy \(F=0\), przekrój znika. Na \([1/8,1/4]\) mamy \(f=u^{L-1}Q(u)\), \(\deg Q\le p\), a pewien współczynnik \(Q\) ma moduł \(\ge F\) (używamy \((L+j)b_j-b_{j-1}\) przy maksymalnym \(|b_j|\), \(b_j=c_j/(L+j)!\)). Usuwamy otoczenia o promieniu \(\delta=1/(64p)\) części rzeczywistych pierwiastków oraz węzłów \(v_j\). Pozostaje długość co najmniej \(1/16\). Dla pierwiastka \(z\) mamy tam \(|u-z|/(1+|z|)\ge\delta/3\), a także \(|e^{4u}-e^{4v_j}|/(1+e^{4v_j})\ge\delta\). Rozkład \(Q\) na czynniki daje dla całki centralnej granicę dolną \(H8^{-(L-1)}(192p)^{-2p}e^{-eX}/16\).
+
+Na ogonie stosujemy \(|f|\le2e^u pF(m+u)(1+u)^m\), zaś znormalizowane czynniki Vandermonde'a ogranicza \(2e^{4u}\). Po wyjęciu \(e^{-Xe^{4B}/2}\) pozostałą całkę ogranicza \(mp2^pH m!\) dzięki \(y=e^{4u}\) i \(p\le m/2\). Iloraz ogona \(u>B\) i dolnej granicy centralnej nie przekracza \[\eta=16mp\,2^p8^{L-1}(192p)^{2p}m!\exp[-X(e^{4B}/2-e)].\] Bierzemy \(B=\frac14\log(4m\log(192m))\). Logarytm prefaktora jest poniżej \(4m\log(192m)\), więc dla dużych \(m\) mamy \(p\eta<1/4\) jednostajnie przy \(X\ge\pi\). Całkujemy granicę przekroju i sumujemy po wyborach węzła na zewnątrz. Dopełnienie sześcianu kosztuje co najwyżej \(p\eta\int |I|\). Wystarczy zatem ścisła dodatniość na parami różnych węzłach w jego wnętrzu.
+
+\subsection{Potęgi symetryczne i jednostajność względem rzędu minora}\label{sec:shift}
+
+
+Rozpatrzmy początkowy wrońskian długości \(k\le p\) funkcji \(R_L,\ldots,R_{L+p-1}\). Niech \(N=L+k-1\), \(M=N-1\). Wtedy \(M\ge2(k-1)\) również przy \(k=p=r\). Po odwróceniu kolumn otrzymujemy macierz Hankela dla \(R_N\). W jej szeregu dwuzmiennowym podstawiamy argument \(u+uw/(1-w)+uz/(1-z)\), mnożymy przez \((1-w)^M(1-z)^M\) i normalizujemy przez \(u^M/M!\) oraz \(\sqrt{\binom Mi\binom Mj}\). Przekształcenia są trójkątne z dodatnimi przekątnymi. Wynik to \(\sum_{a_n<u}n^{-1/2}A_d\), \(d=a_n/u\), gdzie \[ (C_d)_{ij}=\frac{[w^iz^j](1-wz-d(1-w)(1-z))^M}{\sqrt{\binom Mi\binom Mj}},\quad
+ A_d=C_d-\frac{u}{N}(V_d C_d+C_dV_d^\top),\] \[V_d=U-\tfrac{1+d}{2}I,\quad U_{ij}=\mathbf1_{j\le i}\sqrt{\binom Mj/\binom Mi},\qquad C_0=J_k.\] Poprawkę otrzymujemy po podzieleniu wielomianu pod potęgą przez \((1-w)(1-z)\), co daje \((1-w)^{-1}+(1-z)^{-1}-1-d\). Logarytmy kolejnych ilorazów dwumianowych dają \(U_{ij}\le e^{-(i-j)^2/N}\) dla \(i\ge j\) (stosujemy \(\frac12\log((N-\ell)/\ell)\ge(N-2\ell)/N\) oraz \(i\le M/2\)). Z sum wierszy i kolumn wynika \(2\|V_d\|\le1+\sqrt{\pi N}\). Poprawka jest najwyżej \(E\|C_d\|\), gdzie \(E=B(1/r+\sqrt{\pi/r})\).
+
+Niech \(s_d=\sqrt{(1-d)/(1+d)}\), \(c_d=\sqrt{1-d^2}\). Kongruencja formy dwuliniowej przez \(\operatorname{diag}(1,s_d)\) i podzielenie przez \(s_d\) dają macierz ortogonalną o wierszach \((c_d,d),(d,-c_d)\). Jej \(M\)-ta potęga symetryczna \(T\) jest ortogonalna w bazie z normalizacją dwumianową. Zatem \((C_d)_{ij}=s_d^{M-i-j}T_{ij}\), skąd \(\|C_d\|\le1\), przez ciągłość również dla \(d=1\). Dla \(0<d<1\) silniejszą granicą jest 
+\begin{equation}\label{eq:shift}
+\|C_d\|\le \frac{2}{(1-s_d^2)c_d d\sqrt M}+k e^{-d\sqrt M/16}.
+\end{equation}
+ Gdy \(\max(M/2-i,M/2-j)>\sqrt M/16\), używamy wpis po wpisie \(s_d\le e^{-d}\). W przeciwnym razie przez symetrię przyjmujemy \(i\ge j\), piszemy \(\beta=M/2-j\) i bierzemy \([z^i](c_d+dz)^{M-j}(d-c_dz)^j\) z prefaktorem dwumianowym \(\le1\). Na okręgu jednostkowym logarytm modułu jest najwyżej \(\beta x-Mx^2/8\le4\beta^2/M-Mx^2/16\), \(x=2c_d d\cos\theta\). Średnią gaussowską po kącie ogranicza \(\sqrt{\pi}/(c_d d\sqrt M)\) dzięki \(\sin v\ge2v/\pi\) na ćwiartce. Norma Frobeniusa pozostałych skal geometrycznych wynosi najwyżej \((1-s_d^2)^{-1}\). To dowodzi \eqref{eq:shift}.
+
+\begin{lemma}[Jednostajny margines w przypadku granicznym]\label{lem:critical}
+Przy \(m=2r\) wykładnik \(M-2(k-1)=2r-p-k\) znika dokładnie wtedy, gdy \(p=k=r\). Jednostajnie dla \(1\le k\le p\le r\) oraz \(0<u<B\) poza punktami progowymi zachodzi
+\[
+ \left\|\sum_{a_n<u} n^{-1/2} A_{a_n/u}-J_k\right\|
+ \le 2^{-1/2}+o(1) \qquad(r\to\infty).
+\]
+\end{lemma}
+\begin{proof}
+Tożsamość dla \(M-2(k-1)\) wynika ze wzoru \(M=2r-p+k-2\). Wydzielenie skal przekątniowych w \((C_d)_{ij}=s_d^{M-i-j}T_{ij}\) daje \(\|C_d\|\le s_d^{2r-p-k}\). Przy \(p=k=r\) prawa strona wynosi jeden. Niech \(K=\lfloor e^{2u}\rfloor\). Wkład składnika bez przesunięcia do odległości od \(J_k\) jest co najwyżej równy \(E\). Dla \(K\ge2\) stosujemy oszacowanie przez jeden do ostatniego przesuniętego składnika, którego waga wynosi \(K^{-1/2}\le2^{-1/2}\). Przy \(K=1\) suma składników przesuniętych jest pusta.
+
+Dla \(2\le n<K\) połóżmy \(d=a_n/u\). Mamy \(d\ge a_2/B\) oraz \((1-d)^{-1/2}\le\sqrt{2B}\,e^B/\sqrt{K-n}\). Podział sumy w \(K/2\) daje \(\sum_{1\le n<K}[n(K-n)]^{-1/2}\le4\). Ponieważ \([(1-s_d^2)c_dd]^{-1}\le d^{-2}(1-d)^{-1/2}\), nierówność~\eqref{eq:shift} daje
+\[
+ \sum_{2\le n<K} n^{-1/2}\|C_{a_n/u}\|
+ =O\!\left(\frac{B^{5/2}e^B}{\sqrt{r-1}}
+       +re^B e^{-a_2\sqrt{r-1}/(16B)}\right)=o(1).
+\]
+Tutaj \(M\ge r-1\), \(k\le r\) oraz \(e^B=(4m\log(192m))^{1/4}\). Błąd dąży więc do zera jednostajnie względem wszystkich trzech zmiennych. Po uwzględnieniu poprawek \(A_d-C_d\) otrzymujemy \(E+(1+E)(2^{-1/2}+o(1))\), przy czym \(E=o(1)\).
+\end{proof}
+
+Dla dostatecznie dużych \(r\) odległość w lemacie~\ref{lem:critical} jest ściśle mniejsza od jedności. Na odcinku łączącym macierz z \(J_k\) zachowana jest odwracalność. Po odwróceniu kolumn otrzymujemy dodatni wrońskian początkowy.
+
+Niech \(f_j=R_{L+j-1}\) dla \(1\le j\le p\), a \(W(f_1,\ldots,f_j)\) oznacza zwykły wrońskian tych funkcji. Na \((0,B)\) pierwszy wyraz jest dodatni. Wrońskiany rzędów do \(p-1\) są ciągłe także w progach \(a_n\), gdyż pochodne do rzędu \(p-2\) są lokalnie absolutnie ciągłe. Dla dostatecznie dużych rzędów dodatniość utrzymuje się w progach dzięki jednostajnemu marginesowi w lemacie~\ref{lem:critical} i odwracalności przekształceń dla \(u>0\). Wrońskian ostatniego rzędu jest dodatni prawie wszędzie.
+
+Dla \(0<u_1<\cdots<u_p<B\) dzielimy każdy wiersz macierzy wartości przez \(f_1(u_i)\) i odejmujemy kolejne wiersze od dołu. Przy \(g_j=(f_{j+1}/f_1)'\) rozwinięcie względem pierwszej kolumny i twierdzenie podstawowe rachunku całkowego dają
+\[
+\frac{\det[f_j(u_i)]_{i,j=1}^p}{\prod_{i=1}^p f_1(u_i)}
+ =\int_{u_1}^{u_2}\!\cdots\!\int_{u_{p-1}}^{u_p}
+      \det[g_j(v_i)]_{i,j=1}^{p-1}\,dv_{p-1}\cdots dv_1 .
+\]
+Reguła Leibniza daje \(W(g_1,\ldots,g_j)=W(f_1,\ldots,f_{j+1})/f_1^{j+1}\) tam, gdzie pochodne istnieją. Powtarzamy redukcję. Na każdym etapie dzielniki są dodatnie, a w ostatniej całce pozostaje funkcja dodatnia prawie wszędzie. Przedziały całkowania mają dodatnią długość, zatem wyznacznik wartości jest ściśle dodatni również wtedy, gdy któryś węzeł leży na progu. Wraz z oszacowaniem dopełnienia kostki z \S\ref{sec:upper} kończy to dowód dla wszystkich dostatecznie dużych rzędów.
+
+\subsection{Jawny próg i certyfikaty dla skończonych zakresów}\label{sec:finite}
+
+
+Poniższe oszacowania łączą argument asymptotyczny z obliczeniami skończonymi. Z poprzedniego argumentu wynika już asymptotyczne ograniczenie górne ze współczynnikiem \(2\).
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.235}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.765}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Rzędy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pokrycie i metoda
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(1\)--\(32\) & 459 komórek dla \(0\le t\le1/16\), 1845 dla \(1/16\le t\le1/4\) i 8615 dla \(8\le X\le76(r-1)\) przy \(r\ge2\). \\
+\(33\)--\(649\) & Warstwy parzystości dla \(h=m-p-k\ge1\). Skalarne dopełnienie Schura ze znakiem dla jedynego przypadku \(p=k=r\). \\
+\(650\)--\(1449\) & Warstwy parzystości dla wszystkich \(h\ge0\). \\
+\(1450\)--\(10^{11}-1\) & Certyfikowane bloki całkowitych rzędów i oszacowanie sumy po aktywnych indeksach theta. \\
+\(r\ge10^{11}\) & Nierówności analityczne malejące od sprawdzonego punktu startowego. \\
+\end{longtable}
+
+W pierwszym zakresie komórki dotyczą przeskalowanych macierzy Hankela dla \(F_j(t)=\int_0^\infty s^j\Phi(t+s)\,ds/j!\), o wpisach \(F_{2r-1-i-j}\). Dla każdej komórki sprawdzamy \(\|UAU^\top-J_r\|_\infty<1\), stosując jej własną bazę dyadyczną i poświadczoną granicę normy. Początek obu tabel w \(t\) pochodzi z przedziałowej kwadratury Clenshawa--Curtisa w zerze, a następnie przenosi się współczynniki Taylora. W tabeli \(X\) używamy \(G_j^A=e^{X-t}(4A)^{j+1}F_j/A^2\), \(z=(X-A)/A\). Tożsamość \[(1+z)\partial_z G_j^A=(A(1+z)-1/4)G_j^A-A G_{j-1}^A\] przenosi przedziały. Całki bazowe ogranicza kwadratura Clenshawa--Curtisa stopnia 600 na panelach długości \(d\le\min(32,A/16)\). Na dysku promienia \(2d\) majoranta wynosi \(2^{220}\) i daje błąd \(2d\,2^{220}4^{-601}/(1-1/4)\). 
+
+W blokach bazowych zaczynających się w \(A\ge128\), obejmujących \(3017\) spośród \(8615\) komórek tabeli w \(X\), program dodatkowo zmienia skalę. Dla środka komórki \(C\) przyjmujemy \(z=(X-C)/C\) i \(Q_j=(1+z)^{j-1}G_j^C\) dla \(j\ge1\). Przy oznaczeniach \((H_G)_{ij}=G_{2r-1-i-j}^C\) i \((H_Q)_{ij}=Q_{2r-1-i-j}\) zachodzi
+\[
+ H_Q=(1+z)^{2r-2}D H_G D,\qquad D_{ii}=(1+z)^{-i}\quad(0\le i<r).
+\]
+Ponieważ \(1+z=X/C>0\), wszystkie wiodące minory zachowują znaki. Na dysku \(|z|\le1/2\) dodatkowy czynnik w majorancie Cauchy’ego dla wpisów nie przekracza \((3/2)^{2r-2}<2^{2r}\). Generator przyjmuje dla tych komórek majorantę \(2^{90+2r}\), a przy stałej skali \(2^{90}\).
+
+Katalog \textbf{historical32} zawiera szacunki ogona theta i dane wymierne. Suplement zawiera pierwotne i odtworzone tabele. Porównanie wiersz po wierszu potwierdza wszystkie 10\,919 granic i końców komórek. Zakresy nachodzą na siebie, gdyż \(8<\pi e\). Dla \(r\ge3\) z \(X\ge76(r-1)\) wynika \(X\ge\max(144,r+2)\), więc resztę ogona obejmuje \S\ref{sec:tail}. Dla \(r=2\) stosujemy oszacowanie dla \(p\le7\) od \(X\ge16\), a dla \(r=1\) wystarcza dodatniość \(\Phi\).
+
+Dla \(r\ge10^{11}\) ilościowa wersja \eqref{eq:shift} w \textbf{upper/large.md} ogranicza sumę po \(n<K\) przez \(P(b)+Q(b)+D(b)\) dla \(u\le b\), gdzie \[P(b)=\frac{4(b/a_2)^2e^{b/2}}{\sqrt{r-1}},\quad Q(b)=\frac{24\sqrt{2b}\,e^b}{\sqrt{r-1}},\quad
+D(b)=2m e^b e^{-a_2\sqrt{r-1}/(16b)}.\] Granice wynikają z podziału \eqref{eq:shift} na \(d\le1/2\) i \(d>1/2\). Przy \(r=10^{11}\) górne granice \(E+(1+E)(K^{-1/2}+P+Q+D)\) to \(0{,}732\) dla \(u\le4\), \(K\ge2\) oraz \(0{,}982\) dla \(4<u\le B\), \(K\ge2980\). Gdy \(K<2\), suma zaburzeń jest pusta. Względem \(\log r\) pochodna \(B\) jest \(<0{,}26\), a \(B>7\). Pochodne logarytmiczne dają spadek \(P(B),Q(B),E\). Moduł wykładnika ujemnego w \(D(B)\) zaczyna się powyżej 800, z pochodną logarytmiczną \(>0{,}46\). Granice zachowują się do nieskończoności.
+
+\subsection{Wpis centralny i dopełnienie Schura}\label{sec:schur}
+
+
+Dla rzędów pośrednich bierzemy \(b\ge1\) takie, że \(4\pi e^{4b}>6S+4\) i dla bloku \(R\le r\le S\) zachodzi \[\log[24S^2(2S+b)]+(4S+2)b+2S\log b+9S-\pi(e^{4b}-4)<0.\] Tak jak w \S\ref{sec:upper} otrzymujemy iloraz ogona przekroju \(<1/(4S)\). Na \([0,1/3]\) nierówność Jensena dla logarytmów \(u\), znormalizowanych odległości od pierwiastków \(Q\) i znormalizowanych czynników Vandermonde'a daje dolną granicę całki \(He^{-9S-4X}/3\). Średnie odpowiednich logarytmów wynoszą co najmniej \(-1-\log3,-1-\log12,-1-\log6\). Dla \(u\ge b\) stosujemy \(|f|\le2e^upF(m+u)u^m\). Powstała majoranta maleje co najmniej jak \(e^{-(u-b)}\).
+
+Część symetryczna \(C_dJ_k\) rozpada się na dwa bloki parzystości. Dla \(\alpha=M/2-i,\beta=M/2-j\le t_0\) oszacowanie kątowe z \S\ref{sec:shift} daje \(|T_{ij}|\le J_0(A)\), \(A=(M-2t_0-2t_0^2)_+d^2(1-d^2)\), gdzie \(J_0(A)\) jest średnią \(e^{-A\cos^2\theta}\) po okręgu. Łączymy w pary \(\cos\theta\) i \(-\cos\theta\) i stosujemy \(\cosh(\beta x)\le e^{\beta^2x^2/2}\). Dla bloku o odległościach \(o+2i\) niech \(x=s_d^4\). Wkład warstwy \(\max(i,j)=a\) do kwadratu normy Frobeniusa po wyjęciu \(s_d^{4o}\) ogranicza \[x^a\left(2\sum_{j=0}^{a-1}x^j+x^a\right)J_0(A)^2,\qquad t_0=o+2a.\] Ogon od \(a=24\) kosztuje najwyżej \(2x^{24}/(1-x)^2\). W przypadku centralnym \(\ell=r-1=M/2\) ostatni wpis diagonalny \(C_dJ_k\) to \(P_\ell(1-2d^2)\) ze wzoru dwumianowego na wielomiany Legendre'a. Przy sumowaniu \(S_\ell=\sum_{n=2}^K n^{-1/2}P_\ell(1-2d_n^2)\) zachowujemy znak, \(d_n=a_n/u\). Niech \(O,P\) ograniczają bloki przeciwnej parzystości i tej samej parzystości po usunięciu środka, \(F\) kolumnę sprzęgającą, a \(e=E_0+e_1\) sumę norm poprawek od pierwszego i pozostałych składników. Wystarczające testy to \[e+O<1,\quad 1-e-P>0,\quad
+u/N+e_1-S_\ell+(F+g_0)^2/(1-e-P)<1,\quad g_0=(u/N)(\pi N/32)^{1/4}.\]
+
+Aby wyjaśnić rolę mianownika, piszemy \({\rm sym}(C)=(C+C^\top)/2\). W części symetrycznej \((\sum n^{-1/2}A_{d_n})J_k\) zachowujemy dokładny wkład \(n=1\). Wynosi on \(I-(u/N)G\), gdzie \(G_{ii}=1\), a dla \(i>j\) tej samej parzystości \(G_{ij}=U_{ij}\). Pozostałe wpisy poza przekątną są zerowe z uwzględnieniem symetrii. Gaussowskie oszacowanie \(U_{ij}\) daje
+\[
+ E_0=\frac{u}{N}(1+\sqrt{\pi N}/2),\qquad
+ g_0^2=\left(\frac{u}{N}\right)^2\sqrt{\pi N/32}.
+\]
+Pierwsze wyrażenie ogranicza normę \((u/N)G\) przez sumy wierszy. Drugie ogranicza kwadrat normy kolumny centralnej poza przekątną, gdyż \(\sum_{a\ge1}e^{-8a^2/N}\le\sqrt{\pi N/32}\). Dla \(n\ge2\) piszemy \(C_d=s_d^hD_0 T_{[k]}D_0\), gdzie \(D_{0,ii}=s_d^{k-1-i}\), a \(T_{[k]}\) to początkowy blok ortogonalnej potęgi symetrycznej. Z \(U_{ij}\le1\) i zsumowania dwóch szeregów geometrycznych w normie Frobeniusa mamy
+\[
+ \|V_dD_0\|_F^2\le v_d^2
+ =\frac{(1-d)^2}{4(1-s_d^2)}+\frac{s_d^2}{(1-s_d^2)^2}.
+\]
+Zatem \(e_1=\sum_{n=2}^K n^{-1/2}(2u/N)s_{d_n}^h v_{d_n}\) ogranicza pozostałe poprawki, z wartościami jednostronnymi na progach. Odejmując \(e_1 I\) od \(I-(u/N)G+\sum_{n=2}^K n^{-1/2}{\rm sym}(C_{d_n}J_k)\), dostajemy dolną granicę w porządku macierzy symetrycznych. Ta macierz porównawcza zachowuje parzystość. Blok przeciwnej parzystości ma dolną granicę \((1-e-O)I\). W bloku parzystości środka umieszczamy środek na końcu i dostajemy
+\[
+ \begin{pmatrix} B_0&b_0\\ b_0^\top&a\end{pmatrix},\quad
+ B_0\succeq(1-e-P)I,\quad\|b_0\|\le F+g_0,\quad
+ a=1-u/N+S_\ell-e_1 .
+\]
+Skalarne dopełnienie Schura wynosi co najmniej \(a-(F+g_0)^2/(1-e-P)\). Stąd wynikają wszystkie trzy powyższe testy.
+
+
+ Na każdym przedziale o stałym \(K\) suma \(S_\ell\) jest wielomianem stopnia \(\ell\) w \(v=(2u)^{-2}\). Afiniczne podstawienie z \(\cos\theta\) daje wielomian trygonometryczny. Dla \(L+1\) równomiernych węzłów kątowych, \(L\ge q\ell\), zakres węzłowy \([a,b]\) daje wszędzie granicę dolną \(a-5(b-a)/(8q^2-10)\). Dwukrotnie stosujemy nierówność Bernsteina po odjęciu środka pełnego zakresu o szerokości \(W\). Błąd interpolacji liniowej to najwyżej \((\pi/L)^2\ell^2W/16\). Rozwiązujemy nierówność na \(W\), używając \(\pi^2<10\). Rekurencja stosuje skalę \(2^{46}\) i rozszerza oba końce zakresu ważonej sumy o \(1/4000\). Pełne oszacowania warstw, podziałów i błędu podają \texttt{upper/DOWOD.md}, \texttt{upper/PROOF\_EN.md} oraz \textbf{upper/kod}. W czterech przebiegach Schura największa zatwierdzona górna granica na lewe strony obu testów z progiem \(1\) wyniosła po zaokrągleniu w górę do sześciu miejsc \(0{,}999141<1\). Dodatniość każdego mianownika \(1-e-P\) sprawdzono przed dzieleniem. Wszystkie siedem przebiegów dla rzędów pośrednich zakończyło się pomyślnie.
+
+\begin{lemma}[Pokrycie kolejnych bloków rzędów]\label{lem:blocks}
+Rozważmy blok testu skalarnego w \texttt{verify.py}. Niech \(R\le S\) będą jego końcami, \(b=b(S)\) jego progiem obcięcia, a \(K_b=\lfloor e^{2b}\rfloor\). Jeśli przy ustalonym \(0<u\le b\) test części centralnej się powiódł, obejmuje on każdy rząd \(r\ge R\) i wszystkie \(1\le k\le p\le r\) na poziomie \(m=2r\). W następnym bloku wystarczy wznowić test od \(K=K_b\), gdzie \(K=\lfloor e^{2u}\rfloor\).
+\end{lemma}
+\begin{proof}
+Połóżmy \(H=\lfloor R/20\rfloor\) i \(M_*=2R-2-H\). Z tożsamości \(N=2r-p+k-1\) i \(h=2r-p-k\) wynikają \(N\ge R\) oraz \(M+h=4r-2p-2\ge2R-2\). Gdy \(h<H\), otrzymujemy \(M\ge 2R-2-h>2R-2-H=M_*\). Oszacowanie każdej warstwy bliskiej środka wykorzystuje dolną granicę \(M_*\) dla \(M\), a w poprawce dolną granicę \(M_*+1\) dla \(N\). Gdy \(h\ge H\), z własności kontrakcji wynika \(\|C_d\|\le s_d^h\le(s_d^2)^{\lfloor R/40\rfloor}\). Tablica bierze większą z obu granic po doliczeniu poprawek. Oszacowanie pierwszego składnika wymaga tylko \(N\ge R\). Przy tym samym \(u\) wszystkie te granice obowiązują więc dla każdego \(r\ge R\). Prawy koniec bloku \(S\) wchodzi do oszacowań części centralnej jedynie przez warunek \(u\le b(S)\). Ogon dla jednego węzła szacuje się osobno w każdym nowym bloku.
+
+Dla \(K<K_b\) mamy \(e^{2u}<K+1\le K_b\le e^{2b}\), więc poprzednie pokrycie części centralnej obejmuje już \(u\). Przedział odpowiadający \(K=K_b\) może wykraczać poza \(b\), dlatego program sprawdza go ponownie. Pierwszy blok zaczyna się od \(K=2\). Przy \(K=1\) występuje tylko poprawka pierwszego składnika, której granicę uwzględnia już pierwszy test. Indukcja daje pokrycie do kolejnego progu obcięcia. Po przejściu do funkcji \texttt{high} oszacowania ponownie obejmują cały przedział \(0<u\le b(S)\). Testy warstw parzystości oraz skalarnego dopełnienia Schura dla \(33\le r<1450\) również sprawdzają każdy ze swoich bloków w całości.
+\end{proof}
+
+\begin{proof}[Dowód twierdzenia~\ref{th:upper}]
+Oszacowanie dla dużych rzędów obejmuje \(r\ge10^{11}\). Dla \(33\le r<10^{11}\) stosujemy na centralnym sześcianie redukcję wyznacznika z \S\ref{sec:shift}. Gdy \(k<p\), mamy \(h=2r-p-k\ge1\). W szczególności dla \(33\le r\le649\) największa zaakceptowana granica warstwowa dla \(h\ge1\) jest mniejsza niż \(0{,}998768\). Daje to jednostajną dolną granicę \((1-0{,}998768)I\) dla części symetrycznej przekształconego bloku rzędu \(k\) po pomnożeniu przez \(J_k\), także w granicach jednostronnych na końcach każdego przedziału aktywności. Ciągły wrońskian zachowuje zatem ścisły znak w \(a_n\), gdyż przekształcenia trójkątne są tam odwracalne. Gdy \(k=p\), w całce iterowanej wystarcza dodatniość ostatniego wrońskianu prawie wszędzie. W granicznym przypadku \(p=k=r\) znak ten zapewnia test dopełnienia Schura. Dla \(650\le r<10^{11}\) odpowiednie certyfikaty również obejmują na swoich przedziałach wszystkie \(k\le p\). Wyznaczniki węzłowe na centralnym sześcianie są więc dodatnie dla każdego rosnącego układu różnych węzłów. Oszacowanie dopełnienia zapewnia ścisłą dodatniość pełnej całki z \eqref{eq:andreief}. Dla \(r\le32\) trzy skończone pokrycia łączą się z ogonem analitycznym bez luki. Zakresy te wyczerpują \(r\ge1\), a kryterium Nuttalla daje żądaną granicę górną.
+\end{proof}
+
+
+\section{Ujemne podpisane wrońskiany w rzędach 500 i 142}\label{sec:witness}
+
+
+\begin{theorem}\label{th:witness}
+W punkcie \(t_*=15/8192\) podpisane wrońskiany \(\Psi_{767}\) są dodatnie do rzędu \(499\), a w rzędzie \(500\) znak jest ujemny. W szczególności \(m(500)\ge768\).
+\end{theorem}
+
+
+\begin{proof}
+Rozszerzamy \(F_s\) z \S\ref{sec:finite} przez \(F_{-1-j}=(-1)^j\Phi^{(j)}\). Obliczamy \(b_s=L^sF_s(t_*)\), \(L=256\). Macierz Hankela \(b_{m-1-i-j}\) jest dodatnim skalowaniem diagonalnym macierzy wrońskianu po usunięciu sparowanych znaków pochodnych. Dla nieujemnych indeksów interpolujemy \(\Phi(t_*+u)(Lu)^s/s!\) trygonometrycznie na okresie 12 i całkujemy na \([0,6]\). Parzystość \(\Phi\) wynika z transformacji theta Jacobiego. Dla \(N=131072\), \(P=9000\) bitów i użytych indeksów bezwzględny promień błędu danych wynosi najwyżej \[e^{25L/4}\big(10^9e^{-\pi N/48}+10^9e^{-60000}+2^{-P+12\log_2N+40}\big).\] Przesunięcie konturu Fouriera o \(1/4\) daje pierwszy składnik od częstości \(|k|\ge N/2\). Drugi obejmuje pominięte ogony i obrazy periodyczne dzięki podwójnie wykładniczemu zanikowi. Trzeci uwzględnia stałoprzecinkową FFT i przenoszenie potęg. Dla indeksów ujemnych używa się całkowitoliczbowych wielomianów pochodnych i nierówności Cauchy'ego jak w \S\ref{sec:exact}. Dołączone wyprowadzenia podają wagi węzłów, błędy zaokrągleń i progi obcięcia.
+
+Trójczłonowa rekurencja proponuje trójkątną macierz całkowitą \(C\). W skali całkowitych danych \(B_j\) (indeksowanych antyprzekątną Hankela) niech \(E\) ogranicza błąd jednego wpisu. Liczymy dokładnie \(F_{ij}=\sum_{a=0}^i C_{ia} B_{j+a}\) dla \(j\le i\). Niech \(U=\max_i\sum_a|C_{ia}|\), \(R=\max_{j<i}|F_{ij}|\). W bloku początkowym wymiaru \(d\) norma wierszowa różnicy kongruencji i przekątnej \(F_{ii}C_{ii}\) nie przekracza \(d(UR+EU^2)\). Wynika to z rozwinięcia dolnych wpisów i symetrii. Jeśli ta wartość jest mniejsza od \(\min_{i<d}|F_{ii}C_{ii}|\), znaki wyznaczników wynikają ze znaków przekątnej. Porównania wykonujemy na liczbach całkowitych. Kod ma osobny wynik dla przypadku nierozstrzygniętego.
+
+W punkcie \(t_*\) rachunek przedziałowy zwraca pierwszy nieprawidłowy rząd \(500\) dla \(m=767\) oraz dodatniość wszystkich podpisanych wrońskianów dla \(m=768\). Pierwszy wynik wyklucza poziom \(767\), a przez trwałość regularności także wszystkie niższe poziomy. Przebieg odtworzony z szeregu theta i jego parametry zapisano w \texttt{rank500/fresh\_witness.log} w suplemencie obliczeniowym.
+\end{proof}
+
+
+\textbf{Brakujący zakres.} Archiwalne obliczenia numeryczne dla \(m=768\) obejmują 742 różne punkty wymierne na trzech nachodzących na siebie siatkach. Ścisłe testy zachodzą także w certyfikowanych punktach \(0,t_*,81/64\) i, z \S\ref{sec:tail}, na całym \(t\ge\frac14\log(502/\pi)\). Sprawdzono pokrycie i wyniki zapisanych siatek. Na części zwartej pozostają przedziały między próbkami. To dokładnie brakujący krok w postulowanej równości \(m(500)=768\). Z twierdzeniem~\ref{th:upper} uzasadniony przedział to \(768\le m(500)\le1000\).
+
+Nuttall podał \(m(142)=197\) jako prognozę opartą na obliczeniach \cite[(1.5)]{nuttallsplit}. Poniższy wynik wyklucza każdy poziom poniżej \(197\). Wystarczalność poziomu \(197\) na całej półosi pozostaje otwarta.
+
+\begin{corollary}\label{cor:witness142}
+Zachodzi \(197\le m(142)\le284\).
+\end{corollary}
+\begin{proof}
+W \(t=0\) na poziomie \(m=196\) ten sam test kongruencji daje prawidłowe ścisłe znaki do rzędu 141 i \(\epsilon_{142}W_{142}(\Psi_{196};0)<0\). Dla momentów w zerze użyto opisanej w suplemencie kwadratury Fouriera o okresie 6, z \(N=32768\), \(L=256\) i precyzją stałoprzecinkową \(P=5000\) bitów. Dla skalowanych momentów o indeksach nieujemnych wspólny promień błędu wynosi \[e^{13L/4}\big(10^9e^{-\pi N/24}+10^9e^{-60000}+2^{-P+12\log_2 N+40}\big).\] Wyprowadzenie dla półokresu \([0,3]\) zawiera \texttt{rank500/kwadratura\_bazowa.md}. Ciągłość przenosi ujemny znak na małe dodatnie argumenty, a trwałość \(RR_{142}\) wyklucza wszystkie poziomy \(m\le196\). Przy \(m=197\) test potwierdza wszystkie znaki w samym zerze. Granica górna na całej półosi wynika z twierdzenia~\ref{th:upper} przy \(r=142\).
+\end{proof}
+
+\section{Wnioski i otwarte pytania}\label{sec:consequences}
+
+
+\begin{corollary}\label{cor:asym}
+\[1\le\liminf_{r\to\infty}\frac{m(r)}r\le\limsup_{r\to\infty}\frac{m(r)}r\le2.\]
+\end{corollary}
+
+
+\begin{proof}
+W twierdzeniu~\ref{th:lower} przyjmujemy \(\varepsilon=1\), dzielimy oba oszacowania przez \(r\) i korzystamy z \(1/\log r\to0\).
+\end{proof}
+
+
+Dane dla kilku ustalonych rzędów, w tym dolne oszacowanie ilorazu \(768/500=1{,}536\) w rzędzie 500, nie wyznaczają granic asymptotycznych. Sama monotoniczność całkowitoliczbowego minimum \(m(r)\) również nie wystarcza. Niemalejący ciąg schodkowy \(a_r=2^{\lfloor\log_2 r\rfloor+1}\) spełnia \(r\le a_r\le2r\), a jego iloraz ma granice dolną 1 i górną 2. To przykład logiczny pokazujący dokładnie, czego nie rozstrzygają dotychczasowe granice.
+
+\subsection{Obszary dodatniości wyznaczników momentów}\label{sec:dtable}
+
+Dla \(j\ge0\) piszemy \(\beta_j=\big((2j)!\big)^{-1}\int_0^\infty u^{2j}\Phi(u)\,du\), a dla \(j<0\) przyjmujemy \(\beta_j=0\). W notacji Nuttalla
+\[ D(n,r)=\det[\beta_{n+j-i}]_{i,j=0}^{r-1},\qquad n\ge0,\quad r\ge1. \]
+Zatem \(r\) jest rozmiarem macierzy, a \(n\) przesuwa indeks jej współczynników. Dualna tożsamość Jacobiego--Trudiego daje również reprezentację macierzą rozmiaru \(n\times n\) za pomocą współczynników \(1/(\sum_{j\ge0}(\beta_j/\beta_0)(-z)^j)\) po normalizacji przez \(\beta_0\). W obu reprezentacjach zachowujemy te same oznaczenia indeksów.
+
+Katkova \cite[twierdzenia~1 i~2]{katkova} zastosowała kryterium sektorowe Schoenberga do współczynników \(\xi(1/2+\sqrt z)\), wykazała nieujemność wszystkich minorów Toeplitza do rzędu 44 (\(PF_{44}\)) i wskazała, że zwiększenie zweryfikowanej wysokości zer podnosi osiągalny rząd. Wykazała też asymptotyczną wielokrotną dodatniość dla każdego ustalonego rzędu. Dla rozpatrywanych tu minorów prostokątnych twierdzenie~\ref{th:upper} daje jawny próg \(n\ge r\). W oszacowaniu sektorowym wykorzystujemy pełną wysokość zweryfikowaną przez Platta i Trudgiana oraz obszar bezzerowy Bellotti, Trudgiana i Yanga. Lin \cite{lin} wiąże te same prostokątne funkcje Schura z progiem kątowym \(\pi/(r+1)\) dla pary sprzężonej.
+
+Dla pasa jednostajnego względem \(r\) podajemy dwa dowody. Oszacowanie fazy funkcji Schura sięga \(n=110\,000\,000\,000\) i daje jawne oszacowanie dolne wyznacznika (dodatek~\ref{sec:phase}). Szerszy pas otrzymujemy w dodatku~\ref{sec:sra}, stosując twierdzenie Sry o gęstości z zadaną transformatą Laplace’a \cite[twierdzenie~1.2]{sra} do podwójnej całki momentowej.
+
+\begin{theorem}\label{th:regions}
+Każdy wiersz tabeli podaje warunek wystarczający na \(D(n,r)>0\).
+\end{theorem}
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Przesunięcie \(n\) & Rząd \(r\) & Uzasadnienie\\
+\midrule
+\(n\ge r\) & \(r\ge1\) & Twierdzenie~\ref{th:upper}\\
+\(n\ge0\) & \(1\le r\le9\,561\,277\,002\,984\) & Oszacowanie sektora\\
+\(0\le n\le1\,810\,540\,931\,075\) & \(r\ge1\) & Sra i Andréief\\
+\(0\le n\le110\,000\,000\,000\) & \(r\ge1\) & \shortstack[l]{Faza Schura\\[2pt]\(D_a(n,r)>0{,}069\,a_0^rP^r\)}\\
+\(1\le n\le12\,363\,153\,437\,137\) & \(r+1>12M_n/(1-q_n)^2\) & Tożsamość Cauchy'ego\\
+\(n\in G,\ \underline d(G)\ge0{,}6735\) & \(r\ge R(n)\) & Różne promienie zer\\
+\bottomrule
+\end{tabular}
+\end{center}
+W wierszu z oszacowaniem fazy przyjmujemy \(a_0=\xi(1/2)\), \(D_a(n,r)=8^r4^{nr}D(n,r)\) i \(P=\prod_{i=1}^n\gamma_i^{-2}\), gdzie \(\gamma_i\) to kolejne dodatnie wysokości zer, w tym zakresie zweryfikowanych na prostej krytycznej. Pusty iloczyn wynosi jeden. Nierówność ilościową wyprowadza dodatek~\ref{sec:phase}.
+
+Wielkości \(q_n,M_n\) określa wzór \eqref{eq:dthreshold}. W ostatnim wierszu \(\underline d(G)=\liminf_{K\to\infty}|G\cap[1,K]|/K\). Próg może zależeć od \(n\). Oszacowanie sektorowe ogranicza rząd. Oba dowody momentowe ograniczają przesunięcie. Na przykład oszacowanie sektorowe obejmuje \((3\cdot10^{12},4\cdot10^{12})\), a twierdzenie Sry daje dodatniość w punkcie \((10^{12},10^{20})\). Są to wnioski o wyznacznikach momentów. Nadal otwarte są dokładna wartość \(m(500)\) i dodatniość dla wszystkich par \(n,r\) w kryterium RH Nuttalla.
+
+\begin{proof}[Dowód dla \(n\ge r\)]
+Niech \(b_j=\int_0^\infty u^j\Phi(u)\,du/j!=\Psi_{j+1}(0)\) dla \(j\ge0\). W macierzy \([b_{2n+j-i}]_{0\le i,j\le2r-2}\) każdy blok kolejnych wierszy i kolumn rzędu \(p\le r\) ma lewy górny wpis o indeksie \(\ell\ge2n-2r+1+p\). Po odwróceniu kolumn i zastosowaniu \(\Psi_m'=-\Psi_{m-1}\) jego wyznacznik wynosi \(\epsilon_p W_p(\Psi_{\ell+p};0)\). Nierówność \(\ell+p\ge2p+1\), twierdzenie~\ref{th:upper} i lemat~\ref{lem:persist} dają ścisłą dodatniość tych wyznaczników. Z kryterium kolejnych minorów \cite[lemat~2.4]{fjs} wynika dodatniość wszystkich minorów do rzędu \(r\). Wiersze i kolumny o parzystych indeksach wyznaczają \(D(n,r)\). Wyjaśnia to również argument pojedynczych momentów z \cite[(3.21)--(3.23)]{moment}. Dowody pozostałych wierszy podajemy w dodatku~\ref{sec:dproof}.
+\end{proof}
+
+
+\subsection{Dwa otwarte pytania}
+
+Pomiar dla rzędu 500 wskazuje konkretny przedział zwarty do pokrycia. Przeniesienie całkowitoliczbowej kongruencji z \S\ref{sec:witness} na przedziały z resztą Taylora jak w \S\ref{sec:jet} da równość, jeśli test przejdzie na każdej komórce.
+
+Czy można obniżyć współczynnik \(2\) w asymptotycznym ograniczeniu górnym? Dla \(p=k=r\) wykładnik \(M-2(k-1)=m-2r\) w \S\ref{sec:shift} staje się ujemny, gdy tylko \(m<2r\). Poniższe twierdzenie wskazuje zmianę znaku już przy zmniejszeniu liczby całkowań o jeden.
+
+\begin{theorem}[Zmiana znaku przy pierwszym dodatnim węźle]\label{th:firstknot}
+Dla każdego nieparzystego \(r\ge3\) połóżmy \(m=2r-1\), \(a=\tfrac12\log2\) oraz \(f_j=R_{r-1+j}\) dla \(0\le j<r\), gdzie \(R_j\) określono w \S\ref{sec:upper}. Zwykły wrońskian \(W(f_0,\ldots,f_{r-1})\) jest ściśle dodatni na pewnym przedziale bezpośrednio na lewo od \(a\) i ściśle ujemny na pewnym przedziale bezpośrednio na prawo od \(a\).
+\end{theorem}
+\begin{proof}
+Dla \(p=k=r\) mamy \(L=r-1\), \(\ell=r-1\), \(N=2\ell\), \(M=2\ell-1\) oraz \(J=\operatorname{diag}((-1)^i)_{i=0}^{\ell}\). Na otwartych przedziałach między węzłami możemy zastosować trójkątne przekształcenia współczynników z \S\ref{sec:shift}. Wszystkie czynniki normalizacji dwumianowej są dodatnie, gdyż \(\ell\le M\). Odwrócenie kolumn wnosi znak \(\det J\). Wrońskian ma więc znak \(\det H/\det J\), gdzie \(H=\sum_{a_n<u}n^{-1/2}A_{a_n/u}\). W granicach lewo- i prawostronnej w \(a\) otrzymujemy odpowiednio \(A_0\) oraz \(A_0+A_1/\sqrt2\), przy \(u=a\) w definicjach tych macierzy.
+
+Dla \(d=1\) wielomian definiujący \(C_1\) ma postać \((w+z-2wz)^M\). Każdy jednomian ma stopień całkowity co najmniej \(M\). W rozpatrywanym bloku jedyne niezerowe wpisy to zatem
+\[
+ (C_1)_{\ell-1,\ell}=(C_1)_{\ell,\ell-1}=1,\qquad
+ (C_1)_{\ell,\ell}=
+ \frac{-2(2\ell-1)\binom{2\ell-2}{\ell-1}}{\binom{2\ell-1}{\ell}}=-2\ell .
+\]
+Macierz \(V_1=U-I\) jest ściśle dolnotrójkątna i \(U_{\ell,\ell-1}=1\), więc jedyny niezerowy wpis \(V_1 C_1+C_1V_1^\top\) leży na ostatniej pozycji przekątnej i wynosi \(2\). Dla składnika bez przesunięcia mamy \(C_0=J\), \(V_0=U-I/2\). Współczynniki \(\binom Mi\) są niemalejące dla \(0\le i\le\ell\), więc \(|U_{ij}|\le1\). Sumy modułów w wierszach i kolumnach \(V_0\) dają \(\|V_0\|_2\le\ell+1/2\), a stąd
+\[
+ \|A_0-J\|_2\le a(1+1/N)<1/2 \qquad (a<3/8,\;N\ge4).
+\]
+Granica lewostronna daje zatem po podzieleniu przez \(\det J\) znak dodatni. Granicę prawostronną zapiszmy jako \(H=\left(\begin{smallmatrix} B&b\\ b^\top&c\end{smallmatrix}\right)\). Wiodący blok \(B\) wymiaru \(\ell\times\ell\) pochodzi w całości od \(A_0\). To samo oszacowanie dla tego bloku daje \(\|B^{-1}\|_2<2\), a jego wyznacznik ma znak wyznacznika odpowiedniego bloku \(J\). Z trójkątności \(V_0\) wynika, że poza przekątną wpisy ostatniej kolumny \(A_0\) mają moduł co najwyżej \(a/N\). Składnik przesunięty wnosi tam tylko jeden wpis, \(1/\sqrt2\). Ponieważ \(\ell\ge2\) jest parzyste, otrzymujemy
+\[
+ \|b\|_2\le 1/\sqrt2+a\sqrt\ell/N\le (1+3/16)/\sqrt2<\sqrt3/2,
+ \qquad
+ c=1-a/N-(2\ell+2a/N)/\sqrt2<-3/2.
+\]
+Stąd \(c-b^\top B^{-1}b<0\). Ostatni wpis przekątnej \(J\) to \(+1\), więc \(\det H/\det J<0\). Obie granice jednostronne mają ściśle określony znak. Ciągłość na każdym z przedziałów między węzłami daje tezę.
+\end{proof}
+
+Aby otrzymać wniosek dla całki, w wyprowadzeniu \eqref{eq:andreief} przyjmijmy \(m=2r-1\) i \(p=r\). Tożsamość momentowa nadal obowiązuje, gdyż \(L=r-1\ge2\). Dla ustalonego \(u\) wewnątrz każdego z dwóch przedziałów, przy zbliżaniu do \(u\) różnych, rosnąco uporządkowanych węzłów, otrzymujemy
+\[
+ \frac{\det[f_j(u_i)]_{0\le i,j<r}}{\Delta(u_0,\ldots,u_{r-1})}
+ \longrightarrow
+ \frac{W(f_0,\ldots,f_{r-1})(u)}{\prod_{j=0}^{r-1}j!}.
+\]
+Drugi czynnik Vandermonde’a i wagi w \eqref{eq:andreief} są w takich węzłach dodatnie. Funkcja podcałkowa ma więc oba znaki na zbiorach otwartych. Dowód na tym poziomie oparty na tej samej całce musiałby uwzględnić wkład ujemny. Znak całej całki, a tym samym wystarczalność \(2r-1\) całkowań, pozostaje w ogólności kwestią otwartą.
+
+
+\appendix
+
+\section{Granice błędów w skończonych certyfikatach}\label{sec:errors}
+
+
+\textbf{Całki w zerze.} Starszy rachunek w \(t\) obejmuje wszystkie surowe momenty do stopnia 63 na 32 panelach w \([0,2]\). Dysk o promieniu \(1/4\) wokół środka panelu długości \(1/16\) daje stosunek promieni \(1/8\). Na nim \(|s|<3\), a moduł każdego z 24 zachowanych składników theta jest poniżej \(10^4\). Przybliżenie Taylora, dodatniość wag i dokładność kwadratury na wielomianach stopnia 648 dają wspólną granicę błędu \(24\cdot46000\cdot3^j/8^{649}\) dla surowego momentu stopnia \(j\). Dla \(n\ge25\) na panelach rzeczywistych wydzielamy \(e^{-\pi n^2}\). Pozostaje czynnik wielomianowy, a majoranta ogona maleje geometrycznie. Za \(s=2\) pełną sumę ogranicza \(2e^{-\pi e^{4s}/2}\). Każdy z dwóch ogonów kosztuje mniej niż \(3^j2^{-1960}\) w użytym zakresie. Następnie dzielimy przedziały przez \(j!\) z zaokrągleniem na zewnątrz. Stałe można porównać bezpośrednio z generatorem \textbf{historical32/theta.py}.
+
+\textbf{Zaokrąglenia rekurencji Legendre'a.} Weryfikator rzędów pośrednich dzieli \(d\) na 4096 komórek i zaokrągla granice norm w górę w skali \(2^{20}\). W każdej aktywnej części zakresu theta niech \(x=1-2v\log^2n\). Błąd argumentu w rekurencji stopnia jest poniżej \(370/Q\), \(Q=2^{46}\). Rozbicie iloczynów ze znakiem na części 23-bitowe zapobiega przepełnieniu. Kod sprawdza \(|z_j|<1{,}001\), co daje błąd jednego kroku \(|\eta_j|<750/Q\) względem rekurencji w prawdziwym \(x\). Szereg tworzący błędu ma postać \[E(z)=D(z)^{-1/2}\int_0^z D(w)^{-1/2}\sum_{j\ge1}j\eta_jw^{j-1}\,dw,\qquad D(z)=1-2xz+z^2.\] Mnożymy trójczłonową rekurencję błędu przez \(z^j\) i sumujemy, otrzymując \(DE'+D'E/2=\sum j\eta_j z^{j-1}\). Ponieważ \([z^i]D^{-1/2}=P_i(x)\) ma moduł najwyżej jeden, wzmocnienie błędu z kroku \(j\) w stopniu \(\ell\) ogranicza \(\sum_{k=0}^{\ell-j}j/(j+k)\le\ell-j+1\). Błąd wartości wynosi najwyżej \((750/Q)\ell(\ell+1)/2\), a suma wag jest poniżej 20. Łącznie z zaokrągleniem wag daje to margines \(1/4000\) z \S\ref{sec:schur}.
+
+\textbf{Wagi Fouriera dla świadka rzędu 500.} Niech \(\delta=2^{-P}\), \(N=2^h\). Dla dodatnich i ujemnych węzłów stosujemy wagi \((12/N)(1\pm w_j)/2\), gdzie \[w_j=(4/\pi)\sum_{1\le k<N/2,\ k\text{ nieparzyste}}\sin(2\pi kj/N)/k.\] Wynika to z całkowania modów trygonometrycznych po połowie okresu. MPFR ogranicza wartości theta przedziałowo. Stałoprzecinkowa FFT o \(h\) etapach daje błąd pojedynczej wagi najwyżej \(40N^3\delta\). Gdy błąd wejścia wynosi \(E\), etap kosztuje najwyżej \((2+10N\delta)E+10N^2\delta+2\delta\). Potęgi podzielone przez silnie przenoszą lokalny błąd obcięcia z sumarycznym czynnikiem co najwyżej \(\sum(6L)^j/j!=e^{6L}\). Na \(\lvert\Im u\rvert=1/4\) norma całkowa majoranty dla pełnej periodyzacji wynosi najwyżej \(10^6e^{25L/4}\). Współczynniki Fouriera zanikają jak \(e^{-\pi|k|/24}\). Podwojenie na błąd aliasingu i sumowanie od \(N/2\) daje pierwszy składnik w \S\ref{sec:witness}. Pozostałe czynniki w \S\ref{sec:witness} obejmują wagi brzegowe i sumę błędów dyskretyzacji. Dwie dołączone noty o kwadraturze i kod podają kryteria obcięcia dla pojedynczych węzłów.
+
+\section{Suplement obliczeniowy}\label{sec:replay}
+
+
+Załączone archiwum \texttt{certificates.zip} zawiera kod, dokładne końce komórek, odtworzone granice, dane kwadratur i protokoły obliczeń. Podane ścieżki są względne wobec katalogu głównego archiwum. Do weryfikacji użyto Pythona~3.12.14, mpmath~1.3.0 i NumPy~2.3.5. Weryfikator rzędu 500 wymaga ponadto kompilatora C++17, OpenMP, GMP/GMPXX i MPFR~4.
+
+Szybki audyt uruchamia polecenie \texttt{python verify\_release.py}. Program przelicza nierówności skalarne, porównuje zapisane tabele komórek, odtwarza wszystkie komórki rzędów czwartego i ósmego, sprawdza protokoły obu świadków oraz kontroluje zakresy zaakceptowanych bloków i maksima wszystkich siedmiu zarchiwizowanych przebiegów pośrednich. Do odtworzenia obliczeń ze źródeł służą polecenia poniżej.
+
+\begin{verbatim}
+python small/check_phi4.py > phi4_replay.csv
+python small/certify.py
+python small/check_order8.py > order8_replay.csv
+python historical32/compare.py
+sh historical32/regenerate.sh
+python upper/sprawdz.py
+(cd rank500 && sh build.sh)
+python rank500/check_witness.py --rank 142
+python rank500/check_witness.py --rank 500
+python determinants/check_constants.py
+\end{verbatim}
+
+Trzy programy w \texttt{small/} odtwarzają 64 komórki dla \(\Phi\), 67 dla \(\Psi_1\) i 86 dla \(\Psi_2\). Ostatni oblicza również \(W_8(\Psi_1;5/64)\). Jego standardowe wyjście można porównać z \texttt{small/order8.csv}, a komunikaty diagnostyczne z \texttt{small/order8.log}. Polecenia dla \texttt{historical32} porównują i odtwarzają \(10\,919\) starszych komórek. Program z \texttt{upper/} przelicza rzędy pośrednie. Dla każdego świadka program w \texttt{rank500/} oblicza momenty w pustym katalogu i sprawdza znaki na obu sąsiednich poziomach. Ostatnie polecenie przelicza nierówności liczbowe dodatku~\ref{sec:dproof} z zaokrągleniem na zewnątrz. Siatka 742 punktów i punktowe certyfikaty przedziałowe mają osobne protokoły. W katalogu \texttt{r5/} zamieszczono wcześniejszą pracę o rzędzie pięć i źródła odtworzenia zwartej części w Lean. Wymienione tam założenia zaufania obejmują 228 aksjomatów obliczeń natywnych. Suplement opisuje także bezpośrednie sprawdzenie rzędu czwartego na \(3\le X\le16\). Certyfikaty na przedziale zwartym do rzędu ósmego wykorzystują Pythona i arytmetyki przedziałowej na liczbach całkowitych.
+
+\section{Dowody zakresów dodatniości wyznaczników}\label{sec:dproof}
+
+\subsection{Od momentów do argumentów zer}\label{sec:sector}
+Przyjmujemy standardową normalizację \(\xi(s)=s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)/2\). Transformata kosinusowa naszego jądra \cite{nuttall,rt} daje
+\[
+ F(z)=\xi(\tfrac12+\sqrt z)=\sum_{j\ge0}a_jz^j,\qquad a_j=8\,4^j\beta_j,\qquad
+ D_a(n,r)=8^r4^{nr}D(n,r).
+\]
+\(D_a\) oznacza wyznacznik tej samej macierzy ze współczynnikami \(a_j\). Równanie funkcyjne zapewnia, że \(F\) jest cała i nie zależy od wyboru pierwiastka. Ponieważ \(\xi\) ma rząd jeden, \(F\) ma rząd co najwyżej \(1/2\). Jej iloczyn rodzaju zero ma postać
+\[
+ F(z)/a_0=\prod_{\rho}(1+x_\rho z),\qquad
+ x_\rho=-(\rho-\tfrac12)^{-2},\qquad \sum_{\rho}|x_\rho|<\infty.
+\]
+Zera \(\rho=\beta+i\gamma\) o \(\gamma>0\) liczymy z krotnościami. Zero na prostej krytycznej daje dodatnią liczbę \(x_\rho\), a para poza prostą daje zmienne sprzężone. Wszystkie zera do wysokości \(T_{\mathrm{PT}}=3\,000\,175\,332\,800\) są proste i leżą na prostej \cite[twierdzenie~1 i \S2]{pt}. Powyżej \(T_{\mathrm{PT}}\) obszar bezzerowy \cite{bty} i symetria dają
+\[
+ |\arg x_\rho|=2|\arctan((\beta-\tfrac12)/\gamma)|
+ \le\frac{1-2/(4{,}896\log T_{\mathrm{PT}})}{T_{\mathrm{PT}}}=:\theta_{\mathrm{PT}} .
+\]
+Prawa strona przed zastąpieniem \(\gamma\) przez \(T_{\mathrm{PT}}\) maleje w tym zakresie. Rachunek przedziałowy daje \(0{,}1253<\pi/\theta_{\mathrm{PT}}-1-9\,561\,277\,002\,984<0{,}1254\). Stąd \((r+1)\theta_{\mathrm{PT}}<\pi\) aż do podanego rzędu włącznie. Z wystarczającego kryterium sektorowego Schoenberga \cite[twierdzenie~30.27]{khare} macierz Toeplitza każdego rzeczywistego czynnika liniowego i każdego czynnika kwadratowego z pary sprzężonej jest całkowicie nieujemna do rzędu \(r\). Wzór Cauchy'ego--Bineta zachowuje tę własność przy mnożeniu, najpierw na skończonych blokach trójkątnych, potem w granicy współczynników. Aby uzyskać ostrą nierówność, wydzielamy \(n\) dodatnich zmiennych pochodzących od zer na prostej, korzystając z twierdzenia Hardy'ego. Ich wielomian ma stopień \(n\), więc przesunięty minor trójkątny wynosi \((x_1\cdots x_n)^r>0\). We wzorze Cauchy'ego--Bineta mnożymy go przez główny minor trójkątny pozostałego znormalizowanego iloczynu, równy jeden. Inne składniki są nieujemne. Dla \(n=0\) mamy \(D(0,r)=\beta_0^r\).
+
+\subsection{Tożsamość Schura dla prostokąta}
+Porządkujemy zmienne według malejącego modułu. Przy ścisłej luce \(|x_n|>|x_{n+1}|\) piszemy \(X_0=(x_i)_{i\le n}\), \(B=(x_i^{-1})_{i\le n}\), \(Y=(x_j)_{j>n}\) oraz \(P=\prod_{i\le n}x_i\). Przez \(s_\nu\) oznaczamy funkcję Schura partycji \(\nu\), a przez \((r^n)\) prostokąt o \(n\) wierszach długości \(r\). Z dualnej tożsamości Jacobiego--Trudiego i rozwinięcia względem dwóch zbiorów zmiennych mamy \cite[rozdz.~I, \S\S3,5]{mac}
+\begin{equation}\label{eq:dschur}
+ \frac{D_a(n,r)}{a_0^r}=s_{(r^n)}(X_0,Y)
+   =P^r\sum_{\nu\subseteq(r^n)}s_\nu(B)s_\nu(Y).
+\end{equation}
+Dopełnienie \(\mu\) w prostokącie po obrocie o \(180^\circ\) ma części \(\nu_i=r-\mu_{n+1-i}\). Obrót tablic i odwrócenie porządku symboli daje \(s_{(r^n)/\mu}(Y)=s_\nu(Y)\), a wzór wyznacznikowy na \(s_\mu\) daje \(s_\mu(X_0)=P^rs_\nu(B)\). Bezwzględna zbieżność iloczynu po zerach pozwala przejść do granicy skończonych obcięć domkniętych na sprzężenie.
+
+\subsection{Oszacowanie fazy jednostajne względem rzędu}\label{sec:phase}
+W oszacowaniu fazy przyjmijmy \(T=3\cdot10^{12}<T_{\mathrm{PT}}\). Bierzemy pierwszych \(n\) zer na prostej, gdzie \(\gamma_n\le U<T\), więc \(B_i=\gamma_i^2\). Dla skończonego obcięcia \(Y=(y_j)\) wprowadzamy niezależne zmienne geometryczne \(M_{ij}\), przyjmujące wartość \(h\ge0\) z prawdopodobieństwem \((1-q_{ij})q_{ij}^h\), gdzie \(q_{ij}=B_i|y_j|<1\). Niech \(C_j=\sum_i M_{ij}\), \(\Theta=\sum_j C_j\arg y_j\). W korespondencji Robinsona--Schensteda--Knutha pierwszy wiersz kształtu ma długość równą maksimum sum po rosnących ścieżkach \cite[\S2.1]{joh}. Zdarzenie \(E=\{\nu_1\le r\}\) jest więc malejące względem wpisów. Wagi tablic utożsamiają iloraz sumy w~\eqref{eq:dschur} i tej samej sumy dla \(|Y|\) z \(\mathbb E[e^{i\Theta}\mid E]\). Dodatni mianownik zawiera wyraz pustej partycji i wynosi co najmniej jeden.
+
+Warunkowy wielomian tworzący zmiennych kolumnowych jest symetryczny przy zamianie kolumn w parze sprzężonej. Zamiana jednej pary zeruje mieszane momenty drugiego rzędu różnic pochodzących z dwóch różnych par. Dla wybranej pary połóżmy \(Z=C_a+C_b\). Rozwinięcie funkcji Schura względem pary o równych modułach daje mieszaninę dwuzmiennych wielomianów \(s_{(h,k)}\) z dodatnimi wagami. W każdym składniku różnica \(C_a-C_b\) ma rozkład jednostajny na \(-d,-d+2,\dots,d\), gdzie \(d=h-k\le Z=h+k\). Jej drugi moment wynosi \(d(d+2)/3\). Funkcja \(Z^2+2Z\) rośnie względem niezależnych wpisów, a zdarzenie \(E\) maleje. Nierówność korelacyjna dla miary produktowej daje więc
+\[
+ \mathbb E[(C_a-C_b)^2\mid E]\le \tfrac13\mathbb E[Z^2+2Z\mid E]\le\tfrac13\mathbb E[Z^2+2Z].
+\]
+Połóżmy \(A=\sum_{i\le n}\gamma_i^2\), \(\alpha=U^2/T^2\) i \(W_k=\sum_{\gamma>T}(2|\beta-1/2|)^2\gamma^{-k}\). Dla pary na wysokości \(\gamma\) mamy \(q_{ij}\le\gamma_i^2/\gamma^2\), stąd \(\mathbb EZ\le2A/[\gamma^2(1-\alpha)]\) i \({\rm Var}(Z)\le2A/[\gamma^2(1-\alpha)^2]\). Stosujemy \(|\arg y_a|\le2|\beta-1/2|/\gamma\), \(\cos v\ge1-v^2/2\) i liczymy po dwa zera w każdej parze. Średnia warunkowa jest rzeczywista i spełnia
+\begin{equation}\label{eq:dphase}
+ \mathbb E[\cos\Theta\mid E]\ge1-\frac{A^2W_6+\tfrac32 A W_4}{3(1-\alpha)^2}.
+\end{equation}
+
+Granica liczbowa jest niezależna od \(r\). Dla \(N(v)=\#\{0<\gamma\le v\}\) i \(H(v)=v(\log(v/(2\pi))-1)/(2\pi)+7/8\) zachodzi \(|N(v)-H(v)|\le2\log v\) przy \(v\ge14\) \cite[(3)]{dusart}. Wybór \(U=32\,400\,000\,000\) daje \(N(U)\ge H(U)-50>110\,000\,000\,000\). Całkowanie przez części względem \(N\) z oszacowaniem \(|N-H|<50\) na \([14,U]\) daje
+\[
+ A\le\frac{U^3}{6\pi}\left(\log\frac{U}{2\pi}-\tfrac13\right)+100U^2+1000 .
+\]
+Dla \(L=\log T\) drugie całkowanie przez części na ogonie daje
+\[
+ S_k:=\sum_{\gamma>T}\gamma^{-k}\le
+ \frac{\log(T/(2\pi))+1/(k-1)}{2\pi(k-1)T^{k-1}}+
+ \frac{4L+2/k}{T^k}.
+\]
+Dla \(\sigma\in\{0{,}85,\;0{,}90\}\) przyjmujemy odpowiednio \((c,d)=(8{,}98,3{,}59),(11{,}50,3{,}19)\) w oszacowaniu \(N(\sigma,v)\le c v^a(\log v)^b+d(\log v)^2\) przy \(v\ge T\), gdzie \(a=8(1-\sigma)/3,\ b=5-2\sigma\) \cite[tabela~1 i (4.71)]{kln}. Liczymy tu zera na prawo od \(\sigma\). Przez \(R_{k,\sigma}\) oznaczmy sumę \(\gamma^{-k}\) po tym ogonie oraz po jego odbiciu względem prostej krytycznej. Ponieważ \(\log v\le L(v/T)^{1/L}\), całkowanie przez części daje
+\[
+ R_{k,\sigma}\le 2k\left(
+ \frac{cL^b T^{a-k}}{k-a-b/L}+\frac{dL^2T^{-k}}{k-2/L}\right).
+\]
+Schodkowa granica górna dla \((2|\beta-1/2|)^2\) daje \(W_k\le0{,}49S_k+0{,}15R_{k,0.85}+0{,}36R_{k,0.90}\). Podstawienie niezaokrąglonych oszacowań do \eqref{eq:dphase} daje stratę mniejszą niż \(0{,}931\). Otrzymujemy \(D_a(n,r)>0{,}069\,a_0^r P^r\), jednostajnie względem obcięcia \(Y\) i rzędu \(r\). Granica obowiązuje dla pełnego iloczynu. Rachunek przedziałowy podaje \texttt{determinants/check\_constants.py}.
+
+\subsection{Dodatniość od pewnego rzędu i jej kwantyfikatory}
+Przy ścisłej luce mamy \(P>0\), a pełny iloczyn Cauchy'ego \(L_Y=\prod_{i\le n,j>n}(1-x_j/x_i)^{-1}\) jest dodatni. Czynniki rzeczywiste są dodatnie, a zespolone występują w parach sprzężonych. Wybierzmy \(q\ge\max_{i,j}|x_j/x_i|\), \(q<1\), oraz \(M\ge\sum_{i,j}|x_j/x_i|\). Dla początkowych prostych zer na prostej z \(\gamma_{n+1}\le T_{\mathrm{PT}}\) wystarczą
+\begin{equation}\label{eq:dthreshold}
+ q_n=(\gamma_n/\gamma_{n+1})^2,\qquad
+ M_n=\left(\sum_{i\le n}\gamma_i^2\right)\sum_{\gamma>\gamma_n}\gamma^{-2}.
+\end{equation}
+Składniki pominięte w \eqref{eq:dschur} mają stopień co najmniej \(r+1\). Jednorodność i tożsamość Cauchy'ego dla modułów dają przy \(v=1+(1-q)/2\) następującą granicę błędu względem \(L_Y\), gdy zastępujemy sumę obciętą przez \(L_Y\):
+\[
+ v^{-(r+1)}\prod_{i,j}\frac{1+|x_j/x_i|}{1-v|x_j/x_i|}
+ \le \exp\!\left[-(r+1)(1-q)/3+4M/(1-q)\right].
+\]
+Użyliśmy \(\log v\ge(1-q)/3\) i \(1-vq\ge(1-q)/2\). Wykładnik jest ujemny, gdy \(r+1>12M/(1-q)^2\). Platt i Trudgian \cite[twierdzenie~1 i \S2]{pt} zweryfikowali \(N_{\mathrm{PT}}=12\,363\,153\,437\,138\) kolejnych prostych zer na prostej krytycznej do wysokości \(T_{\mathrm{PT}}\) włącznie. Dla \(1\le n\le N_{\mathrm{PT}}-1\) obie wysokości \(\gamma_n<\gamma_{n+1}\) we wzorze~\eqref{eq:dthreshold} należą do zweryfikowanego zakresu. Każde dalsze zero ma \(\lvert\rho-\tfrac12\rvert\ge\gamma\ge\gamma_{n+1}\), zatem \(q_n<1\) ogranicza wszystkie ilorazy \(\lvert x_j/x_i\rvert\) dla \(i\le n<j\). Stąd próg przesunięcia w wierszu dotyczącym tożsamości Cauchy'ego wynosi \(N_{\mathrm{PT}}-1=12\,363\,153\,437\,137\).
+
+Na koniec niech \(G\) będzie zbiorem indeksów zamykających grupę o równym module. Każda grupa zawierająca proste zero na prostej krytycznej daje osobny indeks końcowy, gdyż w górnej półpłaszczyźnie na każdym dodatnim promieniu leży tylko jeden punkt tej prostej. Grupa może zawierać także zera poza prostą. Zastąpienie wysokości przez promień \(V\) zmienia liczbę zer o \(O(\log V)\), ponieważ \(\gamma\le|\rho-1/2|\le\sqrt{\gamma^2+1/4}\) i \(N(V+1)-N(V-1)=O(\log V)\). To samo oszacowanie obejmuje rozmiar ostatniej niepełnej grupy. Dolna gęstość \(G\) jest więc co najmniej równa dolnej proporcji prostych zer na prostej. Wcześniejsze oszacowanie \cite{af,lam} daje w ten sposób \(\underline d(G)\ge0{,}6725\). Z twierdzenia Knausgårda \cite[twierdzenie~1.3]{knausgard} otrzymujemy mocniejsze oszacowanie \(\underline d(G)\ge 1\,669\,159/2\,478\,195>0{,}6735\). Dla każdego ustalonego \(n\in G\) ścisła luka daje skończony próg \(R(n)\). Ten wniosek o gęstości korzysta z cytowanych preprintów z 2026 r. Wcześniejsze zakresy skończone są od tego wyniku niezależne.
+
+
+
+\subsection{Pas jednostajny względem rzędu z transformaty Laplace’a}\label{sec:sra}
+Niech \(K_*=1\,810\,540\,931\,075\). Przypomnijmy, że \(F(z)=\xi(1/2+\sqrt z)\) i \(a_0=F(0)>0\).
+Z twierdzeń~1.1 i~1.2 Sry \cite{sra} wynika istnienie gęstości prawdopodobieństwa \(f\) na \((0,\infty)\), dla której
+\[
+ \int_0^\infty e^{-st}f(t)\,dt=\frac{a_0}{F(s)}\qquad(s\ge0).
+\]
+Jest to gęstość oznaczona u Sry przez \(\Theta\), pomnożona przez \(a_0\). Przedłużmy \(f\) zerem na \((-\infty,0]\). Dla \(n\le K_*\) i ściśle rosnących rzeczywistych węzłów \(x_i,z_i\) twierdzenie~1.2 Sry daje \(\det[f(x_i-z_j)]\ge0\). Nierówność jest ścisła, gdy \(x_i>z_i\) dla każdego \(i\). Zastosujemy ją dla dodatnich \(x_i\) i ujemnych \(z_i\).
+
+Dla \(j\ge0\) połóżmy \(h_j=\int_0^\infty t^j f(t)\,dt/j!\), a dla \(j<0\) przyjmijmy \(h_j=0\). Różniczkujemy transformatę Laplace’a przy \(s>0\) i przechodzimy do granicy \(s\downarrow0\). Z twierdzenia o zbieżności monotonicznej i analityczności \(a_0/F\) w zerze wynika, że wszystkie te momenty są skończone, a w otoczeniu zera \(\sum_{j\ge0}h_jz^j=a_0/F(-z)\). Dla zmiennych wyznaczonych przez zera elementarne funkcje symetryczne mają wartości \(a_j/a_0\), a zupełne jednorodne funkcje symetryczne mają wartości \(h_j\). Dwie postacie tożsamości Jacobiego--Trudiego dla prostokąta \((r^n)\) dają przy \(n\ge1\)
+\begin{equation}\label{eq:dual-moments}
+ \frac{8^r4^{nr}}{a_0^r}D(n,r)=\det[h_{r+j-i}]_{0\le i,j<n}.
+\end{equation}
+
+Załóżmy najpierw, że \(1\le n\le K_*\) i \(r\ge n\). Dla \(0\le i,j<n\) przyjmijmy \(a=n-1-i\), \(b=r-n+j\). Oba wykładniki są nieujemne. Podstawienie \(t=x+y\) i wzór \(\int_0^t x^a(t-x)^b\,dx=a!b!t^{a+b+1}/(a+b+1)!\) dają
+\[
+ h_{r+j-i}=\int_0^\infty\!\int_0^\infty
+ \frac{x^{n-1-i}}{(n-1-i)!}\,f(x+y)\,
+ \frac{y^{r-n+j}}{(r-n+j)!}\,dx\,dy .
+\]
+Niech \(P_i(x)=x^{n-1-i}/(n-1-i)!\), \(Q_j(y)=y^{r-n+j}/(r-n+j)!\) oraz \(\mathcal O_n=\{0<x_1<\cdots<x_n\}\). Dwukrotne zastosowanie tożsamości Andréiefa wyraża wyznacznik po prawej stronie \eqref{eq:dual-moments} jako
+\[
+ \int_{\mathcal O_n\times\mathcal O_n}
+ \det[P_i(x_\ell)]\,\det[f(x_\ell+y_m)]\,
+ \det[Q_j(y_m)]\,d\mathbf x\,d\mathbf y .
+\]
+Wiersze trzech macierzy są indeksowane odpowiednio przez \(i,\ell,m\). Całkowanie po uporządkowanych węzłach uwzględnia oba czynniki silniowe ze wzoru Andréiefa. Po rozwinięciu wyznaczników otrzymujemy skończenie wiele wyrazów, których całki z modułu są ograniczone przez iloczyny skończonych momentów. Uzasadnia to użycie twierdzenia Fubiniego.
+
+Pierwszy wyznacznik ma znak \(\epsilon_n\), gdyż odwrócenie kolejności wierszy ustawia wykładniki jednomianów w porządku rosnącym. W środkowym wyznaczniku wybierzmy \(z_j=-y_{n+1-j}\) dla \(1\le j\le n\). Węzły te rosną, a dla każdego \(i\) mamy \(x_i>z_i\). Odwrócenie kolumn w ściśle dodatnim wyznaczniku Sry daje znak \(\epsilon_n\). Ostatni wyznacznik jest dodatnią wielokrotnością \(\prod_m y_m^{r-n}\,\Delta(\mathbf y)\). Funkcja podcałkowa jest więc ściśle dodatnia w całej dziedzinie uporządkowanych węzłów. Z równania~\eqref{eq:dual-moments} otrzymujemy \(D(n,r)>0\).
+
+Jeśli \(1\le r<n\le K_*\), to \(r<K_*<9\,561\,277\,002\,984\) i wystarcza oszacowanie sektorowe z dodatku~\ref{sec:sector}. Wreszcie \(D(0,r)=\beta_0^r>0\). Te trzy przypadki dają ścisłą dodatniość dla wszystkich rzędów przy \(0\le n\le K_*\).
+
+\section*{Podziękowania} W wyprowadzeniach, implementacji obliczeń i opracowaniu tekstu wykorzystano pomoc OpenAI ChatGPT. Argumenty analityczne i dowody wspomagane komputerowo przedstawiono do niezależnej weryfikacji.
+
+\begin{thebibliography}{99}
+\bibitem{af} L. Alp\"oge and R. Furman, \emph{More than two thirds of the zeta zeros are simple and on the critical line}, preprint (2026), \href{https://arxiv.org/abs/2608.13637}{arXiv:2608.13637}.
+\bibitem{ckk} P.~N. Choudhury, M.~R. Kannan and A. Khare,
+\emph{Sign non-reversal property for totally non-negative and totally positive matrices, and testing total positivity of their interval hull},
+Bull. Lond. Math. Soc. \textbf{53} (2021), 981--990.
+\href{https://doi.org/10.1112/blms.12475}{doi:10.1112/blms.12475}.
+\bibitem{dusart} P. Dusart, \emph{Improved explicit bounds for some functions of prime numbers}, \href{https://doi.org/10.7169/facm/1547}{doi:10.7169/facm/1547}.
+\bibitem{fjs} S. M. Fallat, C. R. Johnson and A. D. Sokal, \emph{Total positivity of sums, Hadamard products and Hadamard powers: Results and counterexamples}, \href{https://arxiv.org/abs/1612.02210}{arXiv:1612.02210}.
+\bibitem{joh} K. Johansson, \emph{Shape fluctuations and random matrices}, Comm. Math. Phys. \textbf{209} (2000), 437--476, \href{https://doi.org/10.1007/s002200050027}{doi:10.1007/s002200050027}.
+\bibitem{kln} H. Kadiri, A. Lumley and N. Ng, \emph{Explicit zero density for the Riemann zeta function}, J. Math. Anal. Appl. \textbf{465} (2018), 22--46, \href{https://doi.org/10.1016/j.jmaa.2018.04.071}{doi:10.1016/j.jmaa.2018.04.071}.
+\bibitem{katkova} O.~M. Katkova, \emph{Multiple positivity and the Riemann zeta-function}, Comput. Methods Funct. Theory \textbf{7} (2007), 13--31. \href{https://doi.org/10.1007/BF03321628}{doi:10.1007/BF03321628}.
+\bibitem{khare} A. Khare, \emph{Matrix Analysis, Pólya Frequency Functions, and Preservers of (Total) Positivity}, course notes, \S30, \url{https://math.iisc.ac.in/~khare/teaching/Math341-notes.pdf}.
+\bibitem{knausgard} K. M. Knausg{\aa}rd, \emph{More than 83.9\% of the zeros of the Riemann zeta function are distinct and more than 67.35\% are simple and on the critical line}, preprint (2026), \href{https://arxiv.org/abs/2610.08965v1}{arXiv:2610.08965v1}.
+\bibitem{lam} Y. Lamzouri, \emph{A new proof that more than \(2/3\) of the zeros of the Riemann zeta function are simple and on the critical line}, preprint (2026), \href{https://arxiv.org/abs/2609.02882}{arXiv:2609.02882}.
+\bibitem{mac} I. G. Macdonald, \emph{Symmetric Functions and Hall Polynomials}, 2nd ed., Oxford University Press, 1995.
+\bibitem{bty} C. Bellotti, T. Trudgian and A. Yang, \emph{Zero-free regions inspired by work of Heath-Brown}, \href{https://arxiv.org/abs/2603.21490}{arXiv:2603.21490} (2026).
+\bibitem{lin} C. Lin, \emph{The Willow Transform and the Blind Zone Theorem: A Sharp Information-Theoretic Obstruction in the Turán Hierarchy for the Riemann xi-Function}, \href{https://hexagonmath.org/2610.00275v1}{Hexagon 2610.00275v1} (2026).
+\bibitem{thetaone} J. Nuttall, \emph{Cumulants, the Riemann hypothesis, and similar problems}, manuscript, \url{https://publish.uwo.ca/~jnuttall/cumanal_a.pdf}.
+\bibitem{nuttallsplit} J. Nuttall, \emph{Structure of Wronskians related to the Riemann hypothesis}, manuscript (November 2012), \url{https://publish.uwo.ca/~jnuttall/RHsplit.pdf}.
+\bibitem{moment} J. Nuttall, \emph{The single moment method in the determinantal approach to the Riemann hypothesis}, unpublished manuscript.
+\url{https://publish.uwo.ca/~jnuttall/RHcumsing.pdf}.
+\bibitem{nuttall} J. Nuttall, \emph{Wronskians, cumulants, and the Riemann hypothesis},
+Constr. Approx. \textbf{38} (2013), no.~2, 193--212.
+\href{https://doi.org/10.1007/s00365-013-9200-8}{doi:10.1007/s00365-013-9200-8}.
+\bibitem{paris} R. B. Paris, \emph{The asymptotics of the Touchard polynomials}, \href{https://arxiv.org/abs/1606.07883}{arXiv:1606.07883} (2016).
+
+\bibitem{pt} D. Platt and T. Trudgian, \emph{The Riemann hypothesis is true up to \(3\cdot10^{12}\)}, Bull. Lond. Math. Soc. \textbf{53} (2021), 792--797, \href{https://doi.org/10.1112/blms.12460}{doi:10.1112/blms.12460}.
+\bibitem{rt} B. Rodgers and T. Tao, \emph{The de Bruijn--Newman constant is non-negative}, Forum Math. Pi \textbf{8} (2020), e6, \href{https://doi.org/10.1017/fmp.2020.6}{doi:10.1017/fmp.2020.6}.
+\bibitem{sra4} S. Sra, \emph{Sharp order-four sign regularity of a Jacobi theta kernel}, \href{https://hexagonmath.org/pdf/2610.00721v1}{Hexagon 2610.00721v1} (2026).
+
+\bibitem{sra} S. Sra, \emph{On some positivity properties of the Riemann \(\Xi\) function}, preprint (2026), \href{https://arxiv.org/abs/2611.02944v1}{arXiv:2611.02944v1}.
+\end{thebibliography}
+\end{document}

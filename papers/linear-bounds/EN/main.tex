@@ -1,0 +1,655 @@
+% !TeX program = pdflatex
+\documentclass[11pt,a4paper,reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,amssymb,booktabs,longtable,array,calc}
+\usepackage[margin=27mm,top=26mm,bottom=29mm]{geometry}
+\usepackage[hidelinks,unicode]{hyperref}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\numberwithin{equation}{section}
+\setlength{\emergencystretch}{2em}
+\allowdisplaybreaks[1]
+\hypersetup{pdftitle={Linear bounds for the integration order of the Riemann theta kernel},pdfauthor={Jan Chojnacki}}
+\title[Integration order of the Riemann theta kernel]{Linear bounds for the integration order of the Riemann theta kernel}
+\author{Jan Chojnacki}
+\date{November 26, 2026 (version 7)}
+\keywords{Riemann theta kernel, sign regularity, Wronskians, total positivity, interval arithmetic}
+
+
+\begin{document}
+
+\begin{abstract}
+
+Let \(m(r)\) denote the least number of iterated tail integrations for which the Riemann theta kernel is reverse sign-regular through order \(r\) on the positive half-line. For every \(\varepsilon>0\) we prove \(m(r)\ge r-(\pi^2/2+\varepsilon)r/\log r\) for all sufficiently large \(r\), by counting sign changes of high derivatives. We also prove \(m(r)\le2r\) for every \(r\ge1\). An Andréief integral and estimates on symmetric powers prove Nuttall's existence conjecture analytically and give \(m(r)\le2r\) for sufficiently large \(r\). Finite interval certificates extend this explicit bound to every order. On the entire half-line we obtain \(m(1)=\cdots=m(4)=0\), \(m(5)=m(6)=m(7)=1\) and \(m(8)=2\). Negative signed Wronskians give \(m(142)\ge197\) and \(m(500)\ge768\). For the moment determinants \(D(n,r)\), a sector estimate gives strict positivity for every shift \(n\ge0\) through order \(9\,561\,277\,002\,984\). Applying Sra's theorem on the reciprocal Laplace density gives strict positivity for every order when \(n\le1\,810\,540\,931\,075\). The existence of \(\lim_{r\to\infty}m(r)/r\) remains open.
+
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+
+Nuttall asked whether successive tail integrations of the Riemann theta kernel eventually give sign regularity of every prescribed finite order \cite[Conjecture~1]{nuttall}. His computations through order \(142\) suggested that one integration suffices in orders five through seven and two are needed in order eight \cite[\S4.7]{nuttall}. Two issues arise in passing from such a table to an estimate for arbitrary order. For fixed \(r\), the sign inequalities must hold at every real argument; as \(r\) increases, the estimates must also control all smaller minors at the same integration level.
+
+For \(t\ge0\) define \[X=\pi e^{4t},\quad x_n=n^2X,\quad \Phi(t)=\sum_{n=1}^{\infty}e^t x_n(2x_n-3)e^{-x_n},\qquad \Psi_0=\Phi,\] \[\Psi_{m+1}(t)=\int_t^\infty\Psi_m(s)\,ds,\qquad
+H_p(f;t)=[f^{(i+j)}(t)]_{i,j=0}^{p-1},\qquad W_p(f;t)=\det H_p(f;t).\] The series and its fixed derivatives converge locally uniformly since \(n^2\) enters the negative exponential. Every integral used here converges at infinity. Set \(\epsilon_p=(-1)^{p(p-1)/2}\). A kernel \(f(u+v)\) is \(RR_r\) when \(\epsilon_p\det[f(u_i+v_j)]\ge0\) for all \(p\le r\) and increasing sets of positive nodes. The number \(m(r)\) is the smallest successful level, with infinity allowed provisionally. The stronger test we use is 
+\begin{equation}\label{eq:criterion}
+\epsilon_p W_p(\Psi_m;t)>0 \qquad(1\le p\le r,\ t\ge0).
+\end{equation}
+ Nuttall's Wronskian criterion \cite[Lemma 2.1]{nuttall} converts \eqref{eq:criterion} into sign regularity. Conversely, a strictly wrong Wronskian contradicts even weak \(RR_r\). Indeed, coalescing two sets of nodes and dividing the determinant by their positive Vandermonde factors recovers the derivative determinant up to positive factorials. A wrong sign at zero persists for small positive \(t\) by continuity. For instance the order-two test reads \((f^{\prime})^2-ff^{\prime\prime}>0\), or \((\log f)^{\prime\prime}<0\) when \(f>0\). Our upper bounds establish the strict test. Our lower bounds use a wrong sign or variation diminution for the weak condition. Thus the bounds apply under either convention.
+
+The required number of integrations for \(\Phi\) grows linearly with the order \(r\). By Theorem~\ref{th:lower}, the upper limit of \((r-m(r))\log r/r\) is at most \(\pi^2/2\). This follows from the explicit oscillation rate in Lemma~\ref{lem:osc}. For the upper bound, Section~\ref{sec:shift} proves analytically that \(2R\) integrations suffice simultaneously through order \(R\) for all sufficiently large \(R\). For any prescribed \(r\), taking such an \(R\ge r\) proves Nuttall's existence conjecture. Certificates for the remaining orders allow Theorem~\ref{th:upper} to take \(m=2r\) for every \(r\ge1\). Theorem~\ref{th:firstknot} shows what changes one integration below this bound: for odd \(r\ge3\), the auxiliary Wronskian in the Andréief argument changes sign at its first positive knot. Theorem~\ref{th:exact} determines every minimum through order eight. The first integration becomes necessary in order five and the second in order eight. Section~\ref{sec:witness} gives \(m(142)\ge197\) and \(m(500)\ge768\).
+
+For comparison, Nuttall proved existence at arbitrary prescribed order for the related kernel \(\Theta_1\) \cite{thetaone}. Theorem~\ref{th:upper} gives an explicit integration level for \(\Phi\). Section~\ref{sec:dtable} explains which determinant ranges follow from this bound and which use independent information on zeta zeros.
+
+\begin{lemma}\label{lem:persist}
+Suppose \(\epsilon_p W_p(g;t)>0\) for \(1\le p\le r\) and \(t\ge T\), and that \(g\) and its derivatives through order \(2r-2\) are integrable there and tend to zero at infinity. Then its tail integral satisfies the same strict inequalities on \([T,\infty)\).
+\end{lemma}
+
+
+\begin{proof}
+Integration preserves weak sign regularity \cite[Remark 4.1]{nuttall}, by composition with the totally nonnegative step kernel. For the strict test let \(g\) satisfy \eqref{eq:criterion} on \([T,\infty)\) and let \(f=\int_t^\infty g\). In \(H_p(f;t)\) write the first row as an integral of \((g,\ldots,g^{(p-1)})(s)\) and move it to the bottom. The row permutation cancels the \(p-1\) signs from differentiating the remaining rows. Under the integral is a determinant with \(p-1\) confluent nodes at \(t\) and one at \(s>t\). The functions \(g,\ldots,g^{(p-1)}\) form an extended Chebyshev system because every initial Wronskian is nonzero. To see this, divide by the nonvanishing first function and differentiate. Each new initial Wronskian is the next old one divided by a power of that first function. Induction and Rolle's theorem with multiplicities bound the zeros of each nontrivial combination by \(p-1\). The confluent determinant thus has constant sign, equal as \(s\downarrow t\) to the sign of \(W_p(g;t)\) by Taylor expansion. Integration preserves the strict sign.
+\end{proof}
+
+
+\begin{theorem}[Nuttall's existence conjecture]\label{th:existence}
+For each integer \(r\ge1\) there is a finite \(m\) such that \(\epsilon_pW_p(\Psi_m;t)>0\) for all \(p\le r\), \(p\ge1\), and \(t\ge0\). In particular \(m(r)<\infty\).
+\end{theorem}
+\begin{proof}
+The analytic estimate in \S\ref{sec:shift} supplies an absolute \(R_0\) such that \(\Psi_{2R}\) passes the strict Wronskian test through order \(R\) for every integer \(R\ge R_0\). Given \(r\), choose any integer \(R\ge\max(r,R_0)\). All orders \(1\le p\le r\) occur in this test, so \(m=2R\) works by Nuttall's criterion.
+\end{proof}
+The finite certificates in \S\S\ref{sec:finite}--\ref{sec:schur} give the sharper choice \(m=2r\) also when \(r<R_0\).
+
+\section{Exact minima through order eight}\label{sec:exact}
+
+
+\begin{theorem}\label{th:exact}
+On the entire half-line the signed Wronskians are strictly positive through order four for \(\Phi\), through order seven for \(\Psi_1\), and through order eight for \(\Psi_2\). The first eight minima are
+\[m(1)=m(2)=m(3)=m(4)=0,\qquad m(5)=m(6)=m(7)=1,\qquad m(8)=2.\]
+\end{theorem}
+
+For \(r=5\), the Lean~4 theorem \href{https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/blob/dfaede6d37bb019d97a223d500cbade407e0f994/W5/NuttallR5.lean}{\texttt{W5.nuttall\_r5}} establishes the required signs for \(\Psi_1\) on the entire half-line. The earlier order-five paper, its description of the trust assumptions, and the compact replay sources are in \texttt{r5/} of the supplement (Appendix~\ref{sec:replay}).
+
+
+Nuttall reported these values from a numerical mesh \cite[\S4.7]{nuttall}. Here the order-four statement concerns \(\Phi(u+v)\). Sra proved sign regularity through order four and failure at order five for the kernel \(\Phi(\sqrt{u+v})\) \cite{sra4}.
+
+\subsection{The compact interval}\label{sec:compact}
+
+
+To exclude level zero it suffices to evaluate the fifth determinant at a single point. Directed enclosures of the first nine derivatives of \(\Phi\) at zero and the 120 terms of the permutation formula give \[-3993243730834984210\ \le W_5(\Phi;0)\le\ -3993243730834984209.\] Since \(\epsilon_5=1\), level zero fails in every order at least five. For sufficiency on \(0\le t\le1/2\) put \(D_{ii}=16^{-i}\) and \(A(t)=D H_7(\Psi_1;t)D\). On each rational cell \([c-h,c+h]\) we construct a lower triangular dyadic matrix \(U\) with positive diagonal. An approximate Gram--Schmidt procedure using the midpoint Hankel moments proposes its rows. The proof checks the resulting dyadic numbers with integer products. Write \(J=\operatorname{diag}(1,-1,1,-1,1,-1,1)\). We verified 
+\begin{equation}\label{eq:cell}
+\sup_{|v|\le1}\|U A(c+hv)U^\top-J\|_\infty
+ \le 801559662/10^9<1.
+\end{equation}
+ Here the norm is the largest absolute row sum. Each leading block obeys the same bound. The line segment from its diagonal sign matrix to the transformed block stays invertible, by the Neumann series. The determinant of the leading block has sign \(\det J_p=\epsilon_p\). Lower triangularity makes each of these a congruence of the corresponding original block. There are 67 adjacent cells, including both endpoints. The generator starts with 64 intervals of length \(1/128\) and bisects any whose certified bound exceeds \(7/8\). See \S\ref{sec:jet} for the analytic remainder and \S\ref{sec:tail} for the infinite tail.
+
+\textbf{Enclosing the data.} At real \(c\) the \(k\)th derivative of the \(n\)th term is \(e^{c-y}P_k(y)\), \(y=\pi n^2 e^{4c}\), where \(P_0=2y^2-3y\) and \(P_{k+1}=(1-4y)P_k+4yP'_k\). The coefficients are exact integers. The first 24 terms are evaluated with outward rounding. For \(0\le c\le2\), \(|z-c|\le1/8\), we have \(|e^z|<9\), \(|x_n(z)|<2y\) and \(\Re x_n(z)>y/2\). Thus the modulus of the term is at most \(9(8y^2+6y)e^{-y/2}\le20000 e^{-y/3}\) (maximize the two monomials separately). Summing gives \(|\Phi(z)|<10^6\). The sum for \(n\ge25\) is below \(2^{-900}\), since its successive ratios in this bound are below \(1/2\) and \(40000e^{-625\pi/3}<2^{-900}\). Cauchy gives the omitted derivative error \(2^{-900}k!8^k\).
+
+\subsection{Taylor enclosures and integer congruences}\label{sec:jet}
+
+
+The missing zeroth entry is \(\Psi_1(c)\). Start at \(t=2\) with \(0\le\Psi_1(2)\le2^{-500}\). For one term use \(x=\pi n^2e^{4s}\), \(y=\pi n^2e^8\). Its integral from 2 is bounded by \((e^2/2)y^{-1/4}\int_y^\infty x^{5/4}e^{-x}dx\le e^2e^{-y/2}\) since \(y>9000\). Summation is bounded by twice the first majorant. Propagate backwards on 64 panels of length \(1/32\). For a positive displacement \(h\) an approximation and error bound for the integral of \(\Phi\) are \[\sum_{j=0}^{89}\frac{\Phi^{(j)}(c)h^{j+1}}{(j+1)!},\qquad
+|\text{error}|\le h\,10^6\,\frac{(8h)^{90}}{1-8h}.\] This follows by integrating the Cauchy majorant from \S\ref{sec:compact}. At the center of each cell we integrate forwards from its left-hand anchor and subtract. For \(j\ge1\), \(\Psi_1^{(j)}=-\Phi^{(j-1)}\). With \(a+b=i\) the coefficient of \(v^k\) in \(A_{ab}(c+hv)\) is \[16^{-i}\,\Psi_1^{(i+k)}(c)\,h^k/k!.\] Apply the congruence to each coefficient through degree 24 and sum the upper bounds on their norms, subtracting \(J\) in the constant term. On \(|z-c|\le1/16\) every entry of \(A(z)\) is bounded by \(M_A=2\cdot10^6\,12!\). Indeed \(\Phi\) is bounded on the larger disk of radius \(1/8\). Apply Cauchy on the remaining radius \(1/16\) to each derivative, then use the factor \(16^{-i}\). For \(i=0\) use the integral from 2 and a straight segment from \(c\); the coarse bound \(M_A\) suffices. The additional matrix remainder is at most \[7\|U\|_\infty\|U^\top\|_\infty\,M_A(16h)^{25}/(1-16h).\] 
+
+\textit{Integer check of a norm.} Store Hankel entries as intervals at scale \(S=2^{300}\), and \(U\) as an integer triangular array divided by \(S\). For each anti-diagonal take the floor of the midpoint. The sum of its upper deviations over all anti-diagonals bounds every input row error. Multiply this bound by \(\|U\|_\infty\|U^\top\|_\infty\). Each of two rounded matrix products has entrywise rounding error below one unit of the working grid. Their combined row error, in grid units, is bounded by \(7\|U^\top\|_\infty+7\). The code uses upward integer division. The proposed basis can change with machine arithmetic without affecting the implication of a successful check. The working oracle for derivatives uses a separate grid of \(2^{-1150}\). Together with the strict test in \eqref{eq:cell}, this explains exactly what each CSV row proves.
+
+\textit{Order four without integration.}
+Divide \([0,1/2]\) into the 64 intervals \([i/128,(i+1)/128]\), \(0\le i<64\), with midpoint \(c\) and half-width \(h=1/256\). Put \(A_4=DH_4(\Phi)D\), where \(D_{ii}=16^{-i}\). For \(\ell=i+j\le6\) the coefficient of \(v^q\) in \(A_4(c+hv)_{ij}\) is \(16^{-\ell}\Phi^{(\ell+q)}(c)h^q/q!\). The expansion through degree \(q=24\) therefore uses derivatives through order 30 from \S\ref{sec:compact}. Since \(|\Phi|\le10^6\) on the disk of radius \(1/8\), Cauchy's estimate bounds each scaled entry by \(10^6\,6!\) on the disk of radius \(1/16\). After congruence the series remainder has norm at most
+\[
+4\|U\|_\infty\|U^\top\|_\infty\,10^6\,6!\,
+\frac{(16h)^{25}}{1-16h}.
+\]
+On each cell the verifier chooses a lower triangular \(U\) and adds this remainder to the sum of the norms of the first 25 coefficients of \(UA_4U^\top-J_4\), where \(J_4=\operatorname{diag}(1,-1,1,-1)\). The largest upward-rounded bound, on the last cell, is \(637776742/10^9<1\). The leading-block argument following \eqref{eq:cell} gives all four strict signs on the entire interval.
+
+\subsection{The transition at order eight}\label{sec:eight}
+
+At level one the first failure in order eight can already be certified at \(t_0=5/64\). We enclose \(\Psi_1(t_0)\) by the quadrature in \S\ref{sec:jet} and use \(\Psi_1^{(j)}=-\Phi^{(j-1)}\) for \(1\le j\le14\). Expanding the determinant in integer interval arithmetic gives
+\[
+ -6.015\cdot10^{49}<W_8(\Psi_1;t_0)<-6.014\cdot10^{49}.
+\]
+The program groups the permutation products by the set of columns already used. Appending column \(j\) contributes one inversion for every previously used column larger than \(j\). The stored interval encloses the signed sum at each step. Since \(\epsilon_8=1\), this strictly negative determinant excludes level one.
+
+As an independent numerical check, substituting \(y=\pi n^2 e^{4s}\) in each tail integral yields
+\[
+ \Psi_1(t)=\sum_{n\ge1}\frac{2\Gamma(9/4,x_n)-3\Gamma(5/4,x_n)}
+ {4(\pi n^2)^{1/4}},\qquad \Gamma(b,x)=\int_x^\infty y^{b-1}e^{-y}\,dy .
+\]
+At \(t_0=5/64\), evaluating the first twelve terms and differentiating the corresponding theta sum numerically at 75 and 110 decimal digits both give \(W_8\simeq-6.0143958728\cdot10^{49}\). The interval above certifies its sign.
+
+To certify level two, write \(b=c+h\), \(0\le h\le1/32\). Splitting the integral \(\Psi_2(c)=\int_c^\infty(s-c)\Phi(s)\,ds\) at \(b\) gives
+\[
+ \Psi_2(c)=\Psi_2(b)+h\Psi_1(b)+\int_0^h u\Phi(c+u)\,du .
+\]
+For \(u\ge0\), the real tail estimate in Appendix~\ref{sec:errors} gives \(\Phi(2+u)\le2\exp[-4096(1+4u)]\). Integrating with weights \(1,u\) yields \(0\le\Psi_1(2),\Psi_2(2)\le2^{-500}\). We propagate both values back to the mesh points \(j/32\) and from the nearest mesh point on the right to each cell center. In the weighted integral the coefficient of \(\Phi^{(j)}(c)\) is \(h^{j+2}/[j!(j+2)]\). With \(j=0,\ldots,89\) the omitted tail is bounded by \(10^6h^2(8h)^{90}/(1-8h)\), by the Cauchy estimate of \S\ref{sec:compact}.
+
+Set \(A_8=DH_8(\Psi_2)D\), \(D_{ii}=16^{-i}\) and \(J_8=\operatorname{diag}((-1)^i)_{i=0}^7\). Its entries use \(\Psi_2'=-\Psi_1\) and \(\Psi_2^{(j)}=\Phi^{(j-2)}\) for \(j\ge2\). On the complex disk of radius \(1/16\) about each center all entries have modulus at most \(M_8=10^7\,14!\). For \(j\ge2\) this follows by Cauchy's inequality on the remaining radius \(1/16\) and the scaling \(16^{-j}\). For \(j=0,1\), integrate first on the real interval up to 2 and then along the segment from the center to the complex argument, using \(|\Phi|\le10^6\). After degree 24 the matrix remainder is at most
+\[
+ 8\|U\|_\infty\|U^\top\|_\infty M_8(16h)^{25}/(1-16h),
+\]
+where \(h\) now denotes the cell radius. On 86 adjacent closed cells covering \([0,1/2]\), the largest upward-rounded bound for \(\|UA_8U^\top-J_8\|_\infty\), including this remainder, is \(823252099/10^9<1\). The leading-block argument following \eqref{eq:cell} proves all eight required signs on this interval. Appendix~\ref{sec:replay} gives the replay command for the witness and the full cell table.
+
+\subsection{The analytic tail}\label{sec:tail}
+
+
+\begin{lemma}\label{lem:tail}
+If \(p\le8\) and \(X\ge16\), then \(\epsilon_p W_p(\Phi;t)>0\). More generally, \(X\ge\max(144,r+2)\) suffices for every \(p\le r\).
+\end{lemma}
+
+
+\begin{proof}
+Fix \(t\) and extract the Taylor coefficients of \(\Phi(t+s+h)\) after changing variables to \(u=\sqrt X(e^{4s}-1)\) and \(v=\sqrt X(e^{4h}-1)\). These substitutions and multiplication by positive-at-zero one-variable factors act on coefficients by triangular matrices with positive diagonals. Remove the factor \(Xe^te^{s+h}(1+u/\sqrt X)(1+v/\sqrt X)e^{-X-\sqrt X(u+v)}\). In the basis \(u^i/\sqrt{i!}\) on each side, the \(n\)th term has leading block \[B_n=q(2qX PG_qP^\top-3G_q),\quad q=n^2,\quad P=I+S/\sqrt X,\quad S_{i,i-1}=\sqrt i,\] \[G_q\ \longleftrightarrow\ g_q(u,v)=\exp[-(q-1)X-(q-1)\sqrt X(u+v)-quv].\] All blocks have size \(p\); the arrow identifies the coefficient matrix. \(G_1=J_p\). As \(J_p S J_p=-S\), the symmetric part of \(B_1J_p\) is \((2X-3)I-2SS^\top\), with least eigenvalue \(2X-2p-1\). To bound the perturbation let \(U,V\) be independent standard complex Gaussians with density \(e^{-|z|^2}/\pi\), and \(\rho=9/(10q)\). Orthogonality of monomials and completion of the Gaussian squares give \[\|G_q\|_2^2\le \rho^{-2(p-1)}\mathbb E|g_q(\sqrt\rho U,\sqrt\rho V)|^2
+ =\frac{\rho^{-2(p-1)}}{1-q^2\rho^2}
+  \exp\left[-2(q-1)X+\frac{2(q-1)^2X\rho}{1+q\rho}\right].\] Indeed the full squared series integrates to a sum of squared coefficients weighted by \(\rho^{i+j}\), which dominates the weighted finite Frobenius norm. In the real and imaginary coordinates the quadratic forms have off-diagonal coefficients \(q\rho\) and \(-q\rho\) respectively. The linear term occurs only in the real sum coordinate. This proves the equality. Taking square roots gives \(3(10q/9)^{p-1}\exp[-(q-q^{-1})X/2]\) as a norm bound.
+
+For \(p\le8\) and \(X\ge16\), use \(7\log(10q/9)\le4(q-q^{-1})\le X(q-q^{-1})/4\) for \(q\ge4\). At \(q=4\) the first term is below \(10.45\) and the middle term is \(15\). The derivative of \(4(q-q^{-1})-7\log(10q/9)\) is \(4(1+q^{-2})-7/q>0\). Thus \(\|G_q\|\le3e^{-15qX/64}\). Since \(\|P\|\le1+\sqrt{7/X}<2\), the sum of \(\|B_n\|\) for \(n\ge2\) is bounded by \(27X\sum_{n\ge2}n^4e^{-15n^2X/64}<1\). Each summand decreases with \(X\), and at \(X=16\) the first is \(6912e^{-15}\) with successive ratios below \(1/2\). The margin \(2X-2p-1\ge15\) exceeds the perturbation. The symmetric part of \((\sum B_n)J_p\) is positive definite; joining it as a full matrix to the identity preserves invertibility. Its determinant is positive. This gives the required sign of \(W_p(\Phi;t)\).
+
+For later use, \(X\ge p\) and \((q-q^{-1})/2-\log(10q/9)>q/12\) for \(q\ge4\) give \(\|G_q\|\le3e^{-qX/12}\). At \(X\ge144\) the analogous sum is below 1 (first term at 144 is \(27\cdot144\cdot16e^{-48}\), subsequent ratios below \(1/2\)). Hence \(X\ge\max(144,r+2)\) suffices through order \(r\), already at \(m=0\).
+\end{proof}
+
+
+\begin{proof}[Proof of Theorem~\ref{th:exact}]
+For \(t\ge1/2\), \(X\ge\pi e^2>16\). Lemma~\ref{lem:tail} gives the strict signs for \(\Phi\) through order eight on this tail. Applying Lemma~\ref{lem:persist} twice gives them for \(\Psi_1\) and \(\Psi_2\) there. The compact certificates thus give the asserted upper bounds on the entire half-line. The negative \(W_5(\Phi;0)\) excludes level zero from order five onward. The negative \(W_8(\Psi_1;5/64)\) also excludes level one in order eight, giving \(m(8)=2\).
+\end{proof}
+
+
+\section{A lower bound from derivative oscillations}\label{sec:lower}
+
+
+\begin{theorem}\label{th:lower}
+For every \(\varepsilon>0\) and all sufficiently large integers \(r\) (depending on \(\varepsilon\)),
+\[m(r)\ge r-\left(\frac{\pi^2}{2}+\varepsilon\right)\frac{r}{\log r}.\]
+\end{theorem}
+
+
+Denote by \(S(g)\) the supremum of the numbers of strict sign changes of \(g\) over increasing finite lists of positive arguments.
+
+If \(f(u+v)\) is \(RR_r\), then \(S(f^{(p)})\le p\) for \(p<r\). On any finite list \(t_i\), reverse the \(p+1\) columns of \([f(t_i+jh)]\). Every minor of order \(q\) acquires \(\epsilon_q\), making the rectangular matrix totally nonnegative. The variation-diminishing theorem \cite{ckk} bounds changes in its product with the alternating binomial vector by \(p\). Dividing by \(h^p\) and taking \(h\downarrow0\) recovers \(f^{(p)}\) up to a common sign. Strict signs at finitely many nonzero limit entries persist. Apply this to \(p=r-1=m+k\) and \(\Psi_m^{(p)}=(-1)^m\Phi^{(k)}\). Thus \(S(\Phi^{(k)})>r-1\) rules out the level \(m=r-1-k\).
+
+\begin{lemma}[Sign changes of high derivatives]\label{lem:osc}
+\[\liminf_{k\to\infty}\frac{S(\Phi^{(k)})}{k\log k}\ge \frac{2}{\pi^2}.\]
+\end{lemma}
+The conjugate saddles for a single theta term in \S\ref{sec:saddle} also occur in the asymptotics of the Touchard polynomials \cite{paris}. Section~\ref{sec:count} uses disjoint intervals on which a single term determines the sign of the full derivative at alternating phases. The spacing of their centers and the local phase derivative give the explicit coefficient.
+
+\subsection{Local saddle-point asymptotics}\label{sec:saddle}
+
+
+Set \(s=4t\), \(a_j=\pi j^2 e^s/k\), and let \([w^k]\) denote a Taylor coefficient. Differentiation gives exactly \[ F_k(a)=[w^k](2k^2a^2 e^{9w/4}-3ka e^{5w/4})e^{-kae^w},\qquad
+\Phi^{(k)}(t)=4^k k! e^{s/4}\sum_{j\ge1}F_k(a_j).\] Write \(R=\pi/2\), \(a_*=1/R\), \(a=a_*e^x\). In Cauchy's integral the phase is \(-ae^w-\log w\). At \(x=0\) its saddles on \(|w|=R\) are \(\pm iR\), the only maximizers of its real part because \(\Re(e^w)\ge0\) there, with equality only at those points. The analytic upper saddle satisfies \(we^w=-1/a\). On the nearby circle \(|w|=|w(x)|\) it and its conjugate remain the only maxima, by the strict angular curvature \(-\Re(1+w)\) there and compactness elsewhere. Write \(H+i\Theta=1/w-\log w\). Differentiating the saddle equation gives \[(H+i\Theta)'=1/w,\quad H'(0)=0,\quad H''(0)=-1/(1+R^2),\quad \Theta'(0)=-1/R.\] For fixed small \(\delta>0\) and \(|x|\le\delta\), \(b_1x^2\le H(0)-H(x)\le b_2x^2\) and \(\Theta'(x)\le-d<0\), for positive constants. Uniformly there, \[F_k(a)=2k^{3/2}e^{kH(x)}\big(\Re[A(x)e^{ik\Theta(x)}]+o(1)\big),\quad
+ A(x)=\frac{2a^2 e^{9w(x)/4}}{\sqrt{2\pi(1+w(x))}}.\] For angular deviation \(v\), the quadratic term is \(-(1+w)v^2/2\) and the rest is \(O(|v|^3)\) uniformly. At \(|v|\le k^{-2/5}\) the error in the exponent is \(O(k^{-1/5})\). Rescale \(v\) by \(\sqrt{k}\) and integrate the Gaussian. The rest of each neighborhood loses \(e^{-c k^{1/5}}\), and its complement loses \(e^{-ck}\). Both saddles contribute, and \(\min|A|>0\). This proves the displayed absolute error inside the parentheses.
+
+\subsection{Separation of the theta terms}\label{sec:count}
+
+
+An estimate for one theta term would not suffice unless the rest were controlled where its phase alternates. For \(B(\rho)=\max_{|w|=\rho}(-\Re e^w)\) we have \(B(R)=0\), \(B'(R)=1\) by the nondegenerate conjugate maxima and radial differentiation at \(iR\). Thus the derivative of \(aB(\rho)-\log\rho\) at \(R\) is \(a-a_*\). With \(a_\pm=a_*e^{\pm\delta}\) choose fixed \(\rho_+>R\) for \(a\le a_-\) and \(\rho_-<R\) for \(a\ge a_+\). For some \(\gamma,\beta>0\) the exponent is at most \[H(0)-\gamma,\qquad H(0)-\gamma-\beta(a-a_+).\] Indeed \(H(0)=-\log R\), \(B(\rho_+)>0\) and \(B(\rho_-)=-\beta<0\). Cauchy therefore bounds \(|F_k|\) by \(Ck^2(1+a)^2\) times the exponential of \(k\) times the appropriate exponent. Inside the local saddle range one can use \(Ck^2e^{kH(x)}\). Each single term is entire, so the larger contour is legitimate before summing.
+
+Fix \(0<h<1\). For large \(k\) take the integers
+\[
+ \mathcal N_k=\{n:\lceil\log k\rceil\le n\le\lfloor\sqrt{k}/\log k\rfloor\},
+ \qquad s_n=\log\frac{ka_*}{\pi n^2},\qquad I_n=[s_n-h/n,s_n+h/n].
+\]
+The least center is at least \(2\log\log k+\log(a_*/\pi)\). Adjacent centers are separated by \(2\log(1+1/n)=(2+o(1))/n\), uniformly for \(n\in\mathcal N_k\). Since the corresponding half-widths sum to at most \(2h/n\), the intervals are positive and disjoint for all sufficiently large \(k\).
+
+Write \(s=s_n+x\in I_n\). The \(j\)th term has saddle parameter \(x_j=x+2\log(j/n)\). For \(j\ne n\), the smallest possible \(|2\log(j/n)|\) equals \(2\log(1+1/n)\). Hence \(|x_j|\ge(2-h-o(1))/n\). By the value of \(H''(0)\) in \S\ref{sec:saddle}, shrinking \(\delta\) lets us take \(b_1,b_2\) arbitrarily close to \(1/[2(1+R^2)]\). Fix them so that \(b_1(2-h)^2>b_2h^2\). Every competitor with \(|x_j|\le\delta\) then satisfies
+\[
+ H(x)-H(x_j)\ge b_1x_j^2-b_2x^2\ge c_h/n^2
+\]
+with \(c_h>0\) independent of \(k,n,j\) for large \(k\). There are \(O(n)\) such indices and \(O(n)\) below \(a_-\). Outside the local range use the two contours above with this choice of \(\delta\). Their loss relative to \(H(0)\) is at least \(\gamma>0\), while \(H(0)-H(x)=O(1/\log^2 k)\). For \(a_j\ge a_+\), the sum of \((1+a_j)^2e^{-k\beta(a_j-a_+)}\) is \(O(n)\): in each unit interval of \(j/n\) there are at most \(n+1\) indices, and the interval majorants for large \(j/n\) decrease as a polynomial times a Gaussian. After decreasing \(c_h\) if needed, the total relative error is
+\[
+ \frac{\sum_{j\ne n}|F_k(a_j)|}{k^{3/2}e^{kH(x)}}
+ \le C_h n\sqrt{k}\,e^{-c_h k/n^2}=o(1)
+\]
+uniformly, since \(k/n^2\ge(\log k)^2\).
+
+On \(I_n\), \(|x|\le h/\log k\), so the derivative of \(k\Theta(x)+\arg A(x)\) is \(-k/R+o(k)\) uniformly. The amplitude \(|A|\) stays bounded below. At consecutive integer multiples of \(\pi\) the full derivative therefore alternates in sign. The phase range gives at least \((2h/(\pi R)+o(1))k/n-O(1)\) strict changes on \(I_n\). These changes add over disjoint intervals. Now \(\sum_{n\in\mathcal N_k}1/n=(1/2+o(1))\log k\) and \(|\mathcal N_k|=o(k\log k)\). Dividing by \(k\log k\) gives a lower limit at least \(h/(\pi R)\). Letting \(h\uparrow1\) gives \(1/(\pi R)=2/\pi^2\), proving Lemma~\ref{lem:osc}.
+
+\begin{proof}[Proof of Theorem~\ref{th:lower}]
+Fix \(\varepsilon>0\) and put \(k=\lfloor(\pi^2/2+\varepsilon)r/\log r\rfloor\). Then \(k\log k/r\to\pi^2/2+\varepsilon\). Lemma~\ref{lem:osc} gives \(\liminf_{r\to\infty}S(\Phi^{(k)})/r\ge(2/\pi^2)(\pi^2/2+\varepsilon)>1\). For all sufficiently large \(r\) the level \(r-1-k\) thus fails the variation-diminishing test. Persistence of weak sign regularity under tail integration excludes all smaller levels. Hence \(m(r)\ge r-k\ge r-(\pi^2/2+\varepsilon)r/\log r\).
+\end{proof}
+
+\section{An upper bound by the Andréief identity}\label{sec:upper}
+
+
+\begin{theorem}\label{th:upper}
+For all integers \(r\ge1\), \(1\le p\le r\), and all \(t\ge0\), one has \(\epsilon_p W_p(\Psi_{2r};t)>0\). In particular \(m(r)\le2r\).
+\end{theorem}
+
+
+For each order \(p\le r\) the proof tests initial Wronskians of orders \(k\le p\). In Section~\ref{sec:shift}, a shift \(a_n=\tfrac12\log n\) with \(0<a_n<u\) contributes a factor \(s^{2r-p-k}\) to the norm bound, where \(s=\sqrt{(1-a_n/u)/(1+a_n/u)}<1\). The exponent vanishes exactly when \(p=k=r\). For this block at large \(r\), we isolate the last active theta term, use its weight \(n^{-1/2}\), and bound the earlier shifts together. For \(33\le r\le649\), Section~\ref{sec:schur} retains the sign of the central entry and tests the scalar Schur complement obtained by eliminating the rest of its parity block.
+
+Fix \(m=2r\), \(p\le r\), and put \(L=m-p\), \(a_n=\frac12\log n\) and, away from the breakpoints, define \[R_j(u)=\sum_{a_n<u}\frac{1}{\sqrt n}\left(\frac{(u-a_n)^{j-1}}{(j-1)!}-\frac{(u-a_n)^j}{j!}\right),\qquad \Delta(y)=\prod_{i<j}(y_j-y_i).\] For \(p=1\) positivity is immediate. For \(p\ge2\) the signed Wronskian has the sign of the integral over \((0,\infty)^p\) of 
+\begin{equation}\label{eq:andreief}
+I(\mathbf u)=\det[R_{L+j}(u_i)]_{1\le i\le p,\ 0\le j<p}\,
+ \Delta(e^{4u_1},\ldots,e^{4u_p})\prod_i e^{5u_i-Xe^{4u_i}}.
+\end{equation}
+The full normalization is
+\begin{equation}\label{eq:anorm}
+ \epsilon_p W_p(\Psi_{2r};t)=
+ \frac{(Xe^t/2)^p(4X)^{p(p-1)/2}}{p!}
+ \int_{(0,\infty)^p} I(\mathbf u)\,d\mathbf u .
+\end{equation}
+
+ To verify this identity put \(g=\sum e^t x_ne^{-x_n}\), so \(2\Phi=-(g'+g)\). Let \(b_j^f\) be the \(j\)th tail integral of \(f\). Reverse the rows of \(H_p\) and remove the derivative signs, giving \(\epsilon_pW_p=\det[b^\Phi_{L+1+i-j}]\). The identity \(2b_{L+1+i}^\Phi=b^g_{L+i}-b^g_{L+1+i}\) yields moment factors \(s^{L+i-1}(L+i-s)/(L+i)!\) paired with \((-1)^j g^{(j)}(t+s)\). Andréief's formula follows by expanding both determinants and applying Fubini. Expand the theta indices in the derivative determinant. After positive factors are removed its columns are polynomials of degrees \(j\) with positive leading coefficients in \(n_i^2e^{4s_i}\), giving their Vandermonde. Substituting \(u_i=s_i+a_{n_i}\) and summing the indices gives \eqref{eq:andreief}. In the variable \(e^{4u_i}\) the leading coefficient in column \(j\) is \((4X)^j\). Each row contributes \(Xe^t/2\) after the substitution, and integration over the full orthant gives the factor \(1/p!\) in \eqref{eq:anorm}. The superexponential weight justifies absolute convergence and all fixed-order derivatives.
+
+\textbf{A relative bound for the omitted region.} Freeze every node but one, called \(u\), and denote the others by \(v_j\). Apart from constants, \(|I|=|f(u)|\prod_j|e^{4u}-e^{4v_j}|e^{5u-Xe^{4u}}\), with \(f=\sum_j c_jR_{L+j}\). Put \(F=\max |c_j|/(L+j)!\) and \(H=F\prod_j(1+e^{4v_j})\). If \(F=0\) the slice vanishes. On \([1/8,1/4]\), \(f=u^{L-1}Q(u)\), \(\deg Q\le p\), and some coefficient of \(Q\) has magnitude \(\ge F\) (use \((L+j)b_j-b_{j-1}\) at a maximal \(|b_j|\), \(b_j=c_j/(L+j)!\)). Remove intervals of radius \(\delta=1/(64p)\) around the real parts of its roots and the \(v_j\). At least \(1/16\) of length remains. For a root \(z\), \(|u-z|/(1+|z|)\ge\delta/3\) there. Also \(|e^{4u}-e^{4v_j}|/(1+e^{4v_j})\ge\delta\). Factoring \(Q\) gives a central integral at least \(H8^{-(L-1)}(192p)^{-2p}e^{-eX}/16\).
+
+For the tail use \(|f|\le2e^u p F(m+u)(1+u)^m\) and each normalized Vandermonde factor \(\le 2e^{4u}\). After extracting \(e^{-Xe^{4B}/2}\) the remaining integral is bounded by \(mp2^p H m!\) using \(y=e^{4u}\) and \(p\le m/2\). The ratio of the tail \(u>B\) to the central lower bound is at most \[\eta=16mp\,2^p8^{L-1}(192p)^{2p}m!\exp[-X(e^{4B}/2-e)].\] Take \(B=\frac14\log(4m\log(192m))\). The log of the prefactor is below \(4m\log(192m)\); hence \(p\eta<1/4\) for large \(m\), uniformly for \(X\ge\pi\). Integrating the slice bound and summing over the choice of outside node shows that the complement of the cube costs at most \(p\eta\int |I|\). Strict positivity on its distinct interior nodes therefore suffices.
+
+\subsection{Symmetric powers and uniformity in the minor order}\label{sec:shift}
+
+
+Consider an initial Wronskian of the functions \(R_L,\ldots,R_{L+p-1}\) of length \(k\le p\). Set \(N=L+k-1\), \(M=N-1\). Then \(M\ge2(k-1)\), even for \(k=p=r\). Reverse columns to obtain the Hankel matrix of \(R_N\). In its bivariate generating series substitute \(u+uw/(1-w)+uz/(1-z)\) for the argument, multiply by \((1-w)^M(1-z)^M\), and normalize by \(u^M/M!\) and by \(\sqrt{\binom Mi\binom Mj}\). These are triangular transformations with positive diagonals. The result is \(\sum_{a_n<u} n^{-1/2} A_d\), \(d=a_n/u\), where \[ (C_d)_{ij}=\frac{[w^iz^j](1-wz-d(1-w)(1-z))^M}{\sqrt{\binom Mi\binom Mj}},\quad
+ A_d=C_d-\frac{u}{N}(V_d C_d+C_dV_d^\top),\] \[V_d=U-\tfrac{1+d}{2}I,\quad U_{ij}=\mathbf1_{j\le i}\sqrt{\binom Mj/\binom Mi},\qquad C_0=J_k.\] The correction follows by dividing the polynomial inside the power by \((1-w)(1-z)\), giving \((1-w)^{-1}+(1-z)^{-1}-1-d\). Taking logs of the adjacent binomial ratios gives \(U_{ij}\le e^{-(i-j)^2/N}\) for \(i\ge j\) (use \(\frac12\log((N-\ell)/\ell)\ge(N-2\ell)/N\) and \(i\le M/2\)). Row and column sums imply \(2\|V_d\|\le1+\sqrt{\pi N}\). The correction is at most \(E\|C_d\|\) with \(E=B(1/r+\sqrt{\pi/r})\).
+
+Let \(s_d=\sqrt{(1-d)/(1+d)}\), \(c_d=\sqrt{1-d^2}\). Transforming the bilinear coefficient form by congruence with \(\operatorname{diag}(1,s_d)\) and dividing by \(s_d\) gives the orthogonal matrix with rows \((c_d,d),(d,-c_d)\). Its \(M\)th symmetric tensor power \(T\) is orthogonal in the binomially normalized basis. Hence \((C_d)_{ij}=s_d^{M-i-j}T_{ij}\), giving \(\|C_d\|\le1\) including \(d=1\) by continuity. A sharper bound for \(0<d<1\) is 
+\begin{equation}\label{eq:shift}
+\|C_d\|\le \frac{2}{(1-s_d^2)c_d d\sqrt M}+k e^{-d\sqrt M/16}.
+\end{equation}
+ Indeed for \(\max(M/2-i,M/2-j)>\sqrt M/16\) use \(s_d\le e^{-d}\) entrywise. Otherwise assume \(i\ge j\) by symmetry, write \(\beta=M/2-j\), and extract \([z^i](c_d+dz)^{M-j}(d-c_dz)^j\) with binomial prefactor \(\le1\). On the unit circle its log-modulus is at most \(\beta x-Mx^2/8\le4\beta^2/M-Mx^2/16\), \(x=2c_d d\cos\theta\). The Gaussian angular average is at most \(\sqrt{\pi}/(c_d d\sqrt M)\) by \(\sin v\ge 2v/\pi\) on a quadrant. The Frobenius norm of the remaining geometric scaling is at most \((1-s_d^2)^{-1}\). This proves \eqref{eq:shift}.
+
+\begin{lemma}[Uniform margin at the critical block]\label{lem:critical}
+At \(m=2r\) the exponent \(M-2(k-1)=2r-p-k\) vanishes precisely when \(p=k=r\). Uniformly for \(1\le k\le p\le r\) and \(0<u<B\) away from the breakpoints,
+\[
+ \left\|\sum_{a_n<u} n^{-1/2} A_{a_n/u}-J_k\right\|
+ \le 2^{-1/2}+o(1) \qquad(r\to\infty).
+\]
+\end{lemma}
+\begin{proof}
+The identity for \(M-2(k-1)\) follows from \(M=2r-p+k-2\). Factoring the diagonal weights in \((C_d)_{ij}=s_d^{M-i-j}T_{ij}\) gives \(\|C_d\|\le s_d^{2r-p-k}\). At \(p=k=r\) this bound equals one. Put \(K=\lfloor e^{2u}\rfloor\). The unshifted term contributes at most \(E\) to the distance from \(J_k\). For \(K\ge2\) retain the contraction bound for the last shifted term alone, whose weight is \(K^{-1/2}\le2^{-1/2}\). For \(K=1\) the shifted sum is empty.
+
+For \(2\le n<K\) put \(d=a_n/u\). Then \(d\ge a_2/B\) and \((1-d)^{-1/2}\le\sqrt{2B}\,e^B/\sqrt{K-n}\). Splitting the sum at \(K/2\) gives \(\sum_{1\le n<K}[n(K-n)]^{-1/2}\le4\). Since \([(1-s_d^2)c_dd]^{-1}\le d^{-2}(1-d)^{-1/2}\), inequality~\eqref{eq:shift} gives
+\[
+ \sum_{2\le n<K} n^{-1/2}\|C_{a_n/u}\|
+ =O\!\left(\frac{B^{5/2}e^B}{\sqrt{r-1}}
+       +re^B e^{-a_2\sqrt{r-1}/(16B)}\right)=o(1).
+\]
+Here \(M\ge r-1\), \(k\le r\) and \(e^B=(4m\log(192m))^{1/4}\). Thus the error tends to zero uniformly in all three variables. Including the corrections \(A_d-C_d\) gives \(E+(1+E)(2^{-1/2}+o(1))\), and \(E=o(1)\).
+\end{proof}
+
+For sufficiently large \(r\) the distance in Lemma~\ref{lem:critical} is strictly less than one. Deforming the matrix to \(J_k\) preserves invertibility. Reversing the columns then gives a positive initial Wronskian.
+
+Write \(f_j=R_{L+j-1}\) for \(1\le j\le p\), and let \(W(f_1,\ldots,f_j)\) denote the ordinary Wronskian. On \((0,B)\) the first function is positive. The Wronskians through order \(p-1\) are continuous at the breakpoints \(a_n\), since the derivatives through order \(p-2\) are locally absolutely continuous. For sufficiently large orders their strict signs extend to the breakpoints by the uniform margin in Lemma~\ref{lem:critical} and the invertibility of the transformations for \(u>0\). The last Wronskian is positive almost everywhere.
+
+For \(0<u_1<\cdots<u_p<B\), divide each row of the evaluation matrix by \(f_1(u_i)\) and subtract consecutive rows, starting at the bottom. With \(g_j=(f_{j+1}/f_1)'\), expansion along the first column and the fundamental theorem of calculus give
+\[
+\frac{\det[f_j(u_i)]_{i,j=1}^p}{\prod_{i=1}^p f_1(u_i)}
+ =\int_{u_1}^{u_2}\!\cdots\!\int_{u_{p-1}}^{u_p}
+      \det[g_j(v_i)]_{i,j=1}^{p-1}\,dv_{p-1}\cdots dv_1 .
+\]
+The product rule gives \(W(g_1,\ldots,g_j)=W(f_1,\ldots,f_{j+1})/f_1^{j+1}\) wherever the derivatives exist. Iterate this reduction. The divisors are positive at each step, and the final integrand is positive almost everywhere. Each interval has positive length, so the evaluation determinant is strictly positive even if a node is a breakpoint. The estimate on the complement of the cube in \S\ref{sec:upper} now gives sufficiency for every sufficiently large order.
+
+\subsection{Effective threshold and finite certificates}\label{sec:finite}
+
+
+The explicit estimates below connect the eventual argument to finite calculations. The preceding argument already gives the asymptotic upper coefficient \(2\).
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.235}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.765}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Ranks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Coverage and method
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(1\)--\(32\) & 459 cells in \(0\le t\le1/16\), 1,845 in \(1/16\le t\le1/4\), and 8,615 in \(8\le X\le76(r-1)\) for \(r\ge2\). \\
+\(33\)--\(649\) & Parity layers for \(h=m-p-k\ge1\). Signed scalar Schur complement for the single case \(p=k=r\). \\
+\(650\)--\(1449\) & Parity layers for all \(h\ge0\). \\
+\(1450\)--\(10^{11}-1\) & Certified blocks of integer ranks and sum estimates for active theta indices. \\
+\(r\ge10^{11}\) & Analytic inequalities, decreasing beyond the verified starting point. \\
+\end{longtable}
+
+For the first range the cell matrices are scaled Hankel matrices of \(F_j(t)=\int_0^\infty s^j\Phi(t+s)\,ds/j!\), with entries \(F_{2r-1-i-j}\). Each historical cell verifies \(\|UAU^\top-J_r\|_\infty<1\) with its own dyadic basis and certified norm bound. The two short-\(t\) tables start from Clenshaw--Curtis enclosures at zero, then propagate Taylor coefficients. For the \(X\) table one uses \(G_j^A=e^{X-t}(4A)^{j+1}F_j/A^2\), \(z=(X-A)/A\). The identity \[(1+z)\partial_z G_j^A=(A(1+z)-1/4)G_j^A-A G_{j-1}^A\] propagates the intervals. The anchor integrals are enclosed on panels of length \(d\le\min(32,A/16)\) by degree-600 Clenshaw--Curtis. On a disk of radius \(2d\) the majorant is \(2^{220}\), so the error is bounded by \(2d\,2^{220}4^{-601}/(1-1/4)\). 
+
+For base blocks starting at \(A\ge128\), comprising \(3017\) of the \(8615\) cells in the \(X\)-table, the code changes the scale once more. At a cell center \(C\), put \(z=(X-C)/C\) and \(Q_j=(1+z)^{j-1}G_j^C\) for \(j\ge1\). If \((H_G)_{ij}=G_{2r-1-i-j}^C\) and \((H_Q)_{ij}=Q_{2r-1-i-j}\), then
+\[
+ H_Q=(1+z)^{2r-2}D H_G D,\qquad D_{ii}=(1+z)^{-i}\quad(0\le i<r).
+\]
+Since \(1+z=X/C>0\), all leading minors keep their signs. On \(|z|\le1/2\) the extra factor in the entrywise Cauchy majorant is at most \((3/2)^{2r-2}<2^{2r}\). The generator uses \(2^{90+2r}\) on these cells and \(2^{90}\) in the fixed scale.
+
+The directory \textbf{historical32} contains the theta tail bounds and rational data. The supplement contains both the original and the regenerated tables. Row-by-row comparison confirms all 10,919 bounds and endpoints. The charts overlap because \(8<\pi e\). For \(r\ge3\), \(X\ge76(r-1)\) implies \(X\ge\max(144,r+2)\), so \S\ref{sec:tail} covers the remaining tail. For \(r=2\) use its \(p\le7\) estimate at \(X\ge16\) and for \(r=1\) use positivity of \(\Phi\).
+
+For \(r\ge10^{11}\) the quantitative version of \eqref{eq:shift} in \textbf{upper/large.md} bounds the sum over \(n<K\) by \(P(b)+Q(b)+D(b)\) for \(u\le b\), where \[P(b)=\frac{4(b/a_2)^2e^{b/2}}{\sqrt{r-1}},\quad Q(b)=\frac{24\sqrt{2b}\,e^b}{\sqrt{r-1}},\quad
+D(b)=2m e^b e^{-a_2\sqrt{r-1}/(16b)}.\] Split \(d\le1/2\) and \(d>1/2\) in \eqref{eq:shift}. At \(r=10^{11}\) the bounds on \(E+(1+E)(K^{-1/2}+P+Q+D)\) are \(0.732\) for \(u\le4\), \(K\ge2\), and \(0.982\) for \(4<u\le B\), \(K\ge2980\). With \(K<2\) the perturbation sum is empty. In \(\log r\) the derivative of \(B\) is \(<0.26\), while \(B>7\). Logarithmic differentiation makes \(P(B),Q(B),E\) decreasing, and the exponent magnitude in \(D(B)\) starts above 800 with logarithmic derivative \(>0.46\). Thus the bounds persist.
+
+\subsection{The central entry and its Schur complement}\label{sec:schur}
+
+
+For intermediate ranks choose \(b\ge1\) so \(4\pi e^{4b}>6S+4\) and, for a block \(R\le r\le S\), \[\log[24S^2(2S+b)]+(4S+2)b+2S\log b+9S-\pi(e^{4b}-4)<0.\] This gives a slice tail ratio \(<1/(4S)\) as in \S\ref{sec:upper}. On \([0,1/3]\) Jensen's inequality for the logarithms of \(u\), the normalized root distances of \(Q\), and the normalized Vandermonde factors gives a lower integral \(H e^{-9S-4X}/3\). Their individual log averages are at least \(-1-\log3,-1-\log12,-1-\log6\). For \(u\ge b\) use \(|f|\le2e^upF(m+u)u^m\); the resulting majorant decreases at least as \(e^{-(u-b)}\).
+
+The symmetric part of \(C_dJ_k\) splits into two parity blocks. With \(\alpha=M/2-i,\beta=M/2-j\le t_0\) the angular estimate in \S\ref{sec:shift} improves to \(|T_{ij}|\le J_0(A)\), \(A=(M-2t_0-2t_0^2)_+d^2(1-d^2)\), where \(J_0(A)\) denotes the angular mean of \(e^{-A\cos^2\theta}\). Pair \(\cos\theta\) and \(-\cos\theta\) and use \(\cosh(\beta x)\le e^{\beta^2x^2/2}\). In a parity with distances \(o+2i\) let \(x=s_d^4\). The squared Frobenius contribution of layer \(\max(i,j)=a\), after extracting \(s_d^{4o}\), is bounded by \[x^a\left(2\sum_{j=0}^{a-1}x^j+x^a\right)J_0(A)^2,\qquad t_0=o+2a.\] The tail from \(a=24\) costs at most \(2x^{24}/(1-x)^2\). For the center case \(\ell=r-1=M/2\), the last diagonal entry of \(C_dJ_k\) equals \(P_\ell(1-2d^2)\) by the binomial formula for Legendre polynomials. Retain its sign when forming \(S_\ell=\sum_{n=2}^K n^{-1/2}P_\ell(1-2d_n^2)\), \(d_n=a_n/u\). If \(O,P\) bound the other-parity block and the same-parity block with center removed, \(F\) bounds the coupling column, and \(e=E_0+e_1\) bounds the first-term and remaining correction norms, the sufficient tests are \[e+O<1,\quad 1-e-P>0,\quad
+u/N+e_1-S_\ell+(F+g_0)^2/(1-e-P)<1,\quad g_0=(u/N)(\pi N/32)^{1/4}.\]
+
+To see where the denominator enters, write \({\rm sym}(C)=(C+C^\top)/2\). In the symmetric part of \((\sum n^{-1/2}A_{d_n})J_k\), keep the \(n=1\) term exactly. Its value is \(I-(u/N)G\), where \(G_{ii}=1\) and \(G_{ij}=U_{ij}\) for \(i>j\) of the same parity, with the other off-diagonal entries zero apart from symmetry. The Gaussian bound on \(U_{ij}\) gives
+\[
+ E_0=\frac{u}{N}(1+\sqrt{\pi N}/2),\qquad
+ g_0^2=\left(\frac{u}{N}\right)^2\sqrt{\pi N/32}.
+\]
+The first expression bounds the norm of \((u/N)G\) by row sums. The second bounds the squared norm of its off-diagonal central column using \(\sum_{a\ge1}e^{-8a^2/N}\le\sqrt{\pi N/32}\). For \(n\ge2\) write \(C_d=s_d^hD_0 T_{[k]}D_0\), with \(D_{0,ii}=s_d^{k-1-i}\) and \(T_{[k]}\) the leading compression of the orthogonal symmetric power. From \(U_{ij}\le1\) and summing the two geometric series for the Frobenius norm,
+\[
+ \|V_dD_0\|_F^2\le v_d^2
+ =\frac{(1-d)^2}{4(1-s_d^2)}+\frac{s_d^2}{(1-s_d^2)^2}.
+\]
+Thus \(e_1=\sum_{n=2}^K n^{-1/2}(2u/N)s_{d_n}^h v_{d_n}\) bounds the remaining corrections, with one-sided endpoint values. Subtracting \(e_1 I\) from \(I-(u/N)G+\sum_{n=2}^K n^{-1/2}{\rm sym}(C_{d_n}J_k)\) gives a lower bound in the order of symmetric matrices. This comparison matrix preserves parity. The opposite-parity block is bounded below by \((1-e-O)I\). In the central parity, put the center last. The block then has the form
+\[
+ \begin{pmatrix} B_0&b_0\\ b_0^\top&a\end{pmatrix},\quad
+ B_0\succeq(1-e-P)I,\quad\|b_0\|\le F+g_0,\quad
+ a=1-u/N+S_\ell-e_1 .
+\]
+Its scalar Schur complement is at least \(a-(F+g_0)^2/(1-e-P)\). These estimates give precisely the three tests above.
+
+
+ On each interval of constant \(K\), \(S_\ell\) is a degree-\(\ell\) polynomial in \(v=(2u)^{-2}\). An affine change from \(\cos\theta\) gives a trigonometric polynomial. On \(L+1\) equally spaced angular nodes, \(L\ge q\ell\), nodal range \([a,b]\) implies a global lower bound \(a-5(b-a)/(8q^2-10)\). Apply Bernstein's inequality twice after centering the full range of width \(W\). The linear interpolation error is at most \((\pi/L)^2\ell^2W/16\). Solve for \(W\) using \(\pi^2<10\). The recurrence uses scale \(2^{46}\), with \(1/4000\) added on each end of the weighted nodal range. The full layer estimates, binning and error derivation are supplied in \texttt{upper/DOWOD.md}, \texttt{upper/PROOF\_EN.md} and \textbf{upper/kod}. Across the four Schur runs, the largest accepted upper bound for the left sides of the two tests with threshold \(1\), rounded upward to six decimal places, was \(0.999141<1\). Each denominator \(1-e-P\) was checked for positivity before division. All seven intermediate runs passed.
+
+\begin{lemma}[Coverage of successive rank blocks]\label{lem:blocks}
+Consider a scalar-test block in \texttt{verify.py}. Let \(R\le S\) be a block of ranks, let \(b=b(S)\) be its cutoff and put \(K_b=\lfloor e^{2b}\rfloor\). A successful central test at a fixed \(0<u\le b\) applies to every \(r\ge R\) and every \(1\le k\le p\le r\) at level \(m=2r\). For the next block it suffices to resume the scalar test at \(K=K_b\), where \(K=\lfloor e^{2u}\rfloor\).
+\end{lemma}
+\begin{proof}
+Put \(H=\lfloor R/20\rfloor\) and \(M_*=2R-2-H\). The identities \(N=2r-p+k-1\) and \(h=2r-p-k\) give \(N\ge R\) and \(M+h=4r-2p-2\ge2R-2\). If \(h<H\), then \(M\ge 2R-2-h>2R-2-H=M_*\). The bound for each near-central layer uses \(M_*\) as a lower bound for \(M\) and \(M_*+1\) as a lower bound for \(N\) in its correction. If \(h\ge H\), the contraction gives \(\|C_d\|\le s_d^h\le(s_d^2)^{\lfloor R/40\rfloor}\). The table takes the larger of the two corrected bounds. The first-term bound uses only \(N\ge R\). Thus, at the same \(u\), the bounds used for this table hold for every \(r\ge R\). The right endpoint \(S\) enters these central estimates only through \(u\le b(S)\). The one-node tail estimate is applied separately for each new block.
+
+For \(K<K_b\), \(e^{2u}<K+1\le K_b\le e^{2b}\), hence the preceding central cover already includes \(u\). The bin \(K=K_b\) can extend beyond \(b\) and is tested again. The first block starts at \(K=2\). For \(K=1\) only the first-term correction occurs, and its bound is included in the first test. Induction gives coverage up to each successive cutoff. On switching to \texttt{high}, the estimates cover the full interval \(0<u\le b(S)\) anew. The parity-layer and scalar Schur tests for \(33\le r<1450\) likewise cover each of their own blocks directly.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{th:upper}]
+The large-order estimate covers \(r\ge10^{11}\). For \(33\le r<10^{11}\), apply the determinant reduction of \S\ref{sec:shift} on the central cube. For \(k<p\), \(h=2r-p-k\ge1\). In particular, for \(33\le r\le649\) the largest accepted layer bound for \(h\ge1\) is below \(0.998768\). This gives the uniform lower bound \((1-0.998768)I\) for the symmetric part of the transformed \(k\)-block after multiplication by \(J_k\), up to the one-sided endpoints of each active interval. The continuous Wronskian therefore retains its strict sign at \(a_n\), since the triangular transformations are invertible there. For \(k=p\) the last Wronskian need only be positive almost everywhere in the iterated integral. The Schur test supplies this sign in the critical case \(p=k=r\). For \(650\le r<10^{11}\) the corresponding certified bounds cover all \(k\le p\) on their intervals as well. The node determinants on the central cube are consequently positive for every increasing tuple of distinct nodes. The complement estimate gives a strictly positive full integral in \eqref{eq:andreief}. For \(r\le32\), the three finite covers join the analytic tail without a gap. These ranges exhaust \(r\ge1\); Nuttall's criterion gives the asserted upper bound.
+\end{proof}
+
+
+\section{Negative signed Wronskians in orders 500 and 142}\label{sec:witness}
+
+
+\begin{theorem}\label{th:witness}
+At \(t_*=15/8192\), the signed Wronskians of \(\Psi_{767}\) are positive through order \(499\) and negative at order \(500\). In particular \(m(500)\ge768\).
+\end{theorem}
+
+
+\begin{proof}
+Extend \(F_s\) of \S\ref{sec:finite} to \(F_{-1-j}=(-1)^j\Phi^{(j)}\). Compute \(b_s=L^sF_s(t_*)\) with \(L=256\). The Hankel array \(b_{m-1-i-j}\) is a positive diagonal scaling of the Wronskian array after removal of the paired derivative signs. Positive-index inputs use period-12 Fourier interpolation of \(\Phi(t_*+u)(Lu)^s/s!\) and integration over \([0,6]\). Parity of \(\Phi\) follows from the Jacobi theta transformation. For \(N=131072\), \(P=9000\) bits and the used range of indices, an absolute input radius is \[e^{25L/4}\big(10^9e^{-\pi N/48}+10^9e^{-60000}+2^{-P+12\log_2N+40}\big).\] Shifting the Fourier contour by \(1/4\) gives the first term from frequencies \(|k|\ge N/2\). The second controls the omitted real tails and periodized images by double exponential decay. The third accounts for fixed-point FFT and power propagation. Negative-index inputs use integer derivative polynomials and a Cauchy bound as in \S\ref{sec:exact}. The accompanying derivations give the node weights, individual rounding bounds and cutoffs.
+
+A triangular integer array \(C\) is proposed by a three-term recurrence. On the scale of integer inputs \(B_j\) (indexed by Hankel anti-diagonal), let \(E\) bound each input error. Compute exactly \(F_{ij}=\sum_{a=0}^i C_{ia} B_{j+a}\) for \(j\le i\); put \(U=\max_i\sum_a|C_{ia}|\), \(R=\max_{j<i}|F_{ij}|\). In a leading block of dimension \(d\), the row norm of the difference of the congruence from the diagonal \(F_{ii}C_{ii}\) is at most \(d(UR+EU^2)\). This follows by expanding each lower entry and using symmetry. If this is smaller than \(\min_{i<d}|F_{ii}C_{ii}|\), the leading determinant signs follow from those diagonal entries. All comparisons are made with integers. An inconclusive return is distinct from both a pass and a witnessed wrong sign.
+
+At \(t_*\) the interval calculation returns the first incorrect order \(500\) for \(m=767\) and the all-positive signed pattern for \(m=768\). The first result excludes level \(767\) and, by persistence, all smaller levels. The fresh-input run and its parameters are recorded in \texttt{rank500/fresh\_witness.log} in the computational supplement.
+\end{proof}
+
+
+\textbf{Remaining interval.} The archived numerical runs at \(m=768\) cover 742 distinct rational sample points on three overlapping meshes. The signed tests also hold at certified points \(0,t_*,81/64\) and, by \S\ref{sec:tail}, throughout \(t\ge\frac14\log(502/\pi)\). The archived meshes were checked for coverage and results. They leave intervals between samples in the compact region. This is precisely the missing implication in the proposed equality \(m(500)=768\). With Theorem~\ref{th:upper} the justified bracket is \(768\le m(500)\le1000\).
+
+Nuttall reported \(m(142)=197\) as a numerical prediction \cite[(1.5)]{nuttallsplit}. The following witness proves the lower bound in that prediction. Whether level \(197\) suffices on the whole half-line remains open.
+
+\begin{corollary}\label{cor:witness142}
+One has \(197\le m(142)\le284\).
+\end{corollary}
+\begin{proof}
+At \(t=0\) and level \(m=196\), the same congruence test gives the required strict signs through order 141 and \(\epsilon_{142}W_{142}(\Psi_{196};0)<0\). The moments at zero use the period-six Fourier quadrature described in the supplement, with \(N=32768\), \(L=256\) and fixed-point precision \(P=5000\) bits. For the scaled moments of nonnegative index, the common error radius is \[e^{13L/4}\big(10^9e^{-\pi N/24}+10^9e^{-60000}+2^{-P+12\log_2 N+40}\big).\] The derivation for the half period \([0,3]\) is in \texttt{rank500/kwadratura\_bazowa.md}. By continuity the negative sign persists at small positive arguments, and persistence of \(RR_{142}\) excludes every \(m\le196\). At \(m=197\) the test certifies all signs at zero. The upper bound on the whole half-line follows from Theorem~\ref{th:upper} with \(r=142\).
+\end{proof}
+
+\section{Consequences and open questions}\label{sec:consequences}
+
+
+\begin{corollary}\label{cor:asym}
+\[1\le\liminf_{r\to\infty}\frac{m(r)}r\le\limsup_{r\to\infty}\frac{m(r)}r\le2.\]
+\end{corollary}
+
+
+\begin{proof}
+Fix \(\varepsilon=1\) in Theorem~\ref{th:lower}, divide both bounds by \(r\), and use \(1/\log r\to0\).
+\end{proof}
+
+
+Finite-order data, including the certified lower ratio \(768/500=1.536\), cannot identify either asymptotic endpoint. Even monotonicity of the integer minimum \(m(r)\) is insufficient: the increasing staircase \(a_r=2^{\lfloor\log_2 r\rfloor+1}\) satisfies \(r\le a_r\le2r\) and its ratio has lower limit 1 and upper limit 2. This is a logical example, with no assertion that the kernel follows that staircase.
+
+\subsection{Where the moment determinants are positive}\label{sec:dtable}
+
+Write \(\beta_j=\big((2j)!\big)^{-1}\int_0^\infty u^{2j}\Phi(u)\,du\) for \(j\ge0\), and put \(\beta_j=0\) for \(j<0\). In Nuttall's notation
+\[ D(n,r)=\det[\beta_{n+j-i}]_{i,j=0}^{r-1},\qquad n\ge0,\quad r\ge1. \]
+Thus \(r\) is the order of the matrix and \(n\) shifts its coefficients. Dual Jacobi--Trudi gives a representation by an \(n\times n\) matrix using the coefficients of \(1/(\sum_{j\ge0}(\beta_j/\beta_0)(-z)^j)\) after normalization by \(\beta_0\). We keep the same indices throughout.
+
+Katkova \cite[Theorems~1 and~2]{katkova} applied Schoenberg's sector criterion to the coefficients of \(\xi(1/2+\sqrt z)\), proved nonnegativity of all Toeplitz minors through order 44 (\(PF_{44}\)), and observed that greater verified zero heights improve the order. She also established asymptotic multiple positivity for each fixed order. For the rectangular minors considered here, Theorem~\ref{th:upper} yields the explicit threshold \(n\ge r\). Our sector bound uses the full verified height of Platt and Trudgian and the zero-free region of Bellotti, Trudgian and Yang. Lin \cite{lin} relates the same rectangular Schur functions to the pair-angle threshold \(\pi/(r+1)\).
+
+For the strip uniform in \(r\) we give two arguments. A phase estimate for Schur functions reaches \(n=110\,000\,000\,000\) and gives a quantitative lower bound for the determinant in Appendix~\ref{sec:phase}. The wider strip follows by applying Sra's theorem on a reciprocal Laplace density \cite[Theorem~1.2]{sra} to a double moment integral in Appendix~\ref{sec:sra}.
+
+\begin{theorem}\label{th:regions}
+Each row of the following table gives a sufficient condition for \(D(n,r)>0\).
+\end{theorem}
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Shift \(n\) & Order \(r\) & Argument\\
+\midrule
+\(n\ge r\) & \(r\ge1\) & Theorem~\ref{th:upper}\\
+\(n\ge0\) & \(1\le r\le9\,561\,277\,002\,984\) & Sector bound\\
+\(0\le n\le1\,810\,540\,931\,075\) & \(r\ge1\) & Sra and Andréief\\
+\(0\le n\le110\,000\,000\,000\) & \(r\ge1\) & \shortstack[l]{Schur phase bound\\[2pt]\(D_a(n,r)>0.069\,a_0^rP^r\)}\\
+\(1\le n\le12\,363\,153\,437\,137\) & \(r+1>12M_n/(1-q_n)^2\) & Cauchy identity\\
+\(n\in G,\ \underline d(G)\ge0.6735\) & \(r\ge R(n)\) & Distinct zero radii\\
+\bottomrule
+\end{tabular}
+\end{center}
+In the phase-estimate row, \(a_0=\xi(1/2)\), \(D_a(n,r)=8^r4^{nr}D(n,r)\) and \(P=\prod_{i=1}^n\gamma_i^{-2}\), where the \(\gamma_i\) are the successive positive zero ordinates, verified on the critical line in this range. The empty product is one. Appendix~\ref{sec:phase} derives the quantitative inequality.
+
+Here \(q_n,M_n\) are given in \eqref{eq:dthreshold}. In the last row \(\underline d(G)=\liminf_{K\to\infty}|G\cap[1,K]|/K\). The threshold may vary with \(n\). The sector bound limits the order. The two moment arguments limit the shift. For example, the sector bound applies at \((3\cdot10^{12},4\cdot10^{12})\) and the reciprocal-density bound at \((10^{12},10^{20})\). These statements concern the moment determinants. They do not determine \(m(500)\) or the sign for every pair \(n,r\) in Nuttall's RH criterion.
+
+\begin{proof}[The wedge \(n\ge r\)]
+Set \(b_j=\int_0^\infty u^j\Phi(u)\,du/j!=\Psi_{j+1}(0)\) for \(j\ge0\). In the matrix \([b_{2n+j-i}]_{0\le i,j\le2r-2}\), a contiguous square block of order \(p\le r\) has top-left index \(\ell\ge2n-2r+1+p\). Reversing its columns and using \(\Psi_m'=-\Psi_{m-1}\) shows that its determinant is \(\epsilon_p W_p(\Psi_{\ell+p};0)\). Since \(\ell+p\ge2p+1\), Theorem~\ref{th:upper} and Lemma~\ref{lem:persist} make every such determinant strictly positive. The contiguous-minor criterion \cite[Lemma~2.4]{fjs} gives positivity of every minor through order \(r\). The even rows and even columns select \(D(n,r)\). This also explains the single-moment argument in \cite[(3.21)--(3.23)]{moment}. The remaining rows are proved in Appendix~\ref{sec:dproof}.
+\end{proof}
+
+
+\subsection{Two open questions}
+
+The order-500 computation identifies a specific compact interval to cover. An interval version of the integer congruence in \S\ref{sec:witness}, with Taylor remainders as in \S\ref{sec:jet}, would upgrade the equality if it passes throughout.
+
+Can the asymptotic upper coefficient \(2\) be reduced? At \(p=k=r\) the exponent \(M-2(k-1)=m-2r\) in \S\ref{sec:shift} becomes negative as soon as \(m<2r\). The following theorem locates a sign change already at the first omitted level.
+
+\begin{theorem}[Sign change at the first positive knot]\label{th:firstknot}
+For every odd \(r\ge3\), set \(m=2r-1\), \(a=\tfrac12\log2\), and \(f_j=R_{r-1+j}\) for \(0\le j<r\), with \(R_j\) as in \S\ref{sec:upper}. The ordinary Wronskian \(W(f_0,\ldots,f_{r-1})\) is strictly positive on some interval immediately to the left of \(a\) and strictly negative on some interval immediately to its right.
+\end{theorem}
+\begin{proof}
+With \(p=k=r\) we have \(L=r-1\), \(\ell=r-1\), \(N=2\ell\), \(M=2\ell-1\), and \(J=\operatorname{diag}((-1)^i)_{i=0}^{\ell}\). On open knot intervals the triangular coefficient transformations of \S\ref{sec:shift} apply algebraically: all binomial normalizations are positive since \(\ell\le M\). Reversing the columns contributes \(\det J\). Thus the Wronskian has the sign of \(\det H/\det J\), where \(H=\sum_{a_n<u}n^{-1/2}A_{a_n/u}\). In the left and right limits at \(a\), the matrices are respectively \(A_0\) and \(A_0+A_1/\sqrt2\), with \(u=a\) in their definitions.
+
+At \(d=1\) the polynomial defining \(C_1\) is \((w+z-2wz)^M\). Every monomial has total degree at least \(M\). In our index block the only nonzero entries are therefore
+\[
+ (C_1)_{\ell-1,\ell}=(C_1)_{\ell,\ell-1}=1,\qquad
+ (C_1)_{\ell,\ell}=
+ \frac{-2(2\ell-1)\binom{2\ell-2}{\ell-1}}{\binom{2\ell-1}{\ell}}=-2\ell .
+\]
+Since \(V_1=U-I\) is strictly lower triangular and \(U_{\ell,\ell-1}=1\), the only nonzero entry of \(V_1 C_1+C_1V_1^\top\) is its last diagonal entry, equal to \(2\). For the unshifted term \(C_0=J\), \(V_0=U-I/2\). The binomial coefficients \(\binom Mi\) are nondecreasing for \(0\le i\le\ell\), so \(|U_{ij}|\le1\). The row and column sums of \(|V_0|\) give \(\|V_0\|_2\le\ell+1/2\), hence
+\[
+ \|A_0-J\|_2\le a(1+1/N)<1/2 \qquad (a<3/8,\;N\ge4).
+\]
+The left limit therefore has the required positive sign after division by \(\det J\). For the right limit write \(H=\left(\begin{smallmatrix} B&b\\ b^\top&c\end{smallmatrix}\right)\). Its leading \(\ell\times\ell\) block \(B\) receives no shifted contribution. The same estimate on this block gives \(\|B^{-1}\|_2<2\) and the determinant sign of the leading block of \(J\). Each off-diagonal entry in the last column of \(A_0\) has magnitude at most \(a/N\), by triangularity of \(V_0\). The shifted part adds only one off-diagonal entry, \(1/\sqrt2\). Since \(\ell\ge2\) is even, we obtain
+\[
+ \|b\|_2\le 1/\sqrt2+a\sqrt\ell/N\le (1+3/16)/\sqrt2<\sqrt3/2,
+ \qquad
+ c=1-a/N-(2\ell+2a/N)/\sqrt2<-3/2.
+\]
+It follows that \(c-b^\top B^{-1}b<0\). The last diagonal entry of \(J\) is \(+1\), so \(\det H/\det J<0\). Both one-sided limits are strict. Continuity on each knot interval gives the two asserted signs.
+\end{proof}
+
+To see the consequence for the integral, take \(m=2r-1\), \(p=r\) in the derivation of \eqref{eq:andreief}; the moment identity still applies since \(L=r-1\ge2\). At a point \(u\) inside either knot interval, coalescing distinct increasing nodes there gives
+\[
+ \frac{\det[f_j(u_i)]_{0\le i,j<r}}{\Delta(u_0,\ldots,u_{r-1})}
+ \longrightarrow
+ \frac{W(f_0,\ldots,f_{r-1})(u)}{\prod_{j=0}^{r-1}j!}.
+\]
+The other Vandermonde and the weights in \eqref{eq:andreief} are positive at such nodes. The integrand thus has open sets of both signs. A proof at this level based on the same integral would have to account for its negative part. The sign of the integral, and hence the sufficiency of \(2r-1\) integrations, remains open in general.
+
+
+\appendix
+
+\section{Error bounds for the finite certificates}\label{sec:errors}
+
+
+\textbf{Integrals at the origin.} The historical \(t\) calculation encloses every raw moment up to degree 63 on 32 panels in \([0,2]\). A disk of radius \(1/4\) about the midpoint of a panel of length \(1/16\) gives radius ratio \(1/8\). On it \(|s|<3\) and each of the 24 retained theta terms has modulus below \(10^4\). Taylor approximation, positivity of the quadrature weights and exactness on degree 648 give the common quadrature allowance \(24\cdot46000\cdot3^j/8^{649}\) for a raw moment of degree \(j\). For \(n\ge25\) on the real panels, extract the \(e^{-\pi n^2}\) factor; the rest is polynomial and the resulting tail decreases geometrically. Beyond \(s=2\) the full sum is bounded by \(2e^{-\pi e^{4s}/2}\). The two raw-moment tails each cost less than \(3^j 2^{-1960}\) in the used range. Each input interval then undergoes division by \(j!\) with outward rounding. Compare the constants with the generator in \textbf{historical32/theta.py}.
+
+\textbf{Legendre roundoff.} The middle-rank verifier partitions \(d\) into 4096 bins and rounds norm estimates upwards at scale \(2^{20}\). On the unit interval of each active theta range let \(x=1-2v\log^2n\). Its argument error in the degree recurrence is below \(370/Q\), \(Q=2^{46}\). Splitting signed products into 23-bit pieces avoids overflow. The code checks \(|z_j|<1.001\), giving a one-step error \(|\eta_j|<750/Q\) relative to the recurrence at the true \(x\). The error generating series is \[E(z)=D(z)^{-1/2}\int_0^z D(w)^{-1/2}\sum_{j\ge1}j\eta_jw^{j-1}\,dw,\qquad D(z)=1-2xz+z^2.\] Multiply the three-term error recurrence by \(z^j\) and sum to obtain the differential equation \(DE'+D'E/2=\sum j\eta_j z^{j-1}\). Since \([z^i]D^{-1/2}=P_i(x)\) has magnitude at most one, the amplification at degree \(\ell\) of error \(j\) is bounded by \(\sum_{k=0}^{\ell-j}j/(j+k)\le\ell-j+1\). Thus one value costs at most \((750/Q)\ell(\ell+1)/2\) and the sum of weights is below 20. Including weight rounding gives the \(1/4000\) allowance used in \S\ref{sec:schur}.
+
+\textbf{Fourier weights at the order-500 witness.} Put \(\delta=2^{-P}\) and \(N=2^h\). For positive and negative nodes use weights \((12/N)(1\pm w_j)/2\), with \[w_j=(4/\pi)\sum_{1\le k<N/2,\ k\text{ odd}}\sin(2\pi kj/N)/k.\] This follows by integrating each trigonometric mode over a half period. MPFR encloses the theta values. An \(h\)-stage fixed-point FFT encloses each weight error by \(40N^3\delta\); a stage at error \(E\) costs at most \((2+10N\delta)E+10N^2\delta+2\delta\). Powers in the factorially normalized integrand propagate a local truncation by a total factor at most \(\sum (6L)^j/j!=e^{6L}\). On \(\lvert\Im u\rvert=1/4\) the integrable majorant for a full periodization is \(10^6e^{25L/4}\) in line-integral norm. The Fourier coefficient bound decays as \(e^{-\pi|k|/24}\); doubled for aliasing and summed beyond \(N/2\), this gives the first term in \S\ref{sec:witness}. The remaining factors in \S\ref{sec:witness} cover both endpoint weights and the sum of all discretization errors. The two archived quadrature notes and the source give the per-node stopping tests.
+
+\section{Computational supplement}\label{sec:replay}
+
+
+The accompanying archive \texttt{certificates.zip} contains the source code, exact endpoints, regenerated bounds, quadrature data and replay logs. All paths below are relative to its root. The reference environment uses Python~3.12.14, mpmath~1.3.0 and NumPy~2.3.5. The order-500 verifier additionally uses a C++17 compiler, OpenMP, GMP/GMPXX and MPFR~4.
+
+For a quick audit run \texttt{python verify\_release.py}. It recomputes scalar inequalities, compares stored cell tables, regenerates all order-four and order-eight cells, checks both saved witness transcripts, and validates the accepted rank ranges and maxima in all seven archived intermediate runs. To regenerate the numerical evidence from the source, use the individual commands below.
+
+\begin{verbatim}
+python small/check_phi4.py > phi4_replay.csv
+python small/certify.py
+python small/check_order8.py > order8_replay.csv
+python historical32/compare.py
+sh historical32/regenerate.sh
+python upper/sprawdz.py
+(cd rank500 && sh build.sh)
+python rank500/check_witness.py --rank 142
+python rank500/check_witness.py --rank 500
+python determinants/check_constants.py
+\end{verbatim}
+
+The three programs in \texttt{small/} regenerate the 64 cells for \(\Phi\), 67 for \(\Psi_1\), and 86 for \(\Psi_2\). The last program also recomputes \(W_8(\Psi_1;5/64)\). Compare its standard output with \texttt{small/order8.csv} and its diagnostic output with \texttt{small/order8.log}. The \texttt{historical32} commands compare and regenerate the \(10\,919\) older cells. The \texttt{upper/} program recomputes the intermediate ranks. For each witness the \texttt{rank500/} checker regenerates the moments in an empty directory and checks the signs at both adjacent levels. The last command recomputes the scalar inequalities of Appendix~\ref{sec:dproof} with outward rounding. The 742-point mesh and pointwise interval certificates have separate logs. The earlier order-five manuscript and its compact Lean replay sources are in \texttt{r5/}; its stated trust assumptions include 228 native-decision axioms. An additional direct check for order four on \(3\le X\le16\) is described in the supplement. The compact certificates through order eight use Python and integer interval arithmetic.
+
+\section{Proofs for the determinant ranges}\label{sec:dproof}
+
+\subsection{From moments to zero angles}\label{sec:sector}
+Use the standard completed function \(\xi(s)=s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)/2\). The cosine transform of our kernel \cite{nuttall,rt} gives
+\[
+ F(z)=\xi(\tfrac12+\sqrt z)=\sum_{j\ge0}a_jz^j,\qquad a_j=8\,4^j\beta_j,\qquad
+ D_a(n,r)=8^r4^{nr}D(n,r).
+\]
+Here \(D_a\) uses the coefficients \(a_j\) in the same matrix. The functional equation makes \(F\) entire and independent of the square root. Since \(\xi\) has order one, \(F\) has order at most \(1/2\), and its genus-zero product reads
+\[
+ F(z)/a_0=\prod_{\rho}(1+x_\rho z),\qquad
+ x_\rho=-(\rho-\tfrac12)^{-2},\qquad \sum_{\rho}|x_\rho|<\infty.
+\]
+We count zeros \(\rho=\beta+i\gamma\) with \(\gamma>0\), with multiplicity. Each critical-line zero gives a positive \(x_\rho\). A pair off the line gives conjugate variables. All zeros with \(\gamma\le T_{\mathrm{PT}}=3\,000\,175\,332\,800\) are simple and on the line \cite[Theorem~1 and \S2]{pt}. Above \(T_{\mathrm{PT}}\), the classical zero-free region \cite{bty} and symmetry imply
+\[
+ |\arg x_\rho|=2|\arctan((\beta-\tfrac12)/\gamma)|
+ \le\frac{1-2/(4.896\log T_{\mathrm{PT}})}{T_{\mathrm{PT}}}=:\theta_{\mathrm{PT}} .
+\]
+The bound before replacing \(\gamma\) by \(T_{\mathrm{PT}}\) decreases on this interval. The interval calculation gives \(0.1253<\pi/\theta_{\mathrm{PT}}-1-9\,561\,277\,002\,984<0.1254\). Hence \((r+1)\theta_{\mathrm{PT}}<\pi\) through the stated endpoint. Schoenberg's sufficient sector theorem \cite[Theorem~30.27]{khare} makes the Toeplitz matrix of each real linear or conjugate quadratic factor totally nonnegative through order \(r\). Cauchy--Binet preserves this property under multiplication, first on finite triangular sections, then in the limit of the coefficients. To get strict positivity, extract \(n\) positive variables from critical-line zeros, using Hardy's theorem. Their polynomial has degree \(n\), so its shifted triangular minor is \((x_1\cdots x_n)^r>0\). In Cauchy--Binet this minor is multiplied by a principal triangular minor equal to one for the remaining normalized product. All other terms are nonnegative. For \(n=0\), \(D(0,r)=\beta_0^r\).
+
+\subsection{A rectangular Schur identity}
+Order the variables by decreasing modulus. At a strict gap \(|x_n|>|x_{n+1}|\) write \(X_0=(x_i)_{i\le n}\), \(B=(x_i^{-1})_{i\le n}\), \(Y=(x_j)_{j>n}\), and \(P=\prod_{i\le n}x_i\). Write \(s_\nu\) for the Schur function of partition \(\nu\), and \((r^n)\) for the rectangle with \(n\) rows of length \(r\). Dual Jacobi--Trudi and expansion in two sets of variables give \cite[Chap.~I, \S\S3,5]{mac}
+\begin{equation}\label{eq:dschur}
+ \frac{D_a(n,r)}{a_0^r}=s_{(r^n)}(X_0,Y)
+   =P^r\sum_{\nu\subseteq(r^n)}s_\nu(B)s_\nu(Y).
+\end{equation}
+Indeed the complement of \(\mu\) in the rectangle, rotated by \(180^\circ\), has parts \(\nu_i=r-\mu_{n+1-i}\). Rotating tableaux and reversing their alphabet gives \(s_{(r^n)/\mu}(Y)=s_\nu(Y)\), and the alternant formula gives \(s_\mu(X_0)=P^rs_\nu(B)\). Absolute convergence of the zero product permits finite conjugation-invariant truncations followed by a limit.
+
+\subsection{A phase bound uniform in the order}\label{sec:phase}
+For the phase estimate fix the round height \(T=3\cdot10^{12}<T_{\mathrm{PT}}\). Take the first \(n\) zeros on the line with \(\gamma_n\le U<T\), so \(B_i=\gamma_i^2\). For a finite truncation \(Y=(y_j)\) let \(M_{ij}\) be independent geometric variables with probabilities \((1-q_{ij})q_{ij}^h\) at \(h\ge0\), \(q_{ij}=B_i|y_j|<1\). Put \(C_j=\sum_i M_{ij}\), \(\Theta=\sum_j C_j\arg y_j\). Under the Robinson--Schensted--Knuth correspondence the first row of the shape is a maximum of increasing path sums \cite[\S2.1]{joh}. Thus \(E=\{\nu_1\le r\}\) is decreasing in every entry. The tableau weights identify the ratio of the sum in \eqref{eq:dschur} to the same sum at \(|Y|\) with \(\mathbb E[e^{i\Theta}\mid E]\). The positive denominator includes the empty partition and is at least one.
+
+The conditional generating polynomial in the column variables is symmetric within each conjugate pair. Mixed second moments between distinct pair differences vanish by swapping one pair. For a given pair put \(Z=C_a+C_b\). Branching the Schur functions in the pair gives a positive mixture of two-variable Schur polynomials \(s_{(h,k)}\) since the two moduli agree. Within each component \(C_a-C_b\) is uniform on \(-d,-d+2,\dots,d\), where \(d=h-k\le Z=h+k\). Its second moment is \(d(d+2)/3\). The function \(Z^2+2Z\) increases in the independent entries while \(E\) decreases, so the product-measure correlation inequality gives
+\[
+ \mathbb E[(C_a-C_b)^2\mid E]\le \tfrac13\mathbb E[Z^2+2Z\mid E]\le\tfrac13\mathbb E[Z^2+2Z].
+\]
+Set \(A=\sum_{i\le n}\gamma_i^2\), \(\alpha=U^2/T^2\), and \(W_k=\sum_{\gamma>T}(2|\beta-1/2|)^2\gamma^{-k}\). For a pair at height \(\gamma\), \(q_{ij}\le\gamma_i^2/\gamma^2\). Hence \(\mathbb EZ\le2A/[\gamma^2(1-\alpha)]\) and \({\rm Var}(Z)\le2A/[\gamma^2(1-\alpha)^2]\). Use \(|\arg y_a|\le2|\beta-1/2|/\gamma\), \(\cos v\ge1-v^2/2\), and count the two zeros per pair. The conditional mean is real and
+\begin{equation}\label{eq:dphase}
+ \mathbb E[\cos\Theta\mid E]\ge1-\frac{A^2W_6+\tfrac32 A W_4}{3(1-\alpha)^2}.
+\end{equation}
+
+Here are the inputs to a numerical bound independent of \(r\). With \(N(v)=\#\{0<\gamma\le v\}\), \(H(v)=v(\log(v/(2\pi))-1)/(2\pi)+7/8\), one has \(|N(v)-H(v)|\le2\log v\) for \(v\ge14\) \cite[(3)]{dusart}. Taking \(U=32\,400\,000\,000\) gives \(N(U)\ge H(U)-50>110\,000\,000\,000\). Integration by parts against \(N\), with \(|N-H|<50\) on \([14,U]\), gives
+\[
+ A\le\frac{U^3}{6\pi}\left(\log\frac{U}{2\pi}-\tfrac13\right)+100U^2+1000 .
+\]
+At \(L=\log T\) another integration by parts on the tail yields
+\[
+ S_k:=\sum_{\gamma>T}\gamma^{-k}\le
+ \frac{\log(T/(2\pi))+1/(k-1)}{2\pi(k-1)T^{k-1}}+
+ \frac{4L+2/k}{T^k}.
+\]
+For \(\sigma=0.85,0.90\) use respectively \((c,d)=(8.98,3.59),(11.50,3.19)\) in the estimate \(N(\sigma,v)\le c v^a(\log v)^b+d(\log v)^2\) for \(v\ge T\), \(a=8(1-\sigma)/3,\ b=5-2\sigma\) \cite[Table~1 and (4.71)]{kln}. The count is on the right of \(\sigma\). Including the reflected zeros, let \(R_{k,\sigma}\) be the sum of \(\gamma^{-k}\) over this tail and its reflection. Since \(\log v\le L(v/T)^{1/L}\), partial integration gives
+\[
+ R_{k,\sigma}\le 2k\left(
+ \frac{cL^b T^{a-k}}{k-a-b/L}+\frac{dL^2T^{-k}}{k-2/L}\right).
+\]
+The stepwise upper bound on \((2|\beta-1/2|)^2\) gives \(W_k\le0.49S_k+0.15R_{k,0.85}+0.36R_{k,0.90}\). Inserting the unrounded estimates in \eqref{eq:dphase} gives a loss below \(0.931\). Therefore \(D_a(n,r)>0.069\,a_0^r P^r\), uniformly in the truncation of \(Y\) and in \(r\). The bound passes to the full product. The interval checks are in \texttt{determinants/check\_constants.py}.
+
+\subsection{Eventual positivity and its quantifiers}
+At any strict gap, \(P>0\) and the full Cauchy product \(L_Y=\prod_{i\le n,j>n}(1-x_j/x_i)^{-1}\) is positive. Real factors are positive and complex factors occur in conjugate pairs. Take \(q\ge\max_{i,j}|x_j/x_i|\) with \(q<1\) and \(M\ge\sum_{i,j}|x_j/x_i|\). For first simple critical zeros with \(\gamma_{n+1}\le T_{\mathrm{PT}}\) we may take
+\begin{equation}\label{eq:dthreshold}
+ q_n=(\gamma_n/\gamma_{n+1})^2,\qquad
+ M_n=\left(\sum_{i\le n}\gamma_i^2\right)\sum_{\gamma>\gamma_n}\gamma^{-2}.
+\end{equation}
+Terms missing from \eqref{eq:dschur} have degree at least \(r+1\). By homogeneity and the absolute Cauchy identity, for \(v=1+(1-q)/2\) the relative error in replacing the truncated sum by \(L_Y\) is bounded by
+\[
+ v^{-(r+1)}\prod_{i,j}\frac{1+|x_j/x_i|}{1-v|x_j/x_i|}
+ \le \exp\!\left[-(r+1)(1-q)/3+4M/(1-q)\right].
+\]
+Here \(\log v\ge(1-q)/3\) and \(1-vq\ge(1-q)/2\). The exponent is negative when \(r+1>12M/(1-q)^2\). Platt and Trudgian \cite[Theorem~1 and \S2]{pt} verified the first \(N_{\mathrm{PT}}=12\,363\,153\,437\,138\) zeros through height \(T_{\mathrm{PT}}\), all simple and on the critical line. For \(1\le n\le N_{\mathrm{PT}}-1\), both ordinates \(\gamma_n<\gamma_{n+1}\) in \eqref{eq:dthreshold} lie in this verified range. Every subsequent zero satisfies \(\lvert\rho-\tfrac12\rvert\ge\gamma\ge\gamma_{n+1}\), so \(q_n<1\) bounds every ratio \(\lvert x_j/x_i\rvert\) with \(i\le n<j\). This gives the shift endpoint \(N_{\mathrm{PT}}-1=12\,363\,153\,437\,137\) in the Cauchy-identity row.
+
+Finally, let \(G\) be the endpoints of groups of equal modulus. Each group containing a simple critical-line zero gives one distinct endpoint, because there is only one point of that line at any given positive radius in the upper half-plane. A group may also contain off-line zeros. Counting by radius in place of height changes the count at radius \(V\) by \(O(\log V)\), since \(\gamma\le|\rho-1/2|\le\sqrt{\gamma^2+1/4}\) and \(N(V+1)-N(V-1)=O(\log V)\). This also bounds the size of a final incomplete group. Thus the lower density of \(G\) is at least the lower proportion of simple critical-line zeros. The proportion bound of Alpöge and Furman and of Lamzouri \cite{af,lam} gives \(\underline d(G)\ge0.6725\). Applying Knausgård's bound \cite[Theorem~1.3]{knausgard} yields \(\underline d(G)\ge 1\,669\,159/2\,478\,195>0.6735\). For each fixed \(n\in G\), the strict-gap estimate gives a finite \(R(n)\). This density conclusion uses the cited 2026 preprints. The finite ranges above are independent of that input.
+
+
+
+\subsection{A uniform strip from the reciprocal Laplace density}\label{sec:sra}
+Let \(K_*=1\,810\,540\,931\,075\) and recall \(F(z)=\xi(1/2+\sqrt z)\), \(a_0=F(0)>0\).
+By Sra's Theorems~1.1 and~1.2 \cite{sra} there is a probability density \(f\) on \((0,\infty)\) with
+\[
+ \int_0^\infty e^{-st}f(t)\,dt=\frac{a_0}{F(s)}\qquad(s\ge0).
+\]
+It is \(a_0\) times the density denoted by \(\Theta\) in that paper. Extend \(f\) by zero to \((-\infty,0]\). For \(n\le K_*\) and strictly increasing real nodes \(x_i,z_i\), Sra's Theorem~1.2 gives \(\det[f(x_i-z_j)]\ge0\), with strict inequality when \(x_i>z_i\) for every \(i\). We apply this theorem with all \(x_i>0\) and all \(z_i<0\).
+
+Set \(h_j=\int_0^\infty t^j f(t)\,dt/j!\) for \(j\ge0\), and \(h_j=0\) for \(j<0\). Differentiating the Laplace transform at \(s>0\) and letting \(s\downarrow0\) identifies these moments by monotone convergence, since \(a_0/F\) is analytic at zero. Thus \(\sum_{j\ge0}h_jz^j=a_0/F(-z)\) near zero. The elementary symmetric functions of the zero variables are \(a_j/a_0\) and the complete homogeneous symmetric functions are \(h_j\). The two Jacobi--Trudi identities for the rectangle \((r^n)\) give, for \(n\ge1\),
+\begin{equation}\label{eq:dual-moments}
+ \frac{8^r4^{nr}}{a_0^r}D(n,r)=\det[h_{r+j-i}]_{0\le i,j<n}.
+\end{equation}
+
+Suppose first that \(1\le n\le K_*\) and \(r\ge n\). For \(0\le i,j<n\) put \(a=n-1-i\), \(b=r-n+j\). Both exponents are nonnegative. In the integral below, substituting \(t=x+y\) and using \(\int_0^t x^a(t-x)^b\,dx=a!b!t^{a+b+1}/(a+b+1)!\) gives
+\[
+ h_{r+j-i}=\int_0^\infty\!\int_0^\infty
+ \frac{x^{n-1-i}}{(n-1-i)!}\,f(x+y)\,
+ \frac{y^{r-n+j}}{(r-n+j)!}\,dx\,dy .
+\]
+Write \(P_i(x)=x^{n-1-i}/(n-1-i)!\), \(Q_j(y)=y^{r-n+j}/(r-n+j)!\), and \(\mathcal O_n=\{0<x_1<\cdots<x_n\}\). Two applications of Andréief's identity express the determinant on the right of \eqref{eq:dual-moments} as
+\[
+ \int_{\mathcal O_n\times\mathcal O_n}
+ \det[P_i(x_\ell)]\,\det[f(x_\ell+y_m)]\,
+ \det[Q_j(y_m)]\,d\mathbf x\,d\mathbf y .
+\]
+Here the rows of the three matrices are indexed by \(i,\ell,m\), respectively. The ordered domains absorb the two factorials in Andréief's formula. Expanding the determinants gives finitely many terms whose absolute integrals are bounded by products of finite moments, justifying Fubini.
+
+The first determinant has sign \(\epsilon_n\) by reversal of the monomial rows. For the middle determinant take \(z_j=-y_{n+1-j}\) with \(1\le j\le n\). These nodes increase, and \(x_i>z_i\) for all \(i\). Reversing the columns in Sra's strictly positive determinant gives the sign \(\epsilon_n\). The last determinant is a positive multiple of \(\prod_m y_m^{r-n}\,\Delta(\mathbf y)\). The integrand is therefore strictly positive throughout the ordered domains. Equation~\eqref{eq:dual-moments} yields \(D(n,r)>0\).
+
+If \(1\le r<n\le K_*\), then \(r<K_*<9\,561\,277\,002\,984\), so the sector bound of Appendix~\ref{sec:sector} applies. Finally \(D(0,r)=\beta_0^r>0\). Together these cases give strict positivity at every order for \(0\le n\le K_*\).
+
+\section*{Acknowledgments} OpenAI ChatGPT assisted with the derivations, computational implementation and preparation of the manuscript. The analytic arguments and computer-assisted proofs are presented for independent verification.
+
+\begin{thebibliography}{99}
+\bibitem{af} L. Alp\"oge and R. Furman, \emph{More than two thirds of the zeta zeros are simple and on the critical line}, preprint (2026), \href{https://arxiv.org/abs/2608.13637}{arXiv:2608.13637}.
+\bibitem{ckk} P.~N. Choudhury, M.~R. Kannan and A. Khare,
+\emph{Sign non-reversal property for totally non-negative and totally positive matrices, and testing total positivity of their interval hull},
+Bull. Lond. Math. Soc. \textbf{53} (2021), 981--990.
+\href{https://doi.org/10.1112/blms.12475}{doi:10.1112/blms.12475}.
+\bibitem{dusart} P. Dusart, \emph{Improved explicit bounds for some functions of prime numbers}, \href{https://doi.org/10.7169/facm/1547}{doi:10.7169/facm/1547}.
+\bibitem{fjs} S. M. Fallat, C. R. Johnson and A. D. Sokal, \emph{Total positivity of sums, Hadamard products and Hadamard powers: Results and counterexamples}, \href{https://arxiv.org/abs/1612.02210}{arXiv:1612.02210}.
+\bibitem{joh} K. Johansson, \emph{Shape fluctuations and random matrices}, Comm. Math. Phys. \textbf{209} (2000), 437--476, \href{https://doi.org/10.1007/s002200050027}{doi:10.1007/s002200050027}.
+\bibitem{kln} H. Kadiri, A. Lumley and N. Ng, \emph{Explicit zero density for the Riemann zeta function}, J. Math. Anal. Appl. \textbf{465} (2018), 22--46, \href{https://doi.org/10.1016/j.jmaa.2018.04.071}{doi:10.1016/j.jmaa.2018.04.071}.
+\bibitem{katkova} O.~M. Katkova, \emph{Multiple positivity and the Riemann zeta-function}, Comput. Methods Funct. Theory \textbf{7} (2007), 13--31. \href{https://doi.org/10.1007/BF03321628}{doi:10.1007/BF03321628}.
+\bibitem{khare} A. Khare, \emph{Matrix Analysis, Pólya Frequency Functions, and Preservers of (Total) Positivity}, course notes, \S30, \url{https://math.iisc.ac.in/~khare/teaching/Math341-notes.pdf}.
+\bibitem{knausgard} K. M. Knausg{\aa}rd, \emph{More than 83.9\% of the zeros of the Riemann zeta function are distinct and more than 67.35\% are simple and on the critical line}, preprint (2026), \href{https://arxiv.org/abs/2610.08965v1}{arXiv:2610.08965v1}.
+\bibitem{lam} Y. Lamzouri, \emph{A new proof that more than \(2/3\) of the zeros of the Riemann zeta function are simple and on the critical line}, preprint (2026), \href{https://arxiv.org/abs/2609.02882}{arXiv:2609.02882}.
+\bibitem{mac} I. G. Macdonald, \emph{Symmetric Functions and Hall Polynomials}, 2nd ed., Oxford University Press, 1995.
+\bibitem{bty} C. Bellotti, T. Trudgian and A. Yang, \emph{Zero-free regions inspired by work of Heath-Brown}, \href{https://arxiv.org/abs/2603.21490}{arXiv:2603.21490} (2026).
+\bibitem{lin} C. Lin, \emph{The Willow Transform and the Blind Zone Theorem: A Sharp Information-Theoretic Obstruction in the Turán Hierarchy for the Riemann xi-Function}, \href{https://hexagonmath.org/2610.00275v1}{Hexagon 2610.00275v1} (2026).
+\bibitem{thetaone} J. Nuttall, \emph{Cumulants, the Riemann hypothesis, and similar problems}, manuscript, \url{https://publish.uwo.ca/~jnuttall/cumanal_a.pdf}.
+\bibitem{nuttallsplit} J. Nuttall, \emph{Structure of Wronskians related to the Riemann hypothesis}, manuscript (November 2012), \url{https://publish.uwo.ca/~jnuttall/RHsplit.pdf}.
+\bibitem{moment} J. Nuttall, \emph{The single moment method in the determinantal approach to the Riemann hypothesis}, unpublished manuscript.
+\url{https://publish.uwo.ca/~jnuttall/RHcumsing.pdf}.
+\bibitem{nuttall} J. Nuttall, \emph{Wronskians, cumulants, and the Riemann hypothesis},
+Constr. Approx. \textbf{38} (2013), no.~2, 193--212.
+\href{https://doi.org/10.1007/s00365-013-9200-8}{doi:10.1007/s00365-013-9200-8}.
+\bibitem{paris} R. B. Paris, \emph{The asymptotics of the Touchard polynomials}, \href{https://arxiv.org/abs/1606.07883}{arXiv:1606.07883} (2016).
+
+\bibitem{pt} D. Platt and T. Trudgian, \emph{The Riemann hypothesis is true up to \(3\cdot10^{12}\)}, Bull. Lond. Math. Soc. \textbf{53} (2021), 792--797, \href{https://doi.org/10.1112/blms.12460}{doi:10.1112/blms.12460}.
+\bibitem{rt} B. Rodgers and T. Tao, \emph{The de Bruijn--Newman constant is non-negative}, Forum Math. Pi \textbf{8} (2020), e6, \href{https://doi.org/10.1017/fmp.2020.6}{doi:10.1017/fmp.2020.6}.
+\bibitem{sra4} S. Sra, \emph{Sharp order-four sign regularity of a Jacobi theta kernel}, \href{https://hexagonmath.org/pdf/2610.00721v1}{Hexagon 2610.00721v1} (2026).
+
+\bibitem{sra} S. Sra, \emph{On some positivity properties of the Riemann \(\Xi\) function}, preprint (2026), \href{https://arxiv.org/abs/2611.02944v1}{arXiv:2611.02944v1}.
+\end{thebibliography}
+\end{document}
