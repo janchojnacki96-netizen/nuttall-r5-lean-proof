@@ -69,7 +69,9 @@ theorem weight_mul_signedJet_tendsto_zero (k j : ℕ) {t : ℝ} (ht : 0 ≤ t) :
   rw [weight_mul_signedJet_eq]
   have h1 := (power_mul_signedJet_tendsto_zero k j ht).div_const (k.factorial : ℝ)
   have h2 := (power_mul_signedJet_tendsto_zero (k+1) j ht).div_const ((k+1).factorial : ℝ)
-  simpa only [zero_div, sub_zero, Pi.sub_apply] using h1.sub h2
+  change Tendsto (fun s => (s-t)^k * auxiliarySignedJet j s / (k.factorial : ℝ) -
+    (s-t)^(k+1) * auxiliarySignedJet j s / ((k+1).factorial : ℝ)) atTop (𝓝 0)
+  simpa only [zero_div, sub_zero] using h1.sub h2
 
 /-- A single integration by parts, with both endpoint terms zero. -/
 theorem integral_weight_signedJet_succ (k j : ℕ) {t : ℝ} (ht : 0 ≤ t) :
@@ -91,8 +93,11 @@ theorem integral_weight_signedJet_succ (k j : ℕ) {t : ℝ} (ht : 0 ≤ t) :
     rw [hz] at h
     exact h.mono_left nhdsWithin_le_nhds
   have hi : IntegrableOn (u * v') (Ioi t) := by
-    simpa only [u, v', Pi.mul_apply, mul_neg] using
-      ((weight_mul_signedJet_integrable (k+1) (j+1) ht).mono_set Ioi_subset_Ici_self).neg
+    have heq : u * v' = -(fun s => tailMomentWeight (k+1) (s-t) * auxiliarySignedJet (j+1) s) := by
+      funext s
+      simp only [u, v', Pi.mul_apply, Pi.neg_apply, mul_neg]
+    rw [heq]
+    exact ((weight_mul_signedJet_integrable (k+1) (j+1) ht).mono_set Ioi_subset_Ici_self).neg
   have hparts := integral_Ioi_mul_deriv_eq_deriv_mul
     (fun s _ => hu s) (fun s _ => auxiliarySignedJet_hasDerivAt j s) hi
     ((weight_mul_signedJet_integrable k j ht).mono_set Ioi_subset_Ici_self)
