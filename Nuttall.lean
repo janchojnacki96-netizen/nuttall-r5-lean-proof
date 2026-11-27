@@ -73,3 +73,7 @@ import Nuttall.ShiftCentralSlicePolynomial
 import Nuttall.OrthantSliceBound
 import Nuttall.ShiftedOrthantSliceBound
 import Nuttall.ShiftSliceRootBound
+import Nuttall.ShiftSliceGeometry
+import Nuttall.ShiftSliceCentralLower
+import Nuttall.ShiftSliceGamma
+import Nuttall.ShiftSliceMomentUpper

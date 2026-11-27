@@ -197,9 +197,24 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **U3 — wielomian w centralnym przekroju zweryfikowany.** Ten sam przebieg CI. [`shiftedMoment_linearCombination_eq_polynomial`](../Nuttall/ShiftCentralSlicePolynomial.lean) redukuje kombinację momentów na (0,1/4] do u^{L−1} razy wielomian stopnia ≤p, bo aktywny pozostaje tylko pierwszy składnik theta. [`abs_le_abs_shiftCentralSlicePolynomial_coeff_of_max`](../Nuttall/ShiftCentralSlicePolynomial.lean) daje współczynnik o module co najmniej F przy L≥2, z indeksem maksymalnego znormalizowanego współczynnika.
 
-**U3 — Fubini i dolne ograniczenie wielomianu poza otoczeniami pierwiastków.** Oczekuje na CI. [`integral_coordinate_compl_le_of_slice`, `integral_pi_compl_le_of_slices`](../Nuttall/OrthantSliceBound.lean) wydzielają współrzędną i sumują oszacowania dla dopełnienia sześcianu. [`integral_shiftedOrthant_compl_le_of_slices`](../Nuttall/ShiftedOrthantSliceBound.lean) stosuje tę redukcję do całki z §4.1 i pomija punkt brzegowy B przez zerową miarę singletonu. [`coeff_norm_mul_pow_le_eval_norm`, `relative_root_separation`](../Nuttall/ShiftSliceRootBound.lean) wykorzystują faktoryzację nad ℂ z Mathlib i dają dolną granicę wartości wielomianu na podstawie współczynnika i względnej odległości od pierwiastków.
+**U3 — Fubini i dolne ograniczenie wielomianu poza otoczeniami pierwiastków zweryfikowane.** [CI commita `bcf28f4`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/46002397295/job/140517086640). [`integral_coordinate_compl_le_of_slice`, `integral_pi_compl_le_of_slices`](../Nuttall/OrthantSliceBound.lean) wydzielają współrzędną i sumują oszacowania dla dopełnienia sześcianu. [`integral_shiftedOrthant_compl_le_of_slices`](../Nuttall/ShiftedOrthantSliceBound.lean) stosuje tę redukcję do całki z §4.1 i pomija punkt brzegowy B przez zerową miarę singletonu. [`coeff_norm_mul_pow_le_eval_norm`, `relative_root_separation`](../Nuttall/ShiftSliceRootBound.lean) wykorzystują faktoryzację nad ℂ z Mathlib i dają dolną granicę wartości wielomianu na podstawie współczynnika i względnej odległości od pierwiastków.
 
-**U3 — następna deklaracja.** Wyprowadź oszacowanie przekroju poza B względem całki z modułu przekroju na [1/8,1/4]. Udowodnij dolne ograniczenie za pomocą wielomianu i wyłączeń wokół rzeczywistych części pierwiastków oraz górne ograniczenie przez superwykładniczy czynnik wagi. Wykorzystaj Fubiniego i sumę po współrzędnych, aby uzyskać względną kontrolę dopełnienia sześcianu. Zachowaj wszystkie mniejsze minory i wszystkie t≥0 przy tym samym poziomie 2R.
+**U3 — przekrój i dopełnienie sześcianu.** Kroki 1–5 sprawdzono w CI powyżej. Kroki 6–10 zbudowano lokalnie i oczekują na CI.
+
+| Krok | Deklaracja | Wynik |
+|---|---|---|
+| 1 | [`integral_coordinate_compl_le_of_slice`](../Nuttall/OrthantSliceBound.lean) | Fubini przenosi oszacowanie przekroju na obszar z jedną współrzędną poza przedziałem. |
+| 2 | [`integral_pi_compl_le_of_slices`](../Nuttall/OrthantSliceBound.lean) | Suma wskaźników pokrywa dopełnienie sześcianu i daje mnożnik p. |
+| 3 | [`integral_shiftedOrthant_compl_le_of_slices`](../Nuttall/ShiftedOrthantSliceBound.lean) | Redukcja dla właściwej całki używa otwartych półprostych i rozlicza punkt B. |
+| 4 | [`coeff_norm_mul_pow_le_eval_norm`](../Nuttall/ShiftSliceRootBound.lean) | Z faktoryzacji przez pierwiastki uzyskujemy dolną granicę wartości wielomianu. |
+| 5 | [`relative_root_separation`](../Nuttall/ShiftSliceRootBound.lean) | Odstęp δ od części rzeczywistej pierwiastka daje znormalizowany odstęp δ/3. |
+| 6 | [`separated_exp_four_sub_lower`, `abs_exp_four_sub_le`](../Nuttall/ShiftSliceGeometry.lean) | Dolna i górna granica znormalizowanych czynników Vandermonde'a. |
+| 7 | [`shiftSliceGoodSet_volume_lower`](../Nuttall/ShiftSliceGeometry.lean) | Po wyłączeniach w przedziale [1/8,1/4] pozostaje objętość co najmniej 1/16. |
+| 8 | [`shiftSlice_central_mass_lower`](../Nuttall/ShiftSliceCentralLower.lean) | Z dokładnymi stałymi uzyskano dolną granicę całki z modułu przekroju. |
+| 9 | [`abs_shiftedMoment_linearCombination_le_envelope`](../Nuttall/ShiftSliceMomentUpper.lean) | Suma aktywnych wag jest ≤2exp(u). Na całej półosi otrzymujemy wielomianową majorantę kombinacji momentów. |
+| 10 | [`exp_four_gamma_envelope`](../Nuttall/ShiftSliceGamma.lean) | Podstawienie y=exp(4u) i całka Eulera dają całkowalność majoranty oraz granicę m!. |
+
+**U3 — następna deklaracja.** Połącz sąsiednie oszacowania dla właściwego przekroju. Rozwiń wyznacznik momentów według kolumny odpowiadającej zmiennej przekroju i wydziel zależne od niej czynniki Vandermonde'a. Wykaż górną granicę masy ogona przez majorantę gamma, porównaj ją z dolną granicą i zastosuj lemat Fubiniego. Zachowaj wszystkie rzędy p≤r oraz t≥0.
 
 Przy oszacowaniu przekroju użyj tych redukcji z §4.1.
 
