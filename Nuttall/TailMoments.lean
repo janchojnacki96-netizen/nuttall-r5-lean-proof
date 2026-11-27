@@ -13,7 +13,7 @@ private theorem integrate_sub_pow (j : ℕ) {t s : ℝ} (hts : t ≤ s) :
   rw [intervalIntegral.integral_comp_sub_left (f := fun x : ℝ => x^j) s, sub_self]
   simp [integral_pow]
 
-private theorem polynomial_exp_integrable (j : ℕ) {t : ℝ} (ht : 0 ≤ t) :
+theorem polynomial_exp_integrable (j : ℕ) {t : ℝ} (ht : 0 ≤ t) :
     IntegrableOn (fun s : ℝ => s^j * Real.exp (-(1/2 : ℝ)*s)) (Ici t) := by
   have h := W5.theta_rpow_exp_integrableOn (1/2) (j : ℝ)
     (by norm_num) (lt_of_lt_of_le (by norm_num) (Nat.cast_nonneg j))

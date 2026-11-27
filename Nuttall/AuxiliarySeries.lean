@@ -20,7 +20,7 @@ private theorem polynomial_absorption (P : ℝ[X]) {x : ℝ} (hx : 0 ≤ x) :
       x^(k+1) ≤ (2^(k+1) * ((k+1).factorial : ℝ)) * Real.exp (x/2) := by
     have hf : (0 : ℝ) < ((k+1).factorial : ℝ) := by positivity
     have h := (div_le_iff₀ hf).mp
-      (Real.pow_div_factorial_le_exp (show 0 ≤ x/2 by positivity) (k+1))
+      (Real.pow_div_factorial_le_exp (x/2) (show 0 ≤ x/2 by positivity) (k+1))
     have hh := mul_le_mul_of_nonneg_left h (show 0 ≤ (2 : ℝ)^(k+1) by positivity)
     rw [div_pow] at hh
     calc
@@ -98,10 +98,10 @@ theorem auxiliaryWeightedSummand_summable (P : ℝ[X]) (t : ℝ) :
   (localAuxiliaryEnvelope_summable P t t).of_norm_bounded
     (fun n => auxiliaryWeightedSummand_le_local P n le_rfl le_rfl)
 
-private noncomputable def auxiliarySignedJet (j : ℕ) (t : ℝ) : ℝ :=
+noncomputable def auxiliarySignedJet (j : ℕ) (t : ℝ) : ℝ :=
   ∑' n, auxiliaryWeightedSummand (auxiliaryDerivativePolynomial j) n t
 
-private theorem auxiliarySignedJet_hasDerivAt (j : ℕ) (t : ℝ) :
+theorem auxiliarySignedJet_hasDerivAt (j : ℕ) (t : ℝ) :
     HasDerivAt (auxiliarySignedJet j) (-auxiliarySignedJet (j+1) t) t := by
   have ht : t ∈ Set.Ioo (t-1) (t+1) := by constructor <;> linarith
   have h := hasDerivAt_tsum_of_isPreconnected
@@ -109,10 +109,10 @@ private theorem auxiliarySignedJet_hasDerivAt (j : ℕ) (t : ℝ) :
     isOpen_Ioo isPreconnected_Ioo
     (fun n s _ => auxiliary_polynomial_summand_hasDerivAt j n s)
     (fun n s hs => by
-      simpa only [norm_neg] using
+      simpa only [norm_neg, auxiliaryWeightedSummand] using
         auxiliaryWeightedSummand_le_local (auxiliaryDerivativePolynomial (j+1)) n hs.1.le hs.2.le)
     ht (auxiliaryWeightedSummand_summable (auxiliaryDerivativePolynomial j) t) ht
-  simpa only [← tsum_neg] using h
+  simpa only [auxiliarySignedJet, auxiliaryWeightedSummand, tsum_neg] using h
 
 /-- All real derivatives of the auxiliary theta series, obtained by
 termwise differentiation with a locally uniform summable majorant. -/
@@ -139,7 +139,8 @@ theorem auxiliaryWeightedSummand_le_exponential (P : ℝ[X]) (n : ℕ) {t : ℝ}
   · subst n
     simp only [auxiliaryWeightedSummand, auxiliarySummand, Nat.cast_zero, zero_pow (by decide : 2 ≠ 0),
       zero_mul, norm_zero]
-    positivity
+    exact mul_nonneg (mul_nonneg (polynomialExpBound_nonneg P) (Real.exp_nonneg _))
+      (Real.exp_nonneg _)
   have hn1 : 1 ≤ n := by omega
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn1
   have hn2 : (1 : ℝ) ≤ (n : ℝ)^2 := by nlinarith [sq_nonneg ((n : ℝ)-1)]
