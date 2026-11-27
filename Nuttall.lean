@@ -50,3 +50,5 @@ import Nuttall.ShiftTriangularDecay
 import Nuttall.ShiftCorrectionNorm
 import Nuttall.ShiftCorrectionError
 import Nuttall.ShiftEarlierTerms
+import Nuttall.ShiftCriticalSplit
+import Nuttall.ShiftDeterminantMargin
