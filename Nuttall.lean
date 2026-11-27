@@ -132,3 +132,4 @@ import Nuttall.PhiRankEightTailSigns
 import Nuttall.SmallIntegrationOrdersFromCompact
 import Nuttall.PsiTwoPanelIdentity
 import Nuttall.PsiCompactCell59
+import Nuttall.PsiCompactCell52
