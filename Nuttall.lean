@@ -133,3 +133,6 @@ import Nuttall.SmallIntegrationOrdersFromCompact
 import Nuttall.PsiTwoPanelIdentity
 import Nuttall.PsiCompactCell59
 import Nuttall.PsiCompactCell52
+import Nuttall.PsiOneCompactRightBlock
+import Nuttall.PsiTwoPanelAnchors
+import Nuttall.PsiTwoCompactCellSigns
