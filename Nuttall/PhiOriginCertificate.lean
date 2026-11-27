@@ -14,10 +14,10 @@ private def originGaussianBaseBox : QInterval :=
   ⟨0.0432139182637, 0.0432139182639⟩
 
 /-- Raising a nonnegative interval to a natural power only uses its endpoints. -/
-private def positivePowBox (B : QInterval) (k : ℕ) : QInterval :=
+def positivePowBox (B : QInterval) (k : ℕ) : QInterval :=
   ⟨B.lo^k, B.hi^k⟩
 
-private theorem positivePowBox_containsReal {B : QInterval} {x : ℝ}
+theorem positivePowBox_containsReal {B : QInterval} {x : ℝ}
     (h₀ : 0 ≤ B.lo) (h : B.ContainsReal x) (k : ℕ) :
     (positivePowBox B k).ContainsReal (x^k) := by
   have hb : (0:ℝ) ≤ (B.lo:ℝ) := by exact_mod_cast h₀

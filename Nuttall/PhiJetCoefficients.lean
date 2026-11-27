@@ -47,16 +47,22 @@ def phiJetCoeff (j k : ℕ) : ℚ :=
 theorem coeff_phiJetPolynomial (j k : ℕ) : (phiJetPolynomial j).coeff k = (phiJetCoeff j k : ℝ) := by
   simp [phiJetPolynomial, phiJetCoeff, coeff_C_mul, coeff_sub, coeff_auxiliaryDerivativePolynomial]
 
-theorem eval_phiJetPolynomial {j : ℕ} (hj : j ≤ 8) (x : ℝ) :
-    (phiJetPolynomial j).eval x = ∑ k ∈ Finset.range 10, (phiJetCoeff j k : ℝ) * x^k := by
-  have hd : (phiJetPolynomial j).natDegree ≤ 9 := by
-    apply natDegree_le_iff_coeff_eq_zero.mpr
-    intro k hk
-    rw [coeff_phiJetPolynomial]
-    simp [phiJetCoeff, auxiliaryJetCoeff_eq_zero_of_lt (show j < k by omega),
-      auxiliaryJetCoeff_eq_zero_of_lt (show j + 1 < k by omega)]
-  rw [eval_eq_sum_range' (by omega : (phiJetPolynomial j).natDegree < 10)]
+theorem phiJetPolynomial_natDegree_le (j : ℕ) :
+    (phiJetPolynomial j).natDegree ≤ j + 1 := by
+  apply natDegree_le_iff_coeff_eq_zero.mpr
+  intro k hk
+  rw [coeff_phiJetPolynomial]
+  simp [phiJetCoeff, auxiliaryJetCoeff_eq_zero_of_lt (show j < k by omega),
+    auxiliaryJetCoeff_eq_zero_of_lt hk]
+
+theorem eval_phiJetPolynomial_of_lt {j d : ℕ} (h : j + 1 < d) (x : ℝ) :
+    (phiJetPolynomial j).eval x = ∑ k ∈ Finset.range d, (phiJetCoeff j k : ℝ) * x^k := by
+  rw [eval_eq_sum_range' ((phiJetPolynomial_natDegree_le j).trans_lt h)]
   simp only [coeff_phiJetPolynomial]
+
+theorem eval_phiJetPolynomial {j : ℕ} (hj : j ≤ 8) (x : ℝ) :
+    (phiJetPolynomial j).eval x = ∑ k ∈ Finset.range 10, (phiJetCoeff j k : ℝ) * x^k :=
+  eval_phiJetPolynomial_of_lt (by omega) x
 
 #print axioms eval_phiJetPolynomial
 

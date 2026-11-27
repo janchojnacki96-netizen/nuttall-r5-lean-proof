@@ -10,7 +10,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 | A. Definicje i przejście od wrońskianów do RR | W5.Statement, CentralEvaluationPositivity | **Częściowo.** [ReverseSignRegularity.lean](../Nuttall/ReverseSignRegularity.lean) definiuje słabe RR i m(r) oraz przenosi ścisły test na wyznaczniki jądra dla każdego m. [WronskianObstruction.lean](../Nuttall/WronskianObstruction.lean) wyklucza słabe RR przez zły znak wrońskianu i wyprowadza dolną granicę m(r). Słabe RR zachowuje się przy całkowaniu ogonowym. Pozostaje zachowanie ścisłych znaków wrońskianów. |
 | U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **Zweryfikowany w Lean.** [AnalyticUpperBound.lean](../Nuttall/AnalyticUpperBound.lean) dowodzi istnienia skutecznego poziomu dla każdego r oraz m(r)≤2r dla dostatecznie dużych r, w słabej konwencji z preprintu. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
-| S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Częściowo.** Dolny świadek dla r≥5 i wynik m(1)=0 przeszły CI. Pełny dowód m(r)=0 dla r≤4 przeszedł CI. Dla m(5)=1 połączenie z wcześniej zweryfikowanym `W5.nuttall_r5` jest zapisane jako osobny cel odtworzenia. Dla pozostałych rzędów uzyskać odpowiednie górne i dolne granice słabego RR. |
+| S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Częściowo.** Dolny świadek dla r≥5 i wynik m(1)=0 przeszły CI. Pełny dowód m(r)=0 dla r≤4 przeszedł CI. Dla m(5)=1 połączenie z wcześniej zweryfikowanym `W5.nuttall_r5` jest zapisane jako osobny cel odtworzenia. Certyfikat dolnej granicy m(8)≥2 jest złożony i oczekuje na CI. Pozostały górne granice dla rzędów 6–8. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
 | H. Świadkowie 142 i 500, tw. 5.1 i wn. 5.2 | A, checker i dane §5; F dla górnych granic | **Otwarte.** Udowodnić znaki w konkretnych punktach i wykluczyć niższe poziomy. |
 | D. Wyznaczniki momentów, tw. 6.2 i dod. C | F dla pierwszego wiersza; pozostałe ścieżki z dod. C | **Otwarte.** Sześć wierszy z właściwymi warunkami i progami. |
@@ -288,7 +288,22 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **S — dolny przedział dla świadka rzędu 8.** Pełny `lake build Nuttall` przeszedł w [CI commita `c8d6e94`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/46026032316/job/140597547036). Nowe deklaracje używają tylko standardowych aksjomatów Lean. [`psi_one_at_rankEight_witness_ge`](../Nuttall/PsiEightCornerBound.lean) wykazuje Ψ₁(5/64)≥29/1000. Wykorzystuje `psi_one_ge_auxiliary_mul_rate`, tożsamość 2Ψ₁=g−∫g i wykładniczą majorantę g(s)≤g(t)e^(−12(s−t)). [`SchurIntervalChain.det_containsReal`](../Nuttall/SchurIntervalChain.lean) pozwala zaokrąglać przedziały na zewnątrz po każdym dopełnieniu Schura. [`two_le_kernelIntegrationOrder_of_rankEight_schur`](../Nuttall/PsiEightSchur.lean) sprowadza m(8)≥2 do obramowania pozostałych wpisów i dwóch sprawdzeń znaku.
 
-**S — następne deklaracje.** Domknij ścisłe znaki dla Ψ₁ do rzędu 7. Niezależnie, dla świadka rzędu 8 udowodnij przedziały dla pochodnych Ψ₁ rzędu 1–14 w 5/64 oraz oba certyfikaty Schura. Próba numeryczna wykazała, że po skalowaniu pochodnych przez 16^(−j) przedziały o szerokości 10⁻⁹ wystarczają do zachowania obu znaków. Do samego wpisu (0,0) wystarcza już udowodnione oszacowanie jednostronne.
+**S — świadek rzędu 8.** Oczekuje na CI. [PsiEightReplay.lean](../Nuttall/PsiEightReplay.lean) domyka bez dodatkowych hipotez `psiOne_wronskian_at_rankEight_witness_neg` i `two_le_kernelIntegrationOrder_eight`. Wykorzystuje dolny róg 29/1000 i dwa łańcuchy Schura dla macierzy zastępczej oraz jej dopełnienia algebraicznego przy (0,0). Oba górne końce przedziałów wyznaczników są ściśle ujemne. Dane przechowują dokładne końce wymierne w skali 10¹². Lean sprawdza obie strony wszystkich 14 przedziałów pochodnych, separację pivotów, zawieranie po każdym zaokrągleniu i końcowe znaki przez `decide +kernel`.
+
+| Krok | Deklaracja | Wynik |
+|---|---|---|
+| 1 | `phiJetPolynomial_natDegree_le`, `eval_phiJetPolynomial_of_lt` | Jawna skończona suma dla każdego potrzebnego wielomianu pochodnej. |
+| 2 | `auxiliaryWeightedSummand_le_exp_of_coeff_bound` | Oszacowanie składnika szeregu przez skończoną sumę modułów współczynników i czynnik gaussowski. |
+| 3 | `rankEight_phiJetTail_abs_le` | Wspólna reszta 10⁻¹² od indeksu dziewiątego dla rzędów 0–13 funkcji Φ. Hipotezy `t ≤ 1` i `4 ≤ π exp(4t)` spełnia punkt 5/64. |
+| 4 | `expTimeBox_containsReal`, `coordinateBox_containsReal`, `gaussianBox_containsReal` | Wymierne przedziały dla czynników wykładniczych w punkcie 5/64, z twierdzeń Taylora i przedziału dla π. |
+| 5 | `jetTermBox_containsReal`, `psiEightJetRawBox_containsReal` | Skończona suma przedziałowa i reszta dają rzeczywiste obramowanie pochodnych Ψ₁ rzędu 1–14. |
+| 6 | `jetBounds_enclose_raw`, `psiEightWitnessBox_containsReal` | Zaokrąglenie przedziałów i przejście do wszystkich wpisów macierzy Hankela z dolnym rogiem. |
+| 7 | `cornerChain` | Sprawdzenie macierzy 8×8 z rogiem 29/1000 i wszystkich kolejnych dopełnień Schura. |
+| 8 | `cofactorChain` | Niezależne sprawdzenie dopełnienia algebraicznego 7×7 i wszystkich jego kroków Schura. |
+| 9 | `psiOne_wronskian_at_rankEight_witness_neg` | Znak prawdziwego W₈(Ψ₁;5/64) przez afiniczną zależność od wpisu (0,0). |
+| 10 | `two_le_kernelIntegrationOrder_eight` | Świadek wyklucza słabe RR na poziomie pierwszym i dowodzi m(8)≥2. |
+
+**S — następna deklaracja.** Wykorzystaj [MatrixRowMargin.lean](../Nuttall/MatrixRowMargin.lean) do obustronnej kongruencji z dolnotrójkątnym U i przenieś normę z (2.1) na wszystkie podpisane minory początkowe (p≤7). Docelowy lemat `signed_leading_det_pos_of_triangular_congruence` powinien być niezależny od wyboru jądra, aby ten sam dowód zastosować dla Ψ₁ i Ψ₂. Potem pozostają przedziały dla rzeczywistych wpisów Ψ₁ w 67 komórkach oraz ogon. Do dokładnego m(8)=2 potrzebna jest osobno górna granica na poziomie Ψ₂.
 
 **F — od dostatecznie dużych rzędów do każdego r.** Zaimplementuj jawny próg i połącz poniższe zakresy jednym dowodem pokrycia. Samo istnienie niejawnego R₀ nie uzasadnia startu przy 10¹¹. Dla każdego zakresu sprawdzaj wszystkie mniejsze minory przy jednym poziomie 2r.
 

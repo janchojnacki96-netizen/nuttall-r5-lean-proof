@@ -70,6 +70,20 @@ private theorem auxiliaryWeightedSummand_le_exp (P : ℝ[X]) (n : ℕ) (t : ℝ)
         change t - x/2 = _; ring, Real.exp_add, Real.exp_add]
       ring
 
+/-- A finite coefficient majorant gives a numerical Gaussian bound for each term. -/
+theorem auxiliaryWeightedSummand_le_exp_of_coeff_bound (P : ℝ[X]) (n d : ℕ)
+    (t C : ℝ) (hd : P.natDegree < d)
+    (hC : (∑ k ∈ Finset.range d, |P.coeff k| * (2^(k+1) * ((k+1).factorial : ℝ))) ≤ C) :
+    ‖auxiliaryWeightedSummand P n t‖ ≤ C * Real.exp (t - auxiliaryCoordinate n t / 2) := by
+  refine (auxiliaryWeightedSummand_le_exp P n t).trans
+    (mul_le_mul_of_nonneg_right (le_trans ?_ hC) (Real.exp_pos _).le)
+  unfold polynomialExpBound
+  apply Finset.sum_le_sum_of_subset_of_nonneg
+  · intro k hk
+    exact Finset.mem_range.mpr ((le_natDegree_of_mem_supp k hk).trans_lt hd)
+  · intro k _ _
+    positivity
+
 private theorem gaussianEnvelope_summable {q : ℝ} (hq : 0 < q) :
     Summable (fun n : ℕ => Real.exp (-q * (n : ℝ)^2)) := by
   simpa only [pow_zero, one_mul] using W5.theta_gaussian_polynomial_summable 0 q hq
