@@ -20,14 +20,12 @@ theorem compactFixedDiv_containsReal {D q : ℤ} (hD : 0 < D) (hq : 0 < q)
   simp only [QInterval.ContainsReal, FixedIntInterval.asQInterval,
     Rat.cast_div, Rat.cast_intCast] at hx
   constructor
-  · change (((J.lo / q : ℤ):ℚ)/(D:ℚ):ℝ) ≤ _
-    push_cast
+  · simp only [compactFixedDiv, FixedIntInterval.asQInterval, Rat.cast_div, Rat.cast_intCast]
     calc
       _ ≤ ((J.lo:ℝ)/(q:ℝ))/(D:ℝ) := div_le_div_of_nonneg_right hlo hDr.le
       _ = ((J.lo:ℝ)/(D:ℝ))/(q:ℝ) := by ring
       _ ≤ _ := div_le_div_of_nonneg_right hx.1 hqr.le
-  · change _ ≤ (((-((-J.hi)/q) : ℤ):ℚ)/(D:ℚ):ℝ)
-    push_cast
+  · simp only [compactFixedDiv, FixedIntInterval.asQInterval, Rat.cast_div, Rat.cast_intCast]
     calc
       _ ≤ ((J.hi:ℝ)/(D:ℝ))/(q:ℝ) := div_le_div_of_nonneg_right hx.2 hqr.le
       _ = ((J.hi:ℝ)/(q:ℝ))/(D:ℝ) := by ring

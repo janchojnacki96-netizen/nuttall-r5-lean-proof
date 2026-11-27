@@ -136,3 +136,5 @@ import Nuttall.PsiCompactCell52
 import Nuttall.PsiOneCompactRightBlock
 import Nuttall.PsiTwoPanelAnchors
 import Nuttall.PsiTwoCompactCellSigns
+import Nuttall.PsiTwoCompactCell52
+import Nuttall.PsiOneCompactGridReplay

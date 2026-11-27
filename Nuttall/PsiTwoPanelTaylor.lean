@@ -21,7 +21,7 @@ theorem integral_weighted_cellTaylor (d : ℕ) (a h : ℝ) :
         (iteratedDeriv j W5.Phi a / (j.factorial:ℝ)) * x^(j+1) := by
       apply intervalIntegral.integral_congr
       intro x _
-      unfold cellTaylor
+      simp only [cellTaylor]
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro j _
@@ -35,7 +35,7 @@ theorem integral_weighted_cellTaylor (d : ℕ) (a h : ℝ) :
       rw [intervalIntegral.integral_const_mul, integral_pow, Nat.cast_add, Nat.cast_one]
       simp only [zero_pow (by omega : j+1+1 ≠ 0), sub_zero]
       rw [show (j:ℝ)+1+1 = (j:ℝ)+2 by ring]
-      ring
+      field_simp <;> ring
 
 private theorem phi_cellTaylor_right_error {a x : ℝ} (ha : 0 ≤ a)
     (hx : 0 ≤ x) (h₂ : a+x ≤ 2) :
@@ -80,7 +80,7 @@ theorem psi_two_panel_error_le {a h : ℝ} (ha : 0 ≤ a) (hh : 0 ≤ h) (hb : a
   have hpoint (x : ℝ) (hx : x ∈ Icc 0 h) : |F x-P x| ≤ M x := by
     dsimp [F, P, M]
     rw [← mul_sub, abs_mul, abs_of_nonneg hx.1, pow_succ]
-    have h₂ : a+x ≤ 2 := (add_le_add_left hx.2 a).trans hb
+    have h₂ : a+x ≤ 2 := by linarith only [hx.2, hb]
     nlinarith only [mul_le_mul_of_nonneg_left (phi_cellTaylor_right_error ha hx.1 h₂) hx.1]
   refine (intervalIntegral.integral_mono_on hh
     ((hF.sub hP).abs.intervalIntegrable _ _) (hM.intervalIntegrable _ _) hpoint).trans_eq ?_
