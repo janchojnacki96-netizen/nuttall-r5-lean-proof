@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 ma zweryfikowaną tożsamość różniczkową i jej pierwszą całkę ogonową. Pozostają iteracje, reprezentacja Andréiefa i oszacowania U2–U4. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 ma zweryfikowaną tożsamość różniczkową i jej iteracje dla wszystkich poziomów. Pozostają postać momentowa, reprezentacja Andréiefa i oszacowania U2–U4. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -21,7 +21,9 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 
 **U1 — zweryfikowana pierwsza całka ogonowa.** Deklaracja [`Nuttall.twice_psi_one_eq_auxiliary_sub_tail`](../Nuttall/ThetaAuxiliaryIntegral.lean) dowodzi 2Ψ₁(t) = g(t) − ∫ₜ^∞ g(s) ds dla t≥0. Moduł dowodzi 0≤g≤Φ na tej półosi, całkowalności g i ograniczenia g(t)≤g(0)exp(−t). [CI commita `3120b85`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45969867996) pokazuje trzy standardowe aksjomaty oraz odtworzenie cache z pierwszej próby budowy.
 
-**U1 — iteracje oczekują na CI.** Zdefiniuj bⱼᵍ jako j-krotną całkę ogonową g i udowodnij 2Ψⱼ₊₁(t) = bⱼᵍ(t) − bⱼ₊₁ᵍ(t) dla t≥0 i j∈ℕ. Zachowaj bazę j=0 z gotowego lematu. Dla kroku indukcyjnego uzasadnij całkowalność wszystkich funkcji na [t,∞), wykorzystując istniejące ograniczenie wykładnicze g oraz nieujemność Ψ₁ i nierówność 2Ψ₁≤g. Obie klasy ograniczeń można zachować przy kolejnych całkach przez monotoniczność całki i dokładną całkę z exp(−t).
+**U1 — zweryfikowane dowolne iteracje.** [`Nuttall.twice_psi_succ_eq_auxiliary_iterate_sub`](../Nuttall/TailIteration.lean) dowodzi 2Ψⱼ₊₁(t) = bⱼᵍ(t) − bⱼ₊₁ᵍ(t) dla każdego j∈ℕ i t≥0. Teorematy `tailIterate_auxiliary_integrableOn` i `psi_integrableOn` zapewniają całkowalność od każdego rzeczywistego t. [CI commita `69b616a`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45970770365) potwierdziło trzy standardowe aksjomaty Lean oraz odtworzenie częściowego cache.
+
+**Następny cel.** Uogólnij wzór z `W5.Psi1_hasDerivAt`: dla każdego m i t pokaż `HasDerivAt (psi (m+1)) (-psi m t) t`, używając `psi_integrableOn`, ciągłości (przez indukcję z bazą `W5.Phi_differentiable.continuous`) i różnicy całek ogonowych. Następnie wyprowadź `iteratedDeriv k (psi m) t = (-1 : ℝ)^k * psi (m-k) t` dla k≤m. Ten wzór i odwrócenie wierszy dadzą macierz z indeksami L+1+i−j w §4.1. Postać momentowa z silnią wymaga osobnego zastosowania Fubiniego.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
