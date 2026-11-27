@@ -11,7 +11,8 @@ private theorem fixedPoint_containsReal (D c : ℤ) (hD : 0 < D) :
   have hDq : (D:ℚ) ≠ 0 := by exact_mod_cast hD.ne'
   have he : ((c*D:ℤ):ℚ)/(D:ℚ) = (c:ℚ) := by
     rw [Int.cast_mul, mul_div_cancel_right₀ _ hDq]
-  simp [fixedPoint, FixedIntInterval.asQInterval, QInterval.ContainsReal, he]
+  simp only [fixedPoint, FixedIntInterval.asQInterval, QInterval.ContainsReal, he,
+    Rat.cast_intCast, le_refl, and_self]
 
 def compactFixedRealEval : List ℚ → ℝ → ℝ
   | [], _ => 0
