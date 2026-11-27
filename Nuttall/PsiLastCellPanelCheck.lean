@@ -36,6 +36,12 @@ private theorem lastCellNode_next (i : Fin 6) :
     by fin_cases i <;> decide +kernel)
   simpa only [Rat.cast_add] using congrArg (fun q : ℚ => (q:ℝ)) h
 
+private theorem lastCellPanelStep (i : Fin 6) {right : QInterval}
+    (hright : right.ContainsReal (psi 1 (psiLastCellNode i.succ:ℝ))) :
+    (right.add (psiLastCellPanelSnapshot (i.castLE (by decide)))).ContainsReal
+      (psi 1 (psiLastCellNode (i.castLE (by decide)):ℝ)) :=
+  lastCellPanel_containsReal (i.castLE (by decide)) (by rwa [lastCellNode_next i])
+
 private def lastCellSeed : QInterval := ⟨0, 1/10^16⟩
 
 /-- Anchor at 1/2 shared by the last compact cells. -/
@@ -53,11 +59,11 @@ theorem psiOneCompactHalfAnchor_containsReal :
     simpa only [lastCellSeed, QInterval.ContainsReal, Rat.cast_zero, Rat.cast_div,
       Rat.cast_pow, Rat.cast_one, Rat.cast_ofNat] using h
   have h₆ := lastCellPanel_containsReal 6 (right := lastCellSeed) (by rwa [hlast])
-  have h₅ := lastCellPanel_containsReal 5 (by rw [lastCellNode_next (5:Fin 6)]; exact h₆)
-  have h₄ := lastCellPanel_containsReal 4 (by rw [lastCellNode_next (4:Fin 6)]; exact h₅)
-  have h₃ := lastCellPanel_containsReal 3 (by rw [lastCellNode_next (3:Fin 6)]; exact h₄)
-  have h₂ := lastCellPanel_containsReal 2 (by rw [lastCellNode_next (2:Fin 6)]; exact h₃)
-  have h₁ := lastCellPanel_containsReal 1 (by rw [lastCellNode_next (1:Fin 6)]; exact h₂)
+  have h₅ := lastCellPanelStep 5 h₆
+  have h₄ := lastCellPanelStep 4 h₅
+  have h₃ := lastCellPanelStep 3 h₄
+  have h₂ := lastCellPanelStep 2 h₃
+  have h₁ := lastCellPanelStep 1 h₂
   have ht : (psiLastCellNode 1:ℝ) = 1/2 := by
     have h : psiLastCellNode 1 = 1/2 := by decide +kernel
     simpa only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using congrArg (fun q : ℚ => (q:ℝ)) h
