@@ -87,6 +87,7 @@ theorem integral_weight_signedJet_succ (k j : ℕ) {t : ℝ} (ht : 0 ≤ t) :
       (show Differentiable ℝ u from fun s => (hu s).differentiableAt).continuous
     have h := (hc.mul (auxiliarySignedJet_continuous j)).continuousAt (x := t)
     have hz : u t * v t = 0 := by simp [u, tailMomentWeight_succ_zero]
+    change Tendsto (u * v) (𝓝 t) (𝓝 (u t * v t)) at h
     rw [hz] at h
     exact h.mono_left nhdsWithin_le_nhds
   have hi : IntegrableOn (u * v') (Ioi t) := by

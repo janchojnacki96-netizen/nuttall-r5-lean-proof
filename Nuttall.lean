@@ -10,3 +10,5 @@ import Nuttall.MomentWeightCalculus
 import Nuttall.AuxiliaryDerivativePolynomials
 import Nuttall.AuxiliarySeries
 import Nuttall.TailIntegrationByParts
+import Nuttall.AuxiliaryVandermonde
+import Nuttall.ThetaAndreief

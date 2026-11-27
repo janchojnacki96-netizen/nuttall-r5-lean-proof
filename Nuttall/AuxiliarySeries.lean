@@ -112,7 +112,10 @@ theorem auxiliarySignedJet_hasDerivAt (j : ℕ) (t : ℝ) :
       simpa only [norm_neg, auxiliaryWeightedSummand] using
         auxiliaryWeightedSummand_le_local (auxiliaryDerivativePolynomial (j+1)) n hs.1.le hs.2.le)
     ht (auxiliaryWeightedSummand_summable (auxiliaryDerivativePolynomial j) t) ht
-  simpa only [auxiliarySignedJet, auxiliaryWeightedSummand, tsum_neg] using h
+  change HasDerivAt (auxiliarySignedJet j)
+    (∑' n, -auxiliaryWeightedSummand (auxiliaryDerivativePolynomial (j+1)) n t) t at h
+  rw [tsum_neg] at h
+  exact h
 
 /-- All real derivatives of the auxiliary theta series, obtained by
 termwise differentiation with a locally uniform summable majorant. -/
