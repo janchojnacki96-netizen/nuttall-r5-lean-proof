@@ -50,7 +50,7 @@ theorem signed_leading_det_pos_of_compactCertificate {p n d : ℕ} (hp : p ≤ n
     have hsign : (↑(compactSignDiagonal (n := n) k i j) : ℝ) =
         (if k = 0 then J else 0) i j := by
       by_cases hk₀ : k = 0 <;> by_cases hij : i = j <;>
-        simp [compactSignDiagonal, J, Matrix.diagonal_apply, hk₀, hij]
+        simp [compactSignDiagonal, J, hk₀, hij]
     apply QInterval.sub_containsReal (compactIntervalCongruence_containsReal U (hbox k hk) i j)
     exact ⟨hsign.le, hsign.ge⟩
   have hsum : V * P * V.transpose = ∑ k ∈ Finset.range d, v^k • (V * poly k * V.transpose) := by
@@ -74,7 +74,8 @@ theorem signed_leading_det_pos_of_compactCertificate {p n d : ℕ} (hp : p ≤ n
     rw [Matrix.sub_apply, hP]
     exact herr i j
   have hR (i : Fin n) : ∑ j, |V i j| ≤ (M:ℝ) := by
-    simpa only [V, Matrix.map_apply, Rat.cast_sum, Rat.cast_abs] using Rat.cast_mono (hrows i)
+    change (∑ j, |(↑(U i j):ℝ)|) ≤ (M:ℝ)
+    exact_mod_cast hrows i
   apply signed_leading_det_pos_of_compactPolynomial hp A V hV hdV d v hv (ρ*M*M)
     centered (compactCenteredCoefficientBoxes U boxes) hctr _ hcheck
   intro i j

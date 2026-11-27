@@ -62,7 +62,7 @@ theorem phiJetPrefixBox_containsReal {E X q : QInterval} {t : ℝ}
   apply QInterval.sumBox_containsReal
   intro k hk
   have h := Finset.mem_range.mp hk
-  rw [getElem!_pos _ _ h, phiJetCoeffRow_getElem j k h]
+  rw [getElem!_pos (phiJetCoeffRow j) k h, phiJetCoeffRow_getElem j k h]
   exact QInterval.mul_containsReal ⟨le_rfl, le_rfl⟩
     (positivePowBox_containsReal hY₀ hY k)
 
