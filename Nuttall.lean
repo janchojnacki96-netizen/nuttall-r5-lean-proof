@@ -130,4 +130,5 @@ import Nuttall.MatrixQuadraticMargin
 import Nuttall.PhiRankEightNormalizedSign
 import Nuttall.PhiRankEightTailSigns
 import Nuttall.SmallIntegrationOrdersFromCompact
+import Nuttall.PsiTwoPanelIdentity
 import Nuttall.PsiCompactCell59
