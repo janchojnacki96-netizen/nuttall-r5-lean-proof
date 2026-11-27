@@ -5,6 +5,9 @@ defaultTargets = ["W5"]
 [[lean_lib]]
 name = "W5"
 
+[[lean_lib]]
+name = "Nuttall"
+
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"

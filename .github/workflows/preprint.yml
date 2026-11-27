@@ -1,0 +1,33 @@
+name: Lean preprint
+on:
+  push:
+    branches: [formalization/preprint]
+  pull_request:
+    branches: [formalization/preprint]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lean-preprint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  existence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies and download compiled Mathlib
+        run: |
+          lake update
+          lake exe cache get Mathlib
+          if [ -d "$HOME/.cache/mathlib" ]; then
+            find "$HOME/.cache/mathlib" -type f -name '*.ltar' -delete
+          fi
+      - name: Check the preprint module
+        run: lake build Nuttall
