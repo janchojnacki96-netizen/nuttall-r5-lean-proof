@@ -1,4 +1,4 @@
-import W5.ThetaBulkFixedExponential
+import W5.ThetaExpTaylor65Remainder
 import Nuttall.CompactFixedPolynomial
 
 namespace Nuttall
@@ -40,8 +40,8 @@ private theorem reducedExpPositiveBox_containsReal {a : ℚ} (ha : 0 ≤ a) (hb 
     Rat.cast_pow, Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_div] using he
 
 private def compactExpNegPoint (a : ℚ) : QInterval :=
-  (thetaBulkFixedPow2 10
-    (compactFixedRound thetaAuditScale (reducedExpPositiveBox a).inversePositive)).asQInterval thetaAuditScale
+  (compactFixedPow2 thetaAuditScale
+    (compactFixedRound thetaAuditScale (reducedExpPositiveBox a).inversePositive) 10).asQInterval thetaAuditScale
 
 private theorem compactExpNegPoint_containsReal {a : ℚ} (ha : 0 ≤ a) (hb : a ≤ 1024/3)
     (hpos : 0 < (reducedExpPositiveBox a).lo) :
@@ -49,7 +49,7 @@ private theorem compactExpNegPoint_containsReal {a : ℚ} (ha : 0 ≤ a) (hb : a
   have hi := QInterval.inversePositive_containsReal (reducedExpPositiveBox_containsReal ha hb) hpos
   rw [← Real.exp_neg] at hi
   have hs := compactFixedRound_containsReal thetaAuditScale_pos hi
-  have hp := thetaBulkFixedPow2_containsReal _ _ hs 10
+  have hp := compactFixedPow2_containsReal thetaAuditScale thetaAuditScale_pos hs 10
   have he : (Real.exp (-((a:ℝ)/1024)))^(2^10) = Real.exp (-(a:ℝ)) := by
     rw [← Real.exp_nat_mul]
     congr 1

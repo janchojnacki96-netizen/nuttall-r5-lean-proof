@@ -1,5 +1,5 @@
 import Nuttall.PsiCompactFixedCellSigns
-import Nuttall.PsiCompactCellCoefficients
+import Nuttall.PsiCompactCoefficientScaling
 import Nuttall.PsiLastCellJetData
 
 namespace Nuttall

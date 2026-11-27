@@ -65,6 +65,22 @@ theorem compactFixedPow_containsReal (D : ℤ) (hD : 0 < D)
     rw [compactFixedPow, pow_succ]
     exact FixedIntInterval.mul_containsReal D hD (compactFixedPow D a n) a (x^n) x ih hx
 
+/-- Repeated squaring of an enclosure on a fixed integer grid. -/
+def compactFixedPow2 (D : ℤ) (a : FixedIntInterval) : ℕ → FixedIntInterval
+  | 0 => a
+  | n+1 =>
+    let b := compactFixedPow2 D a n
+    b.mul D b
+
+theorem compactFixedPow2_containsReal (D : ℤ) (hD : 0 < D)
+    {a : FixedIntInterval} {x : ℝ} (hx : (a.asQInterval D).ContainsReal x) (n : ℕ) :
+    ((compactFixedPow2 D a n).asQInterval D).ContainsReal (x^(2^n)) := by
+  induction n with
+  | zero => simpa only [compactFixedPow2, pow_zero, pow_one] using hx
+  | succ n ih =>
+    rw [compactFixedPow2, pow_succ, pow_mul, pow_two]
+    exact FixedIntInterval.mul_containsReal D hD _ _ _ _ ih ih
+
 #print axioms compactFixedHorner_containsReal
 #print axioms compactFixedPow_containsReal
 

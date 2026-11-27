@@ -1,4 +1,5 @@
 import Nuttall.PsiPreciseGridJets
+import Nuttall.PsiCompactCoefficientScaling
 
 namespace Nuttall
 
@@ -19,25 +20,6 @@ theorem psiOneCompactJetBox_containsReal {center : ℚ} {corner : QInterval}
   | succ j =>
     rw [show (1:ℕ) = 0+1 by rfl, iteratedDeriv_succ_psi_succ]
     exact QInterval.neg_containsReal (psiPreciseGridPhiJetBox_containsReal hc₀ hc₂ hgrid j)
-
-/-- Scale the Hankel indices and the Taylor variable before rounding outward. -/
-def psiOneCompactCoefficientBoxOfJet (radius : ℚ) (J : QInterval) (l k : ℕ) : QInterval :=
-  compactRoundInterval (2^90) (QInterval.mul
-    (QInterval.point ((1/16:ℚ)^l * radius^k / (k.factorial:ℚ)))
-    J)
-
-theorem psiOneCompactCoefficientBoxOfJet_containsReal {radius : ℚ} {J : QInterval} {x : ℝ}
-    (hJ : J.ContainsReal x) (l k : ℕ) :
-    (psiOneCompactCoefficientBoxOfJet radius J l k).ContainsReal
-      ((1/16:ℝ)^l * (radius:ℝ)^k / (k.factorial:ℝ) * x) := by
-  have hs : QInterval.ContainsReal
-      (QInterval.point ((1/16:ℚ)^l * radius^k / (k.factorial:ℚ)))
-      ((1/16:ℝ)^l * (radius:ℝ)^k / (k.factorial:ℝ)) := by
-    simp only [QInterval.ContainsReal, QInterval.point, Rat.cast_pow, Rat.cast_mul, Rat.cast_div,
-      Rat.cast_natCast, Rat.cast_one, Rat.cast_ofNat, le_refl, and_self]
-  unfold psiOneCompactCoefficientBoxOfJet
-  apply compactRoundInterval_containsReal (by positivity)
-  exact QInterval.mul_containsReal hs hJ
 
 /-- Compute the scaled Taylor coefficient of the selected Hankel index. -/
 def psiOneCompactCoefficientBox (center radius : ℚ) (corner : QInterval) (l k : ℕ) :

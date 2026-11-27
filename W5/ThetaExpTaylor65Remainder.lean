@@ -1,4 +1,4 @@
-import W5.ThetaTermwiseCellRealCertificates
+import W5.VerifiedIntervalRealSemantics
 import Mathlib.Analysis.Complex.Exponential
 
 /-!
