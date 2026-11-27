@@ -127,5 +127,4 @@ import Nuttall.PsiCompactCell60
 import Nuttall.PhiRankEightTailEnvelope
 import Nuttall.PhiRankEightGaussianMatrix
 import Nuttall.MatrixQuadraticMargin
-import Nuttall.PhiRankEightTailMatrix
-import Nuttall.PhiRankEightMainBlock
+import Nuttall.PhiRankEightNormalizedSign
