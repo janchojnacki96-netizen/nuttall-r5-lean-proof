@@ -303,7 +303,9 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 | 9 | `psiOne_wronskian_at_rankEight_witness_neg` | Znak prawdziwego W₈(Ψ₁;5/64) przez afiniczną zależność od wpisu (0,0). |
 | 10 | `two_le_kernelIntegrationOrder_eight` | Świadek wyklucza słabe RR na poziomie pierwszym i dowodzi m(8)≥2. |
 
-**S — następna deklaracja.** Wykorzystaj [MatrixRowMargin.lean](../Nuttall/MatrixRowMargin.lean) do obustronnej kongruencji z dolnotrójkątnym U i przenieś normę z (2.1) na wszystkie podpisane minory początkowe (p≤7). Docelowy lemat `signed_leading_det_pos_of_triangular_congruence` powinien być niezależny od wyboru jądra, aby ten sam dowód zastosować dla Ψ₁ i Ψ₂. Potem pozostają przedziały dla rzeczywistych wpisów Ψ₁ w 67 komórkach oraz ogon. Do dokładnego m(8)=2 potrzebna jest osobno górna granica na poziomie Ψ₂.
+**S — kongruencja dla certyfikatów zwartych.** Oczekuje na CI. [MatrixCongruenceMargin.lean](../Nuttall/MatrixCongruenceMargin.lean) dowodzi `signed_leading_det_pos_of_triangular_congruence`. Dla rzeczywistej macierzy A i dolnotrójkątnej U z niezerową przekątną jedna nierówność normy wierszowej dla UAUᵀ względem J=diag((-1)ⁱ) implikuje ścisłe podpisane znaki wszystkich minorów początkowych. Obcięcie do p≤n komutuje z kongruencją, a jej mnożnik w wyznaczniku jest dodatnim kwadratem. Ten sam lemat stosuje się do (2.1) oraz do certyfikatu Ψ₂.
+
+**S — następna deklaracja.** Udowodnij `psiOne_compact_cell_contains_hankel` dla jednej reprezentatywnej komórki. Wpis (0,0) wymaga przedziału Ψ₁ w środku, a dodatnie rzędy dają `iteratedDeriv_succ_psi_one_eq_tsum`. Użyj reszty z §2.2, aby otrzymać normę wierszową w całej komórce. Potem odtwórz pozostałe 66 komórek przez ten sam checker i połącz z ogonem. Do dokładnego m(8)=2 potrzebna jest osobno górna granica na poziomie Ψ₂.
 
 **F — od dostatecznie dużych rzędów do każdego r.** Zaimplementuj jawny próg i połącz poniższe zakresy jednym dowodem pokrycia. Samo istnienie niejawnego R₀ nie uzasadnia startu przy 10¹¹. Dla każdego zakresu sprawdzaj wszystkie mniejsze minory przy jednym poziomie 2r.
 
