@@ -2,8 +2,20 @@ name: Lean preprint
 on:
   push:
     branches: [formalization/preprint]
+    paths:
+      - '**/*.lean'
+      - 'lean-toolchain'
+      - 'lakefile.toml'
+      - 'lake-manifest.json'
+      - '.github/workflows/preprint.yml'
   pull_request:
     branches: [formalization/preprint]
+    paths:
+      - '**/*.lean'
+      - 'lean-toolchain'
+      - 'lakefile.toml'
+      - 'lake-manifest.json'
+      - '.github/workflows/preprint.yml'
 
 permissions:
   contents: read
@@ -29,5 +41,36 @@ jobs:
           if [ -d "$HOME/.cache/mathlib" ]; then
             find "$HOME/.cache/mathlib" -type f -name '*.ltar' -delete
           fi
+      - name: Identify compatible project builds
+        id: keys
+        env:
+          DEPENDENCIES: ${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
+          SOURCES: ${{ hashFiles('Nuttall.lean', 'Nuttall/**/*.lean', 'W5.lean', 'W5/**/*.lean') }}
+        run: |
+          prefix="preprint-build-v1-${RUNNER_OS}-${RUNNER_ARCH}-${DEPENDENCIES}-"
+          echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
+          echo "source=$prefix$SOURCES" >> "$GITHUB_OUTPUT"
+      - name: Restore project oleans and Lake traces
+        id: project
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake/build
+          key: ${{ steps.keys.outputs.source }}-complete
+          restore-keys: |
+            ${{ steps.keys.outputs.source }}-partial-
+            ${{ steps.keys.outputs.prefix }}
       - name: Check the preprint module
+        id: build
         run: lake build Nuttall
+      - name: Save compiled project outputs
+        if: steps.project.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .lake/build
+          key: ${{ steps.keys.outputs.source }}-complete
+      - name: Save partial compilation for the next attempt
+        if: failure() && steps.build.outcome == 'failure' && steps.project.outputs.cache-hit != 'true' && hashFiles('.lake/build/lib/lean/**/*.olean') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: .lake/build
+          key: ${{ steps.keys.outputs.source }}-partial-${{ github.run_id }}-${{ github.run_attempt }}

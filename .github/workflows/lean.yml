@@ -3,6 +3,12 @@ on:
   push:
     branches: [main, work/lean-ci-bootstrap, integration/r5-one-canonical-certificate]
   pull_request:
+    paths-ignore:
+      - 'Nuttall/**'
+      - 'Nuttall.lean'
+      - '.github/workflows/preprint.yml'
+      - 'AGENTS.md'
+      - 'docs/formalization-plan.md'
   workflow_dispatch:
     inputs:
       build_target:
