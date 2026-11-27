@@ -47,18 +47,28 @@ private theorem TailBound.integrableOn (h : TailBound C f) (t : ℝ) :
     (fun hle => Or.inl ⟨(min_le_left _ _).trans hx, hle⟩)
     (fun hge => Or.inr hge)
 
+/-- Differentiating a continuous integrable upper tail recovers the integrand
+with a minus sign. Integrability on every upper half-line permits the choice
+of a common finite reference point. -/
+theorem tailIntegral_hasDerivAt {f : ℝ → ℝ} (hc : Continuous f)
+    (hi : ∀ t : ℝ, IntegrableOn f (Ici t)) (t : ℝ) :
+    HasDerivAt (tailIntegral f) (-f t) t := by
+  have hfun :
+      (fun u : ℝ => tailIntegral f 0 - ∫ x in (0 : ℝ)..u, f x) = tailIntegral f := by
+    funext u
+    have h := intervalIntegral.integral_Ici_sub_Ici' (hi 0) (hi u)
+    change tailIntegral f 0 - tailIntegral f u = (∫ x in (0 : ℝ)..u, f x) at h
+    dsimp
+    linarith
+  have hd := intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable 0 t)
+    (hc.aestronglyMeasurable.stronglyMeasurableAtFilter) hc.continuousAt
+  simpa only [hfun] using hd.const_sub (tailIntegral f 0)
+
 private theorem TailBound.tail (h : TailBound C f) : TailBound C (tailIntegral f) := by
   refine ⟨?_, ?_⟩
-  · have heq (t : ℝ) :
-        tailIntegral f t = tailIntegral f 0 - ∫ x in (0 : ℝ)..t, f x := by
-      have hi := intervalIntegral.integral_Ici_sub_Ici' (h.integrableOn 0) (h.integrableOn t)
-      change tailIntegral f 0 - tailIntegral f t = (∫ x in (0 : ℝ)..t, f x) at hi
-      linarith
-    have hd : Differentiable ℝ (fun t : ℝ => ∫ x in (0 : ℝ)..t, f x) := by
-      intro t
-      exact (intervalIntegral.integral_hasDerivAt_right (h.1.intervalIntegrable 0 t)
-        (h.1.aestronglyMeasurable.stronglyMeasurableAtFilter) h.1.continuousAt).differentiableAt
-    exact (continuous_const.sub hd.continuous).congr (fun t => (heq t).symm)
+  · have hd : Differentiable ℝ (tailIntegral f) :=
+      fun t => (tailIntegral_hasDerivAt h.1 h.integrableOn t).differentiableAt
+    exact hd.continuous
   · intro t ht
     constructor
     · apply integral_nonneg_of_ae
@@ -114,6 +124,15 @@ theorem psi_integrableOn (j : ℕ) (t : ℝ) : IntegrableOn (psi j) (Ici t) := b
   cases j with
   | zero => exact W5.Phi_integrableOn_Ici_all t
   | succ j => exact (psi_succ_bound j).integrableOn t
+
+theorem psi_continuous (j : ℕ) : Continuous (psi j) := by
+  cases j with
+  | zero => exact W5.Phi_differentiable.continuous
+  | succ j => exact (psi_succ_bound j).1
+
+theorem tailIterate_auxiliary_continuous (j : ℕ) :
+    Continuous (tailIterate auxiliaryTheta j) :=
+  (tailIterate_auxiliary_bound j).1
 
 /-- Section 4.1, after any number of tail integrations. -/
 theorem twice_psi_succ_eq_auxiliary_iterate_sub (j : ℕ) (t : ℝ) (ht : 0 ≤ t) :

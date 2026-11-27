@@ -23,7 +23,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 
 **U1 — zweryfikowane dowolne iteracje.** [`Nuttall.twice_psi_succ_eq_auxiliary_iterate_sub`](../Nuttall/TailIteration.lean) dowodzi 2Ψⱼ₊₁(t) = bⱼᵍ(t) − bⱼ₊₁ᵍ(t) dla każdego j∈ℕ i t≥0. Teorematy `tailIterate_auxiliary_integrableOn` i `psi_integrableOn` zapewniają całkowalność od każdego rzeczywistego t. [CI commita `69b616a`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45970770365) potwierdziło trzy standardowe aksjomaty Lean oraz odtworzenie częściowego cache.
 
-**Następny cel.** Uogólnij wzór z `W5.Psi1_hasDerivAt`: dla każdego m i t pokaż `HasDerivAt (psi (m+1)) (-psi m t) t`, używając `psi_integrableOn`, ciągłości (przez indukcję z bazą `W5.Phi_differentiable.continuous`) i różnicy całek ogonowych. Następnie wyprowadź `iteratedDeriv k (psi m) t = (-1 : ℝ)^k * psi (m-k) t` dla k≤m. Ten wzór i odwrócenie wierszy dadzą macierz z indeksami L+1+i−j w §4.1. Postać momentowa z silnią wymaga osobnego zastosowania Fubiniego.
+**U1 — pochodne i wpisy wrońskianu oczekują na CI.** Uogólnij wzór z `W5.Psi1_hasDerivAt`: dla każdego m i t pokaż `HasDerivAt (psi (m+1)) (-psi m t) t`, używając `psi_integrableOn`, ciągłości (przez indukcję z bazą `W5.Phi_differentiable.continuous`) i różnicy całek ogonowych. Następnie wyprowadź `iteratedDeriv k (psi m) t = (-1 : ℝ)^k * psi (m-k) t` dla k≤m. Ten wzór i odwrócenie wierszy dadzą macierz z indeksami L+1+i−j w §4.1. Postać momentowa z silnią wymaga osobnego zastosowania Fubiniego.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
