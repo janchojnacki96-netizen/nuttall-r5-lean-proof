@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i przejście od wrońskianów do RR | W5.Statement, CentralEvaluationPositivity | **Częściowo.** [ReverseSignRegularity.lean](../Nuttall/ReverseSignRegularity.lean) definiuje słabe RR i m(r) oraz przenosi ścisły test na wyznaczniki jądra dla każdego m. Do wykonania zachowanie RR przy całkowaniu i wykluczenie słabego RR przez zły znak wrońskianu. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **Złożony, oczekuje na CI.** [AnalyticUpperBound.lean](../Nuttall/AnalyticUpperBound.lean) dowodzi istnienia skutecznego poziomu dla każdego r oraz m(r)≤2r dla dostatecznie dużych r, w słabej konwencji z preprintu. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **Zweryfikowany w Lean.** [AnalyticUpperBound.lean](../Nuttall/AnalyticUpperBound.lean) dowodzi istnienia skutecznego poziomu dla każdego r oraz m(r)≤2r dla dostatecznie dużych r, w słabej konwencji z preprintu. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -218,7 +218,7 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **U4 — ścisłe znaki wrońskianów zweryfikowane.** Ten sam przebieg CI. [`eventually_signRegularWronskians_two_mul` i `exists_level_signRegularWronskians`](../Nuttall/ShiftRelativeTailProof.lean) dowodzą odpowiednio, że dla wszystkich dostatecznie dużych r poziom 2r przechodzi ścisły test, i że każdy zadany r≥1 ma pewien skuteczny poziom dla tego testu. Audyt ścieżki używa trzech standardowych aksjomatów Lean oraz wcześniej przyjętej tożsamości Andréiefa.
 
-**A/U — kryterium jądrowe i twierdzenie 1.2.** Poniższe deklaracje oczekują na CI.
+**A/U — kryterium jądrowe i twierdzenie 1.2.** Pełny `lake build Nuttall` przeszedł w [CI commita `6e210de`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/46008815492/job/140538728785). Kryterium jądrowe używa wyłącznie standardowych aksjomatów Lean. Końcowy wynik analityczny zależy także od wcześniej przyjętej tożsamości Andréiefa.
 
 | Krok | Deklaracja | Wynik |
 |---|---|---|
