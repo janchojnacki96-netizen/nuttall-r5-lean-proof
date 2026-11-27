@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 składa pełną reprezentację `eq:anorm` i osobno dowodzi dodatniości dla rzędu 1. Nowe deklaracje oczekują na CI. Dalej potrzebne są oszacowania U2–U4. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 zweryfikowano. W U2 zweryfikowano pochodne poza węzłami i postać Hankela. W U3 jest ogólny lemat o przeniesieniu dodatniości z części centralnej. Pozostają oszacowania U2–U4. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -75,7 +75,7 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **A — znaczenie tezy.** Zdefiniuj słabe RR dla wszystkich rosnących dodatnich węzłów obu zmiennych i wszystkich 1≤p≤r, zgodnie z §1. Zdefiniuj najmniejszy skuteczny poziom z możliwością nieskończoności albo stosuj minimum dopiero po dowodzie istnienia. Udowodnij monotoniczność względem rzędu, słabe zachowanie RR przy całkowaniu, wystarczalność ścisłego testu wrońskianowego oraz wykluczenie słabego RR przez ściśle zły znak (zlanie węzłów i ciągłość także dla t=0). Dla lematu 1.1 potrzebne jest ponadto zachowanie ściśle poprawnych znaków przy całkowaniu, z warunkami całkowalności i zaniku. Oddziel pomocniczy test ścisły od definicji minimum w artykule.
 
-**U1 — pełna normalizacja z §4.1.** Deklaracje oczekują na CI. Dla 1≤p i 2p≤m przy t≥0 otrzymujemy równanie `eq:anorm` z czynnikiem (Xeᵗ/2)ᵖ(4X)ᵖ⁽ᵖ⁻¹⁾⁄²/p!. Macierz przesuniętych momentów jest transponowana względem zapisu w preprincie, co nie zmienia wyznacznika.
+**U1 — pełna normalizacja z §4.1 i przygotowanie U3.** Wszystkie pozycje poniżej przeszły `lake build Nuttall` lokalnie oraz w [CI commita `c8fdbac`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45984688802/job/140457170000). Kroki 7 i 8 korzystają dodatkowo z zarejestrowanego aksjomatu `Literature.andreief`. Pozostałe mają trzy standardowe aksjomaty Lean. Dla 1≤p i 2p≤m przy t≥0 otrzymujemy równanie `eq:anorm` z czynnikiem (Xeᵗ/2)ᵖ(4X)ᵖ⁽ᵖ⁻¹⁾⁄²/p!. Macierz przesuniętych momentów jest transponowana względem zapisu w preprincie, co nie zmienia wyznacznika.
 
 | Krok | Deklaracja | Wynik |
 |---|---|---|
@@ -89,6 +89,8 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 | 8 | [`signed_wronskian_eq_shifted_orthant` i `signed_wronskian_pos_iff_shifted_orthant`](../Nuttall/ShiftedWronskian.lean) | Dokładna normalizacja `eq:anorm` i równoważność ścisłej dodatniości. |
 | 9 | [`signed_wronskian_order_one_pos`](../Nuttall/FirstWronskian.lean) | Dodatniość w rzędzie 1 dla każdego poziomu całkowania. |
 | 10 | [`integral_pos_of_relative_tail`](../Nuttall/RelativeIntegralTail.lean) | Ogólne domknięcie argumentu U3. Po wykazaniu dodatniej masy i nieujemnego znaku na części centralnej wystarczy, żeby masa bezwzględna dopełnienia stanowiła mniej niż połowę całości. |
+
+**U2 — pierwsza redukcja zweryfikowana.** [`iteratedDeriv_shiftedMoment`](../Nuttall/ShiftedMomentDerivatives.lean) używa lokalnie stałego zbioru aktywnych indeksów i identyfikuje pochodną rzędu i z momentem o indeksie niższym o i. [`shiftedMoment_wronskian_reverse_columns`](../Nuttall/ShiftedMomentDerivatives.lean) daje macierz Hankela z wpisem R_{L+k−1−i−j} po odwróceniu kolumn, przy k≤L i poza węzłami. Obie deklaracje zależą od trzech standardowych aksjomatów Lean. **Następna deklaracja:** zdefiniuj współczynniki rdzenia C_d z dwuzmiennego wielomianu i wykaż, że dla d=0 dają macierz diagonalną J_k. Następnie wyprowadź człon korekty A_d i przejście z macierzy Hankela do przeskalowanej macierzy.
 
 **U2 — macierz przesunięcia.** Sformalizuj odwrócenie kolumn, zmianę bazy o dodatnich przekątnych, normalizację dwumianową i kongruencję potęgi symetrycznej. Udowodnij oszacowania dla C_d oraz poprawki A_d−C_d, z osobnymi końcami d=0,1. Warunek odbioru: nierówność `eq:shift` i jednostajny margines lematu 4.2, również kiedy p=k=r i wykładnik 2r−p−k znika.
 
