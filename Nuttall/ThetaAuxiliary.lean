@@ -76,19 +76,27 @@ private theorem auxiliaryDerivative_le_envelope (a b t : ℝ) (n : ℕ)
   let A := fun s : ℝ => (n : ℝ)^4 * Real.pi^2 * Real.exp (9*s)
   let B := fun s : ℝ => (n : ℝ)^2 * Real.pi * Real.exp (5*s)
   let E := fun s : ℝ => Real.exp (-(n : ℝ)^2 * Real.pi * Real.exp (4*s))
+  have hphi : W5.phiSummand n t = (2*A t - 3*B t) * E t := by
+    dsimp [A, B, E, W5.phiSummand]
+    ring
+  rw [hphi]
   change ‖-2 * ((2*A t - 3*B t) * E t) - B t * E t‖ ≤
     (4*A b + 5*B b) * E a
   have hpoly : 4*A t + 5*B t ≤ 4*A b + 5*B b := by
-    have hA : A t ≤ A b := mul_le_mul_of_nonneg_left
-      (Real.exp_le_exp.mpr (by linarith)) (by positivity)
-    have hB : B t ≤ B b := mul_le_mul_of_nonneg_left
-      (Real.exp_le_exp.mpr (by linarith)) (by positivity)
+    have h9 : Real.exp (9*t) ≤ Real.exp (9*b) :=
+      Real.exp_le_exp.mpr (by linarith)
+    have h5 : Real.exp (5*t) ≤ Real.exp (5*b) :=
+      Real.exp_le_exp.mpr (by linarith)
+    have hA : A t ≤ A b := mul_le_mul_of_nonneg_left h9 (by positivity)
+    have hB : B t ≤ B b := mul_le_mul_of_nonneg_left h5 (by positivity)
     linarith
   have hE : E t ≤ E a := by
     apply Real.exp_le_exp.mpr
-    exact mul_le_mul_of_nonpos_left (Real.exp_le_exp.mpr (by linarith))
-      (by have hp : 0 ≤ (n : ℝ)^2 * Real.pi := by positivity
-          convert neg_nonpos.mpr hp using 1 <;> ring)
+    have h4 : Real.exp (4*a) ≤ Real.exp (4*t) :=
+      Real.exp_le_exp.mpr (by linarith)
+    have hn : -(n : ℝ)^2 * Real.pi ≤ 0 :=
+      mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr (sq_nonneg _)) Real.pi_pos.le
+    exact mul_le_mul_of_nonpos_left h4 hn
   have hEt : 0 ≤ E t := (Real.exp_pos _).le
   have hAt : 0 ≤ A t := by dsimp [A]; positivity
   have hBt : 0 ≤ B t := by dsimp [B]; positivity
