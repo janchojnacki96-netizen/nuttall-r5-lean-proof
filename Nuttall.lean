@@ -16,3 +16,5 @@ import Nuttall.ShiftedMomentCutoff
 import Nuttall.ProductTailTranslation
 import Nuttall.ThetaDeterminantTruncations
 import Nuttall.TruncatedMomentConvergence
+import Nuttall.ShiftedThetaIntegral
+import Nuttall.IntegratedThetaTruncations

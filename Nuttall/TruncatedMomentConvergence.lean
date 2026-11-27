@@ -107,8 +107,10 @@ theorem tendsto_truncated_andreief {p : ℕ} (k : Fin p → ℕ) {t : ℝ} (ht :
   have h : Tendsto A atTop (𝓝 B) := by
     refine tendsto_pi_nhds.2 (fun i => tendsto_pi_nhds.2 (fun j => ?_))
     exact tendsto_weighted_truncated_moment (k i) j.val ht
-  simpa only [hA, hB] using
+  have hh : Tendsto (fun N : ℕ => (p.factorial : ℝ) * (A N).det)
+      atTop (𝓝 ((p.factorial : ℝ) * B.det)) :=
     (continuous_id.matrix_det.continuousAt.tendsto.comp h).const_mul (p.factorial : ℝ)
+  simpa only [hA, hB] using hh
 
 #print axioms tendsto_weighted_truncated_moment
 #print axioms tendsto_truncated_andreief
