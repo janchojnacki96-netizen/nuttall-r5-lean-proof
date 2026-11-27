@@ -98,3 +98,9 @@ import Nuttall.PsiEightReplay
 import Nuttall.MatrixCongruenceMargin
 import Nuttall.CompactTaylor
 import Nuttall.PhiComplexDisk
+import Nuttall.PhiComplexJets
+import Nuttall.PhiCompactJetBounds
+import Nuttall.PsiCompactPanel
+import Nuttall.PsiCompactSeed
+import Nuttall.PhiJetInterval
+import Nuttall.CompactPolynomialMargin
