@@ -28,10 +28,10 @@ theorem signed_shiftedMomentWronskian_eq_hankel_of_lt {L k : ℕ} (hk : k < L) (
   change (-1:ℝ)^(k*(k-1)/2)*A.det = _
   rw [← hmat, Matrix.det_permute', hsign]
 
-/-- For (k<p) the positive sign holds on the entire central interval.
-The case (k=p) still only requires the previously proved sign off the knots. -/
-theorem eventually_initialShiftedMomentWronskian_pos :
-    ∀ᶠ r : ℕ in atTop, ∀ p k : ℕ, 1 ≤ k → k < p → p ≤ r →
+/-- When all entries needed by the Wronskian have positive moment indices,
+its strict sign holds on the entire central interval. -/
+theorem eventually_shiftedMomentWronskian_pos_at_knots :
+    ∀ᶠ r : ℕ in atTop, ∀ p k : ℕ, 1 ≤ k → k ≤ p → p ≤ r → k < 2*r-p →
       ∀ u : ℝ, 0 < u → u ≤ shiftCriticalCutoff r →
         0 < shiftedMomentWronskian (2*r-p) k u := by
   have hroot : 1/Real.sqrt 2 ≤ 3/4 := by
@@ -42,13 +42,12 @@ theorem eventually_initialShiftedMomentWronskian_pos :
       norm_num
     linarith
   filter_upwards [eventually_shiftCriticalMargin (1/8) (by norm_num)] with
-    r hr p k hk hkp hpr u hu huB
+    r hr p k hk hkp hpr hL u hu huB
   let L := 2*r-p
   let M := L+k-2
   have hMr : r-1 ≤ M := by dsimp [M, L]; omega
   have hdim : 2*(k-1) ≤ M := by dsimp [M, L]; omega
-  have hL : k < L := by dsimp [L]; omega
-  have h := hr M k hMr (hkp.le.trans hpr) hdim u hu huB
+  have h := hr M k hMr (hkp.trans hpr) hdim u hu huB
   have hlt : ‖summedCorrectedShiftCore M k u-shiftSignMatrix k‖ < 1 := by
     linarith only [h, hroot]
   let ε := (-1:ℝ)^(k*(k-1)/2)
@@ -59,6 +58,14 @@ theorem eventually_initialShiftedMomentWronskian_pos :
   rw [show (shiftedMomentHankel M k u).det = ε*shiftedMomentWronskian L k u from
     (signed_shiftedMomentWronskian_eq_hankel_of_lt hL u).symm, ← mul_assoc, hε, one_mul] at hs
   exact hs
+
+/-- Every proper initial Wronskian has the strict sign also at knots. -/
+theorem eventually_initialShiftedMomentWronskian_pos :
+    ∀ᶠ r : ℕ in atTop, ∀ p k : ℕ, 1 ≤ k → k < p → p ≤ r →
+      ∀ u : ℝ, 0 < u → u ≤ shiftCriticalCutoff r →
+        0 < shiftedMomentWronskian (2*r-p) k u := by
+  filter_upwards [eventually_shiftedMomentWronskian_pos_at_knots] with r hr p k hk hkp hpr
+  exact hr p k hk hkp.le hpr (by omega)
 
 #print axioms signed_shiftedMomentWronskian_eq_hankel_of_lt
 #print axioms eventually_initialShiftedMomentWronskian_pos

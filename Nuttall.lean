@@ -63,3 +63,7 @@ import Nuttall.ShiftedMomentWronskianAtKnots
 import Nuttall.EvaluationDeterminant
 import Nuttall.WronskianReduction
 import Nuttall.ShiftedMomentRegularity
+import Nuttall.LocalJetRegularity
+import Nuttall.CentralEvaluationPositivity
+import Nuttall.ShiftedMomentEvaluationPositivity
+import Nuttall.ShiftRelativeTailRatio
