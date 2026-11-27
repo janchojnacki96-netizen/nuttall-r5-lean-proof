@@ -1,4 +1,5 @@
 import Nuttall.CompactIntervalRounding
+import W5.VerifiedIntervalPolynomials
 
 namespace Nuttall
 
