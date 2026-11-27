@@ -19,8 +19,12 @@ private def compactPiBox : QInterval := ⟨3.14159265358979323846, 3.14159265358
 
 private theorem compactPiBox_containsReal : compactPiBox.ContainsReal Real.pi := by
   constructor <;> norm_num [compactPiBox]
-  · exact Real.pi_gt_d20.le
-  · exact Real.pi_lt_d20.le
+  · have h := Real.pi_gt_d20.le
+    norm_num at h
+    exact h
+  · have h := Real.pi_lt_d20.le
+    norm_num at h
+    exact h
 
 private def compactThetaCoordinateBox (t : ℚ) : QInterval :=
   QInterval.mul compactPiBox (compactPositiveExpBox (4*t))
@@ -66,7 +70,7 @@ theorem psiGridPhiJetBox_containsReal {t : ℚ} (h₀ : 0 ≤ t) (h₂ : t ≤ 2
     simp only [Rat.cast_div, Rat.cast_ofNat]
     exact div_le_div_of_nonneg_right hX.2 (by norm_num)
   have hqHalf := phiCompactExpBox_containsReal (div_nonneg hXlo (by norm_num))
-    (by change X.hi/2 ≤ 16; linarith only [hXhi]) hlo hhi
+    (by linarith only [hXhi]) hlo hhi
   have hG : (compactThetaGaussianBox t).ContainsReal (Real.exp (-x)) := by
     have he : Real.exp (-(x/2)) * Real.exp (-(x/2)) = Real.exp (-x) := by
       rw [← Real.exp_add, show -(x/2) + -(x/2) = -x by ring]

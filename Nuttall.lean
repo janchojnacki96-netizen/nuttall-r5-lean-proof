@@ -110,3 +110,4 @@ import Nuttall.PsiFirstCellJets
 import Nuttall.PsiFirstCellSeed
 import Nuttall.PsiGridJetBoxes
 import Nuttall.PsiFirstCellCorner
+import Nuttall.CompactIntervalCongruence
