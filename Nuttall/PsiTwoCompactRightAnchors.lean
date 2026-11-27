@@ -67,8 +67,9 @@ private theorem rightAnchors_valid (i n : ℕ) (hi : 14 ≤ i) (hend : i+n = 22)
     have hi : i = 22 := by omega
     subst i
     exact ⟨by
-      simpa [psiOneCompactAnchorFromPanels, QInterval.ContainsReal] using
-        (psi_one_precise_compact_seed_bounds (t := 11/16) (by norm_num) (by norm_num)),
+      simpa only [psiOneCompactAnchorFromPanels, QInterval.ContainsReal, Nat.cast_ofNat,
+        Rat.cast_div, Rat.cast_pow, Rat.cast_zero, Rat.cast_one, Rat.cast_ofNat]
+        using (psi_one_precise_compact_seed_bounds (t := (22:ℝ)/32) (by norm_num) (by norm_num)),
       by simpa only [psiTwoCompactAnchorFromPanels, show ((22:ℕ):ℝ)/32 = 11/16 by norm_num]
         using psiTwoPanelSeed_containsReal⟩
   | succ n ih =>

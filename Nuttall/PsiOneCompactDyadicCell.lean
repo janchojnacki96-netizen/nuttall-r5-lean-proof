@@ -48,10 +48,10 @@ theorem psiOne_compact_dyadic_cell_signed_wronskians {p : ℕ} (hp : p ≤ 7)
   have hjet (n : ℕ) (hn : n ≤ 36) : ((jetFromPhi corner phi n).asQInterval matrixScale).ContainsReal
       (iteratedDeriv n (psi 1) c) := by
     cases n with
-    | zero => simpa only [iteratedDeriv_zero] using hcorner
+    | zero => simpa only [jetFromPhi, iteratedDeriv_zero] using hcorner
     | succ n =>
       rw [show (1:ℕ) = 0+1 by rfl, iteratedDeriv_succ_psi_succ]
-      simpa only [jetFromPhi, FixedIntInterval.asQInterval, QInterval.neg, Int.cast_neg, neg_div]
+      simpa only [psi, jetFromPhi, FixedIntInterval.asQInterval, QInterval.neg, Int.cast_neg, neg_div]
         using QInterval.neg_containsReal (hphi n (by omega))
   have hmap : ((fixedBasis i).map (fun x : ℤ => (x:ℝ)/matrixScale)) =
       (psiOneCompactBasis i).map (fun x : ℚ => (x:ℝ)) := by

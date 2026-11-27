@@ -51,7 +51,7 @@ private theorem jetFromPhi_containsReal {c : ℝ} {one two : FixedIntInterval}
     (n : ℕ) (hn : n < 38) :
     ((jetFromPhi one two phi n).asQInterval matrixScale).ContainsReal (iteratedDeriv n (psi 2) c) := by
   match n with
-  | 0 => simpa only [iteratedDeriv_zero] using h₂
+  | 0 => simpa only [jetFromPhi, iteratedDeriv_zero] using h₂
   | 1 =>
     rw [show (1:ℕ) = 0+1 by rfl, show (2:ℕ) = 1+1 by rfl,
       iteratedDeriv_succ_psi_succ, iteratedDeriv_zero]
@@ -98,8 +98,8 @@ theorem psiTwo_compact_fixed_cell_signed_wronskians {p : ℕ} (hp : p ≤ 8)
   have hD (i : Fin 8) : U i i ≠ 0 := by
     simpa [U] using hdiag i
   have hrows (i : Fin 8) : (∑ j, |U i j|) ≤ 6700000 := by
-    simp only [U, Matrix.map_apply, abs_div, Int.cast_abs, abs_of_nonneg (by norm_num : (0:ℚ) ≤ 1024),
-      ← Finset.sum_div, ← Int.cast_sum]
+    simp only [U, Matrix.map_apply, abs_div, abs_of_nonneg (by norm_num : (0:ℚ) ≤ 1024),
+      ← Finset.sum_div]
     rw [div_le_iff₀ (by norm_num : (0:ℚ) < 1024)]
     exact_mod_cast (show (∑ j, |B i j|) ≤ 6700000*1024 by
       simpa only [mul_comm (6700000:ℤ)] using hrow i)
