@@ -1,4 +1,5 @@
 import Nuttall.PhiOriginCertificate
+import Nuttall.PhiJetCoefficientRows
 
 namespace Nuttall
 
@@ -10,8 +11,9 @@ private def squareCoordinateBox (X : QInterval) (n : ℕ) : QInterval :=
 
 private def phiJetTermBox (X q : QInterval) (j n : ℕ) : QInterval :=
   let Y := squareCoordinateBox X n
+  let row := phiJetCoeffRow j
   let P := QInterval.sumBox (Finset.range (j+2)) (fun k =>
-    QInterval.mul (QInterval.point (phiJetCoeff j k)) (positivePowBox Y k))
+    QInterval.mul (QInterval.point row[k]!) (positivePowBox Y k))
   QInterval.mul (QInterval.mul Y P) (positivePowBox q (n^2))
 
 /-- Shared interval evaluator for the first N terms of any real theta derivative.
@@ -58,7 +60,9 @@ theorem phiJetPrefixBox_containsReal {E X q : QInterval} {t : ℝ}
   apply QInterval.mul_containsReal hY
   rw [eval_phiJetPolynomial_of_lt (by omega : j+1 < j+2)]
   apply QInterval.sumBox_containsReal
-  intro k _
+  intro k hk
+  have h := Finset.mem_range.mp hk
+  rw [getElem!_pos _ _ h, phiJetCoeffRow_getElem j k h]
   exact QInterval.mul_containsReal ⟨le_rfl, le_rfl⟩
     (positivePowBox_containsReal hY₀ hY k)
 
