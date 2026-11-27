@@ -24,10 +24,10 @@ theorem psiOneFirstCellBasis_lower : psiOneFirstCellBasis.IsLowerTriangular := b
   fin_cases i <;> fin_cases j <;> norm_num [psiOneFirstCellBasis, Matrix.cons_val'] at h ⊢
 
 theorem psiOneFirstCellBasis_diag (i : Fin 7) : psiOneFirstCellBasis i i ≠ 0 := by
-  fin_cases i <;> decide_cbv
+  fin_cases i <;> decide +kernel
 
 theorem psiOneFirstCellBasis_rows (i : Fin 7) : (∑ j, |psiOneFirstCellBasis i j|) ≤ 107 := by
-  fin_cases i <;> decide_cbv
+  fin_cases i <;> decide +kernel
 
 /-- Interval coefficient with the center jets already snapped outwards. -/
 def psiOneFirstCellReplayCoeffBox (l k : ℕ) : QInterval :=
@@ -54,7 +54,7 @@ theorem psiOne_first_cell_margin_checked (i : Fin 7) :
     compactPolynomialRowBound 25 (compactCenteredCoefficientBoxes psiOneFirstCellBasis
       psiOneFirstCellReplayBoxes) i + 7 * ((1/10^19) * 107 * 107) < 13/25 := by
   change psiOneFirstCellRowCheck i
-  fin_cases i <;> decide_cbv
+  fin_cases i <;> decide +kernel
 
 #print axioms psiOne_first_cell_margin_checked
 

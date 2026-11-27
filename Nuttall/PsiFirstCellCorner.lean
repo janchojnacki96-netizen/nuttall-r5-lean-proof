@@ -7,7 +7,7 @@ namespace Nuttall
 open W5
 
 private def firstCellGridTime (i : ℕ) : ℚ := 1/256 + (i:ℚ)*(1/32)
-private def firstCellGridSeed : QInterval := ⟨0, 1/10^7⟩
+def firstCellGridSeed : QInterval := ⟨0, 1/10^7⟩
 private def firstCellJetRound (I : QInterval) : QInterval :=
   ⟨(⌊I.lo*10^23⌋ : ℤ) / (10:ℚ)^23, (⌈I.hi*10^23⌉ : ℤ) / (10:ℚ)^23⟩
 
@@ -19,7 +19,7 @@ private theorem firstCellJetRound_containsReal {I : QInterval} {x : ℝ}
     (le_div_iff₀ (by positivity)).mpr (Int.le_ceil _)
   exact ⟨(Rat.cast_mono hL).trans h.1, h.2.trans (Rat.cast_mono hU)⟩
 
-private def firstCellGridJets (i j : ℕ) : QInterval :=
+def firstCellGridJets (i j : ℕ) : QInterval :=
   firstCellJetRound (psiGridPhiJetBox (firstCellGridTime i) j 8)
 
 set_option maxRecDepth 32768 in

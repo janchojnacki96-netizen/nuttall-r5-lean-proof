@@ -18,7 +18,7 @@ set_option maxRecDepth 32768 in
 set_option maxHeartbeats 40000000 in
 private theorem firstCellJetEndpointCheck_of_lt (j : ℕ) (hj : j < 36) :
     firstCellJetEndpointCheck j := by
-  interval_cases j <;> decide_cbv
+  interval_cases j <;> decide +kernel
 
 theorem psiOneFirstCellDyadicJetBox_containsReal (j : ℕ) (hj : j < 36) :
     (psiOneFirstCellDyadicJetBox j).ContainsReal (iteratedDeriv (j+1) (psi 1) (1/256)) :=

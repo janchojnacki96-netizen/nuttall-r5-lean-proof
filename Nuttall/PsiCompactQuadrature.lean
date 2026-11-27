@@ -43,6 +43,13 @@ def psiOnePanelBox (right : QInterval) (jets : ℕ → QInterval) (d : ℕ) (h :
   addSymmetricError (QInterval.add right poly)
     ((((d.factorial:ℚ) * 8^d) * 10^6) * h^(d+1) / ((d+1).factorial:ℚ))
 
+/-- The contribution of a panel is independent of the enclosure to its right. -/
+theorem psiOnePanelBox_eq_add_zero (right : QInterval) (jets : ℕ → QInterval)
+    (d : ℕ) (h : ℚ) :
+    psiOnePanelBox right jets d h = QInterval.add right (psiOnePanelBox (QInterval.point 0) jets d h) := by
+  cases right
+  simp [psiOnePanelBox, addSymmetricError, QInterval.add, QInterval.point, add_assoc]
+
 theorem psiOnePanelBox_containsReal {right : QInterval} {jets : ℕ → QInterval}
     {a : ℝ} {h : ℚ} {d : ℕ} (ha : 0 ≤ a) (hh : 0 ≤ h) (hb : a+(h:ℝ) ≤ 2)
     (hright : right.ContainsReal (psi 1 (a+(h:ℝ))))
