@@ -16,9 +16,11 @@ private theorem integrate_sub_pow (j : ℕ) {t s : ℝ} (hts : t ≤ s) :
 private theorem polynomial_exp_integrable (j : ℕ) {t : ℝ} (ht : 0 ≤ t) :
     IntegrableOn (fun s : ℝ => s^j * Real.exp (-(1/2 : ℝ)*s)) (Ici t) := by
   have h := W5.theta_rpow_exp_integrableOn (1/2) (j : ℝ)
-    (by norm_num) (by positivity)
-  exact ((integrableOn_Ici_iff_integrableOn_Ioi).2
-    (by simpa only [Real.rpow_natCast] using h)).mono_set (Ici_subset_Ici.mpr ht)
+    (by norm_num) (lt_of_lt_of_le (by norm_num) (Nat.cast_nonneg j))
+  have hz : IntegrableOn (fun s : ℝ => s^j * Real.exp (-(1/2 : ℝ)*s)) (Ici 0) := by
+    apply (integrableOn_Ici_iff_integrableOn_Ioi).2
+    simpa only [Real.rpow_natCast] using h
+  exact hz.mono_set (Ici_subset_Ici.mpr ht)
 
 /-- Change the order of integration over the triangle t ≤ u ≤ s. -/
 private theorem integrate_auxiliary_triangle (j : ℕ) {t : ℝ} (ht : 0 ≤ t) :
@@ -39,13 +41,13 @@ private theorem integrate_auxiliary_triangle (j : ℕ) {t : ℝ} (ht : 0 ≤ t) 
     exact (((continuous_snd.sub continuous_fst).pow j).mul
       (hg.comp continuous_snd)).measurable.indicator measurableSet_le'
   have h0 : Integrable (fun u : ℝ => Real.exp (-(1/2 : ℝ)*u)) μ := by
-    simpa using (polynomial_exp_integrable 0 ht)
+    simpa only [μ, IntegrableOn, pow_zero, one_mul] using (polynomial_exp_integrable 0 ht)
   have hbig : Integrable
       (fun z : ℝ × ℝ => Real.exp (-(1/2 : ℝ)*z.1) *
         (auxiliaryTheta 0 * (z.2^j * Real.exp (-(1/2 : ℝ)*z.2)))) (μ.prod μ) :=
     h0.mul_prod ((polynomial_exp_integrable j ht).const_mul (auxiliaryTheta 0))
   have hmem : ∀ᵐ z ∂μ.prod μ, z ∈ Ici t ×ˢ Ici t := by
-    apply (ae_prod_mem_iff_ae_ae_mem (measurableSet_Ici.prod measurableSet_Ici)).2
+    apply (Measure.ae_prod_mem_iff_ae_ae_mem (measurableSet_Ici.prod measurableSet_Ici)).2
     filter_upwards [ae_restrict_mem measurableSet_Ici] with u hu
     filter_upwards [ae_restrict_mem measurableSet_Ici] with s hs
     exact ⟨hu, hs⟩
@@ -63,7 +65,8 @@ private theorem integrate_auxiliary_triangle (j : ℕ) {t : ℝ} (ht : 0 ≤ t) 
         rw [← Real.exp_add]
         exact Real.exp_le_exp.mpr (by linarith)
       have hbound := auxiliaryTheta_le_exp_decay z.2 hs
-      rw [F, indicator_of_mem (show z.2 ∈ Ici z.1 from h),
+      dsimp only [F]
+      rw [indicator_of_mem (show z.2 ∈ Ici z.1 from h),
         Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (pow_nonneg (sub_nonneg.mpr h) _)
           (auxiliaryTheta_nonneg _))]
       calc
@@ -76,7 +79,8 @@ private theorem integrate_auxiliary_triangle (j : ℕ) {t : ℝ} (ht : 0 ≤ t) 
           mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left he (auxiliaryTheta_nonneg _))
             (pow_nonneg hs _)
         _ = _ := by ring
-    · rw [F, indicator_of_notMem (show z.2 ∉ Ici z.1 from h), norm_zero]
+    · dsimp only [F]
+      rw [indicator_of_notMem (show z.2 ∉ Ici z.1 from h), norm_zero]
       exact mul_nonneg (Real.exp_pos _).le
         (mul_nonneg (auxiliaryTheta_nonneg _) (mul_nonneg (pow_nonneg hs _) (Real.exp_pos _).le))
   have hleft : (∫ u, ∫ s, F u s ∂μ ∂μ) =
@@ -84,7 +88,8 @@ private theorem integrate_auxiliary_triangle (j : ℕ) {t : ℝ} (ht : 0 ≤ t) 
     apply integral_congr_ae
     filter_upwards [ae_restrict_mem measurableSet_Ici] with u hu
     have hsub : Ici u ⊆ Ici t := Ici_subset_Ici.mpr hu
-    rw [F, integral_indicator measurableSet_Ici]
+    dsimp only [F]
+    rw [integral_indicator measurableSet_Ici]
     change (∫ s, (s-u)^j * auxiliaryTheta s ∂(volume.restrict (Ici t)).restrict (Ici u)) = _
     rw [Measure.restrict_restrict_of_subset hsub]
   have hright : (∫ s, ∫ u, F u s ∂μ ∂μ) =
@@ -119,7 +124,7 @@ theorem tailIterate_auxiliary_eq_moment (j : ℕ) (t : ℝ) (ht : 0 ≤ t) :
       filter_upwards [ae_restrict_mem measurableSet_Ici] with u hu
       exact ih u (ht.trans hu)
     rw [hEq, integral_div, integrate_auxiliary_triangle j ht, Nat.factorial_succ,
-      Nat.cast_mul, Nat.cast_succ, div_div_eq_div_mul]
+      Nat.cast_mul, Nat.cast_succ, div_div]
 
 #print axioms tailIterate_auxiliary_eq_moment
 
