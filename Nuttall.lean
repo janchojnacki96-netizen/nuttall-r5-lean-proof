@@ -1,2 +1,3 @@
 import Nuttall.Existence
 import Nuttall.ThetaAuxiliary
+import Nuttall.ThetaAuxiliaryIntegral

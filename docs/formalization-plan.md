@@ -19,7 +19,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 
 **U1 — zweryfikowana tożsamość różniczkowa.** [`Nuttall.twice_phi_eq_neg_deriv_add`](../Nuttall/ThetaAuxiliary.lean) dowodzi 2Φ = −(g′+g) dla każdego t∈ℝ. Dowód przechodzi do całego szeregu przez lokalną sumowalną majorantę gaussowską. [CI commita `5993a9b`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45968883067) pokazuje trzy standardowe aksjomaty Lean i odtworzenie modułów z częściowego cache zapisanego po [poprzednim błędzie](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45968606192).
 
-**Następny cel.** Udowodnij pierwszy przypadek tożsamości całek ogonowych: 2Ψ₁(t) = g(t) − ∫ₜ^∞ g(s) ds dla t≥0. Na tej półosi g jest nieujemna i jej składniki można ograniczyć przez odpowiednie składniki Φ, wykorzystując xₙ≥π dla n≥1. Użyj `W5.Phi_integrableOn_Ioi_all` do całkowalności, następnie wykaż zanik g w nieskończoności i zastosuj rachunek całki niewłaściwej do `auxiliaryTheta_hasDerivAt`. Potem rozszerz rekurencję na kolejne całki z uzasadnieniem zbieżności.
+**U1 — pierwsza całka oczekuje na CI.** Udowodnij pierwszy przypadek tożsamości całek ogonowych: 2Ψ₁(t) = g(t) − ∫ₜ^∞ g(s) ds dla t≥0. Na tej półosi g jest nieujemna i jej składniki można ograniczyć przez odpowiednie składniki Φ, wykorzystując xₙ≥π dla n≥1. Użyj `W5.Phi_integrableOn_Ioi_all` do całkowalności, następnie wykaż zanik g w nieskończoności i zastosuj rachunek całki niewłaściwej do `auxiliaryTheta_hasDerivAt`. Potem rozszerz rekurencję na kolejne całki z uzasadnieniem zbieżności.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
