@@ -104,3 +104,6 @@ import Nuttall.PsiCompactPanel
 import Nuttall.PsiCompactSeed
 import Nuttall.PhiJetInterval
 import Nuttall.CompactPolynomialMargin
+import Nuttall.PsiCompactRemainder
+import Nuttall.PsiCompactQuadrature
+import Nuttall.PsiFirstCellJets
