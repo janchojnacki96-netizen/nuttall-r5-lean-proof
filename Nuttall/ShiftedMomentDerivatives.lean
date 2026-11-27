@@ -23,13 +23,13 @@ private theorem shiftedMoment_eq_sum_active (j : ℕ) (u : ℝ) :
     shiftedMoment j u =
       ∑ n ∈ activeThetaIndices u, tailMomentWeight j (u-thetaKnot n) / Real.sqrt (n : ℝ) := by
   classical
-  simp only [shiftedMoment, shiftedMomentTerm_tsum_eq_sum, activeThetaIndices,
-    Finset.sum_filter, shiftedMomentTerm]
+  rw [shiftedMoment, shiftedMomentTerm_tsum_eq_sum]
+  simp only [activeThetaIndices, Finset.sum_filter, shiftedMomentTerm]
 
 /-- Away from the knots, a neighborhood uses the same finite set of theta indices. -/
 theorem eventuallyEq_activeThetaIndices {u : ℝ}
     (hu : ∀ n : ℕ, 0 < n → u ≠ thetaKnot n) :
-    (fun v => activeThetaIndices u) =ᶠ[𝓝 u] activeThetaIndices := by
+    (fun _ => activeThetaIndices u) =ᶠ[𝓝 u] activeThetaIndices := by
   let N := ⌈Real.exp (2*(u+1))⌉₊
   have hbound : ∀ᶠ v in 𝓝 u, v < u+1 := eventually_lt_nhds (by linarith)
   have hcut {w : ℝ} (hw : w ≤ u+1) {n : ℕ} (hn : n ∈ activeThetaIndices w) :
@@ -86,6 +86,24 @@ theorem iteratedDeriv_shiftedMoment {j k : ℕ} (hk : k ≤ j) {u : ℝ}
     rw [shiftedMoment_eq_sum_active, ← hv]
   rw [(heq.iteratedDeriv k).eq_of_nhds, iteratedDeriv_shifted_weight_sum hk, shiftedMoment_eq_sum_active]
 
+/-- Reversing the columns of the order-k Wronskian of the first k shifted
+moments gives the Hankel matrix at index L+k-1 (paper indexing). -/
+theorem shiftedMoment_wronskian_reverse_columns {L k : ℕ} (hL : k ≤ L) {u : ℝ}
+    (hu : ∀ n : ℕ, 0 < n → u ≠ thetaKnot n) :
+    Matrix.of (fun (i j : Fin k) =>
+      iteratedDeriv i.val (shiftedMoment (L+(Fin.rev j).val-1)) u) =
+    Matrix.of (fun (i j : Fin k) => shiftedMoment (L+k-2-(i.val+j.val)) u) := by
+  apply Matrix.ext
+  intro i j
+  simp only [Matrix.of_apply, Fin.val_rev]
+  have hi := i.isLt
+  have hj := j.isLt
+  have hidx : i.val ≤ L+(k-(j.val+1))-1 := by omega
+  rw [iteratedDeriv_shiftedMoment hidx hu]
+  congr 1
+  omega
+
 #print axioms iteratedDeriv_shiftedMoment
+#print axioms shiftedMoment_wronskian_reverse_columns
 
 end Nuttall
