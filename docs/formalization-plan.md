@@ -21,7 +21,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 
 **U1 — zweryfikowana pierwsza całka ogonowa.** Deklaracja [`Nuttall.twice_psi_one_eq_auxiliary_sub_tail`](../Nuttall/ThetaAuxiliaryIntegral.lean) dowodzi 2Ψ₁(t) = g(t) − ∫ₜ^∞ g(s) ds dla t≥0. Moduł dowodzi 0≤g≤Φ na tej półosi, całkowalności g i ograniczenia g(t)≤g(0)exp(−t). [CI commita `3120b85`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45969867996) pokazuje trzy standardowe aksjomaty oraz odtworzenie cache z pierwszej próby budowy.
 
-**Następny cel.** Zdefiniuj bⱼᵍ jako j-krotną całkę ogonową g i udowodnij 2Ψⱼ₊₁(t) = bⱼᵍ(t) − bⱼ₊₁ᵍ(t) dla t≥0 i j∈ℕ. Zachowaj bazę j=0 z gotowego lematu. Dla kroku indukcyjnego uzasadnij całkowalność wszystkich funkcji na [t,∞), wykorzystując istniejące ograniczenie wykładnicze g oraz nieujemność Ψ₁ i nierówność 2Ψ₁≤g. Obie klasy ograniczeń można zachować przy kolejnych całkach przez monotoniczność całki i dokładną całkę z exp(−t).
+**U1 — iteracje oczekują na CI.** Zdefiniuj bⱼᵍ jako j-krotną całkę ogonową g i udowodnij 2Ψⱼ₊₁(t) = bⱼᵍ(t) − bⱼ₊₁ᵍ(t) dla t≥0 i j∈ℕ. Zachowaj bazę j=0 z gotowego lematu. Dla kroku indukcyjnego uzasadnij całkowalność wszystkich funkcji na [t,∞), wykorzystując istniejące ograniczenie wykładnicze g oraz nieujemność Ψ₁ i nierówność 2Ψ₁≤g. Obie klasy ograniczeń można zachować przy kolejnych całkach przez monotoniczność całki i dokładną całkę z exp(−t).
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
