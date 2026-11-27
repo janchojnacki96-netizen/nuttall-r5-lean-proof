@@ -108,7 +108,7 @@ private theorem rankEightTailSum_eq_scaled {p : ℕ} (hp₀ : 0 < p) (hp : p ≤
       rankEightBasisDiagonal p (phiThetaCoordinate t) * phiCompactMatrix p (phiThetaCoordinate t) *
         rankEightBasisDiagonal p (phiThetaCoordinate t) := by
   let X := phiThetaCoordinate t
-  have hX₀ : 0 < X := by dsimp [X]; linarith only [hX]
+  have hX₀ : 0 < X := lt_of_lt_of_le (by norm_num : (0:ℝ) < 16) hX
   have hT := (phiRankEightTailMatrix_summable_norm_lt hp₀ hp hX).1
   ext i j
   let c := phiRankEightBasisScale X i.val * phiRankEightBasisScale X j.val
@@ -164,13 +164,14 @@ theorem phiRankEightFarWronskian_pos {p : ℕ} (hp : p ≤ 8) (t : ℝ)
     have hU : 0 < U.det := by
       rw [show U = D * phiRankEightRows p X from rfl, Matrix.det_mul]
       exact mul_pos hD (phiRankEightRows_det_pos hp X)
-    have hDt : D.transpose = D := Matrix.transpose_diagonal _
+    have hDt : D.transpose = D := Matrix.diagonal_transpose _
     have he : phiRankEightScale t • rankEightTailSum p X = U * H * U.transpose := by
       calc
         _ = D * (phiRankEightScale t • phiCompactMatrix p X) * D := by
           change phiRankEightScale t • rankEightTailSum p (phiThetaCoordinate t) = _
           rw [rankEightTailSum_eq_scaled hp₀ hp t hX]
-          simp only [Matrix.mul_smul, Matrix.smul_mul, D]
+          change phiRankEightScale t • (D * phiCompactMatrix p X * D) = _
+          simp only [Matrix.mul_smul, Matrix.smul_mul]
         _ = _ := by
           change D * (phiRankEightScale t • phiCompactMatrix p (phiThetaCoordinate t)) * D = _
           rw [phiRankEightCompactMatrix_eq_congruence hp t]
