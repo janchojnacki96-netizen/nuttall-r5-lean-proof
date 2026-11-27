@@ -107,3 +107,6 @@ import Nuttall.CompactPolynomialMargin
 import Nuttall.PsiCompactRemainder
 import Nuttall.PsiCompactQuadrature
 import Nuttall.PsiFirstCellJets
+import Nuttall.PsiFirstCellSeed
+import Nuttall.PsiGridJetBoxes
+import Nuttall.PsiFirstCellCorner
