@@ -76,8 +76,9 @@ theorem psiOneFirstCellCoeffBox_containsReal {corner : QInterval}
     (psiOneFirstCellCoeffBox corner l k).ContainsReal
       ((1/16:ℝ)^l * (1/256:ℝ)^k / (k.factorial:ℝ) *
         iteratedDeriv (l+k) (psi 1) (1/256)) := by
-  have hs : (QInterval.point ((1/16:ℚ)^l * (1/256:ℚ)^k / (k.factorial:ℚ))).
-      ContainsReal ((1/16:ℝ)^l * (1/256:ℝ)^k / (k.factorial:ℝ)) := by
+  have hs : QInterval.ContainsReal
+      (QInterval.point ((1/16:ℚ)^l * (1/256:ℚ)^k / (k.factorial:ℚ)))
+      ((1/16:ℝ)^l * (1/256:ℝ)^k / (k.factorial:ℝ)) := by
     simp only [QInterval.ContainsReal, QInterval.point, Rat.cast_pow, Rat.cast_mul, Rat.cast_div,
       Rat.cast_natCast, Rat.cast_one, Rat.cast_ofNat, le_refl, and_self]
   unfold psiOneFirstCellCoeffBox
