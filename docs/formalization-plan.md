@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 i U2 zweryfikowano. U3 ma formalny dowód dodatniości wyznacznika w rosnących punktach centralnych, także na węzłach theta, oraz pη<1/4. Do złożenia dowodu znaków dla dużych r pozostaje wykazanie względnego ograniczenia masy całki poza sześcianem. Przejście do słabego RR należy do A. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **Dowód znaków wrońskianów złożony w Lean, oczekuje na CI.** Dla dostatecznie dużych r poziom 2r daje wszystkie ścisłe znaki. Każdy zadany r ma w konsekwencji skuteczny poziom dla testu wrońskianowego. Przejście do słabego RR należy do A. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -199,7 +199,7 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **U3 — Fubini i dolne ograniczenie wielomianu poza otoczeniami pierwiastków zweryfikowane.** [CI commita `bcf28f4`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/46002397295/job/140517086640). [`integral_coordinate_compl_le_of_slice`, `integral_pi_compl_le_of_slices`](../Nuttall/OrthantSliceBound.lean) wydzielają współrzędną i sumują oszacowania dla dopełnienia sześcianu. [`integral_shiftedOrthant_compl_le_of_slices`](../Nuttall/ShiftedOrthantSliceBound.lean) stosuje tę redukcję do całki z §4.1 i pomija punkt brzegowy B przez zerową miarę singletonu. [`coeff_norm_mul_pow_le_eval_norm`, `relative_root_separation`](../Nuttall/ShiftSliceRootBound.lean) wykorzystują faktoryzację nad ℂ z Mathlib i dają dolną granicę wartości wielomianu na podstawie współczynnika i względnej odległości od pierwiastków.
 
-**U3 — przekrój i dopełnienie sześcianu.** Kroki 1–5 sprawdzono w CI powyżej. Kroki 6–10 zbudowano lokalnie i oczekują na CI.
+**U3 — przekrój i dopełnienie sześcianu.** Kroki 1–5 sprawdzono w CI powyżej. Kroki 6–10 przeszły w [CI commita `5f579f6`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/46003761683/job/140521661243).
 
 | Krok | Deklaracja | Wynik |
 |---|---|---|
@@ -214,15 +214,11 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 | 9 | [`abs_shiftedMoment_linearCombination_le_envelope`](../Nuttall/ShiftSliceMomentUpper.lean) | Suma aktywnych wag jest ≤2exp(u). Na całej półosi otrzymujemy wielomianową majorantę kombinacji momentów. |
 | 10 | [`exp_four_gamma_envelope`](../Nuttall/ShiftSliceGamma.lean) | Podstawienie y=exp(4u) i całka Eulera dają całkowalność majoranty oraz granicę m!. |
 
-**U3 — następna deklaracja.** Połącz sąsiednie oszacowania dla właściwego przekroju. Rozwiń wyznacznik momentów według kolumny odpowiadającej zmiennej przekroju i wydziel zależne od niej czynniki Vandermonde'a. Wykaż górną granicę masy ogona przez majorantę gamma, porównaj ją z dolną granicą i zastosuj lemat Fubiniego. Zachowaj wszystkie rzędy p≤r oraz t≥0.
+**U3 — pełne oszacowanie względne.** Oczekuje na CI. [`abs_shiftedOrthantIntegrand_insertNth`](../Nuttall/ShiftSliceFactorization.lean) wydziela kolumnę momentów z kofaktorami, zależne czynniki Vandermonde'a i wagę wolnej współrzędnej. [`shiftSlice_tail_mass_upper`](../Nuttall/ShiftSliceTailUpper.lean) całkuje górną majorantę poza B z dokładną stałą z §4.1. [`shiftSlice_relative_tail_le`](../Nuttall/ShiftRelativeTailProof.lean) porównuje górną i dolną granicę bez dzielenia przez skalę kofaktorów. Stąd Fubini i suma po współrzędnych dają koszt dopełnienia sześcianu najwyżej pη razy całkowita masa bezwzględna.
 
-Przy oszacowaniu przekroju użyj tych redukcji z §4.1.
+**U4 — ścisłe znaki wrońskianów.** Oczekuje na CI. [`eventually_signRegularWronskians_two_mul` i `exists_level_signRegularWronskians`](../Nuttall/ShiftRelativeTailProof.lean) dowodzą odpowiednio, że dla wszystkich dostatecznie dużych r poziom 2r przechodzi ścisły test, i że każdy zadany r≥1 ma pewien skuteczny poziom dla tego testu. Audyt ścieżki używa trzech standardowych aksjomatów Lean oraz wcześniej przyjętej tożsamości Andréiefa.
 
-- Do rozkładu wielomianu nad ℂ użyj `Polynomial.Splits.eq_prod_roots`. Oszacuj sumę modułów współczynników iloczynu przez iloczyn takich sum dla czynników. Stąd F≤|q_d|∏(1+|z|), z q_d współczynnikiem wiodącym.
-- Po usunięciu przedziałów wokół Re z i pozostałych węzłów długość wyłączeń jest najwyżej 2δ(d+p−1)≤1/16. Dla u∈[1/8,1/4] i |u−z|≥δ oszacuj 1+|z| przez 5/4+|u−z|. Dla |u−v|≥δ dolne oszacowanie znormalizowanego czynnika Vandermonde'a wynika z 1−exp(−4δ)≥2δ przy 0<δ≤1/4.
-- Aby scalić przekroje, użyj `measurePreserving_piFinSuccAbove` do wydzielenia jednej współrzędnej w mierze produktowej. Oszacuj sumę po współrzędnych na dopełnieniu sześcianu i zastosuj `eventually_signRegularWronskians_two_mul_of_shiftRelativeTailRatio`.
-
-**U4 — złożenie istnienia.** Wykaż istnienie R₀ takie, że dla każdego R≥max(1,R₀) zachodzi `signRegularWronskians (2*R) R`. Użyj `exists_level_of_eventual_two_mul` i mostu A, aby uzyskać twierdzenie 1.2. To pierwszy cel publikacyjny osiągalny przed pełnym odtworzeniem certyfikatów skończonych rzędów.
+**A — następna deklaracja.** Przenieś ścisły test na znak wyznacznika jądra Ψₘ(x+y) w dwóch rosnących rodzinach dodatnich węzłów. Użyj dwukrotnie `det_eval_pos_of_familyWronskians` z pustym zbiorem wyłączeń. Najpierw dla kolejnych pochodnych Ψₘ(x+·) przy ustalonym x, potem dla funkcji Ψₘ(·+yⱼ). Pomnóż kolumnę j (licząc od zera) przez (−1)ʲ w obu zastosowaniach i rozlicz znak iloczynu. Regularność Ψₘ do potrzebnego rzędu na półosi pochodzi z `iteratedDeriv_psi` i `psi_continuous`. Wystarczy wykazać ten most dla m≥2r, żeby uzyskać słabe RR dla dużych r i istnienie poziomu dla każdego zadanego r.
 
 **F — od dostatecznie dużych rzędów do każdego r.** Zaimplementuj jawny próg i połącz poniższe zakresy jednym dowodem pokrycia. Samo istnienie niejawnego R₀ nie uzasadnia startu przy 10¹¹. Dla każdego zakresu sprawdzaj wszystkie mniejsze minory przy jednym poziomie 2r.
 

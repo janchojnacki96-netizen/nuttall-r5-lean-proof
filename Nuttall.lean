@@ -77,3 +77,6 @@ import Nuttall.ShiftSliceGeometry
 import Nuttall.ShiftSliceCentralLower
 import Nuttall.ShiftSliceGamma
 import Nuttall.ShiftSliceMomentUpper
+import Nuttall.ShiftSliceTailUpper
+import Nuttall.ShiftSliceFactorization
+import Nuttall.ShiftRelativeTailProof
