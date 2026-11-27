@@ -174,7 +174,22 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **U3 — pochodne i znak w węzłach zweryfikowane.** Całe `lake build Nuttall` przeszło lokalnie i w [CI commita `27b366e`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45996553594/job/140497272292). [`iteratedDeriv_shiftedMoment_of_lt`](../Nuttall/ShiftedMomentKnotDerivative.lean) daje regułę pochodnej na całej prostej aż do dodatniego indeksu momentu. [`eventually_initialShiftedMomentWronskian_pos`](../Nuttall/ShiftedMomentWronskianAtKnots.lean) daje ścisłą dodatniość dla k<p na całym 0<u≤B, także w węzłach. Margines działa w węźle bezpośrednio dzięki globalnej regule pochodnych i kongruencji Hankela.
 
-**U3 — wyznacznik ewaluacji i kontrola ogona.** Dla k=p skorzystaj z wyłączenia przeliczalnego zbioru węzłów, aby otrzymać dodatniość prawie wszędzie. Następnie sformalizuj redukcję z §4.1 przez dzielenie przez pierwszą funkcję, różnice sąsiednich wierszy i całkowanie. Wyprowadź wymaganą lokalną absolutną ciągłość i zachowaj dodatniość dla dowolnych ściśle uporządkowanych węzłów ewaluacji. Osobno wyprowadź oszacowanie bezwzględnej całki na pominiętym obszarze względem części centralnej, z jednolitym błędem i warunkiem na pη. Zachowaj wszystkie mniejsze minory i wszystkie t≥0 przy tym samym poziomie 2R.
+**U3 — redukcja wyznacznika ewaluacji.** Moduły poniżej przeszły budowę lokalną i oczekują na CI.
+
+| Krok | Deklaracja | Wynik |
+|---|---|---|
+| 1 | [`det_eval_eq_prod_mul_det_differences`](../Nuttall/EvaluationDeterminant.lean) | Normalizacja przez wartości pierwszej funkcji i odejmowanie sąsiednich wierszy redukują rozmiar macierzy o jeden. |
+| 2 | [`det_integral_rows`, `integrable_evaluation_det`](../Nuttall/EvaluationDeterminant.lean) | Rozwinięcie permutacyjne i Fubini zamieniają wyznacznik całek w całkę z wyznacznika i dowodzą jego całkowalności. |
+| 3 | [`det_eval_eq_prod_mul_integral_deriv`](../Nuttall/EvaluationDeterminant.lean) | Twierdzenie podstawowe dla absolutnie ciągłych ilorazów daje dokładną formułę z §4.1. |
+| 4 | [`strictMono_of_adjacent_Ioc`, `integral_adjacent_Ioc_pos`](../Nuttall/EvaluationDeterminant.lean) | Punkty z kolejnych przedziałów są ściśle uporządkowane. Przeliczalne wyłączenia w każdej współrzędnej zachowują dodatniość całki. |
+| 5 | [`det_eval_pos_of_reduced`](../Nuttall/EvaluationDeterminant.lean) | Jeśli wyznacznik rodziny zredukowanej jest dodatni poza zbiorem wyjątków, dodatni jest także wyznacznik wyjściowy. |
+| 6 | [`familyWronskian_mul_left`](../Nuttall/WronskianReduction.lean) | Wspólny czynnik działa na macierz pochodnych przez dolną macierz trójkątną. |
+| 7 | [`familyWronskian_eq_pow_mul_reduced`](../Nuttall/WronskianReduction.lean) | Wrońskian pochodnych ilorazów ma właściwy znak dzięki dokładnej tożsamości z potęgą pierwszej funkcji. |
+| 8 | [`contDiffAt_shiftedMoment_off_knots`, `contDiff_shiftedMoment_of_lt`](../Nuttall/ShiftedMomentRegularity.lean) | Momenty są gładkie poza węzłami. Pochodne z dodatnim indeksem momentu są ciągłe również na węzłach. |
+| 9 | [`locallyLipschitz_shiftedMoment_succ`, `absolutelyContinuousOnInterval_iteratedDeriv_shiftedMoment`](../Nuttall/ShiftedMomentRegularity.lean) | Dodatnie indeksy dają lokalną lipschitzowskość, stąd absolutną ciągłość na każdym zwartym przedziale. |
+| 10 | [`eventually_lastShiftedMomentWronskian_pos_ae`](../Nuttall/ShiftedMomentRegularity.lean) | Ostatni wrońskian jest dodatni prawie wszędzie na przedziale centralnym. |
+
+**U3 — następna deklaracja.** Wykaż dodatniość wyznacznika przesuniętych momentów dla dowolnej ściśle uporządkowanej rodziny punktów w (0,B). Powtórz ogólną redukcję indukcyjnie. Na każdym etapie zachowaj lokalną lipschitzowskość najwyższych ciągłych pochodnych ilorazów i gładkość poza przeliczalnym zbiorem węzłów. Osobno wyprowadź oszacowanie bezwzględnej całki na pominiętym obszarze względem części centralnej, z jednolitym błędem i warunkiem na pη. Zachowaj wszystkie mniejsze minory i wszystkie t≥0 przy tym samym poziomie 2R.
 
 **U4 — złożenie istnienia.** Wykaż istnienie R₀ takie, że dla każdego R≥max(1,R₀) zachodzi `signRegularWronskians (2*R) R`. Użyj `exists_level_of_eventual_two_mul` i mostu A, aby uzyskać twierdzenie 1.2. To pierwszy cel publikacyjny osiągalny przed pełnym odtworzeniem certyfikatów skończonych rzędów.
 

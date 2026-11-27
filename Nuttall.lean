@@ -60,3 +60,6 @@ import Nuttall.ShiftCriticalMargin
 import Nuttall.ShiftedMomentContinuity
 import Nuttall.ShiftedMomentKnotDerivative
 import Nuttall.ShiftedMomentWronskianAtKnots
+import Nuttall.EvaluationDeterminant
+import Nuttall.WronskianReduction
+import Nuttall.ShiftedMomentRegularity
