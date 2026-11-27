@@ -111,9 +111,9 @@ private theorem ae_nonneg_positiveOrthant (p : ℕ) :
 private theorem measurable_shiftedMomentTerm (k n : ℕ) : Measurable (shiftedMomentTerm k n) := by
   unfold shiftedMomentTerm
   have hs : MeasurableSet {u : ℝ | 0 < n ∧ thetaKnot n < u} :=
-    MeasurableSet.inter (by
-      change MeasurableSet { _ : ℝ | 0 < n }
-      by_cases h : 0 < n <;> simp [h]) measurableSet_Ioi
+    by_cases hn : 0 < n
+    · simpa [hn] using (measurableSet_Ioi : MeasurableSet (Ioi (thetaKnot n)))
+    · simp [hn]
   apply Measurable.ite hs
   · unfold tailMomentWeight
     fun_prop

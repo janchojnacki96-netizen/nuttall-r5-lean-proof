@@ -24,3 +24,4 @@ import Nuttall.ShiftedOrthantConvergence
 import Nuttall.ShiftedWronskian
 import Nuttall.FirstWronskian
 import Nuttall.RelativeIntegralTail
+import Nuttall.ShiftedMomentDerivatives
