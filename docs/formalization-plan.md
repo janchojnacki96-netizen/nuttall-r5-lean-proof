@@ -267,7 +267,7 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **S — rząd pierwszy.** [`kernelIntegrationOrder_one_eq_zero`](../Nuttall/FirstIntegrationOrder.lean) przenosi `W5.Phi_pos` na ścisły znak minora 1×1 i wykazuje m(1)=0. Pełny `lake build Nuttall` i audyt trzech standardowych aksjomatów przeszły w [CI commita `0f0ea85`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/46015136528/job/140560209577).
 
-**S — rzędy 2–4.** Oczekuje na CI. Rozwinięcie bezpośrednie w X z suplementu zastępuje w tym zakresie ogólny test Taylora w t. Na [3,16] używamy 51 zamkniętych komórek, zmienionych przez dokładny wariant wymierny. Poza 16 stosujemy dominację wierszową zamiast oszacowania przez zespoloną całkę Gaussa.
+**S — rzędy 2–4.** Część analityczna i redukcja do skończonego testu oczekują na pełne CI. Jedyną hipotezą dedykowaną temu wynikowi jest `phiCompactGridChecked`. Obejmuje 51 komórek i cztery podpisane wyznaczniki na każdej. Odtworzenie w Pythonie na dokładnych ułamkach przyjęło wszystkie komórki. Próba zamknięcia całej koniunkcji jednym obliczeniem jądra Lean została przerwana kodem 137 w lokalnym wykonawcy. Rozwinięcie bezpośrednie w X z suplementu zastępuje w tym zakresie ogólny test Taylora w t. Na [3,16] używamy 51 zamkniętych komórek, zmienionych przez dokładny wariant wymierny. Poza 16 stosujemy dominację wierszową zamiast oszacowania przez zespoloną całkę Gaussa.
 
 | Krok | Deklaracja lub plik | Rola w dowodzie |
 |---|---|---|
@@ -277,12 +277,12 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 | 4 | [`phiCompactExpBox_containsReal`](../Nuttall/PhiCompactExponential.lean) | Taylor z resztą i zaokrąglenie na zewnątrz pozwalają odzyskać exp(−X) wyłącznie z końców wymiernych. |
 | 5 | [`phiCompactTail_abs_le`, `phiCompactFarTail_abs_le`](../Nuttall/PhiCompactTailBound.lean) | Wspólna majoranta geometryczna ogranicza pominiętą część szeregu na przedziale zwartym i na półosi od X=16. |
 | 6 | [`phiCompactBlockBox_containsReal`](../Nuttall/PhiCompactInterval.lean) | Trzy niezerowe składniki oraz oszacowanie ogona ograniczają rzeczywiste wpisy znormalizowanej macierzy. |
-| 7 | [`phiCompactWronskian_pos`](../Nuttall/PhiCompactCells.lean) | Wymierny test wyznacznika do rzędu 4 i pokrycie całego [3,16]. |
+| 7 | [`phiCompactWronskian_pos`](../Nuttall/PhiCompactCells.lean) | Pokrycie całego [3,16] jest dowodzone w Lean. Wynik używa jawnej hipotezy przejścia skończonych testów. |
 | 8 | [`det_pos_of_row_diagonal_margin`](../Nuttall/MatrixRowMargin.lean) | Dodatnia przekątna i ścisła dominacja wierszowa dają dodatni wyznacznik. |
 | 9 | [`phiFarWronskian_pos`](../Nuttall/PhiFarSign.lean) | Pierwszy składnik i jednolity błąd szeregu spełniają test na X≥16. |
-| 10 | [`kernelIntegrationOrder_eq_zero_of_le_four`](../Nuttall/ZeroIntegrationOrder.lean) | Oba zakresy oraz kryterium jądrowe składają się w wynik dla wszystkich r≤4. |
+| 10 | [`kernelIntegrationOrder_eq_zero_of_le_four_of_compact_check`](../Nuttall/ZeroIntegrationOrder.lean) | Oba zakresy oraz kryterium jądrowe składają się w wynik dla wszystkich r≤4, po potwierdzeniu testu. |
 
-**S — dalszy cel.** Świadek dla m(8) wymaga obliczenia osobno Ψ₁(5/64) i pochodnych w tym punkcie.
+**S — następna deklaracja.** Udowodnij `phiCompactGridChecked` na konkretnych danych. Zacznij od jednej komórki, a następnie uruchamiaj `decide +kernel` dla oddzielnych paczek. Użyj aktualnych modułów z cache. Jeśli jedna komórka jest kosztowna, zapisz i osobno sprawdź zaokrąglone ścisłe końce exp(−X) i macierzy, aby nie obliczać ich przy każdym składniku wyznacznika.
 
 **F — od dostatecznie dużych rzędów do każdego r.** Zaimplementuj jawny próg i połącz poniższe zakresy jednym dowodem pokrycia. Samo istnienie niejawnego R₀ nie uzasadnia startu przy 10¹¹. Dla każdego zakresu sprawdzaj wszystkie mniejsze minory przy jednym poziomie 2r.
 

@@ -33,17 +33,18 @@ local instance (a b : ℚ) (p : ℕ) : Decidable (phiCompactCellCheck a b p) := 
   unfold phiCompactCellCheck
   infer_instance
 
-private def phiCompactCellPass (c : ℚ × ℚ) : Bool :=
+def phiCompactCellPass (c : ℚ × ℚ) : Bool :=
   decide (3 ≤ c.1 ∧ c.2 ≤ 16) &&
     [1,2,3,4].all (fun p => decide (phiCompactCellCheck c.1 c.2 p))
 
-set_option maxRecDepth 32768 in
-set_option maxHeartbeats 12000000 in
-private theorem phiCompactCells_pass : (adjacentCells 3 phiCompactGrid).all phiCompactCellPass = true := by
-  decide +kernel
+/-- Concrete closed cells used by the compact determinant checker. -/
+def phiCompactCells : List (ℚ × ℚ) := adjacentCells 3 phiCompactGrid
+
+/-- The finite certificate to prove by exact arithmetic in the Lean kernel. -/
+def phiCompactGridChecked : Prop := phiCompactCells.all phiCompactCellPass = true
 
 /-- The rational cells prove the strict signed Wronskians on the compact range 3 ≤ X ≤ 16. -/
-theorem phiCompactWronskian_pos {p : ℕ} (hp₁ : 1 ≤ p) (hp₄ : p ≤ 4) (t : ℝ)
+theorem phiCompactWronskian_pos (hgrid : phiCompactGridChecked) {p : ℕ} (hp₁ : 1 ≤ p) (hp₄ : p ≤ 4) (t : ℝ)
     (ht₃ : 3 ≤ phiThetaCoordinate t) (ht₁₆ : phiThetaCoordinate t ≤ 16) :
     0 < kernelMinorSign p * wronskian W5.Phi p t := by
   have he : lastEndpoint 3 phiCompactGrid = 16 := by decide +kernel
@@ -58,8 +59,8 @@ theorem phiCompactWronskian_pos {p : ℕ} (hp₁ : 1 ≤ p) (hp₄ : p ≤ 4) (t
       · rw [hx]
         norm_num
     · exact hc
-  have hC := List.all_eq_true.mp phiCompactCells_pass c hc
-  have hsplit := Bool.and_eq_true.mp hC
+  have hC := List.all_eq_true.mp hgrid c hc
+  have hsplit := Bool.and_eq_true_iff.mp hC
   obtain ⟨h3,h16⟩ := of_decide_eq_true hsplit.1
   have hm : p ∈ [1,2,3,4] := by interval_cases p <;> decide
   exact phiCompactCellCheck_sound hp₄ t h3 h16 h1 h2
