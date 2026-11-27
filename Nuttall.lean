@@ -8,3 +8,4 @@ import Nuttall.TailMoments
 import Nuttall.WeightedMomentDeterminant
 import Nuttall.MomentWeightCalculus
 import Nuttall.AuxiliaryDerivativePolynomials
+import Nuttall.AuxiliarySeries
