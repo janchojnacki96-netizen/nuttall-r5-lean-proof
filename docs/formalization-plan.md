@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 ma formalną reprezentację całką wielokrotną z dwiema macierzami. Zweryfikowano także rozwinięcie skończone i przesunięcie całki dla każdej krotki. Pozostaje zebrać przesunięte składniki na wspólnym ortancie i przejść do granicy, aby otrzymać `eq:anorm`. Dalej potrzebne są oszacowania U2–U4. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 składa pełną reprezentację `eq:anorm` i osobno dowodzi dodatniości dla rzędu 1. Nowe deklaracje oczekują na CI. Dalej potrzebne są oszacowania U2–U4. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -75,7 +75,20 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **A — znaczenie tezy.** Zdefiniuj słabe RR dla wszystkich rosnących dodatnich węzłów obu zmiennych i wszystkich 1≤p≤r, zgodnie z §1. Zdefiniuj najmniejszy skuteczny poziom z możliwością nieskończoności albo stosuj minimum dopiero po dowodzie istnienia. Udowodnij monotoniczność względem rzędu, słabe zachowanie RR przy całkowaniu, wystarczalność ścisłego testu wrońskianowego oraz wykluczenie słabego RR przez ściśle zły znak (zlanie węzłów i ciągłość także dla t=0). Dla lematu 1.1 potrzebne jest ponadto zachowanie ściśle poprawnych znaków przy całkowaniu, z warunkami całkowalności i zaniku. Oddziel pomocniczy test ścisły od definicji minimum w artykule.
 
-**U1 — tożsamość całkowa z §4.** Rozwiń rachunek całek ogonowych, odwrócenie kolejności wierszy i znaki, zmianę zmiennych oraz sumy przesuniętych składników. Zastosuj tożsamość Andréiefa po sprawdzeniu zbieżności i hipotez całkowych. Warunek odbioru: dla właściwego zakresu otrzymać równość podpisanego wrońskianu z całką z równania oznaczonego `eq:anorm` i dodatnim czynnikiem normalizacyjnym. Obsłuż p=1 oddzielnie.
+**U1 — pełna normalizacja z §4.1.** Deklaracje oczekują na CI. Dla 1≤p i 2p≤m przy t≥0 otrzymujemy równanie `eq:anorm` z czynnikiem (Xeᵗ/2)ᵖ(4X)ᵖ⁽ᵖ⁻¹⁾⁄²/p!. Macierz przesuniętych momentów jest transponowana względem zapisu w preprincie, co nie zmienia wyznacznika.
+
+| Krok | Deklaracja | Wynik |
+|---|---|---|
+| 1 | [`integral_fixed_indices_common_orthant`](../Nuttall/ShiftedThetaOrthant.lean) | Wspólna miara na ortancie, czynniki 1/√n w kolumnach i zerowanie krotek z n=0. |
+| 2 | [`shiftedMomentTruncated_eq_of_ge_ceil`](../Nuttall/ShiftedMomentBounds.lean) | Dla każdego węzła od pewnego indeksu przycięta suma jest dokładnie równa pełnej sumie. |
+| 3 | [`abs_shiftedMomentTruncated_le` i `abs_shiftedMoment_le`](../Nuttall/ShiftedMomentBounds.lean) | Wspólne ograniczenie 4exp(3u) dla u≥0. |
+| 4 | [`tilted_thetaOrthantWeight_le`](../Nuttall/ShiftedMomentBounds.lean) | Waga superwykładnicza po przemnożeniu przez exp(Au) jest ograniczona stałą razy exp(−u). |
+| 5 | [`integrable_shiftedOrthant_term` i `integrable_shiftedOrthant`](../Nuttall/ShiftedOrthantConvergence.lean) | Całkowalność bezwzględna ustalonych krotek i całego integrandu, użyteczna także przy kontroli ogona U3. |
+| 6 | [`tendsto_shiftedOrthant_integral`](../Nuttall/ShiftedOrthantConvergence.lean) | Zbieżność całek po obcięciu sumy theta, przez twierdzenie o zbieżności zdominowanej. |
+| 7 | [`andreief_integral_eq_shifted`](../Nuttall/ShiftedWronskian.lean) | Złożenie skończonych całek po zmianie zmiennych i identyfikacja ich wspólnej granicy. |
+| 8 | [`signed_wronskian_eq_shifted_orthant` i `signed_wronskian_pos_iff_shifted_orthant`](../Nuttall/ShiftedWronskian.lean) | Dokładna normalizacja `eq:anorm` i równoważność ścisłej dodatniości. |
+| 9 | [`signed_wronskian_order_one_pos`](../Nuttall/FirstWronskian.lean) | Dodatniość w rzędzie 1 dla każdego poziomu całkowania. |
+| 10 | [`integral_pos_of_relative_tail`](../Nuttall/RelativeIntegralTail.lean) | Ogólne domknięcie argumentu U3. Po wykazaniu dodatniej masy i nieujemnego znaku na części centralnej wystarczy, żeby masa bezwzględna dopełnienia stanowiła mniej niż połowę całości. |
 
 **U2 — macierz przesunięcia.** Sformalizuj odwrócenie kolumn, zmianę bazy o dodatnich przekątnych, normalizację dwumianową i kongruencję potęgi symetrycznej. Udowodnij oszacowania dla C_d oraz poprawki A_d−C_d, z osobnymi końcami d=0,1. Warunek odbioru: nierówność `eq:shift` i jednostajny margines lematu 4.2, również kiedy p=k=r i wykładnik 2r−p−k znika.
 
