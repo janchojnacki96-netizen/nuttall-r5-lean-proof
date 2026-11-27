@@ -19,9 +19,12 @@ theorem psiOneCompactCell_geometry (i : Fin 67) :
   let ab := psiOneCompactCell i
   obtain ⟨ha, hab, hb, hw⟩ := psiOneCompactCells_facts (psiOneCompactCell_mem i)
   have ha' : 0 ≤ (ab.1:ℝ) := by exact_mod_cast ha
-  have hb' : (ab.2:ℝ) ≤ 1/2 := by exact_mod_cast hb
+  have hb' : (ab.2:ℝ) ≤ 1/2 := by
+    simpa only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using (Rat.cast_mono (K := ℝ) hb)
   have hwidth : 0 < (ab.2:ℝ)-(ab.1:ℝ) := by exact_mod_cast sub_pos.mpr hab
-  have hwidth' : (ab.2:ℝ)-(ab.1:ℝ) ≤ 1/128 := by exact_mod_cast hw
+  have hwidth' : (ab.2:ℝ)-(ab.1:ℝ) ≤ 1/128 := by
+    simpa only [Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using
+      (Rat.cast_mono (K := ℝ) hw)
   simp only [psiOneCellCenter, psiOneCellRadius, Rat.cast_add, Rat.cast_sub, Rat.cast_div,
     Rat.cast_ofNat]
   exact ⟨by linarith only [ha'], by linarith only [hb'],

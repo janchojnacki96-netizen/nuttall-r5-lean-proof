@@ -121,6 +121,5 @@ import Nuttall.PsiCompactCellCoefficients
 import Nuttall.PsiCompactGridSigns
 import Nuttall.PsiCompactBasisData
 import Nuttall.PsiLastCellSigns
-import Nuttall.PsiCompactGridIndex
-import Nuttall.PsiCompactSharedAnchors
+import Nuttall.PsiCompactCertifiedGrid
 import Nuttall.PsiCompactCell60
