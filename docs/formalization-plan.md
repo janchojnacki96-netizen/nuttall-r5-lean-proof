@@ -155,7 +155,7 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **U2 — suma wcześniejszych przesunięć zweryfikowana.** [CI commita `29449a8`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45995148972/job/140492566662). [`sum_inv_sqrt_succ_le` i `sum_cross_inv_sqrt_le_four`](../Nuttall/ShiftWeightSum.lean) dają teleskopowe oszacowanie przez 2√m oraz dokładną stałą 4 dla sumy ∑_{1≤n<K} 1/√(n(K−n)). [`lastActiveTheta_lt_exp` i `thetaKnot_two_div_le`](../Nuttall/ShiftEarlierSum.lean) zapewniają K<exp(2u) oraz d≥a₂/B dla n≥2. [`norm_earlier_shift_sum_le`](../Nuttall/ShiftEarlierSum.lean) składa te fakty z `eq:shift` i dolną granicą 1−d. Wynik ma jawny majorant `shiftEarlierError`, jednostajny dla 0<u≤B i właściwych wymiarów. [`eventually_shiftCriticalCutoff_bounds`](../Nuttall/ShiftCriticalCutoff.lean) dowodzi dla dokładnego B z pracy, że w końcu B≤r^{1/32} i exp B≤r^{3/8}.
 
-**U2 — jednostajny margines bloku krytycznego.** Oczekuje na CI. Poniższe kroki kończą część asymptotyczną lematu `lem:critical`.
+**U2 — jednostajny margines bloku krytycznego zweryfikowany.** Całe `lake build Nuttall` przeszło lokalnie oraz w [CI commita `e2685f3`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45995805793/job/140494778256). Poniższe kroki kończą część asymptotyczną lematu `lem:critical`.
 
 | Krok | Deklaracja | Wynik |
 |---|---|---|
@@ -170,7 +170,7 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 | 9 | [`eventually_shiftCriticalMargin`](../Nuttall/ShiftCriticalMargin.lean) | Dla każdego ε>0 istnieje wspólny próg, od którego odległość od J_k jest najwyżej 1/√2+ε dla wszystkich dopuszczalnych p, k i u. |
 | 10 | [`eventually_shiftedMomentWronskian_pos`](../Nuttall/ShiftCriticalMargin.lean) | Wybór ε=1/8 daje dodatniość wszystkich początkowych wrońskianów przesuniętych momentów poza węzłami, dla 1≤k≤p≤r i 0<u≤B. |
 
-**U3 — ciągłość momentów.** Oczekuje na CI. [`continuous_shiftedMoment_succ`](../Nuttall/ShiftedMomentContinuity.lean) dowodzi ciągłości wszystkich dodatnich indeksów Lean na całej prostej, również w węzłach, przez lokalną równość ze skończoną sumą. Przejście do odpowiednio wysokich pochodnych pozostaje otwarte.
+**U3 — ciągłość momentów zweryfikowana.** Ten sam przebieg CI. [`continuous_shiftedMoment_succ`](../Nuttall/ShiftedMomentContinuity.lean) dowodzi ciągłości wszystkich dodatnich indeksów Lean na całej prostej, również w węzłach, przez lokalną równość ze skończoną sumą. Przejście do odpowiednio wysokich pochodnych pozostaje otwarte.
 
 **Następna deklaracja U3.** Udowodnij regułę pochodnej przesuniętego momentu także na węźle przy wykładnikach większych od rzędu różniczkowania. Rozszerz znak początkowych wrońskianów na węzły tam, gdzie są ciągłe, a następnie połącz ze znakiem wyznacznika ewaluacji w różnych węzłach.
 
