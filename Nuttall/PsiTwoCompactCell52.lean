@@ -38,15 +38,17 @@ theorem psiTwo_compact_cell52_signed_wronskians (p : ℕ) (hp : p ≤ 8)
   apply psiTwo_compact_fixed_cell_signed_wronskians hp (by norm_num) (by norm_num) hv
     psiTwoCell52Basis ?_ ?_ ?_ psiTwoCell52One psiTwoCell52Two psiTwoCell52Phi ?_
     psiTwoCell52Corner_containsReal ?_ psiTwoCell52Margin_checked
-  · exact (by
-      decide +kernel : ∀ i j : Fin 8, i < j → psiTwoCell52Basis i j = 0)
+  · intro i j hij
+    fin_cases i <;> fin_cases j <;> first | rfl | omega
   · intro i
     fin_cases i <;> decide +kernel
   · intro i
     fin_cases i <;> decide +kernel
-  · rw [psiTwoCell52One_eq]
+  · change (psiTwoCell52One.asQInterval (2^90)).ContainsReal _
+    rw [psiTwoCell52One_eq]
     exact psiOneCell52Corner_containsReal
   · intro j hj
+    change ((psiTwoCell52Phi j).asQInterval (2^90)).ContainsReal _
     rw [psiTwoCell52Phi_eq j hj]
     exact psiOneCell52PhiJet_containsReal j hj
 

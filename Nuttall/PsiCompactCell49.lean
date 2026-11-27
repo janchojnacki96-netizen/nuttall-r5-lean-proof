@@ -51,7 +51,7 @@ theorem psiOne_compact_cell49_signed_wronskians (p : ℕ) (hp : p ≤ 7)
   let v := 256*t-99
   have hv : |v| ≤ 1 := abs_le.mpr ⟨by dsimp [v]; linarith only [hL],
     by dsimp [v]; linarith only [hU]⟩
-  have ht : ((99/256:ℚ):ℝ)+((1/256:ℚ):ℝ)*v = t := by
+  have ht : ((99/256:ℚ):ℝ)+(1/256:ℝ)*v = t := by
     dsimp [v]
     push_cast
     ring
