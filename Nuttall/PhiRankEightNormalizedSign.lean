@@ -66,7 +66,7 @@ theorem phiRankEightFirstTerm_signed_eq (p : ℕ) {X : ℝ} (hX : 0 < X) :
 private theorem abs_entry_le_matrix_norm {p : ℕ} (A : Matrix (Fin p) (Fin p) ℝ) (i j : Fin p) :
     |A i j| ≤ ‖A‖ := by
   have hrow : ‖A i j‖₊ ≤ ∑ k : Fin p, ‖A i k‖₊ :=
-    Finset.single_le_sum (fun _ _ => zero_le) (Finset.mem_univ j)
+    Finset.single_le_sum (f := fun k : Fin p => ‖A i k‖₊) (fun _ _ => zero_le) (Finset.mem_univ j)
   have hsup : ∑ k : Fin p, ‖A i k‖₊ ≤ Finset.univ.sup (fun a : Fin p => ∑ k : Fin p, ‖A a k‖₊) :=
     Finset.le_sup (f := fun a : Fin p => ∑ k : Fin p, ‖A a k‖₊) (Finset.mem_univ i)
   rw [← Real.norm_eq_abs, Matrix.linfty_opNorm_def]
