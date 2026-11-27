@@ -70,3 +70,6 @@ import Nuttall.ShiftRelativeTailRatio
 import Nuttall.CentralOrthantSign
 import Nuttall.CentralOrthantMass
 import Nuttall.ShiftCentralSlicePolynomial
+import Nuttall.OrthantSliceBound
+import Nuttall.ShiftedOrthantSliceBound
+import Nuttall.ShiftSliceRootBound
