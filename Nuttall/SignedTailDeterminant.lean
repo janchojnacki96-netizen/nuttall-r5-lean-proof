@@ -61,9 +61,10 @@ theorem signed_wronskian_psi_eq_tail_det {p m : ℕ}
     intro i j
     have hi := i.isLt
     have hj := j.isLt
-    simp only [Matrix.submatrix_apply, Fin.revPerm_apply, id_eq, Matrix.of_apply, A, Fin.val_rev]
-    congr 2
-    omega
+    have hindex : m-((i.rev).val+j.val) = m-(p-1)+i.val-j.val := by
+      rw [Fin.val_rev]
+      omega
+    simp only [Matrix.submatrix_apply, Fin.revPerm_apply, id_eq, Matrix.of_apply, A, hindex]
   have hsign : (((Equiv.Perm.sign (@Fin.revPerm p) : ℤˣ) : ℤ) : ℝ) =
       (-1 : ℝ)^(p*(p-1)/2) := by
     rw [sign_revPerm]
