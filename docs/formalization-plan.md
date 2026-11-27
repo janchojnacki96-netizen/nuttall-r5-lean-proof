@@ -145,7 +145,11 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 | 9 | [`shift_geometricWeight_sum_le`](../Nuttall/ShiftMatrixEnvelope.lean) | Suma kwadratów wag jest najwyżej 1/(1−s²). |
 | 10 | [`norm_shiftCore_le_eq_shift`](../Nuttall/ShiftOperatorBound.lean) | Rozkład na kwadrat centralny i jego dopełnienie daje oba składniki dokładnej nierówności `eq:shift`. |
 
-**Następna deklaracja U2.** Ogranicz normę V_d przez (1+√(πN))/2, gdzie N=M+1. Użyj ilorazu sąsiednich współczynników dwumianowych, sum wierszy i kolumn oraz całki gaussowskiej na półosi. Następnie zastosuj to do A_d−C_d i do marginesu w bloku krytycznym.
+**U2 — oszacowanie poprawki.** Oczekuje na CI. [`shiftTriangular_entry_le_gaussian`](../Nuttall/ShiftTriangularDecay.lean) ogranicza wpis Uᵢⱼ przez exp(−(i−j)²/N), gdzie N=M+1. [`norm_matrix_le_of_row_col_sum`](../Nuttall/MatrixSchurBound.lean) daje oszacowanie normy przez wspólne ograniczenie nieujemnych sum wierszy i kolumn. [`norm_shiftCorrectionMatrix_le`](../Nuttall/ShiftCorrectionNorm.lean) stosuje półosiową całkę gaussowską i dodatnią przekątną V_d, uzyskując 2‖V_d‖≤1+√(πN). [`norm_correctedShiftCore_sub_le_uniform`](../Nuttall/ShiftCorrectionError.lean) daje ‖A_d−C_d‖≤E‖C_d‖ przy 0≤u≤B, 0<r≤N i 0≤d≤1, z E=B(1/r+√(π/r)).
+
+**U2 — przygotowanie sumy wcześniejszych przesunięć.** Oczekuje na CI. [`norm_shiftCore_le_earlierTerms` i `shiftKnot_gap_lower`](../Nuttall/ShiftEarlierTerms.lean) upraszczają mianownik środkowego składnika `eq:shift` do d²√(1−d)√M i ograniczają odstęp od węzła przez (K−n)/(2B exp(2B)) przy n≤K≤exp(2u) i 0<u≤B.
+
+**Następna deklaracja U2.** Rozdziel sumę na n=1, ostatni aktywny indeks K oraz 2≤n<K. Następnie ogranicz sumę ∑_{1≤n<K} 1/√(n(K−n)) przez 4. Z gotowych oszacowań punktowych wyprowadź resztę jednostajnie małą dla B z §4.1. W asymptotyce wykorzystaj `Real.isLittleO_log_rpow_atTop` i `Real.isLittleO_rpow_exp_pos_mul_atTop`.
 
 **U2 — macierz przesunięcia.** Sformalizuj odwrócenie kolumn, zmianę bazy o dodatnich przekątnych, normalizację dwumianową i kongruencję potęgi symetrycznej. Udowodnij oszacowania dla C_d oraz poprawki A_d−C_d, z osobnymi końcami d=0,1. Warunek odbioru: nierówność `eq:shift` i jednostajny margines lematu 4.2, również kiedy p=k=r i wykładnik 2r−p−k znika.
 

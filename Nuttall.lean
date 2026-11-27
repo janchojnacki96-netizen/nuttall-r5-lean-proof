@@ -45,3 +45,8 @@ import Nuttall.ShiftCentralCoefficient
 import Nuttall.ShiftCentralEntry
 import Nuttall.ShiftMatrixEnvelope
 import Nuttall.ShiftOperatorBound
+import Nuttall.MatrixSchurBound
+import Nuttall.ShiftTriangularDecay
+import Nuttall.ShiftCorrectionNorm
+import Nuttall.ShiftCorrectionError
+import Nuttall.ShiftEarlierTerms
