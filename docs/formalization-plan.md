@@ -17,7 +17,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 | K. Wnioski i pierwszy węzeł, wn. 6.1 i tw. 6.3 | L+F dla asymptotyki; osobny dowód dla węzła | **Otwarte.** Złożyć granice i udowodnić lokalną zmianę znaku pomocniczego wrońskianu. |
 | Z. Audyt końcowy | A–K | **Otwarte.** Zbudować wszystkie eksportowane twierdzenia i wykonać procedurę odbioru poniżej. |
 
-**Następna sesja.** Zacznij U1 od tożsamości dla pojedynczego składnika: przy x = πn²exp(4t) i gₙ(t) = exp(t)x exp(−x) udowodnij 2φₙ = −(gₙ′+gₙ). Użyj `W5.phiSummand`. Następnie przejdź do sumy dopiero po uzyskaniu dominacji dla szeregu pochodnych. Równolegle można wykonać A (słabe RR i lemat o poziomie minimalnym). Po scaleniu wpisz tu kolejny konkretny cel.
+**U1 — oczekuje na CI.** Moduł `Nuttall.ThetaAuxiliary` zawiera tożsamość różniczkową składnika i próbę przejścia do całego szeregu przez lokalną majorantę gaussowską. Po weryfikacji kolejnym celem jest rachunek całek ogonowych z tej tożsamości.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
