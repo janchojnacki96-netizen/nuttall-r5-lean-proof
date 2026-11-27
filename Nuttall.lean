@@ -96,3 +96,5 @@ import Nuttall.PsiEightWitness
 import Nuttall.PsiEightSchur
 import Nuttall.PsiEightReplay
 import Nuttall.MatrixCongruenceMargin
+import Nuttall.CompactTaylor
+import Nuttall.PhiComplexDisk
