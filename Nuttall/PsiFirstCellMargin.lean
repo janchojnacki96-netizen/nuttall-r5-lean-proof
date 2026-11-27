@@ -21,7 +21,7 @@ def psiOneFirstCellBasis : Matrix (Fin 7) (Fin 7) ℚ :=
 theorem psiOneFirstCellBasis_lower : psiOneFirstCellBasis.IsLowerTriangular := by
   intro i j h
   change i.val < j.val at h
-  fin_cases i <;> fin_cases j <;> norm_num [psiOneFirstCellBasis, Matrix.cons_val'] at h ⊢
+  fin_cases i <;> fin_cases j <;> (first | omega | decide +kernel)
 
 theorem psiOneFirstCellBasis_diag (i : Fin 7) : psiOneFirstCellBasis i i ≠ 0 := by
   fin_cases i <;> decide +kernel
