@@ -6,3 +6,5 @@ import Nuttall.PsiDerivatives
 import Nuttall.SignedTailDeterminant
 import Nuttall.TailMoments
 import Nuttall.WeightedMomentDeterminant
+import Nuttall.MomentWeightCalculus
+import Nuttall.AuxiliaryDerivativePolynomials
