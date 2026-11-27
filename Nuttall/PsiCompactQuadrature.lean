@@ -48,9 +48,9 @@ theorem psiOnePanelBox_containsReal {right : QInterval} {jets : ℕ → QInterva
     (hright : right.ContainsReal (psi 1 (a+(h:ℝ))))
     (hjets : ∀ j ∈ Finset.range d, (jets j).ContainsReal (iteratedDeriv j Phi a)) :
     (psiOnePanelBox right jets d h).ContainsReal (psi 1 a) := by
-  have hpoly : (QInterval.sumBox (Finset.range d)
-      (fun j => QInterval.mul (jets j) (QInterval.point (h^(j+1) / ((j+1).factorial:ℚ)))).
-      ContainsReal (psiPanelCorrection 0 d a (h:ℝ)) := by
+  have hpoly : QInterval.ContainsReal (QInterval.sumBox (Finset.range d)
+      (fun j => QInterval.mul (jets j) (QInterval.point (h^(j+1) / ((j+1).factorial:ℚ)))))
+      (psiPanelCorrection 0 d a (h:ℝ)) := by
     unfold psiPanelCorrection
     apply QInterval.sumBox_containsReal
     intro j hj
@@ -87,8 +87,9 @@ theorem psiOneUniformGridBox_containsReal (right : QInterval) (jets : ℕ → �
       ring
     have hpoint : a+(i:ℝ)*(h:ℝ)+(h:ℝ) ≤ 2 := by
       rw [← hnext]
-      exact (add_le_add_left (mul_le_mul_of_nonneg_right
-        (by exact_mod_cast (show i+1 ≤ i+(n+1) by omega)) hhR) a).trans hb
+      have hle : ((i+1:ℕ):ℝ) ≤ ((i+(n+1):ℕ):ℝ) := by
+        exact_mod_cast (show i+1 ≤ i+(n+1) by omega)
+      exact (add_le_add_left (mul_le_mul_of_nonneg_right hle hhR) a).trans hb
     have hprev :=
       ih (i+1) (by rwa [hidx] at hb) (by rwa [hidx] at hright) (by
         intro k hk j hj
