@@ -6,8 +6,9 @@ namespace Nuttall
 
 open scoped BigOperators
 
+set_option maxRecDepth 32768 in
+set_option maxHeartbeats 12000000 in
 /-- Proposed integer numerators in the order of the compact rank-seven cells. -/
-set_option maxHeartbeats 4000000 in
 private def psiOneCompactBasisNumerators : Vector (Vector (Vector ℤ 7) 7) 67 := #v[
   #v[
     #v[4167, 0, 0, 0, 0, 0, 0],
@@ -636,5 +637,9 @@ theorem psiOneCompactBasis_row_le (cell : Fin 67) (i : Fin 7) :
   have h : ∀ c : Fin 67, ∀ i : Fin 7, (∑ j, |psiOneCompactBasis c i j|) ≤ 20000000 := by
     decide +kernel
   exact h cell i
+
+#print axioms psiOneCompactBasis_lower
+#print axioms psiOneCompactBasis_diagonal_ne_zero
+#print axioms psiOneCompactBasis_row_le
 
 end Nuttall
