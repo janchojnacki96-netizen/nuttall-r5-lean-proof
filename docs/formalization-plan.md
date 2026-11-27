@@ -7,7 +7,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 | Etap | Zależności | Stan i warunek ukończenia |
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
-| A. Definicje i przejście od wrońskianów do RR | W5.Statement, CentralEvaluationPositivity | **Częściowo.** [ReverseSignRegularity.lean](../Nuttall/ReverseSignRegularity.lean) definiuje słabe RR i m(r) oraz przenosi ścisły test na wyznaczniki jądra dla każdego m. Do wykonania zachowanie RR przy całkowaniu i wykluczenie słabego RR przez zły znak wrońskianu. |
+| A. Definicje i przejście od wrońskianów do RR | W5.Statement, CentralEvaluationPositivity | **Częściowo.** [ReverseSignRegularity.lean](../Nuttall/ReverseSignRegularity.lean) definiuje słabe RR i m(r) oraz przenosi ścisły test na wyznaczniki jądra dla każdego m. [WronskianObstruction.lean](../Nuttall/WronskianObstruction.lean) wyklucza słabe RR przez zły znak wrońskianu i wyprowadza dolną granicę m(r). Słabe RR zachowuje się przy całkowaniu ogonowym. Pozostaje zachowanie ścisłych znaków wrońskianów. |
 | U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **Zweryfikowany w Lean.** [AnalyticUpperBound.lean](../Nuttall/AnalyticUpperBound.lean) dowodzi istnienia skutecznego poziomu dla każdego r oraz m(r)≤2r dla dostatecznie dużych r, w słabej konwencji z preprintu. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
@@ -73,7 +73,7 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
-**A — znaczenie tezy.** Słabe RR dotyczy wszystkich rosnących dodatnich węzłów obu zmiennych i wszystkich 1≤p≤r. W Lean m(r) jest infimum poziomów w ℕ∞, więc przy braku skutecznego poziomu wynosi nieskończoność. Wystarczalność ścisłego testu i monotoniczność względem rzędu są sformalizowane poniżej. Pozostają słabe i ścisłe zachowanie znaków przy całkowaniu oraz wykluczenie słabego RR przez ściśle zły znak (zlanie węzłów i ciągłość także dla t=0).
+**A — znaczenie tezy.** Słabe RR dotyczy wszystkich rosnących dodatnich węzłów obu zmiennych i wszystkich 1≤p≤r. W Lean m(r) jest infimum poziomów w ℕ∞, więc przy braku skutecznego poziomu wynosi nieskończoność. Wystarczalność ścisłego testu i monotoniczność względem rzędu są sformalizowane poniżej. Słabe RR zachowuje się przy całkowaniu ogonowym i wyklucza ujemny podpisany wrońskian, również w t=0. Pozostaje zachowanie ścisłych znaków wrońskianów przy całkowaniu.
 
 **U1 — pełna normalizacja z §4.1 i przygotowanie U3.** Wszystkie pozycje poniżej przeszły `lake build Nuttall` lokalnie oraz w [CI commita `c8fdbac`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45984688802/job/140457170000). Kroki 7 i 8 korzystają dodatkowo z zarejestrowanego aksjomatu `Literature.andreief`. Pozostałe mają trzy standardowe aksjomaty Lean. Dla 1≤p i 2p≤m przy t≥0 otrzymujemy równanie `eq:anorm` z czynnikiem (Xeᵗ/2)ᵖ(4X)ᵖ⁽ᵖ⁻¹⁾⁄²/p!. Macierz przesuniętych momentów jest transponowana względem zapisu w preprincie, co nie zmienia wyznacznika.
 
@@ -235,7 +235,22 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 [`kernelIntegrationOrder_five_le_one_of_mainClaim`](../Nuttall/ReverseSignRegularity.lean) wiąże wynik istniejącego certyfikatu W5 z nową definicją. Przyjmuje `W5.MainClaim` jako hipotezę, dzięki czemu kompilacja analitycznej gałęzi pomija ciężkie obliczenia z `W5.NuttallR5`. Specjalizacja daje stronę górną m(5)≤1.
 
-**A — następna deklaracja.** Udowodnij, że ściśle zły podpisany wrońskian wyklucza słabe RR. Dla t>0 użyj węzłów t/2+i·h i t/2+j·h oraz różnic skończonych w obu rodzinach. Trójkątne operacje na wierszach i kolumnach oraz dodatnia skala h^{p(p−1)} wydzielają macierz zbieżną do wrońskianu. Do rachunku na siatce użyj `fwdDiff_iter_eq_sum_shift` i lematu o znikaniu wyrazów wielomianu niższego stopnia z `Mathlib.Algebra.Group.ForwardDiff`. Przypadek t=0 przenieś do dodatniego t przez ciągłość pochodnych Ψₘ.
+**A — zły znak wrońskianu i zachowanie słabego RR.** Oczekuje na CI.
+
+| Krok | Deklaracja lub argument | Wynik |
+|---|---|---|
+| 1 | Macierz Newtona w [ForwardDifferenceKernel.lean](../Nuttall/ForwardDifferenceKernel.lean) | Macierz jest dolnotrójkątna z jedynkami na przekątnej, więc jej wyznacznik wynosi jeden. |
+| 2 | `det_kernelGrid_eq_det_forwardDiff` | Przejście od wartości na siatce do różnic skończonych w obu zmiennych zachowuje wyznacznik. |
+| 3 | `det_forwardDiff_eq_scaled` | Normalizacja różnic zmienia wyznacznik o dodatni czynnik dla dodatniego kroku siatki. |
+| 4 | Rozwinięcie Taylora w [ForwardDifferenceLimit.lean](../Nuttall/ForwardDifferenceLimit.lean) | Różnica rzędu k usuwa potęgi stopnia poniżej k i mnoży składnik stopnia k przez k!. |
+| 5 | `tendsto_normalized_fwdDiff` | Każda znormalizowana różnica zbiega do odpowiedniej pochodnej. |
+| 6 | [`signed_wronskian_nonneg_of_reverseSignRegular`](../Nuttall/WronskianObstruction.lean) | Granica wyznaczników daje słaby znak wrońskianu dla t>0, a ciągłość rozszerza go na t=0. |
+| 7 | `not_reverseSignRegular_psi_of_negative_wronskian` | Świadek o ujemnym podpisanym wrońskianie wyklucza RR na badanym poziomie. |
+| 8 | [`det_tail_eq_integral_on_ordered_partition`](../Nuttall/KernelTailPersistence.lean) | Sąsiednie różnice wierszy zmieniają całki ogonowe w całki na rozłącznych, uporządkowanych przedziałach. |
+| 9 | `reverseSignRegular.psi_succ`, `reverseSignRegular.psi_of_le` | Słabe RR przechodzi na każdy wyższy poziom całkowania. |
+| 10 | `kernelIntegrationOrder_succ_le_of_negative_wronskian`, `kernelIntegrationOrder_five_eq_one_of_witnesses` | Ujemny podpisany wrońskian na poziomie m wymusza m(r)≥m+1. Dla r=5 deklaracja łączy certyfikat górny i ujemnego świadka dla Φ w t=0. |
+
+**A/S — następna deklaracja.** Zweryfikuj w Lean znak W₅(Φ;0)<0 z podsekcji „Przedział zwarty”. Punktem odniesienia jest `small/certify.py` w `certificates.zip`, które oblicza dziewięć pochodnych w zerze i 120 składników wyznacznika. Użyj istniejących wzorów na pochodne Φ i zaokrągleń skierowanych oraz połącz wynik z `W5.nuttall_r5` przez `kernelIntegrationOrder_five_eq_one_of_witnesses`. Sprawdzaj osobno cel dolnego świadka, aby poprawki nie uruchamiały ponownie ciężkiego certyfikatu dodatniości Ψ₁.
 
 **F — od dostatecznie dużych rzędów do każdego r.** Zaimplementuj jawny próg i połącz poniższe zakresy jednym dowodem pokrycia. Samo istnienie niejawnego R₀ nie uzasadnia startu przy 10¹¹. Dla każdego zakresu sprawdzaj wszystkie mniejsze minory przy jednym poziomie 2r.
 

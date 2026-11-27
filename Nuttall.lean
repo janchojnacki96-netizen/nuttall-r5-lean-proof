@@ -84,3 +84,7 @@ import Nuttall.PsiSmoothness
 import Nuttall.SignedKernelCriterion
 import Nuttall.ReverseSignRegularity
 import Nuttall.AnalyticUpperBound
+import Nuttall.ForwardDifferenceKernel
+import Nuttall.ForwardDifferenceLimit
+import Nuttall.KernelTailPersistence
+import Nuttall.WronskianObstruction
