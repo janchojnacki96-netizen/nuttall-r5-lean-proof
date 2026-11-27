@@ -16,7 +16,8 @@ private theorem kernelGrid_signed_nonneg {f : ℝ → ℝ} {p r : ℕ}
   have hu : StrictMono u := by
     intro i j hij
     have hij' : (i.val:ℝ) < (j.val:ℝ) := by exact_mod_cast (Fin.lt_def.1 hij)
-    exact add_lt_add_left (mul_lt_mul_of_pos_right hij' hh) _
+    dsimp [u]
+    linarith only [mul_lt_mul_of_pos_right hij' hh]
   have hu₀ (i : Fin p) : 0 < u i := by dsimp [u]; positivity
   have hRRGrid := hRR p hp hpr u u hu hu hu₀ hu₀
   have hmat : (Matrix.of (fun (i j : Fin p) => f (u i+u j))) =
@@ -68,7 +69,10 @@ theorem signed_wronskian_nonneg_of_reverseSignRegular {f : ℝ → ℝ} {p r : �
       continuous_pi (fun i => continuous_pi (fun j => hc i j))
     have h : Continuous (fun t => kernelMinorSign p * wronskian f p t) :=
       continuous_const.mul hM.matrix_det
-    apply ge_of_tendsto (h.continuousAt (x := (0:ℝ))).continuousWithinAt (s := Ioi 0) |>.tendsto
+    have hlim : Tendsto (fun t => kernelMinorSign p * wronskian f p t) (𝓝[>] (0:ℝ))
+        (𝓝 (kernelMinorSign p * wronskian f p 0)) :=
+      h.continuousAt.continuousWithinAt.tendsto
+    apply ge_of_tendsto hlim
     filter_upwards [self_mem_nhdsWithin] with t ht
     exact signed_wronskian_nonneg_at_pos hf hRR hp hpr (mem_Ioi.1 ht)
   · exact signed_wronskian_nonneg_at_pos hf hRR hp hpr ht
@@ -114,10 +118,11 @@ theorem kernelIntegrationOrder_five_eq_one_of_witnesses (h₁ : W5.MainClaim)
     kernelIntegrationOrder 5 = 1 := by
   apply le_antisymm (kernelIntegrationOrder_five_le_one_of_mainClaim h₁)
   exact kernelIntegrationOrder_succ_le_of_negative_wronskian (m := 0) (p := 5) (t := 0)
-    (by decide) le_rfl le_rfl (by simpa [kernelMinorSign, psi] using h₀)
+    (by decide) le_rfl le_rfl (by norm_num [kernelMinorSign, psi]; exact h₀)
 
 #print axioms signed_wronskian_nonneg_of_reverseSignRegular
 #print axioms not_reverseSignRegular_psi_of_negative_wronskian
+#print axioms kernelIntegrationOrder_succ_le_of_negative_wronskian
 #print axioms kernelIntegrationOrder_gt_of_negative_wronskian
 #print axioms kernelIntegrationOrder_five_eq_one_of_witnesses
 

@@ -252,6 +252,8 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **A/S — następna deklaracja.** Zweryfikuj w Lean znak W₅(Φ;0)<0 z podsekcji „Przedział zwarty”. Punktem odniesienia jest `small/certify.py` w `certificates.zip`, które oblicza dziewięć pochodnych w zerze i 120 składników wyznacznika. Użyj istniejących wzorów na pochodne Φ i zaokrągleń skierowanych oraz połącz wynik z `W5.nuttall_r5` przez `kernelIntegrationOrder_five_eq_one_of_witnesses`. Sprawdzaj osobno cel dolnego świadka, aby poprawki nie uruchamiały ponownie ciężkiego certyfikatu dodatniości Ψ₁.
 
+Próba przedziałowa przy użyciu danych suplementu wskazuje, że do samego znaku wystarczą przedziały dla pochodnych rzędu 0–8 kolejno [0,44; 0,45], [−0,01; 0,01], [−33,47; −33,46], [−1; 1], [6497; 6498], [−100; 100], [−1630000; −1620000], [−1000000; 1000000], [233000000; 234000000]. Rachunek na końcach wymiernych daje górną granicę wyznacznika −115318931379013232. To cele dla dowodu ograniczeń pochodnych w Lean. Przy szacowaniu π można użyć `Real.pi_gt_d20` i `Real.pi_lt_d20` z Mathlib.
+
 **F — od dostatecznie dużych rzędów do każdego r.** Zaimplementuj jawny próg i połącz poniższe zakresy jednym dowodem pokrycia. Samo istnienie niejawnego R₀ nie uzasadnia startu przy 10¹¹. Dla każdego zakresu sprawdzaj wszystkie mniejsze minory przy jednym poziomie 2r.
 
 | Rzędy | Dane i zadanie |
