@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 ma formalną reprezentację całką wielokrotną z dwiema macierzami. Pozostaje zwinąć sumę po indeksach theta i zmienić zmienne, aby otrzymać końcową postać `eq:anorm`, a następnie wykonać oszacowania U2–U4. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 ma formalną reprezentację całką wielokrotną z dwiema macierzami. Zweryfikowano także rozwinięcie skończone i przesunięcie całki dla każdej krotki. Pozostaje zebrać przesunięte składniki na wspólnym ortancie i przejść do granicy, aby otrzymać `eq:anorm`. Dalej potrzebne są oszacowania U2–U4. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -52,8 +52,24 @@ Wszystkie pozycje sprawdzono w `lake build Nuttall` dla commita `68dc9c5`. [Ziel
 
 Kroki 1–9 zależą od trzech standardowych aksjomatów Lean. Krok 10 korzysta dodatkowo z klasycznej tożsamości Andréiefa, zadeklarowanej w [module literatury](../Nuttall/Literature/Andreief.lean). CI wykorzystało częściowy cache z poprzedniego przebiegu. Błędy dotyczyły sposobu zapisania iloczynów i granic funkcji w Lean.
 
-**Oczekuje na CI.** Osobne moduły zawierają algebrę i miarę przesunięcia, skończony zbiór aktywnych indeksów oraz rozwinięcie i granicę punktową obciętych wyznaczników.
-**Następny cel.** W reprezentacji `signed_wronskian_eq_andreief_integral` przetransponuj wyznacznik pochodnych, aby każdy wiersz zależał od jednego węzła. Rozwiń szereg theta w każdym wierszu i uzasadnij wymianę sum z całką wielokrotną. Użyj `auxiliaryWeightedSummand_le_exponential`, rozwinięcia według permutacji i iloczynu całek z wielomianem razy exp(−s). Zastosuj `det_auxiliary_weighted_summands` dla każdej krotki indeksów. Następnie podstaw uᵢ=sᵢ+(log nᵢ)/2 w zmiennych przesuniętych sᵢ=xᵢ−t, zmień domenę i zsumuj składniki do Rⱼ(uᵢ). Warunek odbioru U1 to pełne `eq:anorm`, z normalizacją (Xeᵗ/2)ᵖ(4X)^(p(p−1)/2)/p! i własnym dowodem uzasadniającym wszystkie wymiany.
+### Przesunięcie i rozwinięcie całki — dziesięć zweryfikowanych kroków
+
+Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z CI opracowano algebrę przesunięcia, translację miary oraz rozwinięcie wyznaczników. Weryfikacja przyrostowa korzysta z lokalnych plików Mathlib i cache projektu w CI. Nowe lematy analityczne i algebraiczne używają standardowych aksjomatów Lean, a granica całek wielokrotnych korzysta także z przyjętej wcześniej tożsamości Andréiefa. [Zielone CI i audyt](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45981321293/job/140445649368)
+
+| Krok | Deklaracja lub moduł | Wynik |
+|---|---|---|
+| 1 | [`thetaKnot_lt_iff` i `auxiliaryCoordinate_shift`](../Nuttall/ShiftedThetaAlgebra.lean) | Warunek aktywności n<exp(2u) i zmiana argumentu theta na X exp(4u). |
+| 2 | [`auxiliarySummand_shift`](../Nuttall/ShiftedThetaAlgebra.lean) | Przesunięty składnik daje wagę exp(5u−Xexp(4u)) i czynnik 1/√n. |
+| 3 | [`det_auxiliary_summands_shift`](../Nuttall/ShiftedThetaAlgebra.lean) | Vandermonde po zmianie zmiennych i pełny czynnik skalujący pojedynczą krotkę. |
+| 4 | [`integral_product_tails_add`](../Nuttall/ProductTailTranslation.lean) | Przesunięcie każdej współrzędnej i odpowiadającej jej granicy całkowania. |
+| 5 | [`product_tail_measure_open_eq_closed` i `product_tail_measure_restrict`](../Nuttall/ProductTailTranslation.lean) | Końce przedziałów nie zmieniają miary produktu. Dodatnie dolne granice można wyrazić przez ograniczenie wspólnej miary na ortancie. |
+| 6 | [`shiftedMomentTerm_tsum_eq_sum` i `det_shiftedMomentTerm_eq_indicator`](../Nuttall/ShiftedMomentCutoff.lean) | Suma R ma skończoną podporę w każdym punkcie. Warunki aktywności można umieścić w kolumnach wyznacznika. |
+| 7 | [`det_sum_columns` i `tendsto_auxiliary_determinant_truncations`](../Nuttall/ThetaDeterminantTruncations.lean) | Rozwinięcie skończonych sum po indeksach i granica punktowa do wyznacznika szeregu. |
+| 8 | [`tendsto_weighted_truncated_moment`](../Nuttall/TruncatedMomentConvergence.lean) | Wspólne ograniczenie dominujące oraz przejście do granicy w całce dla każdego wpisu momentowego. |
+| 9 | [`integral_truncated_determinants_eq_sum`](../Nuttall/IntegratedThetaTruncations.lean) i [`tendsto_truncated_andreief`](../Nuttall/TruncatedMomentConvergence.lean) | Zamiana skończonej sumy z całką z uzasadnieniem całkowalności oraz granica nieprzesuniętych całek wielokrotnych. |
+| 10 | [`integral_fixed_indices_shift`](../Nuttall/ShiftedThetaIntegral.lean) | Dokładna zmiana zmiennych w całce dla każdej krotki dodatnich indeksów, z granicami uᵢ≥aₙᵢ. |
+
+**Następny cel.** Pokaż, że wkład krotek zawierających indeks 0 znika przez zerową kolumnę. Przenieś każdą pozostałą całkę na wspólny ortant uᵢ>0, korzystając z lematu o ograniczeniu miary i wyznacznika z funkcjami charakterystycznymi. Wyłącz skalary wspólne dla wszystkich krotek, a skończoną sumę wstaw w kolumny, uzyskując obcięte R. Dla przejścia do granicy po przesunięciu udowodnij dominację niezależną od obcięcia. Przy u≥0 aktywnych jest najwyżej ⌈exp(2u)⌉ indeksów, a 0≤u−aₙ≤u dla aktywnego n≥1. To daje oszacowanie (wielomian w u)exp(2u), które można połączyć z wykładniczym czynnikiem Vandermonde’a i zanikiem exp(−Xexp(4u)). Wtedy porównaj obie granice i rozlicz p!2ᵖ, uzyskując `eq:anorm`.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
