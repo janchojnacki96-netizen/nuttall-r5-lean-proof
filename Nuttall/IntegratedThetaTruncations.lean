@@ -37,7 +37,7 @@ theorem integrable_theta_determinant_term {p : ℕ} (k n : Fin p → ℕ) {t : �
   apply integrable_finsetSum
   intro τ _
   have h := Integrable.fintype_prod
-    (fun j : Fin p => theta_pair_integrable (k (σ j)) (τ j).val (n j) ht)
+    (fun j : Fin p => theta_pair_integrable (k (τ j)) (σ j).val (n j) ht)
   simp only [Finset.prod_mul_distrib] at h
   convert h.const_mul
     ((((Equiv.Perm.sign σ : ℤˣ) : ℤ) : ℝ) * (((Equiv.Perm.sign τ : ℤˣ) : ℤ) : ℝ)) using 1

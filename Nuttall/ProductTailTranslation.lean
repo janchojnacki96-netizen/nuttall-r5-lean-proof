@@ -36,6 +36,17 @@ theorem product_tail_measure_open_eq_closed {p : ℕ} (a : Fin p → ℝ) :
   funext i
   exact Measure.restrict_congr_set Ioi_ae_eq_Ici
 
+/-- Express separate positive lower bounds as a restriction of the common
+positive orthant. -/
+theorem product_tail_measure_restrict {p : ℕ} (a : Fin p → ℝ) (ha : ∀ i, 0 ≤ a i) :
+    (Measure.pi (fun _ : Fin p => volume.restrict (Ioi (0 : ℝ)))).restrict
+      (univ.pi (fun i => Ioi (a i))) =
+      Measure.pi (fun i => volume.restrict (Ioi (a i))) := by
+  rw [Measure.restrict_pi_pi]
+  congr 1
+  funext i
+  exact Measure.restrict_restrict_of_subset (Ioi_subset_Ioi (ha i))
+
 #print axioms integral_product_tails_add
 
 end Nuttall
