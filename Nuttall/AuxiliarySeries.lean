@@ -184,6 +184,26 @@ theorem auxiliaryWeightedSeries_decay (P : ℝ[X]) :
     _ ≤ ∑' n, E n * Real.exp (-t) := hN.tsum_le_tsum hB (hE.mul_right _)
     _ = _ := by rw [tsum_mul_right]
 
+/-- The Gaussian envelope also bounds all finite truncations uniformly. -/
+theorem auxiliaryWeightedPartialSums_decay (P : ℝ[X]) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (t : ℝ), 0 ≤ t →
+      ‖∑ n ∈ Finset.range N, auxiliaryWeightedSummand P n t‖ ≤ C * Real.exp (-t) := by
+  let E : ℕ → ℝ := fun n => polynomialExpBound P * Real.exp (-(Real.pi/2) * (n : ℝ)^2)
+  have hE : Summable E :=
+    (gaussianEnvelope_summable (q := Real.pi/2) (by positivity)).mul_left _
+  have hnonneg (n : ℕ) : 0 ≤ E n :=
+    mul_nonneg (polynomialExpBound_nonneg P) (Real.exp_nonneg _)
+  refine ⟨∑' n, E n, tsum_nonneg hnonneg, ?_⟩
+  intro N t ht
+  calc
+    _ ≤ ∑ n ∈ Finset.range N, ‖auxiliaryWeightedSummand P n t‖ :=
+      norm_sum_le _ _
+    _ ≤ ∑ n ∈ Finset.range N, E n * Real.exp (-t) :=
+      Finset.sum_le_sum (fun n _ => auxiliaryWeightedSummand_le_exponential P n ht)
+    _ ≤ ∑' n, E n * Real.exp (-t) :=
+      (hE.mul_right _).sum_le_tsum _ (fun n _ => mul_nonneg (hnonneg n) (Real.exp_nonneg _))
+    _ = _ := by rw [tsum_mul_right]
+
 #print axioms auxiliaryWeightedSummand_summable
 #print axioms iteratedDeriv_auxiliaryTheta
 #print axioms auxiliaryWeightedSeries_decay

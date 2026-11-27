@@ -47,8 +47,7 @@ theorem auxiliarySummand_shift (n : ℕ) (hn : 0 < n) (t s : ℝ) :
   rw [hbase, auxiliaryCoordinate_shift n hn, thetaOrthantWeight,
     show 5*(s+thetaKnot n)-thetaScale t*Real.exp (4*(s+thetaKnot n)) =
       s + thetaKnot n + 4*(s+thetaKnot n) + -(thetaScale t*Real.exp (4*(s+thetaKnot n))) by ring]
-  rw [Real.exp_add, Real.exp_add (s+thetaKnot n), Real.exp_add s (thetaKnot n),
-    exp_thetaKnot n hn, Real.exp_add t s]
+  simp only [Real.exp_add, exp_thetaKnot n hn]
   field_simp
   <;> ring
 
@@ -83,7 +82,7 @@ theorem det_auxiliary_summands_shift {p : ℕ} (n : Fin p → ℕ) (hn : ∀ i, 
         ∏ i : Fin p, thetaOrthantWeight (thetaScale t) (s i+thetaKnot (n i)) /
           Real.sqrt (n i : ℝ) := by
     simp only [mul_div_assoc, Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ,
-      Fintype.card_fin]
+      Fintype.card_fin, mul_pow]
   rw [hprod, Finset.prod_pow_eq_pow_sum, Fin.sum_univ_eq_sum_range (fun i : ℕ => i),
     Finset.sum_range_id, mul_pow]
   ring
