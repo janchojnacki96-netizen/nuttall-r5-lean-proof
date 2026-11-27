@@ -1,30 +1,10 @@
-import Nuttall.PsiLastCellGridInputs
+import Nuttall.PsiLastCellPanelReplay
 import Nuttall.PsiCompactPrecisionSeed
 import Nuttall.PsiLastCellJetData
 
 namespace Nuttall
 
 open W5
-
-private def lastCellPanelWidth (i : Fin 7) : ℚ :=
-  if i = 0 then 1/512 else 1/32
-
-private def lastCellPanelRaw (i : Fin 7) : QInterval :=
-  psiOnePanelBox (QInterval.point 0) (psiPreciseGridPhiJetBoxOfInputs (psiLastCellGridInputs i))
-    36 (lastCellPanelWidth i)
-
-private def lastCellPanelCheck (i : Fin 7) : Prop :=
-  (psiLastCellPanelSnapshot i).lo ≤ (lastCellPanelRaw i).lo ∧
-    (lastCellPanelRaw i).hi ≤ (psiLastCellPanelSnapshot i).hi
-
-private instance (i : Fin 7) : Decidable (lastCellPanelCheck i) := by
-  unfold lastCellPanelCheck
-  infer_instance
-
-set_option maxRecDepth 65536 in
-set_option maxHeartbeats 45000000 in
-private theorem lastCellPanel_checked (i : Fin 7) : lastCellPanelCheck i := by
-  fin_cases i <;> decide +kernel
 
 private theorem lastCellPanel_containsReal (i : Fin 7) {right : QInterval}
     (hright : right.ContainsReal (psi 1 ((psiLastCellNode i:ℝ)+(lastCellPanelWidth i:ℝ)))) :
@@ -38,10 +18,9 @@ private theorem lastCellPanel_containsReal (i : Fin 7) {right : QInterval}
   have hc₂ : psiLastCellNode i ≤ 2 := by linarith only [hh, hb]
   have hg := psiLastCellGridInputs_checked i
   have hjets (j : ℕ) :
-      (psiPreciseGridPhiJetBoxOfInputs (psiLastCellGridInputs i) j).ContainsReal
+      (psiFixedGridPhiJetBoxOfInputs (psiLastCellGridInputs i) j).ContainsReal
         (iteratedDeriv j Phi (psiLastCellNode i:ℝ)) := by
-    have hj := psiPreciseGridPhiJetBox_containsReal hc hc₂ hg.1 j
-    rwa [psiPreciseGridPhiJetBox, hg.2] at hj
+    exact psiFixedGridPhiJetBoxOfInputs_containsReal hc hc₂ hg.1 hg.2 j
   have h := psiOnePanelBox_containsReal (d := 36) (by exact_mod_cast hc) hh hb' hright
     (fun j _ => hjets j)
   rw [psiOnePanelBox_eq_add_zero] at h
@@ -59,8 +38,13 @@ private theorem lastCellNode_next (i : Fin 6) :
 
 private def lastCellSeed : QInterval := ⟨0, 1/10^16⟩
 
-theorem psiOneLastCellCornerSnapshot_containsReal :
-    psiOneLastCellCornerSnapshot.ContainsReal (psi 1 (255/512)) := by
+/-- Anchor at 1/2 shared by the last compact cells. -/
+def psiOneCompactHalfAnchor : QInterval :=
+  ([6, 5, 4, 3, 2, 1] : List (Fin 7)).foldl
+    (fun right i => right.add (psiLastCellPanelSnapshot i)) lastCellSeed
+
+theorem psiOneCompactHalfAnchor_containsReal :
+    psiOneCompactHalfAnchor.ContainsReal (psi 1 (1/2)) := by
   have hlast : (psiLastCellNode 6:ℝ)+(lastCellPanelWidth 6:ℝ) = 11/16 := by
     have h : psiLastCellNode 6 + lastCellPanelWidth 6 = 11/16 := by decide +kernel
     simpa only [Rat.cast_add, Rat.cast_div, Rat.cast_ofNat] using congrArg (fun q : ℚ => (q:ℝ)) h
@@ -74,7 +58,18 @@ theorem psiOneLastCellCornerSnapshot_containsReal :
   have h₃ := lastCellPanel_containsReal 3 (by rw [lastCellNode_next (3:Fin 6)]; exact h₄)
   have h₂ := lastCellPanel_containsReal 2 (by rw [lastCellNode_next (2:Fin 6)]; exact h₃)
   have h₁ := lastCellPanel_containsReal 1 (by rw [lastCellNode_next (1:Fin 6)]; exact h₂)
-  have h₀ := lastCellPanel_containsReal 0 (by rw [lastCellNode_next (0:Fin 6)]; exact h₁)
+  have ht : (psiLastCellNode 1:ℝ) = 1/2 := by
+    have h : psiLastCellNode 1 = 1/2 := by decide +kernel
+    simpa only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using congrArg (fun q : ℚ => (q:ℝ)) h
+  rwa [ht] at h₁
+
+theorem psiOneLastCellCornerSnapshot_containsReal :
+    psiOneLastCellCornerSnapshot.ContainsReal (psi 1 (255/512)) := by
+  have hnext : (psiLastCellNode 0:ℝ)+(lastCellPanelWidth 0:ℝ) = 1/2 := by
+    have h : psiLastCellNode 0 + lastCellPanelWidth 0 = 1/2 := by decide +kernel
+    simpa only [Rat.cast_add, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using
+      congrArg (fun q : ℚ => (q:ℝ)) h
+  have h₀ := lastCellPanel_containsReal 0 (by rw [hnext]; exact psiOneCompactHalfAnchor_containsReal)
   have ht : (psiLastCellNode 0:ℝ) = 255/512 := by
     have h : psiLastCellNode 0 = 255/512 := by decide +kernel
     simpa only [Rat.cast_div, Rat.cast_ofNat] using congrArg (fun q : ℚ => (q:ℝ)) h
@@ -82,5 +77,6 @@ theorem psiOneLastCellCornerSnapshot_containsReal :
   exact compactContainsReal_of_endpoints (by decide +kernel) (by decide +kernel) h₀
 
 #print axioms psiOneLastCellCornerSnapshot_containsReal
+#print axioms psiOneCompactHalfAnchor_containsReal
 
 end Nuttall

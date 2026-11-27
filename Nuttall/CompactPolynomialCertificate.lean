@@ -18,18 +18,26 @@ def compactCenteredCoefficientBoxes {n : ℕ} (U : Matrix (Fin n) (Fin n) ℚ)
     (compactIntervalCongruence U (boxes k) i j).sub
       (QInterval.point (compactSignDiagonal k i j))
 
-/-- A single margin check on the original interval coefficients and their
-entrywise remainder controls the signed leading minors on the whole cell. -/
-theorem signed_leading_det_pos_of_compactCertificate {p n d : ℕ} (hp : p ≤ n) (hd : 0 < d)
+/-- Apply the real congruence to one coefficient and subtract its sign matrix. -/
+noncomputable def compactCenteredRealCoefficients {n : ℕ} (U : Matrix (Fin n) (Fin n) ℚ)
+    (poly : ℕ → Matrix (Fin n) (Fin n) ℝ) (k : ℕ) : Matrix (Fin n) (Fin n) ℝ :=
+  let V := U.map (fun r : ℚ => (r:ℝ))
+  let J := Matrix.diagonal (fun i : Fin n => (-1 : ℝ)^i.val)
+  V * poly k * V.transpose - (if k = 0 then J else 0)
+
+/-- Any sound centered coefficient enclosures and a strict row bound
+certify the signed leading minors on the whole cell. -/
+theorem signed_leading_det_pos_of_centeredCertificate {p n d : ℕ} (hp : p ≤ n) (hd : 0 < d)
     (A : Matrix (Fin n) (Fin n) ℝ) (U : Matrix (Fin n) (Fin n) ℚ)
     (hU : U.IsLowerTriangular) (hdiag : ∀ i, U i i ≠ 0)
     (v : ℝ) (hv : |v| ≤ 1) (ρ M : ℚ) (hρ : 0 ≤ ρ) (hM : 0 ≤ M)
     (poly : ℕ → Matrix (Fin n) (Fin n) ℝ)
     (boxes : ℕ → Matrix (Fin n) (Fin n) QInterval)
-    (hbox : ∀ k ∈ Finset.range d, ∀ i j, (boxes k i j).ContainsReal (poly k i j))
+    (hbox : ∀ k ∈ Finset.range d, ∀ i j, (boxes k i j).ContainsReal
+      (compactCenteredRealCoefficients U poly k i j))
     (herr : ∀ i j, |A i j - ∑ k ∈ Finset.range d, poly k i j * v^k| ≤ (ρ:ℝ))
     (hrows : ∀ i, (∑ j, |U i j|) ≤ M)
-    (hcheck : ∀ i, compactPolynomialRowBound d (compactCenteredCoefficientBoxes U boxes) i +
+    (hcheck : ∀ i, compactPolynomialRowBound d boxes i +
       (n:ℚ)*(ρ*M*M) < 1) :
     0 < kernelMinorSign p * (A.submatrix (Fin.castLE hp) (Fin.castLE hp)).det := by
   let V := U.map (fun r : ℚ => (r:ℝ))
@@ -45,14 +53,6 @@ theorem signed_leading_det_pos_of_compactCertificate {p n d : ℕ} (hp : p ≤ n
     intro i
     change (↑(U i i) : ℝ) ≠ 0
     exact_mod_cast hdiag i
-  have hctr (k) (hk : k ∈ Finset.range d) (i j : Fin n) :
-      (compactCenteredCoefficientBoxes U boxes k i j).ContainsReal (centered k i j) := by
-    have hsign : (↑(compactSignDiagonal (n := n) k i j) : ℝ) =
-        (if k = 0 then J else 0) i j := by
-      by_cases hk₀ : k = 0 <;> by_cases hij : i = j <;>
-        simp [compactSignDiagonal, J, hk₀, hij]
-    apply QInterval.sub_containsReal (compactIntervalCongruence_containsReal U (hbox k hk) i j)
-    exact ⟨hsign.le, hsign.ge⟩
   have hsum : V * P * V.transpose = ∑ k ∈ Finset.range d, v^k • (V * poly k * V.transpose) := by
     simp only [P, Matrix.mul_sum, Matrix.sum_mul, Matrix.mul_smul, Matrix.smul_mul]
   have hpoly (i j : Fin n) : ∑ k ∈ Finset.range d, centered k i j * v^k =
@@ -77,7 +77,7 @@ theorem signed_leading_det_pos_of_compactCertificate {p n d : ℕ} (hp : p ≤ n
     change (∑ j, |(↑(U i j):ℝ)|) ≤ (M:ℝ)
     exact_mod_cast hrows i
   apply signed_leading_det_pos_of_compactPolynomial hp A V hV hdV d v hv (ρ*M*M)
-    centered (compactCenteredCoefficientBoxes U boxes) hctr _ hcheck
+    centered boxes hbox _ hcheck
   intro i j
   change |(V*A*V.transpose) i j - J i j - _| ≤ _
   rw [hpoly]
@@ -92,6 +92,42 @@ theorem signed_leading_det_pos_of_compactCertificate {p n d : ℕ} (hp : p ≤ n
   exact mul_le_mul (mul_le_mul_of_nonneg_left (hR i) hρR) (hR j)
     (Finset.sum_nonneg fun k _ => abs_nonneg (V j k)) (mul_nonneg hρR hMR)
 
+theorem compactCenteredCoefficientBoxes_containsReal {n : ℕ}
+    (U : Matrix (Fin n) (Fin n) ℚ)
+    {boxes : ℕ → Matrix (Fin n) (Fin n) QInterval}
+    {poly : ℕ → Matrix (Fin n) (Fin n) ℝ} {k : ℕ}
+    (hbox : ∀ i j, (boxes k i j).ContainsReal (poly k i j)) (i j : Fin n) :
+    (compactCenteredCoefficientBoxes U boxes k i j).ContainsReal
+      (compactCenteredRealCoefficients U poly k i j) := by
+  let V := U.map (fun r : ℚ => (r:ℝ))
+  let J := Matrix.diagonal (fun i : Fin n => (-1 : ℝ)^i.val)
+  have hsign : (↑(compactSignDiagonal (n := n) k i j) : ℝ) =
+      (if k = 0 then J else 0) i j := by
+    by_cases hk₀ : k = 0 <;> by_cases hij : i = j <;>
+      simp [compactSignDiagonal, J, hk₀, hij]
+  change (compactCenteredCoefficientBoxes U boxes k i j).ContainsReal
+    ((V * poly k * V.transpose - (if k = 0 then J else 0)) i j)
+  apply QInterval.sub_containsReal (compactIntervalCongruence_containsReal U (hbox) i j)
+  exact ⟨hsign.le, hsign.ge⟩
+
+/-- A single margin check on the original interval coefficients and their
+entrywise remainder controls the signed leading minors on the whole cell. -/
+theorem signed_leading_det_pos_of_compactCertificate {p n d : ℕ} (hp : p ≤ n) (hd : 0 < d)
+    (A : Matrix (Fin n) (Fin n) ℝ) (U : Matrix (Fin n) (Fin n) ℚ)
+    (hU : U.IsLowerTriangular) (hdiag : ∀ i, U i i ≠ 0)
+    (v : ℝ) (hv : |v| ≤ 1) (ρ M : ℚ) (hρ : 0 ≤ ρ) (hM : 0 ≤ M)
+    (poly : ℕ → Matrix (Fin n) (Fin n) ℝ)
+    (boxes : ℕ → Matrix (Fin n) (Fin n) QInterval)
+    (hbox : ∀ k ∈ Finset.range d, ∀ i j, (boxes k i j).ContainsReal (poly k i j))
+    (herr : ∀ i j, |A i j - ∑ k ∈ Finset.range d, poly k i j * v^k| ≤ (ρ:ℝ))
+    (hrows : ∀ i, (∑ j, |U i j|) ≤ M)
+    (hcheck : ∀ i, compactPolynomialRowBound d (compactCenteredCoefficientBoxes U boxes) i +
+      (n:ℚ)*(ρ*M*M) < 1) :
+    0 < kernelMinorSign p * (A.submatrix (Fin.castLE hp) (Fin.castLE hp)).det := by
+  exact signed_leading_det_pos_of_centeredCertificate hp hd A U hU hdiag v hv ρ M hρ hM
+    poly (compactCenteredCoefficientBoxes U boxes) (fun k hk => compactCenteredCoefficientBoxes_containsReal U (hbox k hk)) herr hrows hcheck
+
+#print axioms signed_leading_det_pos_of_centeredCertificate
 #print axioms signed_leading_det_pos_of_compactCertificate
 
 end Nuttall

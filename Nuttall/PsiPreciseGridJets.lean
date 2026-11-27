@@ -53,10 +53,11 @@ def psiPreciseGridPhiJetBoxOfInputs (inputs : PsiPreciseGridInputs) (j : ℕ) : 
 def psiPreciseGridPhiJetBox (t : ℚ) (j : ℕ) : QInterval :=
   psiPreciseGridPhiJetBoxOfInputs (psiPreciseGridInputs t) j
 
-theorem psiPreciseGridPhiJetBox_containsReal {t : ℚ} (h₀ : 0 ≤ t) (h₂ : t ≤ 2)
-    (hcheck : psiPreciseGridChecks t) (j : ℕ) :
-    (psiPreciseGridPhiJetBox t j).ContainsReal (iteratedDeriv j Phi (t:ℝ)) := by
-  obtain ⟨hE, hEpos, hT, hTpos, hG, hX₀, hG₀⟩ := hcheck
+theorem psiPreciseGridInputs_containsReal {t : ℚ} (hcheck : psiPreciseGridChecks t) :
+    (psiPreciseGridInputs t).exponential.ContainsReal (Real.exp (t:ℝ)) ∧
+    (psiPreciseGridInputs t).coordinate.ContainsReal (Real.pi * Real.exp (4*(t:ℝ))) ∧
+    (psiPreciseGridInputs t).gaussian.ContainsReal (Real.exp (-(Real.pi * Real.exp (4*(t:ℝ))))) := by
+  obtain ⟨hE, hEpos, hT, hTpos, hG, _, _⟩ := hcheck
   have hπ : (⟨3.14159265358979323846, 3.14159265358979323847⟩ : QInterval).ContainsReal
       Real.pi := by
     constructor <;> norm_num
@@ -74,10 +75,17 @@ theorem psiPreciseGridPhiJetBox_containsReal {t : ℚ} (h₀ : 0 ≤ t) (h₂ : 
       (Real.exp (-(Real.pi * Real.exp (4*(t:ℝ))))) := by
     exact compactRoundInterval_containsReal (by positivity)
       (phiCompactPreciseExpBox_containsReal hG hX.1 hX.2)
-  unfold psiPreciseGridPhiJetBox psiPreciseGridPhiJetBoxOfInputs psiPreciseGridInputs
+  exact ⟨precisePositiveExpBox_containsReal hE hEpos, hX, hq⟩
+
+theorem psiPreciseGridPhiJetBox_containsReal {t : ℚ} (h₀ : 0 ≤ t) (h₂ : t ≤ 2)
+    (hcheck : psiPreciseGridChecks t) (j : ℕ) :
+    (psiPreciseGridPhiJetBox t j).ContainsReal (iteratedDeriv j Phi (t:ℝ)) := by
+  obtain ⟨hE, hX, hq⟩ := psiPreciseGridInputs_containsReal hcheck
+  obtain ⟨_, _, _, _, _, hX₀, hG₀⟩ := hcheck
+  unfold psiPreciseGridPhiJetBox psiPreciseGridPhiJetBoxOfInputs
   apply compactRoundInterval_containsReal (by positivity)
   exact phiCompactJetBox_containsReal (by exact_mod_cast h₀) (by exact_mod_cast h₂)
-    (precisePositiveExpBox_containsReal hE hEpos) hX hq hX₀ hG₀ j 8 (by decide)
+    hE hX hq hX₀ hG₀ j 8 (by decide)
 
 #print axioms psiPreciseGridPhiJetBox_containsReal
 

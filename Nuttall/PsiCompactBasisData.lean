@@ -615,13 +615,16 @@ private def psiOneCompactBasisNumerators : Vector (Vector (Vector ℤ 7) 7) 67 :
   ]
 ]
 
+def psiOneCompactBasisNumerator (cell : Fin 67) : Matrix (Fin 7) (Fin 7) ℤ :=
+  Matrix.of fun i j => if i < j then 0 else ((psiOneCompactBasisNumerators.get cell).get i).get j
+
 def psiOneCompactBasis (cell : Fin 67) : Matrix (Fin 7) (Fin 7) ℚ :=
-  Matrix.of fun i j => if i < j then 0 else ((((psiOneCompactBasisNumerators.get cell).get i).get j:ℤ):ℚ)/1024
+  (psiOneCompactBasisNumerator cell).map (fun x => (x:ℚ)/1024)
 
 theorem psiOneCompactBasis_lower (cell : Fin 67) : (psiOneCompactBasis cell).IsLowerTriangular := by
   intro i j hij
   change i < j at hij
-  simp [psiOneCompactBasis, hij]
+  simp [psiOneCompactBasis, psiOneCompactBasisNumerator, hij]
 
 set_option maxRecDepth 32768 in
 set_option maxHeartbeats 6000000 in

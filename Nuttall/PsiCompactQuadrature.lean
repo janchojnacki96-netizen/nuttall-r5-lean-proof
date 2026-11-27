@@ -17,23 +17,34 @@ private theorem addSymmetricError_containsReal {I : QInterval} {ε : ℚ} {x y :
   have he : x + (y-x) = y := by ring
   simpa only [addSymmetricError, he] using QInterval.add_containsReal hI hd
 
-/-- Add the common geometric tail to an exact interval for the retained terms. -/
-def phiCompactJetBox (E X q : QInterval) (j N : ℕ) : QInterval :=
-  addSymmetricError (phiJetPrefixBox E X q j N)
+/-- Add the geometric tail to an enclosure of the retained terms. -/
+def phiCompactJetBoxOfPrefix (prefixBox : QInterval) (j N : ℕ) : QInterval :=
+  addSymmetricError prefixBox
     (((j.factorial:ℚ) * 8^j) * (20000 * (9/25:ℚ)^(N^2) / (1-9/25)))
+
+theorem phiCompactJetBoxOfPrefix_containsReal {prefixBox : QInterval} {t : ℝ}
+    (ht : 0 ≤ t) (ht₂ : t ≤ 2) (j N : ℕ) (hN : 1 ≤ N)
+    (hp : prefixBox.ContainsReal
+      (∑ n ∈ Finset.range N, auxiliaryWeightedSummand (phiJetPolynomial j) n t)) :
+    (phiCompactJetBoxOfPrefix prefixBox j N).ContainsReal (iteratedDeriv j Phi t) := by
+  apply addSymmetricError_containsReal hp
+  rw [iteratedDeriv_phi_eq_tsum,
+    ← (auxiliaryWeightedSummand_summable (phiJetPolynomial j) t).sum_add_tsum_nat_add N,
+    add_sub_cancel_left]
+  simpa only [Real.norm_eq_abs, Rat.cast_mul, Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_pow,
+    Rat.cast_div, Rat.cast_sub, Rat.cast_one] using phiJet_geometric_tail j N hN ht ht₂
+
+def phiCompactJetBox (E X q : QInterval) (j N : ℕ) : QInterval :=
+  phiCompactJetBoxOfPrefix (phiJetPrefixBox E X q j N) j N
 
 theorem phiCompactJetBox_containsReal {E X q : QInterval} {t : ℝ}
     (ht : 0 ≤ t) (ht₂ : t ≤ 2)
     (hE : E.ContainsReal (Real.exp t)) (hX : X.ContainsReal (Real.pi * Real.exp (4*t)))
     (hq : q.ContainsReal (Real.exp (-(Real.pi * Real.exp (4*t)))))
     (hX₀ : 0 ≤ X.lo) (hq₀ : 0 ≤ q.lo) (j N : ℕ) (hN : 1 ≤ N) :
-    (phiCompactJetBox E X q j N).ContainsReal (iteratedDeriv j Phi t) := by
-  apply addSymmetricError_containsReal (phiJetPrefixBox_containsReal hE hX hq hX₀ hq₀ j N)
-  rw [iteratedDeriv_phi_eq_tsum,
-    ← (auxiliaryWeightedSummand_summable (phiJetPolynomial j) t).sum_add_tsum_nat_add N,
-    add_sub_cancel_left]
-  simpa only [Real.norm_eq_abs, Rat.cast_mul, Rat.cast_natCast, Rat.cast_ofNat, Rat.cast_pow,
-    Rat.cast_div, Rat.cast_sub, Rat.cast_one] using phiJet_geometric_tail j N hN ht ht₂
+    (phiCompactJetBox E X q j N).ContainsReal (iteratedDeriv j Phi t) :=
+  phiCompactJetBoxOfPrefix_containsReal ht ht₂ j N hN
+    (phiJetPrefixBox_containsReal hE hX hq hX₀ hq₀ j N)
 
 /-- Compute the preceding anchor using derivative intervals at the left end
 and an enclosure of the integral at the right end. -/

@@ -22,7 +22,7 @@ and its Gaussian, so the same base calculations serve every jet. -/
 def phiJetPrefixBox (E X q : QInterval) (j N : ℕ) : QInterval :=
   QInterval.mul E (QInterval.sumBox (Finset.range N) (phiJetTermBox X q j))
 
-private theorem auxiliaryWeightedSummand_eq_exp_powers (j n : ℕ) (t : ℝ) :
+theorem auxiliaryWeightedSummand_eq_exp_powers (j n : ℕ) (t : ℝ) :
     auxiliaryWeightedSummand (phiJetPolynomial j) n t =
       Real.exp t *
         (auxiliaryCoordinate n t * (phiJetPolynomial j).eval (auxiliaryCoordinate n t) *
