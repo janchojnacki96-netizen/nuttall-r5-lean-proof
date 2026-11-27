@@ -21,7 +21,10 @@ private theorem auxiliaryCoordinate_hasDerivAt (n : ℕ) (t : ℝ) :
   have hlin : HasDerivAt (fun x : ℝ => 4*x) 4 t := by
     simpa using (hasDerivAt_id t).const_mul (4 : ℝ)
   have h := ((Real.hasDerivAt_exp (4*t)).comp t hlin).const_mul ((n : ℝ)^2 * Real.pi)
-  convert h using 1 <;> simp only [auxiliaryCoordinate, Function.comp_apply] <;> ring
+  convert h using 1
+  · rfl
+  · unfold auxiliaryCoordinate
+    ring
 
 private theorem auxiliarySummand_hasDerivAt_factor (n : ℕ) (t : ℝ) :
     HasDerivAt (auxiliarySummand n)
@@ -41,7 +44,7 @@ theorem auxiliary_polynomial_summand_hasDerivAt (j n : ℕ) (t : ℝ) :
     (auxiliaryCoordinate_hasDerivAt n t)
   convert (auxiliarySummand_hasDerivAt_factor n t).mul hpol using 1
   · rfl
-  · simp only [auxiliaryDerivativePolynomial, eval_sub, eval_mul, eval_C, eval_X]
+  · simp only [auxiliaryDerivativePolynomial, eval_sub, eval_mul, eval_C, eval_X, Function.comp_apply]
     ring
 
 /-- Formula for each signed derivative, before exchanging derivatives and the series. -/

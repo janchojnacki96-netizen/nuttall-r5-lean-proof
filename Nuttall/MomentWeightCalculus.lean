@@ -7,10 +7,12 @@ private theorem normalizedPower_hasDerivAt (k : ℕ) (x : ℝ) :
       (x^k / (k.factorial : ℝ)) x := by
   have h := ((hasDerivAt_id x).pow (k+1)).div_const ((k+1).factorial : ℝ)
   convert h using 1
-  simp only [id_eq, Nat.add_sub_cancel, mul_one, Nat.factorial_succ, Nat.cast_mul, Nat.cast_succ]
-  have hk : (k.factorial : ℝ) ≠ 0 := by positivity
-  have hs : (k : ℝ) + 1 ≠ 0 := by positivity
-  field_simp [hk, hs] <;> ring
+  · funext y
+    simp only [Pi.pow_apply, id_eq]
+  · simp only [id_eq, Nat.add_sub_cancel, mul_one, Nat.factorial_succ, Nat.cast_mul, Nat.cast_succ]
+    have hk : (k.factorial : ℝ) ≠ 0 := by positivity
+    have hs : (k : ℝ) + 1 ≠ 0 := by positivity
+    field_simp [hk, hs] <;> ring
 
 theorem tailMomentWeight_succ_hasDerivAt (k : ℕ) (x : ℝ) :
     HasDerivAt (tailMomentWeight (k+1)) (tailMomentWeight k x) x :=
