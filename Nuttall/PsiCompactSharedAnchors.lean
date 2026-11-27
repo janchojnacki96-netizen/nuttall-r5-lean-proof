@@ -1,5 +1,6 @@
 import Nuttall.PsiCompactPrecisionSeed
 import Nuttall.PsiCompactQuadrature
+import Nuttall.CompactIntervalRounding
 
 namespace Nuttall
 
