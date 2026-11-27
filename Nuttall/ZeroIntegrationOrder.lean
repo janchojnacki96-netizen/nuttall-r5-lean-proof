@@ -1,4 +1,4 @@
-import Nuttall.PhiCompactCells
+import Nuttall.PhiCompactReplay
 import Nuttall.PhiFarSign
 
 namespace Nuttall
@@ -23,6 +23,18 @@ theorem kernelIntegrationOrder_eq_zero_of_le_four_of_compact_check
     kernelIntegrationOrder r = 0 := by
   have h := (signRegularWronskians_zero_four_of_compact_check hgrid).strictReverseSignRegular.reverseSignRegular
   exact le_antisymm (kernelIntegrationOrder_le_of_reverseSignRegular (h.mono hr)) zero_le
+
+/-- The original kernel has the strict signed Wronskians through rank four
+on the entire nonnegative half-line. -/
+theorem signRegularWronskians_zero_four : signRegularWronskians 0 4 :=
+  signRegularWronskians_zero_four_of_compact_check phiCompactGridChecked_proved
+
+/-- The minimum is zero for every rank up to four. -/
+theorem kernelIntegrationOrder_eq_zero_of_le_four {r : ℕ} (hr : r ≤ 4) :
+    kernelIntegrationOrder r = 0 :=
+  kernelIntegrationOrder_eq_zero_of_le_four_of_compact_check phiCompactGridChecked_proved hr
+
+#print axioms kernelIntegrationOrder_eq_zero_of_le_four
 
 #print axioms signRegularWronskians_zero_four_of_compact_check
 #print axioms kernelIntegrationOrder_eq_zero_of_le_four_of_compact_check
