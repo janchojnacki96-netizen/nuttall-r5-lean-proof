@@ -18,8 +18,10 @@ private theorem psiOneLastCellCoeffBox_containsReal (l k : ℕ) (hl : l ≤ 12) 
     cases hn : l+k with
     | zero => simpa only [iteratedDeriv_zero] using psiOneLastCellCornerSnapshot_containsReal
     | succ j => exact psiOneLastCellJetSnapshot_containsReal j (by omega)
-  simpa only [psiOneLastCellCoeffBox, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using
-    psiOneCompactCoefficientBoxOfJet_containsReal (radius := 1/512) hJ l k
+  have h := psiOneCompactCoefficientBoxOfJet_containsReal (radius := (1:ℚ)/512) hJ l k
+  have hr : (((1/512:ℚ):ℝ)) = (1:ℝ)/512 := by norm_num
+  rw [hr] at h
+  exact h
 
 theorem psiOne_compact_last_cell_signed_wronskians (p : ℕ) (hp : p ≤ 7)
     (t : ℝ) (hL : 127/256 ≤ t) (hU : t ≤ 1/2) :
