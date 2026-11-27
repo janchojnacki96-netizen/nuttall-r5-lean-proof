@@ -21,26 +21,37 @@ theorem psiOneCompactJetBox_containsReal {center : ℚ} {corner : QInterval}
     exact QInterval.neg_containsReal (psiPreciseGridPhiJetBox_containsReal hc₀ hc₂ hgrid j)
 
 /-- Scale the Hankel indices and the Taylor variable before rounding outward. -/
-def psiOneCompactCoefficientBox (center radius : ℚ) (corner : QInterval) (l k : ℕ) :
-    QInterval :=
+def psiOneCompactCoefficientBoxOfJet (radius : ℚ) (J : QInterval) (l k : ℕ) : QInterval :=
   compactRoundInterval (2^90) (QInterval.mul
     (QInterval.point ((1/16:ℚ)^l * radius^k / (k.factorial:ℚ)))
-    (psiOneCompactJetBox center corner (l+k)))
+    J)
+
+theorem psiOneCompactCoefficientBoxOfJet_containsReal {radius : ℚ} {J : QInterval} {x : ℝ}
+    (hJ : J.ContainsReal x) (l k : ℕ) :
+    (psiOneCompactCoefficientBoxOfJet radius J l k).ContainsReal
+      ((1/16:ℝ)^l * (radius:ℝ)^k / (k.factorial:ℝ) * x) := by
+  have hs : QInterval.ContainsReal
+      (QInterval.point ((1/16:ℚ)^l * radius^k / (k.factorial:ℚ)))
+      ((1/16:ℝ)^l * (radius:ℝ)^k / (k.factorial:ℝ)) := by
+    simp only [QInterval.ContainsReal, QInterval.point, Rat.cast_pow, Rat.cast_mul, Rat.cast_div,
+      Rat.cast_natCast, Rat.cast_one, Rat.cast_ofNat, le_refl, and_self]
+  unfold psiOneCompactCoefficientBoxOfJet
+  apply compactRoundInterval_containsReal (by positivity)
+  exact QInterval.mul_containsReal hs hJ
+
+/-- Compute the scaled Taylor coefficient of the selected Hankel index. -/
+def psiOneCompactCoefficientBox (center radius : ℚ) (corner : QInterval) (l k : ℕ) :
+    QInterval :=
+  psiOneCompactCoefficientBoxOfJet radius (psiOneCompactJetBox center corner (l+k)) l k
 
 theorem psiOneCompactCoefficientBox_containsReal {center radius : ℚ} {corner : QInterval}
     (hc₀ : 0 ≤ center) (hc₂ : center ≤ 2) (hgrid : psiPreciseGridChecks center)
     (hcorner : corner.ContainsReal (psi 1 (center:ℝ))) (l k : ℕ) :
     (psiOneCompactCoefficientBox center radius corner l k).ContainsReal
       ((1/16:ℝ)^l * (radius:ℝ)^k / (k.factorial:ℝ) *
-        iteratedDeriv (l+k) (psi 1) (center:ℝ)) := by
-  have hs : QInterval.ContainsReal
-      (QInterval.point ((1/16:ℚ)^l * radius^k / (k.factorial:ℚ)))
-      ((1/16:ℝ)^l * (radius:ℝ)^k / (k.factorial:ℝ)) := by
-    simp only [QInterval.ContainsReal, QInterval.point, Rat.cast_pow, Rat.cast_mul, Rat.cast_div,
-      Rat.cast_natCast, Rat.cast_one, Rat.cast_ofNat, le_refl, and_self]
-  unfold psiOneCompactCoefficientBox
-  apply compactRoundInterval_containsReal (by positivity)
-  exact QInterval.mul_containsReal hs (psiOneCompactJetBox_containsReal hc₀ hc₂ hgrid hcorner _)
+        iteratedDeriv (l+k) (psi 1) (center:ℝ)) :=
+  psiOneCompactCoefficientBoxOfJet_containsReal
+    (psiOneCompactJetBox_containsReal hc₀ hc₂ hgrid hcorner _) l k
 
 #print axioms psiOneCompactCoefficientBox_containsReal
 
