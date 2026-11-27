@@ -64,6 +64,7 @@ theorem shiftSlice_central_mass_lower {p n L : ℕ} (hL : 2 ≤ L) (hn : n ≤ p
     refine (mul_le_mul_of_nonneg_right hcard (by positivity)).trans ?_
     dsimp [δ]
     field_simp
+    norm_num
   have hmass : 1/16 ≤ volume.real s := shiftSliceGoodSet_volume_lower _ hδ.le hsize
   let K := (|b j₀| * ∏ i, (1+Real.exp (4*v i))) * (1/8:ℝ)^(L-1) * d^(2*p) *
     Real.exp (-Real.exp 1*X)
