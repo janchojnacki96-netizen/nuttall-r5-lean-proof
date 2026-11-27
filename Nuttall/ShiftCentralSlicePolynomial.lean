@@ -82,7 +82,8 @@ theorem shiftCentralSlicePolynomial_natDegree_le {p : ℕ} (L : ℕ) (b : Fin p 
   unfold shiftCentralSlicePolynomial
   apply Polynomial.natDegree_sum_le_of_forall_le
   intro j _
-  exact Polynomial.natDegree_sub_le_of_le
+  apply (Polynomial.natDegree_sub_le _ _).trans
+  exact max_le
     ((Polynomial.natDegree_monomial_le ((L+j.val:ℕ)*b j) (m := j.val)).trans j.isLt.le)
     ((Polynomial.natDegree_monomial_le (b j) (m := j.val+1)).trans (Nat.succ_le_of_lt j.isLt))
 

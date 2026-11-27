@@ -199,6 +199,12 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **U3 — następna deklaracja.** Wyprowadź oszacowanie przekroju poza B względem całki z modułu przekroju na [1/8,1/4]. Udowodnij dolne ograniczenie za pomocą wielomianu i wyłączeń wokół rzeczywistych części pierwiastków oraz górne ograniczenie przez superwykładniczy czynnik wagi. Wykorzystaj Fubiniego i sumę po współrzędnych, aby uzyskać względną kontrolę dopełnienia sześcianu. Zachowaj wszystkie mniejsze minory i wszystkie t≥0 przy tym samym poziomie 2R.
 
+Przy oszacowaniu przekroju użyj tych redukcji z §4.1.
+
+- Do rozkładu wielomianu nad ℂ użyj `Polynomial.Splits.eq_prod_roots`. Oszacuj sumę modułów współczynników iloczynu przez iloczyn takich sum dla czynników. Stąd F≤|q_d|∏(1+|z|), z q_d współczynnikiem wiodącym.
+- Po usunięciu przedziałów wokół Re z i pozostałych węzłów długość wyłączeń jest najwyżej 2δ(d+p−1)≤1/16. Dla u∈[1/8,1/4] i |u−z|≥δ oszacuj 1+|z| przez 5/4+|u−z|. Dla |u−v|≥δ dolne oszacowanie znormalizowanego czynnika Vandermonde'a wynika z 1−exp(−4δ)≥2δ przy 0<δ≤1/4.
+- Aby scalić przekroje, użyj `measurePreserving_piFinSuccAbove` do wydzielenia jednej współrzędnej w mierze produktowej. Oszacuj sumę po współrzędnych na dopełnieniu sześcianu i zastosuj `eventually_signRegularWronskians_two_mul_of_shiftRelativeTailRatio`.
+
 **U4 — złożenie istnienia.** Wykaż istnienie R₀ takie, że dla każdego R≥max(1,R₀) zachodzi `signRegularWronskians (2*R) R`. Użyj `exists_level_of_eventual_two_mul` i mostu A, aby uzyskać twierdzenie 1.2. To pierwszy cel publikacyjny osiągalny przed pełnym odtworzeniem certyfikatów skończonych rzędów.
 
 **F — od dostatecznie dużych rzędów do każdego r.** Zaimplementuj jawny próg i połącz poniższe zakresy jednym dowodem pokrycia. Samo istnienie niejawnego R₀ nie uzasadnia startu przy 10¹¹. Dla każdego zakresu sprawdzaj wszystkie mniejsze minory przy jednym poziomie 2r.
