@@ -10,7 +10,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 | A. Definicje i przejście od wrońskianów do RR | W5.Statement, CentralEvaluationPositivity | **Częściowo.** [ReverseSignRegularity.lean](../Nuttall/ReverseSignRegularity.lean) definiuje słabe RR i m(r) oraz przenosi ścisły test na wyznaczniki jądra dla każdego m. [WronskianObstruction.lean](../Nuttall/WronskianObstruction.lean) wyklucza słabe RR przez zły znak wrońskianu i wyprowadza dolną granicę m(r). Słabe RR zachowuje się przy całkowaniu ogonowym. Pozostaje zachowanie ścisłych znaków wrońskianów. |
 | U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **Zweryfikowany w Lean.** [AnalyticUpperBound.lean](../Nuttall/AnalyticUpperBound.lean) dowodzi istnienia skutecznego poziomu dla każdego r oraz m(r)≤2r dla dostatecznie dużych r, w słabej konwencji z preprintu. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
-| S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Częściowo.** Świadek w zerze i połączenie dla r=5 oczekują na CI. Dla pozostałych rzędów uzyskać odpowiednie górne i dolne granice słabego RR. |
+| S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Częściowo.** Świadek w zerze przeszedł CI. Rząd pierwszy oczekuje na CI, a końcowe połączenie dla r=5 ma osobny cel kompilacji. Dla pozostałych rzędów uzyskać odpowiednie górne i dolne granice słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
 | H. Świadkowie 142 i 500, tw. 5.1 i wn. 5.2 | A, checker i dane §5; F dla górnych granic | **Otwarte.** Udowodnić znaki w konkretnych punktach i wykluczyć niższe poziomy. |
 | D. Wyznaczniki momentów, tw. 6.2 i dod. C | F dla pierwszego wiersza; pozostałe ścieżki z dod. C | **Otwarte.** Sześć wierszy z właściwymi warunkami i progami. |
@@ -265,7 +265,9 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 | 9 | `phi_origin_wronskian_neg`, [`one_le_kernelIntegrationOrder_of_five_le`](../Nuttall/FiveIntegrationOrder.lean) | Świadek w zerze dowodzi m(r)≥1 dla każdego r≥5. |
 | 10 | [`kernelIntegrationOrder_five_eq_one`](../W5/NuttallR5IntegrationOrder.lean) | Istniejący certyfikat dla Ψ₁ domyka górną stronę m(5)=1. |
 
-**S — następna deklaracja.** Wyprowadź m(1)=0 z `W5.Phi_pos`, następnie użyj tego samego zweryfikowanego wzoru na pochodne Φ do ścisłych znaków do rzędu czwartego na przedziale zwartym i do certyfikatu na ogonie. Świadek dla m(8) wymaga obliczenia osobno Ψ₁(5/64) i pochodnych w tym punkcie.
+**S — rząd pierwszy.** [`kernelIntegrationOrder_one_eq_zero`](../Nuttall/FirstIntegrationOrder.lean) przenosi `W5.Phi_pos` na ścisły znak minora 1×1 i wykazuje m(1)=0. Oczekuje na CI.
+
+**S — następna deklaracja.** Użyj zweryfikowanego wzoru na pochodne Φ do ścisłych znaków od rzędu drugiego do czwartego na przedziale zwartym i do certyfikatu na ogonie. Świadek dla m(8) wymaga obliczenia osobno Ψ₁(5/64) i pochodnych w tym punkcie.
 
 **F — od dostatecznie dużych rzędów do każdego r.** Zaimplementuj jawny próg i połącz poniższe zakresy jednym dowodem pokrycia. Samo istnienie niejawnego R₀ nie uzasadnia startu przy 10¹¹. Dla każdego zakresu sprawdzaj wszystkie mniejsze minory przy jednym poziomie 2r.
 

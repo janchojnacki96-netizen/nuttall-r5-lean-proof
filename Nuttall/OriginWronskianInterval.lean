@@ -15,13 +15,6 @@ theorem sumBox_containsReal {α : Type*} (s : Finset α) (B : α → QInterval) 
   simp only [ContainsReal, sumBox, Rat.cast_sum]
   exact ⟨Finset.sum_le_sum (fun i hi => (h i hi).1), Finset.sum_le_sum (fun i hi => (h i hi).2)⟩
 
-theorem pow_box_containsReal {B : QInterval} {x : ℝ} (h : ContainsReal B x) (n : ℕ) :
-    ContainsReal (B.pow n) (x^n) := by
-  induction n with
-  | zero => simp [QInterval.pow, point, ContainsReal]
-  | succ n ih =>
-    simpa only [QInterval.pow, pow_succ] using mul_containsReal ih h
-
 /-- Laplace expansion using rational interval arithmetic. -/
 def determinant : (n : ℕ) → Matrix (Fin n) (Fin n) QInterval → QInterval
   | 0, _ => ⟨1, 1⟩
