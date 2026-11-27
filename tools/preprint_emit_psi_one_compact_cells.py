@@ -57,10 +57,8 @@ end Nuttall
 """
 
 
-def cell_module(i, anchor):
-    anchor_name = f"psiOneCompactAnchor{anchor}"
-    return f"""import Nuttall.PsiCompactCell{i}Margin
-import Nuttall.PsiCompactUniformPanel{anchor}
+def jet_module(i):
+    return f"""import Nuttall.PsiCompactCell{i}Data
 
 namespace Nuttall
 
@@ -68,17 +66,31 @@ open W5
 
 set_option maxRecDepth 65536 in
 set_option maxHeartbeats 45000000 in
-private theorem input_checked :
+theorem psiOneCell{i}Inputs_checked :
     psiPreciseGridChecks (psiOneDyadicCenter {i}) ∧
       psiPreciseGridInputs (psiOneDyadicCenter {i}) = psiOneCell{i}Snapshot.input := by
   decide +kernel
 
 set_option maxRecDepth 65536 in
 set_option maxHeartbeats 45000000 in
-private theorem jets_checked (j : ℕ) (hj : j < 36) :
+theorem psiOneCell{i}Jets_checked (j : ℕ) (hj : j < 36) :
     (psiOneCell{i}Snapshot.jets j).asQInterval (2^90) =
       psiFixedGridPhiJetBoxOfInputs psiOneCell{i}Snapshot.input j := by
   interval_cases j <;> decide +kernel
+
+end Nuttall
+"""
+
+
+def cell_module(i, anchor):
+    anchor_name = f"psiOneCompactAnchor{anchor}"
+    return f"""import Nuttall.PsiCompactCell{i}Margin
+import Nuttall.PsiCompactCell{i}Jets
+import Nuttall.PsiCompactUniformPanel{anchor}
+
+namespace Nuttall
+
+open W5
 
 set_option maxRecDepth 65536 in
 set_option maxHeartbeats 45000000 in
@@ -94,7 +106,7 @@ theorem psiOne_compact_cell{i}_signed_wronskians (p : ℕ) (hp : p ≤ 7) (t : �
     (hL : {i}/128 ≤ t) (hU : t ≤ {i + 1}/128) :
     0 < kernelMinorSign p * wronskian (psi 1) p t := by
   refine psiOne_compact_dyadic_snapshot_sound {i} {anchor} (by decide) (by decide +kernel)
-    {anchor_name} ?_ psiOneCell{i}Snapshot input_checked jets_checked
+    {anchor_name} ?_ psiOneCell{i}Snapshot psiOneCell{i}Inputs_checked psiOneCell{i}Jets_checked
     corner_checked psiOneCell{i}Margin_checked p hp t ?_ ?_
   · simpa only [Rat.cast_div, Rat.cast_ofNat, Nat.cast_ofNat] using
       {anchor_name}_containsReal
@@ -109,16 +121,109 @@ end Nuttall
 """
 
 
+def uniform_panel_modules(i, node, panel):
+    next_i = i + 1
+    inputs = ",\n  ".join(f"bounds ({lo}) ({hi})" for lo, hi in node["inputs"])
+    jets = ",\n".join(f"  ({lo}, {hi})" for lo, hi in node["jets"])
+    lo, hi = panel
+    return f"""import Nuttall.PsiCompactPanelStep
+
+namespace Nuttall
+
+open W5
+
+private def bounds (lo hi : ℤ) : QInterval :=
+  ⟨(lo:ℚ)/2^90, (hi:ℚ)/2^90⟩
+
+private def gridInputs : PsiPreciseGridInputs :=
+  ⟨{inputs}⟩
+
+private def endpoints : Vector (ℤ × ℤ) 36 := #v[
+{jets}
+]
+
+def psiOneUniformPanel{i}Jet (j : ℕ) : QInterval :=
+  let e := endpoints.toArray[j]!
+  bounds e.1 e.2
+
+def psiOneUniformPanel{i} : QInterval :=
+  bounds {lo} {hi}
+
+set_option maxRecDepth 65536 in
+set_option maxHeartbeats 45000000 in
+private theorem inputCheck :
+    psiPreciseGridChecks ({i}/32) ∧ psiPreciseGridInputs ({i}/32) = gridInputs := by
+  decide +kernel
+
+set_option maxRecDepth 65536 in
+set_option maxHeartbeats 45000000 in
+private theorem jetCheck (j : ℕ) (hj : j < 36) :
+    psiOneUniformPanel{i}Jet j = psiFixedGridPhiJetBoxOfInputs gridInputs j := by
+  interval_cases j <;> decide +kernel
+
+theorem psiOneUniformPanel{i}Jet_containsReal (j : ℕ) (hj : j < 36) :
+    (psiOneUniformPanel{i}Jet j).ContainsReal (iteratedDeriv j Phi (({i}/32:ℚ):ℝ)) := by
+  rw [jetCheck j hj]
+  exact psiFixedGridPhiJetBoxOfInputs_containsReal (by norm_num) (by norm_num)
+    inputCheck.1 inputCheck.2 j
+
+set_option maxRecDepth 65536 in
+set_option maxHeartbeats 45000000 in
+theorem psiOneUniformPanel{i}_checked :
+    let raw := psiOnePanelBox (QInterval.point 0) psiOneUniformPanel{i}Jet 36 (1/32)
+    psiOneUniformPanel{i}.lo ≤ raw.lo ∧ raw.hi ≤ psiOneUniformPanel{i}.hi := by
+  decide +kernel
+
+#print axioms psiOneUniformPanel{i}Jet_containsReal
+#print axioms psiOneUniformPanel{i}_checked
+
+end Nuttall
+""", f"""import Nuttall.PsiCompactUniformPanel{i}Data
+import Nuttall.PsiCompactUniformPanel{next_i}
+
+namespace Nuttall
+
+open W5
+
+def psiOneCompactAnchor{i} : QInterval := psiOneCompactAnchor{next_i}.add psiOneUniformPanel{i}
+
+theorem psiOneCompactAnchor{i}_containsReal : psiOneCompactAnchor{i}.ContainsReal (psi 1 (({i}/32:ℚ):ℝ)) := by
+  have hright : psiOneCompactAnchor{next_i}.ContainsReal (psi 1 ((({i}+1:ℕ):ℝ)/32)) := by
+    simpa [show ((({i}+1:ℕ):ℝ)/32) = (({next_i}/32:ℚ):ℝ) by norm_num] using
+      psiOneCompactAnchor{next_i}_containsReal
+  have hj (j : ℕ) (hj : j < 36) :
+      (psiOneUniformPanel{i}Jet j).ContainsReal (iteratedDeriv j Phi (({i}:ℝ)/32)) := by
+    simpa only [Rat.cast_div, Rat.cast_ofNat] using psiOneUniformPanel{i}Jet_containsReal j hj
+  have h := psiOne_compact_panel_step (i := {i}) (by decide) hright hj psiOneUniformPanel{i}_checked
+  simpa only [psiOneCompactAnchor{i}, Rat.cast_div, Rat.cast_ofNat, Nat.cast_ofNat] using h
+
+#print axioms psiOneCompactAnchor{i}_containsReal
+
+end Nuttall
+"""
+
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("certificate", type=Path)
     parser.add_argument("output_dir", type=Path)
     parser.add_argument("indices", nargs="+", type=int)
+    parser.add_argument("--uniform-panels", action="store_true")
     args = parser.parse_args()
     data = json.loads(args.certificate.read_text())
     assert data["scale"] == 2**90
     pending = {}
     for i in args.indices:
+        if args.uniform_panels:
+            if i < 1 or i > 11:
+                parser.error("choose uniform panels from 1 to 11")
+            node = data["nodes"][i]
+            assert Fraction(node["t"]) == Fraction(i, 32)
+            module_data, anchor_code = uniform_panel_modules(i, node, data["uniform_panels"][i])
+            pending[f"PsiCompactUniformPanel{i}Data.lean"] = module_data
+            pending[f"PsiCompactUniformPanel{i}.lean"] = anchor_code
+            continue
         if i < 1 or i > 51:
             parser.error("choose uniform cells from 1 to 51")
         cell = data["cells"][i]
@@ -133,6 +238,7 @@ def main():
         stem = f"PsiCompactCell{i}"
         pending[stem + "Data.lean"] = data_module(i, node, cell["corner"])
         pending[stem + "Margin.lean"] = margin_module(i)
+        pending[stem + "Jets.lean"] = jet_module(i)
         pending[stem + ".lean"] = cell_module(i, anchor)
     for name in pending:
         if (args.output_dir / name).exists():

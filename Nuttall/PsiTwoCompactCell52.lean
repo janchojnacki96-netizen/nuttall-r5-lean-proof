@@ -39,7 +39,8 @@ theorem psiTwo_compact_cell52_signed_wronskians (p : ℕ) (hp : p ≤ 8)
     psiTwoCell52Basis ?_ ?_ ?_ psiTwoCell52One psiTwoCell52Two psiTwoCell52Phi ?_
     psiTwoCell52Corner_containsReal ?_ psiTwoCell52Margin_checked
   · intro i j hij
-    fin_cases i <;> fin_cases j <;> first | rfl | omega
+    change i.val < j.val at hij
+    fin_cases i <;> fin_cases j <;> norm_num at hij <;> rfl
   · intro i
     fin_cases i <;> decide +kernel
   · intro i
