@@ -29,7 +29,8 @@ private theorem expNegTaylor_abs (z : ℚ) (hz₀ : 0 ≤ z) (hz₁ : z ≤ 16) 
       have hb := pow_le_pow_left₀ (abs_nonneg _) hx 16
       have hu := mul_le_mul_of_nonneg_right hb
         (by positivity : (0:ℝ) ≤ 17/((Nat.factorial 16:ℝ)*16))
-      simpa [Nat.factorial, mul_div_assoc] using hu
+      norm_num [Nat.factorial, mul_div_assoc] at hu ⊢
+      exact hu
     _ ≤ _ := by norm_num [Nat.factorial]
 
 private def phiCompactExpLo (z : ℚ) : ℚ :=
@@ -84,10 +85,12 @@ theorem phiCompactExpBox_containsReal {a b : ℚ} {X : ℝ}
     exact (le_div_iff₀ (by norm_num)).2 (Int.le_ceil _)
   have hL₀ : ((expRoundDown ((phiCompactExpLo b)^16) : ℚ):ℝ) ≤
       ((phiCompactExpLo b:ℚ):ℝ)^16 := by
-    simpa only [Rat.cast_pow] using Rat.cast_mono (hroundL ((phiCompactExpLo b)^16))
+    rw [← Rat.cast_pow]
+    exact Rat.cast_mono (hroundL ((phiCompactExpLo b)^16))
   have hU₀ : ((phiCompactExpHi a:ℚ):ℝ)^16 ≤
       ((expRoundUp ((phiCompactExpHi a)^16) : ℚ):ℝ) := by
-    simpa only [Rat.cast_pow] using Rat.cast_mono (hroundU ((phiCompactExpHi a)^16))
+    rw [← Rat.cast_pow]
+    exact Rat.cast_mono (hroundU ((phiCompactExpHi a)^16))
   exact ⟨hL₀.trans (hBpow.trans (Real.exp_le_exp.mpr (neg_le_neg hhi))),
     (Real.exp_le_exp.mpr (neg_le_neg hlo)).trans (hApow.trans hU₀)⟩
 

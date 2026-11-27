@@ -77,8 +77,10 @@ theorem phiFarWronskian_pos {p : ℕ} (hp : p ≤ 4) (t : ℝ)
       have hb : |phiFarRight j.val| ≤ 1 := by
         unfold phiFarRight
         simp only [abs_div, abs_pow, abs_neg, abs_one, abs_of_nonneg (by positivity : 0 ≤ (3:ℝ)^j.val)]
-        exact one_div_le_one_div_of_le zero_lt_one (by
-          simpa using pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 1) (by norm_num : (1:ℝ) ≤ 3) j.val)
+        have h := one_div_le_one_div_of_le zero_lt_one (show (1:ℝ) ≤ 3^j.val from by
+          simpa only [one_pow] using
+            pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 1) (by norm_num : (1:ℝ) ≤ 3) j.val)
+        simpa only [one_pow, div_one] using h
       rw [he, show phiFarShape X i.val j.val + phiFarLeft X i.val * R * phiFarRight j.val -
           Matrix.diagonal d i j =
           (phiFarShape X i.val j.val - Matrix.diagonal d i j) +
@@ -96,7 +98,9 @@ theorem phiFarWronskian_pos {p : ℕ} (hp : p ≤ 4) (t : ℝ)
       rw [show (∑ j : Fin p, |phiFarShape X i.val j.val - Matrix.diagonal d i j|) =
           ∑ j ∈ Finset.range p,
             |phiFarShape X i.val j - if i.val = j then phiFarDiag X i.val else 0| by
-        simp only [Matrix.diagonal_apply, d, ← Fin.val_inj, Fin.sum_univ_eq_sum_range]]
+        simp only [Matrix.diagonal_apply, d, ← Fin.val_inj]
+        exact Fin.sum_univ_eq_sum_range
+          (fun j : ℕ => |phiFarShape X i.val j - if i.val = j then phiFarDiag X i.val else 0|) p]
       exact (Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono hp)
         (fun k _ _ => abs_nonneg _)).trans (phiFarShape_row_bound hX ⟨i.val,hi⟩)
     have hpR : (p:ℝ) ≤ 4 := by exact_mod_cast hp
