@@ -67,7 +67,8 @@ theorem psiOneCompactHalfAnchor_containsReal :
   have ht : (psiLastCellNode 1:ℝ) = 1/2 := by
     have h : psiLastCellNode 1 = 1/2 := by decide +kernel
     simpa only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] using congrArg (fun q : ℚ => (q:ℝ)) h
-  rwa [ht] at h₁
+  change psiOneCompactHalfAnchor.ContainsReal (psi 1 (psiLastCellNode (1:Fin 7):ℝ)) at h₁
+  simpa only [ht] using h₁
 
 theorem psiOneLastCellCornerSnapshot_containsReal :
     psiOneLastCellCornerSnapshot.ContainsReal (psi 1 (255/512)) := by
