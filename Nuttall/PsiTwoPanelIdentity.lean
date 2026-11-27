@@ -17,7 +17,10 @@ theorem psi_two_eq_panel (a b : ℝ) :
     have h := (psi_succ_hasDerivAt 1 x).add
       (((hasDerivAt_id x).sub_const a).mul (psi_succ_hasDerivAt 0 x))
     convert h using 1
-    ring
+    · rfl
+    · change -((x-a) * psi 0 x) =
+        -psi 1 x + (1 * psi 1 x + (x-a) * -psi 0 x)
+      ring
   have hc : Continuous fun x : ℝ => -((x-a) * psi 0 x) :=
     ((continuous_id.sub continuous_const).mul (psi_continuous 0)).neg
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt
