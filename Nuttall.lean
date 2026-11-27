@@ -52,3 +52,6 @@ import Nuttall.ShiftCorrectionError
 import Nuttall.ShiftEarlierTerms
 import Nuttall.ShiftCriticalSplit
 import Nuttall.ShiftDeterminantMargin
+import Nuttall.ShiftWeightSum
+import Nuttall.ShiftEarlierSum
+import Nuttall.ShiftCriticalCutoff
