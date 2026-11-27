@@ -55,3 +55,6 @@ import Nuttall.ShiftDeterminantMargin
 import Nuttall.ShiftWeightSum
 import Nuttall.ShiftEarlierSum
 import Nuttall.ShiftCriticalCutoff
+import Nuttall.ShiftCriticalAsymptotic
+import Nuttall.ShiftCriticalMargin
+import Nuttall.ShiftedMomentContinuity
