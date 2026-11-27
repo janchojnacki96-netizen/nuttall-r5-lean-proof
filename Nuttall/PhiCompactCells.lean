@@ -61,7 +61,7 @@ theorem phiCompactWronskian_pos (hgrid : phiCompactGridChecked) {p : ℕ} (hp₁
       (c.1:ℝ) ≤ phiThetaCoordinate t ∧ phiThetaCoordinate t ≤ (c.2:ℝ) := by
     rcases adjacentCells_cover 3 phiCompactGrid h₃ hu with hx | hc
     · refine ⟨(3, 3085/1024), ?_, h₃, ?_⟩
-      · exact List.mem_cons_self
+      · decide +kernel
       · rw [hx]
         norm_num
     · exact hc
