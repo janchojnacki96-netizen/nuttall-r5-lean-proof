@@ -27,7 +27,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 
 **U1 — podpisany wyznacznik zweryfikowany.** [`Nuttall.signed_wronskian_psi_eq_tail_det`](../Nuttall/SignedTailDeterminant.lean) daje εₚWₚ(Ψₘ;t) = det[Ψ_{m−(p−1)+i−j}(t)] dla 2(p−1)≤m i t∈ℝ. Dowód wylicza znak odwrócenia z liczby inwersji, usuwa przez parę skalowań znaki wpisów i uzasadnia indeksy w ℕ. [CI commita `667cfcd`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45972673587) potwierdza trzy standardowe aksjomaty i odtworzenie częściowego cache.
 
-**Następny cel.** Udowodnij postać momentową bⱼ₊₁ᵍ(t) = ∫_{t}^∞ (s−t)ʲg(s)/j! ds dla każdego j i t≥0. Rozpocznij od j=0. W kroku indukcyjnym zmień kolejność całkowania na obszarze t≤u≤s i oblicz całkę z (s−u)ʲ po u∈[t,s]. Nieujemność g pozwala użyć Tonellego, a ograniczenie g(0)exp(−s) zapewnia skończoność momentu dla każdego j. Połącz z `twice_psi_succ_eq_auxiliary_iterate_sub`, aby uzyskać różnicę kolejnych czynników momentowych zapisaną w §4.1.
+**U1 — postać momentowa oczekuje na CI.** Udowodnij postać momentową bⱼ₊₁ᵍ(t) = ∫_{t}^∞ (s−t)ʲg(s)/j! ds dla każdego j i t≥0. Rozpocznij od j=0. W kroku indukcyjnym zmień kolejność całkowania na obszarze t≤u≤s i oblicz całkę z (s−u)ʲ po u∈[t,s]. Nieujemność g pozwala użyć Tonellego, a ograniczenie g(0)exp(−s) zapewnia skończoność momentu dla każdego j. Połącz z `twice_psi_succ_eq_auxiliary_iterate_sub`, aby uzyskać różnicę kolejnych czynników momentowych zapisaną w §4.1.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
