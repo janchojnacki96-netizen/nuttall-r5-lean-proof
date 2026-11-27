@@ -29,7 +29,8 @@ theorem integral_fixed_indices_common_orthant {p : ℕ} (k n : Fin p → ℕ) (t
       apply div_nonneg (Real.log_nonneg _) (by norm_num)
       exact_mod_cast hn j
     change _ = _ * ∫ u, _ ∂Measure.pi (fun _ => volume.restrict (Ioi (0 : ℝ)))
-    rw [auxiliaryWeightedSummand, integral_fixed_indices_shift k n hn t, ← product_tail_measure_open_eq_closed,
+    simp only [auxiliaryWeightedSummand]
+    rw [integral_fixed_indices_shift k n hn t, ← product_tail_measure_open_eq_closed,
       ← product_tail_measure_restrict _ ha, ← integral_indicator (MeasurableSet.univ_pi
         (fun _ => measurableSet_Ioi))]
     congr 1

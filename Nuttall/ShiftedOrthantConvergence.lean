@@ -63,16 +63,16 @@ private theorem norm_shiftedOrthantIntegrand_le {p : ℕ} {X : ℝ} (hX : 0 < X)
   have hd := abs_det_le_column_prod (Matrix.of (fun i j => f i j (u j)))
     (fun j => 4 * Real.exp (3*u j)) (fun _ => by positivity) (fun i j => h i j (u j) (hu j))
   have hv := abs_vandermonde_le_prod u hu
-  rw [Real.norm_eq_abs, shiftedOrthantIntegrand, abs_mul, abs_mul, abs_of_nonneg (by
+  have hw : 0 ≤ ∏ j : Fin p, thetaOrthantWeight X (u j) := by
     unfold thetaOrthantWeight
-    positivity)]
+    positivity
+  rw [Real.norm_eq_abs, shiftedOrthantIntegrand, abs_mul, abs_mul, abs_of_nonneg hw]
   calc
     _ ≤ (((Nat.factorial p : ℝ) * ∏ j : Fin p, 4 * Real.exp (3*u j)) *
         ((Nat.factorial p : ℝ) * ∏ j : Fin p, Real.exp (4*(p:ℝ)*u j))) *
         ∏ j : Fin p, thetaOrthantWeight X (u j) := by
-      gcongr
-      · exact hd
-      · exact hv
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul hd hv (abs_nonneg _) (by positivity)) hw
     _ = (Nat.factorial p : ℝ)^2 *
         ∏ j : Fin p, 4 * (Real.exp ((3+4*(p:ℝ))*u j) * thetaOrthantWeight X (u j)) := by
       rw [show ((Nat.factorial p : ℝ) * (∏ j : Fin p, 4 * Real.exp (3*u j))) *
@@ -90,10 +90,13 @@ private theorem norm_shiftedOrthantIntegrand_le {p : ℕ} {X : ℝ} (hX : 0 < X)
       ring
     _ ≤ _ := by
       unfold shiftedOrthantBound
-      gcongr with j _
-      · unfold thetaOrthantWeight
+      apply mul_le_mul_of_nonneg_left _ (by positivity)
+      apply Finset.prod_le_prod
+      · intro j _
+        unfold thetaOrthantWeight
         positivity
-      · have hj := tilted_thetaOrthantWeight_le hX (3+4*(p:ℝ)) (hu j)
+      · intro j _
+        have hj := tilted_thetaOrthantWeight_le hX (3+4*(p:ℝ)) (hu j)
         simpa only [mul_assoc] using mul_le_mul_of_nonneg_left hj (by norm_num : (0:ℝ) ≤ 4)
 
 private theorem ae_nonneg_positiveOrthant (p : ℕ) :

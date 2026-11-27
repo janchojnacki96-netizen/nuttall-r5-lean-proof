@@ -42,7 +42,7 @@ theorem signed_wronskian_eq_shifted_orthant {p m : ℕ} (hp : 1 ≤ p) (hm : 2*p
         shiftedMoment (m-p+i.val-1)) u ∂positiveOrthant p := by
   have hk (i : Fin p) : m-(p-1)+i.val-2 = m-p+i.val-1 := by omega
   have h := signed_wronskian_eq_andreief_integral hm t ht
-  rw [andreief_integral_eq_shifted] at h
+  rw [andreief_integral_eq_shifted _ ht] at h
   simp only [hk] at h
   have hfac : (p.factorial : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero p
   have hpow : (2 : ℝ)^p ≠ 0 := pow_ne_zero _ (by norm_num)

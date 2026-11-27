@@ -46,8 +46,9 @@ theorem abs_shiftedMomentTerm_le (j n : ℕ) {u : ℝ} (hu : 0 ≤ u) :
     have h₁ := Real.pow_div_factorial_le_exp _ hw j
     have h₂ := Real.pow_div_factorial_le_exp _ hw (j+1)
     have hex : Real.exp (u-thetaKnot n) ≤ Real.exp u := Real.exp_le_exp.mpr (by linarith)
-    exact (abs_sub_le _ _).trans (by
-      rw [abs_of_nonneg (by positivity), abs_of_nonneg (by positivity)]
+    rw [sub_eq_add_neg]
+    exact (abs_add_le _ _).trans (by
+      rw [abs_neg, abs_of_nonneg (by positivity), abs_of_nonneg (by positivity)]
       linarith)
   next _ => simpa using (show 0 ≤ 2 * Real.exp u by positivity)
 
