@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 zweryfikowano. W U2 zweryfikowano pochodne poza węzłami i postać Hankela. Zweryfikowano rozkład i normę rdzenia C_d. Zweryfikowano też wielomianowy wzór na poprawkę A_d−C_d. Zweryfikowano kongruencję Hankela i zachowanie znaku wrońskianu. Zweryfikowano też oszacowanie współczynnika wielomianu w kwadracie centralnym. Pozostaje przejść do normy operatorowej. W U3 jest ogólny lemat o przeniesieniu dodatniości z części centralnej. Pozostają oszacowania U2–U4. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 zweryfikowano. W U2 zweryfikowano pochodne poza węzłami i postać Hankela. Zweryfikowano rozkład i normę rdzenia C_d. Zweryfikowano też wielomianowy wzór na poprawkę A_d−C_d. Zweryfikowano kongruencję Hankela i zachowanie znaku wrońskianu. Zweryfikowano też oszacowanie współczynnika wielomianu w kwadracie centralnym. Gotowy dowód normy operatorowej z `eq:shift` oczekuje na CI. W U3 jest ogólny lemat o przeniesieniu dodatniości z części centralnej. Pozostają oszacowania U2–U4. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -130,7 +130,22 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 [`shiftCentral_circle_product_bound`](../Nuttall/ShiftCentralCircle.lean) formalizuje kwadraty modułów 1±2cd cos θ i przechodzi przez x=±1 przez domknięcie przedziału. [`shiftAngularGaussian_average`](../Nuttall/ShiftAngularGaussian.lean) ogranicza średnią exp(−b cos²θ) przez √π/(2√b), za pomocą symetrii, nierówności `Real.mul_le_sin` i całki gaussowskiej z Mathlib. [`norm_central_shift_polynomialCoeff_le`](../Nuttall/ShiftCentralCoefficient.lean) składa oba kroki z ograniczeniem Fouriera i daje exp(4β²/M)√π/(cd√M) dla M>0, 0≤j≤M, c,d>0 i c²+d²=1.
 
-**Następna deklaracja U2.** Połącz wzór na współczynnik z wpisem znormalizowanej potęgi odbicia, rozlicz symetrię i prefaktor √(choose M j / choose M i) dla j≤i≤M/2. Następnie wydziel maski centralną i zewnętrzną, zastosuj sumę geometryczną do kwadratów przeskalowanych wpisów i przejdź od normy Frobeniusa do euklidesowej normy operatorowej. Do monotoniczności współczynników użyj `Nat.choose_le_succ_of_lt_half_left`. Stałą 2 można uzyskać z exp(1/64)≤64/63 oraz √π<9/5, korzystając z `Real.exp_bound_div_one_sub_of_interval` i `Real.pi_lt_d2`. Celem jest pełne `eq:shift` dla M>0 i 0<d<1.
+**U2 — oszacowanie operatorowe `eq:shift`.** Oczekuje na CI. Zakres to M>0, 0<d<1 oraz 2(k−1)≤M.
+
+| Krok | Deklaracja | Wynik |
+|---|---|---|
+| 1 | [`bilinearCoeff_symm`](../Nuttall/ShiftCentralEntry.lean) | Symetria współczynników dwuliniowej formy i jej potęg wynika ze splotu współczynników. |
+| 2 | [`shiftReflectionPower_symm_entry`](../Nuttall/ShiftCentralEntry.lean) | Symetria przechodzi przez normalizację dwumianową. |
+| 3 | [`choose_monotone_to_half`](../Nuttall/ShiftCentralEntry.lean) | Współczynniki dwumianowe są monotoniczne do środka, więc dla j≤i≤M/2 prefaktor jest najwyżej 1. |
+| 4 | [`shiftReflectionPower_entry_formula`](../Nuttall/ShiftCentralEntry.lean) | Dokładny wzór na wpis to prefaktor √(choose M j / choose M i) razy współczynnik wielomianu z poprzedniego kroku U2. |
+| 5 | [`exp_small_mul_sqrt_pi_le_two`](../Nuttall/ShiftCentralEntry.lean) | W kwadracie centralnym exp(4β²/M)√π≤2, z jawnymi oszacowaniami exp(1/64) i π. |
+| 6 | [`abs_shiftReflectionPower_entry_central`](../Nuttall/ShiftCentralEntry.lean) | Ograniczenie 2/(cd√M) na znormalizowany wpis odbicia w dowolnej kolejności indeksów. |
+| 7 | [`norm_matrix_le_sqrt_sum_sq`](../Nuttall/ShiftMatrixEnvelope.lean) | Norma operatorowa jest ograniczona przez normę Frobeniusa, przez nierówność Cauchy'ego–Schwarza w każdym wierszu. |
+| 8 | [`norm_matrix_le_of_entry_envelope`](../Nuttall/ShiftMatrixEnvelope.lean) | Ograniczenie b·vᵢvⱼ na moduł wpisu prowadzi do normy ≤b∑vᵢ². |
+| 9 | [`shift_geometricWeight_sum_le`](../Nuttall/ShiftMatrixEnvelope.lean) | Suma kwadratów wag jest najwyżej 1/(1−s²). |
+| 10 | [`norm_shiftCore_le_eq_shift`](../Nuttall/ShiftOperatorBound.lean) | Rozkład na kwadrat centralny i jego dopełnienie daje oba składniki dokładnej nierówności `eq:shift`. |
+
+**Następna deklaracja U2.** Ogranicz normę V_d przez (1+√(πN))/2, gdzie N=M+1. Użyj ilorazu sąsiednich współczynników dwumianowych, sum wierszy i kolumn oraz całki gaussowskiej na półosi. Następnie zastosuj to do A_d−C_d i do marginesu w bloku krytycznym.
 
 **U2 — macierz przesunięcia.** Sformalizuj odwrócenie kolumn, zmianę bazy o dodatnich przekątnych, normalizację dwumianową i kongruencję potęgi symetrycznej. Udowodnij oszacowania dla C_d oraz poprawki A_d−C_d, z osobnymi końcami d=0,1. Warunek odbioru: nierówność `eq:shift` i jednostajny margines lematu 4.2, również kiedy p=k=r i wykładnik 2r−p−k znika.
 
