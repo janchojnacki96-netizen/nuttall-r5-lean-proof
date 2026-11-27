@@ -58,7 +58,6 @@ theorem tailIntegral_hasDerivAt {f : ℝ → ℝ} (hc : Continuous f)
     funext u
     have h := intervalIntegral.integral_Ici_sub_Ici' (hi 0) (hi u)
     change tailIntegral f 0 - tailIntegral f u = (∫ x in (0 : ℝ)..u, f x) at h
-    dsimp
     linarith
   have hd := intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable 0 t)
     (hc.aestronglyMeasurable.stronglyMeasurableAtFilter) hc.continuousAt
