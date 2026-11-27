@@ -91,3 +91,5 @@ import Nuttall.WronskianObstruction
 import Nuttall.FiveIntegrationOrder
 import Nuttall.FirstIntegrationOrder
 import Nuttall.ZeroIntegrationOrder
+import Nuttall.PsiHankelJets
+import Nuttall.PsiEightWitness
