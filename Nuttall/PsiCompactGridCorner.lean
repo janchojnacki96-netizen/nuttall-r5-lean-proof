@@ -19,8 +19,12 @@ theorem psiOneCompactAnchorBox_containsReal {c : ℚ} {panels : ℕ}
     (hc : 0 ≤ c) (hL : (11:ℚ)/16 ≤ c+(panels:ℚ)/32) (hU : c+(panels:ℚ)/32 ≤ 1)
     (hchecks : ∀ i < panels, psiPreciseGridChecks (c+(i:ℚ)/32)) :
     (psiOneCompactAnchorBox c panels).ContainsReal (psi 1 (c:ℝ)) := by
-  have hL' : (11:ℝ)/16 ≤ (c:ℝ)+(panels:ℝ)/32 := by exact_mod_cast hL
-  have hU' : (c:ℝ)+(panels:ℝ)/32 ≤ 1 := by exact_mod_cast hU
+  have hL' : (11:ℝ)/16 ≤ (c:ℝ)+(panels:ℝ)/32 := by
+    simpa only [Rat.cast_add, Rat.cast_div, Rat.cast_ofNat, Rat.cast_natCast] using
+      (Rat.cast_mono (α := ℝ) hL)
+  have hU' : (c:ℝ)+(panels:ℝ)/32 ≤ 1 := by
+    simpa only [Rat.cast_add, Rat.cast_div, Rat.cast_ofNat, Rat.cast_natCast, Rat.cast_one] using
+      (Rat.cast_mono (α := ℝ) hU)
   have hseed : compactAnchorBox.ContainsReal (psi 1 ((c:ℝ)+(panels:ℝ)/32)) := by
     simpa only [QInterval.ContainsReal, compactAnchorBox, Rat.cast_div, Rat.cast_pow,
       Rat.cast_zero, Rat.cast_one, Rat.cast_ofNat] using psi_one_precise_compact_seed_bounds hL' hU'
