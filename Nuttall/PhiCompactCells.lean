@@ -43,6 +43,12 @@ def phiCompactCells : List (ℚ × ℚ) := adjacentCells 3 phiCompactGrid
 /-- The finite certificate to prove by exact arithmetic in the Lean kernel. -/
 def phiCompactGridChecked : Prop := phiCompactCells.all phiCompactCellPass = true
 
+set_option maxRecDepth 16384 in
+set_option maxHeartbeats 2500000 in
+/-- A focused kernel replay of all four determinant checks on the first dense cell. -/
+theorem phiCompact_first_cell_pass : phiCompactCellPass (3, 3085/1024) = true := by
+  decide +kernel
+
 /-- The rational cells prove the strict signed Wronskians on the compact range 3 ≤ X ≤ 16. -/
 theorem phiCompactWronskian_pos (hgrid : phiCompactGridChecked) {p : ℕ} (hp₁ : 1 ≤ p) (hp₄ : p ≤ 4) (t : ℝ)
     (ht₃ : 3 ≤ phiThetaCoordinate t) (ht₁₆ : phiThetaCoordinate t ≤ 16) :
@@ -66,6 +72,7 @@ theorem phiCompactWronskian_pos (hgrid : phiCompactGridChecked) {p : ℕ} (hp₁
   exact phiCompactCellCheck_sound hp₄ t h3 h16 h1 h2
     (of_decide_eq_true (List.all_eq_true.mp hsplit.2 p hm))
 
+#print axioms phiCompact_first_cell_pass
 #print axioms phiCompactWronskian_pos
 
 end Nuttall
