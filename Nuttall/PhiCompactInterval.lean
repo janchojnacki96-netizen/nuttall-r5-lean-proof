@@ -144,7 +144,7 @@ theorem phiCompactCellCheck_sound {a b : ℚ} {p : ℕ} (hp : p ≤ 4) (t : ℝ)
   have hs := QInterval.mul_containsReal (intervalPoint_containsReal ((-1:ℚ)^(p*(p-1)/2))) hd
   have h₀ : (0:ℝ) < ((QInterval.mul (QInterval.point ((-1:ℚ)^(p*(p-1)/2)))
       (QInterval.determinant p (phiCompactBlockBox a b p))).lo:ℝ) := by
-    exact_mod_cast h
+    exact Rat.cast_pos_of_pos h
   exact h₀.trans_le (by simpa only [kernelMinorSign, Rat.cast_pow, Rat.cast_neg, Rat.cast_one] using hs.1)
 
 #print axioms phiCompactCellCheck_sound
