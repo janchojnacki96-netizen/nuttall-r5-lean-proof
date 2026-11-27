@@ -11,6 +11,7 @@ def psiOneCompactAnchorFromPanels (panels : ℕ → QInterval) (i : ℕ) : ℕ �
   | 0 => ⟨0, 1/10^16⟩
   | n+1 => (psiOneCompactAnchorFromPanels panels (i+1) n).add (panels i)
 
+set_option maxHeartbeats 2000000 in
 theorem psiOneCompactAnchorFromPanels_containsReal
     (panels : ℕ → QInterval) (jets : ℕ → ℕ → QInterval)
     (hjets : ∀ i < 22, ∀ j < 36, (jets i j).ContainsReal (iteratedDeriv j Phi ((i:ℝ)/32)))
@@ -36,8 +37,14 @@ theorem psiOneCompactAnchorFromPanels_containsReal
       (by positivity) (by norm_num) (by push_cast; linarith only [hi']) hprev
       (fun j hj => hjets i hi j (Finset.mem_range.mp hj))
     rw [psiOnePanelBox_eq_add_zero] at h
-    exact compactContainsReal_of_endpoints (add_le_add_left (hpanels i hi).1 _)
-      (add_le_add_left (hpanels i hi).2 _) h
+    let right := psiOneCompactAnchorFromPanels panels (i+1) n
+    let raw := psiOnePanelBox (QInterval.point 0) (jets i) 36 (1/32)
+    have hbounds : (panels i).lo ≤ raw.lo ∧ raw.hi ≤ (panels i).hi := hpanels i hi
+    have hlo : (right.add (panels i)).lo ≤ (right.add raw).lo :=
+      add_le_add_left hbounds.1 right.lo
+    have hhi : (right.add raw).hi ≤ (right.add (panels i)).hi :=
+      add_le_add_left hbounds.2 right.hi
+    exact compactContainsReal_of_endpoints (A := right.add raw) (B := right.add (panels i)) hlo hhi h
 
 /-- A short panel reuses the jets at its center and a shared uniform anchor. -/
 theorem psiOneCompactShortPanel_containsReal {center : ℚ} {anchor : ℕ} {right : QInterval}
