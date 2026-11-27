@@ -130,3 +130,5 @@ import Nuttall.MatrixQuadraticMargin
 import Nuttall.PhiRankEightNormalizedSign
 import Nuttall.PhiRankEightTransfer
 import Nuttall.PsiCompactCell59
+import Nuttall.ConfluentEvaluationLimit
+import Nuttall.DeterminantRowIntegral

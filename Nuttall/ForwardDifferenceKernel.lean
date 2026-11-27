@@ -70,7 +70,39 @@ theorem det_forwardDiff_eq_scaled (p : ℕ) (f : ℝ → ℝ) (t : ℝ) {h : ℝ
     Matrix.det_mul_row _ _, pow_two]
   ring
 
+/-- Take forward differences of the equally spaced rows while leaving the
+final evaluation row at an independent point. -/
+theorem det_gridWithLast_eq_det_forwardDiff (n : ℕ) (f : Fin (n+1) → ℝ → ℝ) (t s h : ℝ) :
+    (Matrix.of fun (i j : Fin (n+1)) =>
+      Fin.lastCases (motive := fun _ => ℝ) (f j s) (fun k : Fin n => f j (t+k.val • h)) i).det =
+    (Matrix.of fun (i j : Fin (n+1)) =>
+      Fin.lastCases (motive := fun _ => ℝ) (f j s) (fun k : Fin n => (fwdDiff h)^[k.val] (f j) t) i).det := by
+  let P : Matrix (Fin (n+1)) (Fin (n+1)) ℝ := Matrix.of fun i j =>
+    if i = Fin.last n then (if i = j then 1 else 0) else (i.val.choose j.val:ℝ)
+  let D : Matrix (Fin (n+1)) (Fin (n+1)) ℝ :=
+    Matrix.of fun i j => Fin.lastCases (f j s) (fun k : Fin n => (fwdDiff h)^[k.val] (f j) t) i
+  have hP : P.det = 1 := by
+    rw [Matrix.det_of_isLowerTriangular]
+    · simp [P]
+    · intro i j hij
+      have hij' : i.val < j.val := hij
+      have hn : i ≠ j := fun h => hij'.ne (congrArg Fin.val h)
+      simp [P, hn, Nat.choose_eq_zero_of_lt hij']
+  have he : (Matrix.of fun (i j : Fin (n+1)) =>
+      Fin.lastCases (f j s) (fun k : Fin n => f j (t+k.val • h)) i) = P*D := by
+    ext i j
+    refine Fin.lastCases ?_ (fun k : Fin n => ?_) i
+    · rw [Matrix.mul_apply]
+      simp [P, D]
+    · rw [Matrix.mul_apply, Fin.sum_univ_castSucc]
+      have hchoose : k.val.choose n = 0 := Nat.choose_eq_zero_of_lt k.isLt
+      simp only [P, D, Matrix.of_apply, Fin.castSucc_ne_last, ite_false, Fin.val_castSucc,
+        Fin.lastCases_castSucc, Fin.val_last, hchoose, Nat.cast_zero, zero_mul, add_zero]
+      exact (newton_sum k h t (f j)).symm
+  rw [he, Matrix.det_mul, hP, one_mul]
+
 #print axioms det_kernelGrid_eq_det_forwardDiff
 #print axioms det_forwardDiff_eq_scaled
+#print axioms det_gridWithLast_eq_det_forwardDiff
 
 end Nuttall
