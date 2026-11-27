@@ -25,7 +25,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 
 **U1 — pochodne i wpisy wrońskianu zweryfikowane.** [`Nuttall.iteratedDeriv_psi` i `Nuttall.wronskian_psi_eq_det`](../Nuttall/PsiDerivatives.lean) dowodzą wzoru na k-tą pochodną Ψₘ dla k≤m na ℝ oraz zapisują cały wrońskian w całkach ogonowych dla 2(p−1)≤m. `tailIntegral_hasDerivAt` jest wspólnym lematem dla Ψ i iteracji g. [CI commita `0abde4c`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45971749592) potwierdziło trzy standardowe aksjomaty obu deklaracji i odtworzenie częściowego cache.
 
-**Następny cel.** Dla 1≤p≤r i m=2r udowodnij εₚWₚ(Ψₘ;t) = det[Ψₘ₋ₚ₊₁₊ᵢ₋ⱼ(t)] z indeksami od zera. Wykorzystaj `wronskian_psi_eq_det`, wyciągnij znaki wierszy i kolumn (ich łączny iloczyn wynosi 1), a następnie zastosuj znak permutacji odwracającej wiersze. Pokaż, że indeksy nie ulegają obcięciu przez odejmowanie w ℕ. Dalej wyprowadź postać momentową iteracji g z silnią, uzasadniając zamianę całkowania przez Fubiniego lub Tonellego.
+**U1 — odwrócenie wierszy oczekuje na CI.** Dla 1≤p≤r i m=2r udowodnij εₚWₚ(Ψₘ;t) = det[Ψₘ₋ₚ₊₁₊ᵢ₋ⱼ(t)] z indeksami od zera. Wykorzystaj `wronskian_psi_eq_det`, wyciągnij znaki wierszy i kolumn (ich łączny iloczyn wynosi 1), a następnie zastosuj znak permutacji odwracającej wiersze. Pokaż, że indeksy nie ulegają obcięciu przez odejmowanie w ℕ. Dalej wyprowadź postać momentową iteracji g z silnią, uzasadniając zamianę całkowania przez Fubiniego lub Tonellego.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
