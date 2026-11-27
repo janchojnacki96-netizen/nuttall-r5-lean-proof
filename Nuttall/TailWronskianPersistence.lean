@@ -51,8 +51,9 @@ private theorem signedPsiJet_eval_det_pos (m n : ℕ) {a : ℝ}
   · intro j d _
     exact (signedPsiJet_contDiff m j.val d).contDiffOn
   · intro j d _
-    have hd := (signedPsiJet_contDiff m j.val (d+1)).contDiff_iteratedDeriv d
-      (by exact_mod_cast Nat.le_succ d)
+    have hd : ContDiff ℝ 1 (iteratedDeriv d (signedPsiJet m j.val)) := by
+      rw [iteratedDeriv_eq_iterate]
+      exact ContDiff.iterate_deriv' 1 d (signedPsiJet_contDiff m j.val (1+d))
     exact hd.contDiffOn.locallyLipschitzOn (convex_Ioo _ _)
   · intro j s _ _
     exact (signedPsiJet_contDiff m j.val n).contDiffAt
@@ -75,7 +76,7 @@ theorem psi_succ_signed_wronskian_pos_on_tail (m n : ℕ) {a t : ℝ} (ht : a < 
     ext i j
     refine Fin.lastCases ?_ (fun k : Fin n => ?_) i
     · simp
-    · simp [A, Matrix.updateRow_ne k.castSucc_ne_last]
+    · simp [A]
   have hf : ∀ j, ContDiff ℝ n (f j) := fun j => signedPsiJet_contDiff m j.val n
   have hnonneg (s : ℝ) (hs : t < s) : 0 ≤ z s := by
     dsimp [z]
@@ -89,7 +90,7 @@ theorem psi_succ_signed_wronskian_pos_on_tail (m n : ℕ) {a t : ℝ} (ht : a < 
       familyWronskian]
     congr 1
     ext i j
-    refine Fin.lastCases ?_ (fun k : Fin n => ?_) i <;> simp [familyWronskian, f]
+    refine Fin.lastCases ?_ (fun k : Fin n => ?_) i <;> simp [f]
   have hI : ∀ j, IntegrableOn (f j) (Ioi t) := by
     intro j
     exact (integrableOn_iteratedDeriv_psi_Ioi m j.val t).const_mul _
