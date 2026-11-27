@@ -25,3 +25,7 @@ import Nuttall.ShiftedWronskian
 import Nuttall.FirstWronskian
 import Nuttall.RelativeIntegralTail
 import Nuttall.ShiftedMomentDerivatives
+import Nuttall.ShiftCore
+import Nuttall.ShiftCoreScaling
+import Nuttall.ShiftReflectionOrthogonality
+import Nuttall.ShiftCoreNorm

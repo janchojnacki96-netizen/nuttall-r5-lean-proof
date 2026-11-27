@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 zweryfikowano. W U2 zweryfikowano pochodne poza węzłami i postać Hankela. W U3 jest ogólny lemat o przeniesieniu dodatniości z części centralnej. Pozostają oszacowania U2–U4. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 zweryfikowano. W U2 zweryfikowano pochodne poza węzłami i postać Hankela. Rozkład i ograniczenie normy rdzenia C_d oczekują na CI. W U3 jest ogólny lemat o przeniesieniu dodatniości z części centralnej. Pozostają oszacowania U2–U4. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -90,7 +90,24 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 | 9 | [`signed_wronskian_order_one_pos`](../Nuttall/FirstWronskian.lean) | Dodatniość w rzędzie 1 dla każdego poziomu całkowania. |
 | 10 | [`integral_pos_of_relative_tail`](../Nuttall/RelativeIntegralTail.lean) | Ogólne domknięcie argumentu U3. Po wykazaniu dodatniej masy i nieujemnego znaku na części centralnej wystarczy, żeby masa bezwzględna dopełnienia stanowiła mniej niż połowę całości. |
 
-**U2 — pierwsza redukcja zweryfikowana.** [`iteratedDeriv_shiftedMoment`](../Nuttall/ShiftedMomentDerivatives.lean) używa lokalnie stałego zbioru aktywnych indeksów i identyfikuje pochodną rzędu i z momentem o indeksie niższym o i. [`shiftedMoment_wronskian_reverse_columns`](../Nuttall/ShiftedMomentDerivatives.lean) daje macierz Hankela z wpisem R_{L+k−1−i−j} po odwróceniu kolumn, przy k≤L i poza węzłami. Obie deklaracje zależą od trzech standardowych aksjomatów Lean. **Następna deklaracja:** zdefiniuj współczynniki rdzenia C_d z dwuzmiennego wielomianu i wykaż, że dla d=0 dają macierz diagonalną J_k. Następnie wyprowadź człon korekty A_d i przejście z macierzy Hankela do przeskalowanej macierzy.
+**U2 — pierwsza redukcja zweryfikowana.** [`iteratedDeriv_shiftedMoment`](../Nuttall/ShiftedMomentDerivatives.lean) używa lokalnie stałego zbioru aktywnych indeksów i identyfikuje pochodną rzędu i z momentem o indeksie niższym o i. [`shiftedMoment_wronskian_reverse_columns`](../Nuttall/ShiftedMomentDerivatives.lean) daje macierz Hankela z wpisem R_{L+k−1−i−j} po odwróceniu kolumn, przy k≤L i poza węzłami. Obie deklaracje zależą od trzech standardowych aksjomatów Lean.
+
+**U2 — rdzeń macierzy przesunięcia.** Oczekuje na CI. W zapisie Lean zewnętrzny wielomian ma zmienną w, a jego współczynniki są wielomianami w z. Norma jest euklidesową normą operatorową Mathlib.
+
+| Krok | Deklaracja | Wynik |
+|---|---|---|
+| 1 | [`bilinearPolynomial_shift`](../Nuttall/ShiftCore.lean) | Zapis postaci 1−wz−d(1−w)(1−z) zgodny z preprintem. |
+| 2 | [`coeff_bilinearPolynomial_pow`](../Nuttall/ShiftCore.lean) | Współczynnik przy wⁱ po wyciągnięciu czynnika dwumianowego jest iloczynem dwóch potęg form liniowych w z. |
+| 3 | [`shiftCore_zero`](../Nuttall/ShiftCore.lean) | Przy k≤M+1 zachodzi C₀=Jₖ. |
+| 4 | [`bilinearCoeff_scale` i `bilinearCoeff_const_mul`](../Nuttall/ShiftCoreScaling.lean) | Podstawienie sw,sz mnoży współczynnik przez sⁱ⁺ʲ, a skalowanie całej formy przez s daje czynnik sᴹ. |
+| 5 | [`shiftReflection_mul_transpose`](../Nuttall/ShiftCoreScaling.lean) | Macierz odbicia jest ortogonalna dla 0≤d≤1. |
+| 6 | [`shiftCore_eq_scaled_reflectionPower`](../Nuttall/ShiftCoreScaling.lean) | Przy 0≤d<1 wpis C_d jest współczynnikiem potęgi odbicia razy s_d^{M−i−j}. |
+| 7 | [`shift_residual_exponent`](../Nuttall/ShiftCoreScaling.lean) | Przy 1≤k≤p≤r wykładnik 2r−p−k znika dokładnie dla p=k=r. |
+| 8 | [`shiftReflectionPower_transpose_mul`](../Nuttall/ShiftReflectionOrthogonality.lean) | Ortogonalność pełnej potęgi symetrycznej w bazie z normalizacją dwumianową. |
+| 9 | [`norm_shiftReflectionPower_le_one`, `shiftCore_eq_diagonal_mul`, `norm_shiftCore_le_pow`](../Nuttall/ShiftCoreNorm.lean) | Po obcięciu do k współrzędnych dla 0≤d<1 i 2(k−1)≤M otrzymujemy ‖C_d‖≤s_d^{M−2(k−1)}. |
+| 10 | [`norm_shiftCore_le_one`](../Nuttall/ShiftCoreNorm.lean) | Oszacowanie ‖C_d‖≤1 przenosi się przez ciągłość na d=1. |
+
+**Następna deklaracja U2.** Wykaż, że mnożenie przez ucięty szereg geometryczny w jednej zmiennej odpowiada mnożeniu znormalizowanej macierzy przez U lub Uᵀ. Użyj tego do wyprowadzenia A_d−C_d i połączenia macierzy Hankela z przekształceniem generującym. Ostrzejsze oszacowanie `eq:shift` pozostaje do udowodnienia.
 
 **U2 — macierz przesunięcia.** Sformalizuj odwrócenie kolumn, zmianę bazy o dodatnich przekątnych, normalizację dwumianową i kongruencję potęgi symetrycznej. Udowodnij oszacowania dla C_d oraz poprawki A_d−C_d, z osobnymi końcami d=0,1. Warunek odbioru: nierówność `eq:shift` i jednostajny margines lematu 4.2, również kiedy p=k=r i wykładnik 2r−p−k znika.
 
