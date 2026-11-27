@@ -17,12 +17,12 @@ private theorem lastCellPanel_containsReal (i : Fin 7) {right : QInterval}
     simpa only [Rat.cast_add, Rat.cast_ofNat] using (Rat.cast_mono (K := ℝ) hb)
   have hc₂ : psiLastCellNode i ≤ 2 := by linarith only [hh, hb]
   have hg := psiLastCellGridInputs_checked i
-  have hjets (j : ℕ) :
-      (psiFixedGridPhiJetBoxOfInputs (psiLastCellGridInputs i) j).ContainsReal
+  have hjets (j : ℕ) (hj : j ∈ Finset.range 36) :
+      (lastCellPanelJet i j).ContainsReal
         (iteratedDeriv j Phi (psiLastCellNode i:ℝ)) := by
+    rw [lastCellPanelJet_checked i j (Finset.mem_range.mp hj)]
     exact psiFixedGridPhiJetBoxOfInputs_containsReal hc hc₂ hg.1 hg.2 j
-  have h := psiOnePanelBox_containsReal (d := 36) (by exact_mod_cast hc) hh hb' hright
-    (fun j _ => hjets j)
+  have h := psiOnePanelBox_containsReal (by exact_mod_cast hc) hh hb' hright hjets
   rw [psiOnePanelBox_eq_add_zero] at h
   have hm := lastCellPanel_checked i
   exact compactContainsReal_of_endpoints (add_le_add (le_refl right.lo) hm.1)
