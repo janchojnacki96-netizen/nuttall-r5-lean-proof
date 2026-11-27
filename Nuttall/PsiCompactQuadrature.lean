@@ -89,7 +89,7 @@ theorem psiOneUniformGridBox_containsReal (right : QInterval) (jets : ℕ → �
       rw [← hnext]
       have hle : ((i+1:ℕ):ℝ) ≤ ((i+(n+1):ℕ):ℝ) := by
         exact_mod_cast (show i+1 ≤ i+(n+1) by omega)
-      exact (add_le_add_left (mul_le_mul_of_nonneg_right hle hhR) a).trans hb
+      exact (add_le_add_right (mul_le_mul_of_nonneg_right hle hhR) a).trans hb
     have hprev :=
       ih (i+1) (by rwa [hidx] at hb) (by rwa [hidx] at hright) (by
         intro k hk j hj
