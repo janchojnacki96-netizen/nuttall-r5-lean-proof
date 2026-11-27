@@ -116,3 +116,7 @@ import Nuttall.PsiFirstCellSigns
 import Nuttall.PsiCompactCellSigns
 import Nuttall.PsiCompactCells
 import Nuttall.PsiCompactPrecisionSeed
+import Nuttall.PsiCompactGridCorner
+import Nuttall.PsiCompactCellCoefficients
+import Nuttall.PsiCompactGridSigns
+import Nuttall.PsiCompactBasisData
