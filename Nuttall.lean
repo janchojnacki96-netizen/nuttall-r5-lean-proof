@@ -29,3 +29,5 @@ import Nuttall.ShiftCore
 import Nuttall.ShiftCoreScaling
 import Nuttall.ShiftReflectionOrthogonality
 import Nuttall.ShiftCoreNorm
+import Nuttall.ShiftGeometricPrefix
+import Nuttall.ShiftCorrection
