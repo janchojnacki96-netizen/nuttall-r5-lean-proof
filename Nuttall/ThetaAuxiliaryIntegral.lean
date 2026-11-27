@@ -40,8 +40,9 @@ theorem auxiliaryTheta_le_phi (t : ℝ) (ht : 0 ≤ t) :
 
 theorem auxiliaryTheta_integrableOn_Ioi (t : ℝ) (ht : 0 ≤ t) :
     IntegrableOn auxiliaryTheta (Ioi t) := by
-  have hc : Continuous auxiliaryTheta :=
-    (fun x => (auxiliaryTheta_hasDerivAt x).differentiableAt : Differentiable ℝ auxiliaryTheta).continuous
+  have hd : Differentiable ℝ auxiliaryTheta :=
+    fun x => (auxiliaryTheta_hasDerivAt x).differentiableAt
+  have hc : Continuous auxiliaryTheta := hd.continuous
   refine (W5.Phi_integrableOn_Ioi_all t).mono' hc.aestronglyMeasurable ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
   rw [Real.norm_eq_abs, abs_of_nonneg (auxiliaryTheta_nonneg x)]
@@ -62,7 +63,7 @@ theorem auxiliaryTheta_le_exp_decay (t : ℝ) (ht : 0 ≤ t) :
     exact mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le
       (by linarith [W5.Phi_pos x hx0])
   have h := mul_le_mul_of_nonneg_right
-    (hanti (left_mem_Ici : (0 : ℝ) ∈ Ici 0) (mem_Ici.mpr ht) ht)
+    (hanti (mem_Ici.mpr (le_refl (0 : ℝ))) (mem_Ici.mpr ht) ht)
     (Real.exp_pos (-t)).le
   have hexp : Real.exp t * Real.exp (-t) = 1 := by
     rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
