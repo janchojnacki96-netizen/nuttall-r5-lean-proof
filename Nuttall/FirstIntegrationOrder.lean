@@ -12,7 +12,7 @@ theorem strictReverseSignRegular_phi_one : strictReverseSignRegular W5.Phi 1 := 
 
 theorem kernelIntegrationOrder_one_eq_zero : kernelIntegrationOrder 1 = 0 := by
   have h : reverseSignRegular (psi 0) 1 := strictReverseSignRegular_phi_one.reverseSignRegular
-  exact le_antisymm (kernelIntegrationOrder_le_of_reverseSignRegular h) (zero_le _)
+  exact le_antisymm (kernelIntegrationOrder_le_of_reverseSignRegular h) zero_le
 
 #print axioms kernelIntegrationOrder_one_eq_zero
 
