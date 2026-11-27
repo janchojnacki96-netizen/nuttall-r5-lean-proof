@@ -47,7 +47,15 @@ private theorem phiCompactTerm_eq_sums {p : ℕ} (hp : p ≤ 4) (t : ℝ)
   change phiCompactScale t * phiCompactTerm X i.val j.val n = _
   rw [phiCompactTerm, phiCompactPolynomial_eq_rows X q _ _ hi hj]
   simp only [Finset.sum_mul, Finset.mul_sum]
-  simp only [phiCompactRows, Matrix.of_apply, Fin.sum_univ_eq_sum_range]
+  simp only [phiCompactRows, Matrix.of_apply]
+  let f (a b : ℕ) := phiCompactRow X i.val a * phiCompactRow X j.val b *
+    auxiliaryWeightedSummand (phiJetPolynomial (a+b)) n t
+  have hr : (∑ a : Fin p, ∑ b : Fin p, f a.val b.val) =
+      ∑ a ∈ Finset.range p, ∑ b ∈ Finset.range p, f a b := by
+    rw [Fin.sum_univ_eq_sum_range (fun a : ℕ => ∑ b : Fin p, f a b.val)]
+    exact Finset.sum_congr rfl (fun a _ => Fin.sum_univ_eq_sum_range (f a) p)
+  change _ = (∑ a : Fin p, ∑ b : Fin p, f a.val b.val)
+  rw [hr]
   rw [← Finset.sum_subset hp' (fun a _ ha => by
     have hia : i.val < a := lt_of_lt_of_le i.isLt (Nat.le_of_not_gt (fun h => ha (Finset.mem_range.mpr h)))
     simp [phiCompactRow_zero hi hia])]
@@ -58,8 +66,7 @@ private theorem phiCompactTerm_eq_sums {p : ℕ} (hp : p ≤ 4) (t : ℝ)
     simp [phiCompactRow_zero hj hjb])]
   apply Finset.sum_congr rfl
   intro b hb
-  rw [auxiliaryWeightedSummand_compact]
-  change _ = _
+  simp only [f, auxiliaryWeightedSummand_compact, X, q]
   ring
 
 private theorem phiCompactTerm_summable_mul {p : ℕ} (hp : p ≤ 4) (t : ℝ)
@@ -75,6 +82,7 @@ theorem phiCompactTerm_summable (t : ℝ) {i j : ℕ} (hi : i < 4) (hj : j < 4) 
     (phiCompactScale t)⁻¹
   simpa only [← mul_assoc, inv_mul_cancel₀ (phiCompactScale_pos t).ne', one_mul] using h
 
+set_option maxHeartbeats 2000000 in
 private theorem phiCompactMatrix_eq_congruence {p : ℕ} (hp : p ≤ 4) (t : ℝ) :
     phiCompactScale t • phiCompactMatrix p (phiThetaCoordinate t) =
       phiCompactRows p (phiThetaCoordinate t) *
@@ -85,10 +93,18 @@ private theorem phiCompactMatrix_eq_congruence {p : ℕ} (hp : p ≤ 4) (t : ℝ
   simp_rw [phiCompactTerm_eq_sums hp t i j]
   rw [Summable.tsum_finsetSum (fun a _ => summable_sum (fun b _ =>
     (auxiliaryWeightedSummand_summable (phiJetPolynomial (a.val+b.val)) t).mul_left _))]
-  simp_rw [Summable.tsum_finsetSum (fun b _ =>
-    (auxiliaryWeightedSummand_summable (phiJetPolynomial (_ + b.val)) t).mul_left _)]
-  simp only [tsum_mul_left, ← iteratedDeriv_phi_eq_tsum, Matrix.mul_apply, Matrix.transpose_apply,
-    Matrix.of_apply, Finset.sum_mul]
+  have hinner (a : Fin p) :
+      (∑' n, ∑ b : Fin p, phiCompactRows p (phiThetaCoordinate t) i a *
+        phiCompactRows p (phiThetaCoordinate t) j b *
+        auxiliaryWeightedSummand (phiJetPolynomial (a.val+b.val)) n t) =
+      ∑ b : Fin p, phiCompactRows p (phiThetaCoordinate t) i a *
+        phiCompactRows p (phiThetaCoordinate t) j b *
+        iteratedDeriv (a.val+b.val) W5.Phi t := by
+    rw [Summable.tsum_finsetSum (fun (b : Fin p) _ =>
+      (auxiliaryWeightedSummand_summable (phiJetPolynomial (a.val+b.val)) t).mul_left _)]
+    simp only [tsum_mul_left, ← iteratedDeriv_phi_eq_tsum]
+  simp_rw [hinner]
+  simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.of_apply, Finset.sum_mul]
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl
   intro a _

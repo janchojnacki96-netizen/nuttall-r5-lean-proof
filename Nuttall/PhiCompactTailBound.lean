@@ -73,7 +73,7 @@ private theorem phiCompactPolynomial_abs_le {X q : ℝ}
   rw [abs_mul, abs_of_nonneg hq₀]
   apply (mul_le_mul_of_nonneg_left (abs_add_le _ _) hq₀).trans
   simp only [abs_mul]
-  rw [abs_of_nonneg (by positivity : 0 ≤ 2*q*X)]
+  simp only [abs_of_nonneg hq₀, abs_of_nonneg hX₀, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 2)]
   refine (mul_le_mul_of_nonneg_left
     (add_le_add (mul_le_mul hfac hg (abs_nonneg _) (by positivity))
       (mul_le_mul_of_nonneg_left hshift (by positivity))) hq₀).trans ?_
@@ -139,9 +139,9 @@ private theorem phiCompactTerm_le_geometric {X B ρ : ℝ} {N i j : ℕ} (hB : 3
     have hlR : (1:ℝ) ≤ l := by exact_mod_cast (show 1 ≤ l by omega)
     have he : (l+1)^2-1 = (l^2-1)+(2*l+1) := by
       have hpow : 1 ≤ l^2 := Nat.one_le_pow _ _ (by omega)
-      have h := Nat.add_sub_of_le hpow
+      have h : (l+1)^2 = l^2+(2*l+1) := by ring
       omega
-    have hρ : ρ^(2*l+1) ≤ ρ^(2*N+1) := pow_le_pow_right_of_le_one₀ hρ₀ hρ₁ (by omega)
+    have hρ : ρ^(2*l+1) ≤ ρ^(2*N+1) := pow_le_pow_of_le_one hρ₀ hρ₁ (by omega)
     have hp : ((l+1:ℕ):ℝ)^16 ≤ (2*(l:ℝ))^16 :=
       pow_le_pow_left₀ (by positivity) (by push_cast; linarith) _
     rw [he, pow_add]
@@ -158,8 +158,8 @@ private theorem phiCompactTerm_le_geometric {X B ρ : ℝ} {N i j : ℕ} (hB : 3
       calc
         _ ≤ (((N+m:ℕ):ℝ)^16 * ρ^((N+m)^2-1))/2 := hseq (N+m) (by omega)
         _ ≤ _ := by
-          rw [pow_succ]
-          linarith only [div_le_div_of_nonneg_right ih (show (0:ℝ) ≤ 2 by norm_num)]
+          rw [pow_succ (1/2:ℝ) m]
+          exact (div_le_div_of_nonneg_right ih (show (0:ℝ) ≤ 2 by norm_num)).trans_eq (by ring)
   refine (hmajor (N+k) (by omega)).trans ?_
   calc
     _ = (32*B^7)*(((N+k:ℕ):ℝ)^16*ρ^((N+k)^2-1)) := by ring

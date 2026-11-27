@@ -27,8 +27,9 @@ private theorem expNegTaylor_abs (z : ℚ) (hz₀ : 0 ≤ z) (hz₁ : z ≤ 16) 
   calc
     _ ≤ (1:ℝ)^16 * ((16:ℝ)+1) / ((Nat.factorial 16:ℝ)*16) := by
       have hb := pow_le_pow_left₀ (abs_nonneg _) hx 16
-      norm_num only [Nat.cast_ofNat] at *
-      gcongr
+      have hu := mul_le_mul_of_nonneg_right hb
+        (by positivity : (0:ℝ) ≤ 17/((Nat.factorial 16:ℝ)*16))
+      simpa [Nat.factorial, mul_div_assoc] using hu
     _ ≤ _ := by norm_num [Nat.factorial]
 
 private def phiCompactExpLo (z : ℚ) : ℚ :=
@@ -61,6 +62,7 @@ square-index powers keeps denominators bounded in the finite determinant check. 
 def phiCompactExpBox (a b : ℚ) : QInterval :=
   ⟨expRoundDown ((phiCompactExpLo b)^16), expRoundUp ((phiCompactExpHi a)^16)⟩
 
+set_option maxHeartbeats 1500000 in
 theorem phiCompactExpBox_containsReal {a b : ℚ} {X : ℝ}
     (ha : 0 ≤ a) (hb : b ≤ 16) (hlo : (a:ℝ) ≤ X) (hhi : X ≤ (b:ℝ)) :
     (phiCompactExpBox a b).ContainsReal (Real.exp (-X)) := by
@@ -74,7 +76,6 @@ theorem phiCompactExpBox_containsReal {a b : ℚ} {X : ℝ}
   have hpower (v : ℝ) : Real.exp (-v/16)^16 = Real.exp (-v) := by
     rw [← Real.exp_nat_mul]
     congr 1
-    norm_num
     ring
   rw [hpower] at hBpow hApow
   have hroundL (q : ℚ) : expRoundDown q ≤ q := by
@@ -83,10 +84,10 @@ theorem phiCompactExpBox_containsReal {a b : ℚ} {X : ℝ}
     exact (le_div_iff₀ (by norm_num)).2 (Int.le_ceil _)
   have hL₀ : ((expRoundDown ((phiCompactExpLo b)^16) : ℚ):ℝ) ≤
       ((phiCompactExpLo b:ℚ):ℝ)^16 := by
-    exact_mod_cast hroundL ((phiCompactExpLo b)^16)
+    simpa only [Rat.cast_pow] using Rat.cast_mono (hroundL ((phiCompactExpLo b)^16))
   have hU₀ : ((phiCompactExpHi a:ℚ):ℝ)^16 ≤
       ((expRoundUp ((phiCompactExpHi a)^16) : ℚ):ℝ) := by
-    exact_mod_cast hroundU ((phiCompactExpHi a)^16)
+    simpa only [Rat.cast_pow] using Rat.cast_mono (hroundU ((phiCompactExpHi a)^16))
   exact ⟨hL₀.trans (hBpow.trans (Real.exp_le_exp.mpr (neg_le_neg hhi))),
     (Real.exp_le_exp.mpr (neg_le_neg hlo)).trans (hApow.trans hU₀)⟩
 

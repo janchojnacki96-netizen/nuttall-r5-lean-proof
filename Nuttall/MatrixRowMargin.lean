@@ -3,7 +3,7 @@ import Mathlib.Topology.Order.IntermediateValue
 
 namespace Nuttall
 
-open scoped Matrix.Norms.Operator
+open scoped Matrix.Norms.Operator NNReal
 
 /-- A positive diagonal with a strict row-sum margin fixes the determinant sign. -/
 theorem det_pos_of_row_diagonal_margin {ι : Type*} [Fintype ι] [DecidableEq ι]

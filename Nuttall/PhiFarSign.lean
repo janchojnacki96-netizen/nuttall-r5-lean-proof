@@ -83,8 +83,7 @@ theorem phiFarWronskian_pos {p : ℕ} (hp : p ≤ 4) (t : ℝ)
           Matrix.diagonal d i j =
           (phiFarShape X i.val j.val - Matrix.diagonal d i j) +
           phiFarLeft X i.val * R * phiFarRight j.val by ring]
-      apply (abs_add_le _ _).trans
-      apply add_le_add_left
+      refine (abs_add_le _ _).trans (add_le_add le_rfl ?_)
       have hL := phiFarLeft_bounds hX hi
       rw [abs_mul, abs_mul, abs_of_nonneg hL.1.le]
       calc
