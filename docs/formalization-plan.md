@@ -7,8 +7,8 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 | Etap | Zależności | Stan i warunek ukończenia |
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
-| A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **Dowód znaków wrońskianów zweryfikowany w Lean.** Dla dostatecznie dużych r poziom 2r daje wszystkie ścisłe znaki. Każdy zadany r ma w konsekwencji skuteczny poziom dla testu wrońskianowego. Przejście do słabego RR należy do A. |
+| A. Definicje i przejście od wrońskianów do RR | W5.Statement, CentralEvaluationPositivity | **Częściowo.** [ReverseSignRegularity.lean](../Nuttall/ReverseSignRegularity.lean) definiuje słabe RR i m(r) oraz przenosi ścisły test na wyznaczniki jądra dla każdego m. Do wykonania zachowanie RR przy całkowaniu i wykluczenie słabego RR przez zły znak wrońskianu. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **Złożony, oczekuje na CI.** [AnalyticUpperBound.lean](../Nuttall/AnalyticUpperBound.lean) dowodzi istnienia skutecznego poziomu dla każdego r oraz m(r)≤2r dla dostatecznie dużych r, w słabej konwencji z preprintu. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -73,7 +73,7 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
-**A — znaczenie tezy.** Zdefiniuj słabe RR dla wszystkich rosnących dodatnich węzłów obu zmiennych i wszystkich 1≤p≤r, zgodnie z §1. Zdefiniuj najmniejszy skuteczny poziom z możliwością nieskończoności albo stosuj minimum dopiero po dowodzie istnienia. Udowodnij monotoniczność względem rzędu, słabe zachowanie RR przy całkowaniu, wystarczalność ścisłego testu wrońskianowego oraz wykluczenie słabego RR przez ściśle zły znak (zlanie węzłów i ciągłość także dla t=0). Dla lematu 1.1 potrzebne jest ponadto zachowanie ściśle poprawnych znaków przy całkowaniu, z warunkami całkowalności i zaniku. Oddziel pomocniczy test ścisły od definicji minimum w artykule.
+**A — znaczenie tezy.** Słabe RR dotyczy wszystkich rosnących dodatnich węzłów obu zmiennych i wszystkich 1≤p≤r. W Lean m(r) jest infimum poziomów w ℕ∞, więc przy braku skutecznego poziomu wynosi nieskończoność. Wystarczalność ścisłego testu i monotoniczność względem rzędu są sformalizowane poniżej. Pozostają słabe i ścisłe zachowanie znaków przy całkowaniu oraz wykluczenie słabego RR przez ściśle zły znak (zlanie węzłów i ciągłość także dla t=0).
 
 **U1 — pełna normalizacja z §4.1 i przygotowanie U3.** Wszystkie pozycje poniżej przeszły `lake build Nuttall` lokalnie oraz w [CI commita `c8fdbac`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45984688802/job/140457170000). Kroki 7 i 8 korzystają dodatkowo z zarejestrowanego aksjomatu `Literature.andreief`. Pozostałe mają trzy standardowe aksjomaty Lean. Dla 1≤p i 2p≤m przy t≥0 otrzymujemy równanie `eq:anorm` z czynnikiem (Xeᵗ/2)ᵖ(4X)ᵖ⁽ᵖ⁻¹⁾⁄²/p!. Macierz przesuniętych momentów jest transponowana względem zapisu w preprincie, co nie zmienia wyznacznika.
 
@@ -218,7 +218,24 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **U4 — ścisłe znaki wrońskianów zweryfikowane.** Ten sam przebieg CI. [`eventually_signRegularWronskians_two_mul` i `exists_level_signRegularWronskians`](../Nuttall/ShiftRelativeTailProof.lean) dowodzą odpowiednio, że dla wszystkich dostatecznie dużych r poziom 2r przechodzi ścisły test, i że każdy zadany r≥1 ma pewien skuteczny poziom dla tego testu. Audyt ścieżki używa trzech standardowych aksjomatów Lean oraz wcześniej przyjętej tożsamości Andréiefa.
 
-**A — następna deklaracja.** Przenieś ścisły test na znak wyznacznika jądra Ψₘ(x+y) w dwóch rosnących rodzinach dodatnich węzłów. Użyj dwukrotnie `det_eval_pos_of_familyWronskians` z pustym zbiorem wyłączeń. Najpierw dla kolejnych pochodnych Ψₘ(x+·) przy ustalonym x, potem dla funkcji Ψₘ(·+yⱼ). Pomnóż kolumnę j (licząc od zera) przez (−1)ʲ w obu zastosowaniach i rozlicz znak iloczynu. Regularność Ψₘ do potrzebnego rzędu na półosi pochodzi z `iteratedDeriv_psi` i `psi_continuous`. Wystarczy wykazać ten most dla m≥2r, żeby uzyskać słabe RR dla dużych r i istnienie poziomu dla każdego zadanego r.
+**A/U — kryterium jądrowe i twierdzenie 1.2.** Poniższe deklaracje oczekują na CI.
+
+| Krok | Deklaracja | Wynik |
+|---|---|---|
+| 1 | [`contDiff_auxiliaryTheta`](../Nuttall/PsiSmoothness.lean) | Każda pochodna pomocniczego szeregu theta jest różniczkowalna na ℝ. |
+| 2 | [`contDiff_phi`, `contDiff_psi`](../Nuttall/PsiSmoothness.lean) | Φ i wszystkie iterowane całki Ψₘ są gładkie, także dla m=0 i m=1. |
+| 3 | [`det_alternating_columns`](../Nuttall/SignedKernelCriterion.lean) | Iloczyn znaków kolumn daje dokładny znak (−1)^{p(p−1)/2}. |
+| 4 | [`det_eval_pos_of_contDiff_family`](../Nuttall/SignedKernelCriterion.lean) | Na dodatniej półosi stosujemy kryterium jednowymiarowe z pustym zbiorem wyłączeń. |
+| 5 | [`signed_derivative_evaluation_pos`](../Nuttall/SignedKernelCriterion.lean) | Pierwsza aplikacja daje znak macierzy kolejnych pochodnych w przesuniętych rosnących punktach. |
+| 6 | [`signed_kernel_evaluation_pos`](../Nuttall/SignedKernelCriterion.lean) | Druga aplikacja daje ścisły znak jądra dla obu rodzin punktów. |
+| 7 | [`signRegularWronskians.strictReverseSignRegular`](../Nuttall/ReverseSignRegularity.lean) | Kryterium działa dla każdego poziomu Ψₘ i każdego badanego rzędu. |
+| 8 | [`kernelIntegrationOrder`, `kernelIntegrationOrder_mono`, `kernelIntegrationOrder_attained_of_exists`](../Nuttall/ReverseSignRegularity.lean) | Definicja m(r) używa słabych znaków, a minimum jest monotoniczne względem r. Przy istnieniu skutecznego poziomu infimum jest osiągane. |
+| 9 | [`exists_reverseSignRegular_psi`, `kernelIntegrationOrder_attained`](../Nuttall/AnalyticUpperBound.lean) | Każdy r ma skuteczny poziom, a m(r) jest skończone i osiągane. |
+| 10 | [`eventually_strictReverseSignRegular_psi_two_mul`, `eventually_kernelIntegrationOrder_le_two_mul`](../Nuttall/AnalyticUpperBound.lean) | Dla dostatecznie dużych r poziom 2r daje ścisły znak wszystkich minorów i stąd m(r)≤2r. |
+
+[`kernelIntegrationOrder_five_le_one_of_mainClaim`](../Nuttall/ReverseSignRegularity.lean) wiąże wynik istniejącego certyfikatu W5 z nową definicją. Przyjmuje `W5.MainClaim` jako hipotezę, dzięki czemu kompilacja analitycznej gałęzi pomija ciężkie obliczenia z `W5.NuttallR5`. Specjalizacja daje stronę górną m(5)≤1.
+
+**A — następna deklaracja.** Udowodnij, że ściśle zły podpisany wrońskian wyklucza słabe RR. Dla t>0 użyj węzłów t/2+i·h i t/2+j·h oraz różnic skończonych w obu rodzinach. Trójkątne operacje na wierszach i kolumnach oraz dodatnia skala h^{p(p−1)} wydzielają macierz zbieżną do wrońskianu. Do rachunku na siatce użyj `fwdDiff_iter_eq_sum_shift` i lematu o znikaniu wyrazów wielomianu niższego stopnia z `Mathlib.Algebra.Group.ForwardDiff`. Przypadek t=0 przenieś do dodatniego t przez ciągłość pochodnych Ψₘ.
 
 **F — od dostatecznie dużych rzędów do każdego r.** Zaimplementuj jawny próg i połącz poniższe zakresy jednym dowodem pokrycia. Samo istnienie niejawnego R₀ nie uzasadnia startu przy 10¹¹. Dla każdego zakresu sprawdzaj wszystkie mniejsze minory przy jednym poziomie 2r.
 

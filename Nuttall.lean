@@ -80,3 +80,7 @@ import Nuttall.ShiftSliceMomentUpper
 import Nuttall.ShiftSliceTailUpper
 import Nuttall.ShiftSliceFactorization
 import Nuttall.ShiftRelativeTailProof
+import Nuttall.PsiSmoothness
+import Nuttall.SignedKernelCriterion
+import Nuttall.ReverseSignRegularity
+import Nuttall.AnalyticUpperBound
