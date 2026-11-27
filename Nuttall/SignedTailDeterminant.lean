@@ -8,7 +8,7 @@ private theorem sum_fin_indices (p : ℕ) :
     (∑ i : Fin p, i.val) = p * (p-1) / 2 := by
   rw [Fin.sum_univ_eq_sum_range (fun i : ℕ => i), Finset.sum_range_id]
 
-private theorem sign_revPerm (p : ℕ) :
+theorem sign_revPerm (p : ℕ) :
     Equiv.Perm.sign (@Fin.revPerm p) = (-1 : ℤˣ)^(p * (p-1) / 2) := by
   rw [Equiv.Perm.sign_eq_prod_prod_Iio]
   calc

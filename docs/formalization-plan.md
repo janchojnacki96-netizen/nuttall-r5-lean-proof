@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 zweryfikowano. W U2 zweryfikowano pochodne poza węzłami i postać Hankela. Zweryfikowano rozkład i normę rdzenia C_d. Zweryfikowano też wielomianowy wzór na poprawkę A_d−C_d. Pozostaje połączyć go z macierzą Hankela. W U3 jest ogólny lemat o przeniesieniu dodatniości z części centralnej. Pozostają oszacowania U2–U4. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 zweryfikowano. W U2 zweryfikowano pochodne poza węzłami i postać Hankela. Zweryfikowano rozkład i normę rdzenia C_d. Zweryfikowano też wielomianowy wzór na poprawkę A_d−C_d. Połączenie z macierzą Hankela i oszacowanie współczynników poza centralnym kwadratem oczekują na CI. W U3 jest ogólny lemat o przeniesieniu dodatniości z części centralnej. Pozostają oszacowania U2–U4. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -109,7 +109,26 @@ Cały moduł `Nuttall` przeszedł kompilację commita `d56f9b4`. Równolegle z C
 
 **U2 — poprawka wielomianowa zweryfikowana.** Całe `lake build Nuttall` przeszło lokalnie i w [CI commita `5201466`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45987060820/job/140465274294). Nowe deklaracje zależą tylko od trzech standardowych aksjomatów Lean. [`normalizedShiftCoefficients_geometric_left` i `normalizedShiftCoefficients_geometric_right`](../Nuttall/ShiftGeometricPrefix.lean) identyfikują ucięte szeregi geometryczne z mnożeniem przez U i Uᵀ przy k≤M+1. [`shiftCorrectionMultiplier_clear`](../Nuttall/ShiftCorrection.lean) po usunięciu mianowników wyznacza jawne reszty wielokrotne wᵏ lub zᵏ. [`normalized_shifted_polynomial_with_correction`](../Nuttall/ShiftCorrection.lean) daje A_d=C_d−u/(M+1)(V_dC_d+C_dV_dᵀ) na poziomie współczynników.
 
-**Następna deklaracja U2.** Zdefiniuj trójkątną macierz zmiany bazy z współczynników wⁱ w wyrazach wᵃ(1−w)^{M−a} i czynników uᵃ/a!. Udowodnij kongruencję przekształcającą pierwotną macierz Hankela w sumę skorygowanych macierzy A_d, z osobnym sprawdzeniem dodatniej przekątnej dla u>0. Przy rozwijaniu potęg M i M+1 użyj dwukrotnie dwumianu Newtona oraz `Nat.choose_mul_factorial_mul_factorial` do przeliczenia trzech silni. Jawne reszty z mnożnika korekty znikają w badanym bloku współczynników. Ostrzejsze oszacowanie `eq:shift` pozostaje do udowodnienia.
+**U2 — kongruencja macierzy Hankela.** Oczekuje na CI. W tych deklaracjach M=L+k−2 jest indeksem w Lean, czyli o jeden mniejszym od indeksu R w preprincie. Warunek 2(k−1)≤M zapewnia prawidłowy indeks każdego wpisu.
+
+| Krok | Deklaracja | Wynik |
+|---|---|---|
+| 1 | [`shiftHankelBasisTerm_coeff_eq_zero` i `shiftHankelBasisTerm_coeff_diag`](../Nuttall/ShiftHankelBasis.lean) | Współczynniki kolumny wⁱ w wyrazie uᵃ/a! · wᵃ(1−w)^{M−a} znikają dla i<a. Przekątna przed normalizacją to uᵃ/a!. |
+| 2 | [`det_shiftHankelBasis_pos`](../Nuttall/ShiftHankelBasis.lean) | Wyznacznik dolnotrójkątnej zmiany bazy jest dodatni przy u>0 i k≤M+1. |
+| 3 | [`normalizedShiftCoefficients_hankelPolynomial`](../Nuttall/ShiftHankelBasis.lean) | Ekstrakcja i normalizacja niskich współczynników daje dokładną kongruencję S H Sᵀ. |
+| 4 | [`hankelPowerMatrix_coeff`](../Nuttall/ShiftHankelPower.lean) | Rozwinięcie trójmianu, przeliczenie trzech silni i odcięcie wysokich wierszy i kolumn dają dokładnie czynnik uᴹ/M!. |
+| 5 | [`ShiftCoeffEq.mul`](../Nuttall/ShiftHankelTruncation.lean) | Równość na bloku współczynników zachowuje się po pomnożeniu przez ten sam wielomian. |
+| 6 | [`shiftHankelPolynomial_succ_prefix`](../Nuttall/ShiftHankelTruncation.lean) | Dwa skończone szeregi geometryczne przenoszą bazę z wykładnika M+1 do M na zachowanym bloku. |
+| 7 | [`geometricPrefix_shiftForm`](../Nuttall/ShiftHankelTruncation.lean) | Dodatkowa potęga formy daje wcześniej udowodniony mnożnik poprawki po odcięciu reszt wᵏ i zᵏ. |
+| 8 | [`shiftHankel_single_congruence`](../Nuttall/ShiftHankelCongruence.lean) | Jeden przesunięty składnik daje A_d z pełnym czynnikiem uᴹ/M!. |
+| 9 | [`shiftHankel_congruence` i `shiftedMomentHankel_weighted_det_pos_iff`](../Nuttall/ShiftHankelCongruence.lean) | W macierzy pełnych momentów kongruencja obejmuje wszystkie aktywne indeksy z wagami 1/√n i zachowuje znak wyznacznika z dowolnym wspólnym czynnikiem. |
+| 10 | [`shiftedMomentWronskian_pos_iff`](../Nuttall/ShiftedMomentWronskianReduction.lean) | Przy k≤L i u>0 poza węzłami ścisła dodatniość zwykłego wrońskianu odpowiada ścisłej dodatniości wyznacznika sumy A_d z podpisem odwrócenia kolumn. |
+
+**U2 — oszacowanie poza centralnym kwadratem.** Oczekuje na CI. [`shiftScale_le_exp_neg` i `abs_shiftCore_le_offCentral`](../Nuttall/ShiftOffCentral.lean) dają s_d≤exp(−d) na [0,1] oraz ograniczenie exp(−d√M/16) na moduł każdego wpisu C_d spoza centralnego kwadratu przy 0≤d<1.
+
+**U2 — część analityczna kwadratu centralnego.** Oczekuje na CI. [`norm_polynomialCoeff_le_circleAverage`](../Nuttall/ShiftCircleCoefficient.lean) ogranicza każdy współczynnik zespolonego wielomianu przez średnią modułu na okręgu jednostkowym za pomocą współczynników Fouriera Mathlib. [`shiftCentralLogBound`](../Nuttall/ShiftCentralLogBound.lean) dla −1<x<1 i 0≤j≤M przy M>0 daje logarytmiczne ograniczenie 4β²/M−Mx²/16, gdzie β=M/2−j.
+
+**Następna deklaracja U2.** Wykaż, że kwadraty modułów czynników `c_d+d z` oraz `d-c_d z` dla z=exp(iθ) wynoszą 1±2c_d d cos θ. Połącz istniejącą średnią na okręgu z logarytmicznym oszacowaniem i oblicz gaussowską majorantę średniej. Uwzględnij punkty x=±1 przez ciągłość lub zbiór miary zero. Pozostaje połączyć oszacowania współczynników z normą operatorową w `eq:shift`.
 
 **U2 — macierz przesunięcia.** Sformalizuj odwrócenie kolumn, zmianę bazy o dodatnich przekątnych, normalizację dwumianową i kongruencję potęgi symetrycznej. Udowodnij oszacowania dla C_d oraz poprawki A_d−C_d, z osobnymi końcami d=0,1. Warunek odbioru: nierówność `eq:shift` i jednostajny margines lematu 4.2, również kiedy p=k=r i wykładnik 2r−p−k znika.
 

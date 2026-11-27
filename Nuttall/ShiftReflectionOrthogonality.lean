@@ -7,19 +7,19 @@ open Polynomial
 open scoped Polynomial BigOperators
 
 /-- Place the two factors in separate variables. -/
-private noncomputable def separatedProduct (P Q : ℝ[X]) : (ℝ[X])[X] :=
+noncomputable def separatedProduct (P Q : ℝ[X]) : (ℝ[X])[X] :=
   P.map (C : ℝ →+* ℝ[X]) * C Q
 
-private theorem coeff_separatedProduct (P Q : ℝ[X]) (j l : ℕ) :
+theorem coeff_separatedProduct (P Q : ℝ[X]) (j l : ℕ) :
     ((separatedProduct P Q).coeff j).coeff l = P.coeff j * Q.coeff l := by
   simp only [separatedProduct, coeff_mul_C, coeff_map, coeff_C_mul]
 
-private theorem separatedProduct_mul (P Q R S : ℝ[X]) :
+theorem separatedProduct_mul (P Q R S : ℝ[X]) :
     separatedProduct (P*Q) (R*S) = separatedProduct P R * separatedProduct Q S := by
   simp only [separatedProduct, Polynomial.map_mul, map_mul]
   ring
 
-private theorem separatedProduct_pow (P Q : ℝ[X]) (M : ℕ) :
+theorem separatedProduct_pow (P Q : ℝ[X]) (M : ℕ) :
     separatedProduct (P^M) (Q^M) = (separatedProduct P Q)^M := by
   simp only [separatedProduct, Polynomial.map_pow, map_pow, mul_pow]
 

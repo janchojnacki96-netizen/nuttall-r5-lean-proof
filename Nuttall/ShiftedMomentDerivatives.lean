@@ -19,7 +19,7 @@ theorem mem_activeThetaIndices {n : ℕ} {u : ℝ} :
   exact and_iff_right_of_imp (fun h =>
     Nat.lt_ceil.2 ((thetaKnot_lt_iff n h.1 u).1 h.2))
 
-private theorem shiftedMoment_eq_sum_active (j : ℕ) (u : ℝ) :
+theorem shiftedMoment_eq_sum_active (j : ℕ) (u : ℝ) :
     shiftedMoment j u =
       ∑ n ∈ activeThetaIndices u, tailMomentWeight j (u-thetaKnot n) / Real.sqrt (n : ℝ) := by
   classical
