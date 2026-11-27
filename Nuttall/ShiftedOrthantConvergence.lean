@@ -29,7 +29,7 @@ private theorem abs_det_le_column_prod {p : ℕ} (M : Matrix (Fin p) (Fin p) ℝ
       have hs : |(((Equiv.Perm.sign σ : ℤˣ) : ℤ) : ℝ)| = 1 := by
         exact_mod_cast Equiv.Perm.sign_abs σ
       rw [abs_mul, hs, one_mul, Finset.abs_prod]
-      exact Finset.prod_le_prod (fun _ _ => abs_nonneg _) (fun j _ => h (σ j) j)
+      exact Finset.prod_le_prod₀ (fun _ _ => abs_nonneg _) (fun j _ => h (σ j) j)
     _ = _ := by simp [Fintype.card_perm, nsmul_eq_mul]
 
 private theorem abs_vandermonde_le_prod {p : ℕ} (u : Fin p → ℝ)
@@ -44,7 +44,7 @@ private theorem abs_vandermonde_le_prod {p : ℕ} (u : Fin p → ℝ)
   have hij : (i.val : ℝ) ≤ p := by exact_mod_cast i.isLt.le
   calc
     (i.val : ℝ) * (4*u j) ≤ (p : ℝ) * (4*u j) :=
-      mul_le_mul_of_nonneg_right hij (by positivity)
+      mul_le_mul_of_nonneg_right hij (mul_nonneg (by norm_num) (hu j))
     _ = _ := by ring
 
 private noncomputable def shiftedOrthantBound (p : ℕ) (X : ℝ) (u : Fin p → ℝ) : ℝ :=
@@ -91,7 +91,7 @@ private theorem norm_shiftedOrthantIntegrand_le {p : ℕ} {X : ℝ} (hX : 0 < X)
     _ ≤ _ := by
       unfold shiftedOrthantBound
       apply mul_le_mul_of_nonneg_left _ (by positivity)
-      apply Finset.prod_le_prod
+      apply Finset.prod_le_prod₀
       · intro j _
         unfold thetaOrthantWeight
         positivity
@@ -103,7 +103,8 @@ private theorem ae_nonneg_positiveOrthant (p : ℕ) :
     ∀ᵐ u ∂positiveOrthant p, ∀ j, 0 ≤ u j := by
   apply eventually_all.2
   intro j
-  apply (tendsto_eval_ae_ae (i := j)).eventually
+  apply (Measure.tendsto_eval_ae_ae
+    (μ := fun _ : Fin p => volume.restrict (Ioi (0 : ℝ))) (i := j)).eventually
   exact (ae_restrict_mem (μ := (volume : Measure ℝ)) measurableSet_Ioi).mono
     (fun _ h => (mem_Ioi.mp h).le)
 
@@ -111,7 +112,7 @@ private theorem measurable_shiftedMomentTerm (k n : ℕ) : Measurable (shiftedMo
   unfold shiftedMomentTerm
   have hs : MeasurableSet {u : ℝ | 0 < n ∧ thetaKnot n < u} :=
     MeasurableSet.inter (by
-      change MeasurableSet (Set.setOf fun _ : ℝ => 0 < n)
+      change MeasurableSet { _ : ℝ | 0 < n }
       by_cases h : 0 < n <;> simp [h]) measurableSet_Ioi
   apply Measurable.ite hs
   · unfold tailMomentWeight
@@ -122,7 +123,7 @@ private theorem measurable_shiftedOrthantIntegrand {p : ℕ} (X : ℝ)
     (f : Fin p → Fin p → ℝ → ℝ) (h : ∀ i j, Measurable (f i j)) :
     Measurable (shiftedOrthantIntegrand X f) := by
   unfold shiftedOrthantIntegrand
-  apply Measurable.mul (Measurable.mul ?_ ?_)
+  refine Measurable.mul (Measurable.mul ?_ ?_) ?_
   · simp only [Matrix.det_apply', Matrix.of_apply]
     exact Finset.measurable_sum _ (fun σ _ =>
       measurable_const.mul (Finset.measurable_prod _ (fun j _ => (h (σ j) j).comp (measurable_pi_apply j))))
@@ -186,11 +187,12 @@ theorem tendsto_shiftedOrthant_integral {p : ℕ} {X : ℝ} (hX : 0 < X) (k : Fi
     apply tendsto_const_nhds.congr'
     refine eventually_atTop.2 ⟨Finset.univ.sup (fun j : Fin p => ⌈Real.exp (2*u j)⌉₊), ?_⟩
     intro N hN
-    unfold shiftedOrthantIntegrand
-    congr 2
-    ext i j
-    exact (shiftedMomentTruncated_eq_of_ge_ceil (k i) N (u j)
-      ((Finset.le_sup (f := fun j : Fin p => ⌈Real.exp (2*u j)⌉₊) (Finset.mem_univ j)).trans hN)).symm
+    have hmat : (Matrix.of (fun (i j : Fin p) => shiftedMoment (k i) (u j))) =
+        Matrix.of (fun (i j : Fin p) => shiftedMomentTruncated (k i) N (u j)) := by
+      ext i j
+      exact (shiftedMomentTruncated_eq_of_ge_ceil (k i) N (u j)
+        ((Finset.le_sup (f := fun j : Fin p => ⌈Real.exp (2*u j)⌉₊) (Finset.mem_univ j)).trans hN)).symm
+    simp only [shiftedOrthantIntegrand, hmat]
 
 #print axioms integrable_shiftedOrthant_term
 #print axioms integrable_shiftedOrthant

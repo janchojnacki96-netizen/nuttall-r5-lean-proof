@@ -19,7 +19,7 @@ theorem psi_pos (m : ℕ) (t : ℝ) (ht : 0 ≤ t) : 0 < psi m t := by
     calc
       0 < (volume.restrict (Ici t)) (Ici t) := by
         rw [Measure.restrict_apply measurableSet_Ici, inter_self, Real.volume_Ici]
-        exact top_pos
+        exact lt_of_lt_of_le (show (0 : ENNReal) < 1 by norm_num) le_top
       _ ≤ _ := measure_mono hs
 
 /-- The order-one case needed by the upper-bound proof holds at every integration level. -/
