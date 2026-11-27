@@ -128,3 +128,4 @@ import Nuttall.PhiRankEightTailEnvelope
 import Nuttall.PhiRankEightGaussianMatrix
 import Nuttall.MatrixQuadraticMargin
 import Nuttall.PhiRankEightNormalizedSign
+import Nuttall.PhiRankEightPolynomialPilot
