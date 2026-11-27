@@ -126,6 +126,52 @@ theorem tailIterate_auxiliary_eq_moment (j : ℕ) (t : ℝ) (ht : 0 ≤ t) :
     rw [hEq, integral_div, integrate_auxiliary_triangle j ht, Nat.factorial_succ,
       Nat.cast_mul, Nat.cast_succ, div_div]
 
+theorem auxiliary_power_moment_integrable (j : ℕ) (t : ℝ) (ht : 0 ≤ t) :
+    IntegrableOn (fun s : ℝ => (s-t)^j * auxiliaryTheta s) (Ici t) := by
+  have hg := tailIterate_auxiliary_continuous 0
+  change Continuous auxiliaryTheta at hg
+  have hc : Continuous (fun s : ℝ => (s-t)^j * auxiliaryTheta s) :=
+    ((continuous_id.sub continuous_const).pow j).mul hg
+  refine ((polynomial_exp_integrable j ht).const_mul
+    (auxiliaryTheta 0)).mono' hc.aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ici] with s hs
+  have hs0 : 0 ≤ s := ht.trans hs
+  have hp : (s-t)^j ≤ s^j :=
+    pow_le_pow_left₀ (sub_nonneg.mpr hs) (sub_le_self _ ht) _
+  have he : Real.exp (-s) ≤ Real.exp (-(1/2 : ℝ)*s) :=
+    Real.exp_le_exp.mpr (by linarith)
+  rw [Real.norm_eq_abs, abs_of_nonneg
+    (mul_nonneg (pow_nonneg (sub_nonneg.mpr hs) _) (auxiliaryTheta_nonneg _))]
+  calc
+    (s-t)^j * auxiliaryTheta s ≤ s^j * auxiliaryTheta s :=
+      mul_le_mul_of_nonneg_right hp (auxiliaryTheta_nonneg _)
+    _ ≤ s^j * (auxiliaryTheta 0 * Real.exp (-(1/2 : ℝ)*s)) :=
+      mul_le_mul_of_nonneg_left
+        ((auxiliaryTheta_le_exp_decay s hs0).trans
+          (mul_le_mul_of_nonneg_left he (auxiliaryTheta_nonneg _))) (pow_nonneg hs0 _)
+    _ = _ := by ring
+
+/-- Difference of the two successive normalized powers in Section 4.1. -/
+noncomputable def tailMomentWeight (j : ℕ) (x : ℝ) : ℝ :=
+  x^j / (j.factorial : ℝ) - x^(j+1) / ((j+1).factorial : ℝ)
+
+theorem tailMomentWeight_mul_auxiliary_integrable (j : ℕ) (t : ℝ) (ht : 0 ≤ t) :
+    IntegrableOn (fun s => tailMomentWeight j (s-t) * auxiliaryTheta s) (Ici t) := by
+  simpa only [tailMomentWeight, sub_mul, div_mul_eq_mul_div] using
+    (((auxiliary_power_moment_integrable j t ht).div_const (j.factorial : ℝ)).sub
+      ((auxiliary_power_moment_integrable (j+1) t ht).div_const ((j+1).factorial : ℝ)))
+
+theorem twice_psi_succ_succ_eq_weighted_moment (j : ℕ) (t : ℝ) (ht : 0 ≤ t) :
+    2 * psi (j+2) t = ∫ s in Ici t, tailMomentWeight j (s-t) * auxiliaryTheta s := by
+  rw [twice_psi_succ_eq_auxiliary_iterate_sub (j+1) t ht,
+    tailIterate_auxiliary_eq_moment j t ht, tailIterate_auxiliary_eq_moment (j+1) t ht]
+  simp only [tailMomentWeight, sub_mul, div_mul_eq_mul_div]
+  rw [integral_sub
+    ((auxiliary_power_moment_integrable j t ht).div_const (j.factorial : ℝ))
+    ((auxiliary_power_moment_integrable (j+1) t ht).div_const ((j+1).factorial : ℝ)),
+    integral_div, integral_div]
+
 #print axioms tailIterate_auxiliary_eq_moment
+#print axioms twice_psi_succ_succ_eq_weighted_moment
 
 end Nuttall

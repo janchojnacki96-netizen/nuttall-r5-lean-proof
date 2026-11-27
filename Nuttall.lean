@@ -5,3 +5,4 @@ import Nuttall.TailIteration
 import Nuttall.PsiDerivatives
 import Nuttall.SignedTailDeterminant
 import Nuttall.TailMoments
+import Nuttall.WeightedMomentDeterminant

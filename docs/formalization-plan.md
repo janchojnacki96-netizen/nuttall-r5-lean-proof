@@ -29,7 +29,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 
 **U1 — postać momentowa zweryfikowana.** Deklaracja [`Nuttall.tailIterate_auxiliary_eq_moment`](../Nuttall/TailMoments.lean) dowodzi dla każdego j∈ℕ i t≥0, że bⱼ₊₁ᵍ(t) jest całką z (s−t)ʲ g(s) na [t,∞) podzieloną przez j!. Moduł sprawdza całkowalność funkcji na obszarze t≤u≤s i stosuje Fubiniego w kroku indukcji. [CI commita `16acdc0`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45973785279) potwierdza trzy standardowe aksjomaty i odtworzenie częściowego cache.
 
-**Następny cel.** Złóż `tailIterate_auxiliary_eq_moment` z `twice_psi_succ_eq_auxiliary_iterate_sub` dla poziomów Ψⱼ₊₂. Wprowadź różnicę znormalizowanych wag wielomianowych oraz wykaż jej całkowalność przed połączeniem całek. Następnie użyj `signed_wronskian_psi_eq_tail_det`, żeby zastąpić wpisy macierzy momentami na zakresie rozpatrywanym w §4.1. Dla p≤r i r≥1 najmniejszy indeks wpisu przy m=2r wynosi 2r−2(p−1)≥2, więc wystarczy postać dla Ψⱼ₊₂.
+**U1 — wyznacznik momentowy oczekuje na CI.** Złóż `tailIterate_auxiliary_eq_moment` z `twice_psi_succ_eq_auxiliary_iterate_sub` dla poziomów Ψⱼ₊₂. Wprowadź różnicę znormalizowanych wag wielomianowych oraz wykaż jej całkowalność przed połączeniem całek. Następnie użyj `signed_wronskian_psi_eq_tail_det`, żeby zastąpić wpisy macierzy momentami na zakresie rozpatrywanym w §4.1. Dla p≤r i r≥1 najmniejszy indeks wpisu przy m=2r wynosi 2r−2(p−1)≥2, więc wystarczy postać dla Ψⱼ₊₂.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 
