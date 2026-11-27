@@ -8,7 +8,7 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 |---|---|---|
 | B. Istniejące R5 | przypięta rewizja | **Zweryfikowany.** [W5.nuttall_r5](../W5/NuttallR5.lean), rewizja `dfaede6d`, [CI](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45486606898). Ścisłe znaki dla pierwszej całki na całej półosi. Audyt wykazuje 228 aksjomatów obliczeń natywnych obok trzech standardowych. |
 | A. Definicje i redukcja istnienia | W5.Statement | **Częściowo.** [Existence.lean](../Nuttall/Existence.lean) definiuje iterowane całki i test znaków. `exists_level_of_eventual_two_mul` przyjmuje jako hipotezę wynik dla dużych R. [CI d6599bc](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45965923111). Do wykonania słabe RR, minimalny poziom i mosty poniżej. |
-| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 ma zweryfikowaną tożsamość różniczkową i jej iteracje dla wszystkich poziomów oraz podpisany wyznacznik po odwróceniu wierszy. Podpisany wyznacznik jest już zweryfikowany w postaci momentowej. Rachunek wag i rekurencję pochodnych każdego składnika też sprawdzono. Pozostają przejście pochodnych na cały szereg, całkowanie przez części, reprezentacja Andréiefa i oszacowania U2–U4. |
+| U. Analityczny dowód dla dużych rzędów, tw. 1.2 | A; U1–U4 poniżej | **W toku, priorytet.** U1 ma formalną reprezentację całką wielokrotną z dwiema macierzami. Pozostaje zwinąć sumę po indeksach theta i zmienić zmienne, aby otrzymać końcową postać `eq:anorm`, a następnie wykonać oszacowania U2–U4. |
 | F. Jawna granica 2r dla wszystkich r, tw. 4.1 | U, wspólny checker, §2.4 i dod. A | **Otwarte.** Zamknąć wszystkie pięć zakresów r z tabeli §4.2. |
 | S. Dokładne minima do 8, tw. 2.1 | A, B, checker, §2.4 | **Otwarte.** Dla każdego minimum uzyskać górną i dolną granicę dla słabego RR. |
 | L. Dolna granica asymptotyczna, tw. 3.1 | A, §3; niezależne od U/F | **Otwarte.** Zachować współczynnik π²/2, dowolne ε>0 i kwantyfikator „dla wszystkich dostatecznie dużych r”. |
@@ -33,7 +33,26 @@ Gałąź robocza: `formalization/preprint`. Źródła: [artykuł EN](../papers/l
 
 **U1 — rachunek wag i pochodnych składników zweryfikowany.** [`Nuttall.iteratedDeriv_tailMomentWeight_zero`](../Nuttall/MomentWeightCalculus.lean) daje zerowy wyraz brzegowy przy s=t dla każdej pochodnej o rzędzie mniejszym od indeksu wagi. Ten sam moduł identyfikuje k-tą pochodną z wagą o indeksie obniżonym o k. [`Nuttall.iteratedDeriv_auxiliarySummand`](../Nuttall/AuxiliaryDerivativePolynomials.lean) dowodzi dla wszystkich j,n i t∈ℝ wzoru na pochodną gₙ z wielomianem Pⱼ, gdzie P₀=1 i Pⱼ₊₁=(4x−5)Pⱼ−4xPⱼ′. [CI commita `aca9b39`](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45975913101) potwierdza trzy standardowe aksjomaty obu twierdzeń i odtworzenie częściowego cache.
 
-**Etapy 1–10 oczekują na CI.** Dla dowolnego wielomianu P wykaż lokalnie jednostajną sumowalną majorantę składników gₙ·P(xₙ) na [a,b]. Rozwiń `Polynomial.eval_eq_sum` na skończonej podporze i użyj `W5.theta_gaussian_polynomial_summable` dla każdej potęgi. Zastosuj majorantę zarówno do Pⱼ, jak i Pⱼ₊₁ oraz `hasDerivAt_tsum_of_isPreconnected`, aby otrzymać formułę szeregową dla pochodnych całej funkcji g. Potem uzyskaj dla każdego ustalonego rzędu zanik i całkowalność po przemnożeniu przez dowolną wagę wielomianową na [t,∞), potrzebne do całkowania przez części. Do oszacowań ogona wykorzystaj wykładniczy zanik w xₙ=πn²exp(4t).
+### Dziesięć zweryfikowanych kroków U1
+
+Wszystkie pozycje sprawdzono w `lake build Nuttall` dla commita `68dc9c5`. [Zielony przebieg i audyt aksjomatów](https://github.com/janchojnacki96-netizen/nuttall-r5-lean-proof/actions/runs/45977797685/job/140433808089)
+
+| Krok | Deklaracja | Formalny wynik |
+|---|---|---|
+| 1 | [`auxiliaryWeightedSummand_summable`](../Nuttall/AuxiliarySeries.lean) | Sumowalność szeregu gₙP(xₙ) dla każdego wielomianu P, z lokalnie jednostajną majorantą gaussowską. |
+| 2 | [`iteratedDeriv_auxiliaryTheta`](../Nuttall/AuxiliarySeries.lean) | Różniczkowanie całego szeregu g wyraz po wyrazie w każdym rzędzie i dla każdego t∈ℝ. |
+| 3 | [`auxiliaryWeightedSeries_decay`](../Nuttall/AuxiliarySeries.lean) | Dla każdego P istnieje stała C≥0 ograniczająca normę szeregu przez Cexp(−t) dla t≥0. |
+| 4 | [`weight_mul_signedJet_integrable` i `weight_mul_signedJet_tendsto_zero`](../Nuttall/TailIntegrationByParts.lean) | Iloczyny wag i pochodnych są całkowalne na [t,∞) i zanikają w nieskończoności. |
+| 5 | [`integral_weight_signedJet_succ`](../Nuttall/TailIntegrationByParts.lean) | Pojedyncze całkowanie przez części. Oba wyrazy brzegowe znikają. |
+| 6 | [`integral_weight_signedJet`](../Nuttall/TailIntegrationByParts.lean) | Powtórzenie całkowania przez części j razy przy j≤k dla wagi indeksu k. |
+| 7 | [`twice_pow_signed_wronskian_eq_separated_moments`](../Nuttall/TailIntegrationByParts.lean) | Wiersz wyznacza wagę, a kolumna rząd pochodnej w każdym wpisie podpisanego wyznacznika przy m≥2p. |
+| 8 | [`auxiliaryDerivativePolynomial_degree_coeff`](../Nuttall/AuxiliaryVandermonde.lean) | Wielomian pochodnej ma stopień ≤j, a współczynnik przy xʲ wynosi 4ʲ. |
+| 9 | [`det_auxiliary_weighted_summands`](../Nuttall/AuxiliaryVandermonde.lean) | Dla ustalonej krotki indeksów wyznacznik sprowadza się do Vandermonde’a, iloczynu składników gₙ i iloczynu współczynników 4ʲ. |
+| 10 | [`signed_wronskian_eq_andreief_integral`](../Nuttall/ThetaAndreief.lean) | Pierwsza reprezentacja całką wielokrotną. Lean sprawdza całkowalność wszystkich par wag i pochodnych oraz czynnik p!2ᵖ. |
+
+Kroki 1–9 zależą od trzech standardowych aksjomatów Lean. Krok 10 korzysta dodatkowo z klasycznej tożsamości Andréiefa, zadeklarowanej w [module literatury](../Nuttall/Literature/Andreief.lean). CI wykorzystało częściowy cache z poprzedniego przebiegu. Błędy dotyczyły sposobu zapisania iloczynów i granic funkcji w Lean.
+
+**Następny cel.** W reprezentacji `signed_wronskian_eq_andreief_integral` przetransponuj wyznacznik pochodnych, aby każdy wiersz zależał od jednego węzła. Rozwiń szereg theta w każdym wierszu i uzasadnij wymianę sum z całką wielokrotną. Użyj `auxiliaryWeightedSummand_le_exponential`, rozwinięcia według permutacji i iloczynu całek z wielomianem razy exp(−s). Zastosuj `det_auxiliary_weighted_summands` dla każdej krotki indeksów. Następnie podstaw uᵢ=sᵢ+(log nᵢ)/2 w zmiennych przesuniętych sᵢ=xᵢ−t, zmień domenę i zsumuj składniki do Rⱼ(uᵢ). Warunek odbioru U1 to pełne `eq:anorm`, z normalizacją (Xeᵗ/2)ᵖ(4X)^(p(p−1)/2)/p! i własnym dowodem uzasadniającym wszystkie wymiany.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
 

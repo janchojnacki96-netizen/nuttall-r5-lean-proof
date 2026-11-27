@@ -12,8 +12,9 @@ The [preprint formalization](Nuttall/Existence.lean) uses the same definition of
 the theta kernel. It proves the reduction in Theorem 1.2 from eventual
 positivity at integration level `2 * R` to existence of a finite level for
 each prescribed order. The analytic estimate in Section 4.1 is the
-hypothesis of this reduction. The project introduces no literature axioms at
-this stage.
+hypothesis of this reduction. The [formalization plan](docs/formalization-plan.md)
+tracks the Section 4.1 derivation. It records the [standard Andréief identity](Nuttall/Literature/Andreief.lean)
+as a literature axiom and the checked integrability conditions for its application.
 
 Build the preprint modules with `lake build Nuttall` after obtaining the
 pinned Mathlib dependencies with `lake update` and `lake exe cache get Mathlib`.
