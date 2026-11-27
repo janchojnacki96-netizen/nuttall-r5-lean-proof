@@ -128,6 +128,5 @@ import Nuttall.PhiRankEightTailEnvelope
 import Nuttall.PhiRankEightGaussianMatrix
 import Nuttall.MatrixQuadraticMargin
 import Nuttall.PhiRankEightNormalizedSign
-import Nuttall.PhiRankEightPolynomial
-import Nuttall.PhiRankEightGaussianScaling
+import Nuttall.PhiRankEightTransfer
 import Nuttall.PsiCompactCell59
