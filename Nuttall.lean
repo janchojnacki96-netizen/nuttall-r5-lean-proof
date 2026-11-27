@@ -123,3 +123,7 @@ import Nuttall.PsiCompactBasisData
 import Nuttall.PsiLastCellSigns
 import Nuttall.PsiCompactCertifiedGrid
 import Nuttall.PsiCompactCell60
+
+import Nuttall.PhiRankEightTailEnvelope
+import Nuttall.PhiRankEightGaussianMatrix
+import Nuttall.MatrixQuadraticMargin

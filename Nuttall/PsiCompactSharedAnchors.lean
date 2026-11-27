@@ -41,9 +41,9 @@ theorem psiOneCompactAnchorFromPanels_containsReal
     let raw := psiOnePanelBox (QInterval.point 0) (jets i) 36 (1/32)
     have hbounds : (panels i).lo ≤ raw.lo ∧ raw.hi ≤ (panels i).hi := hpanels i hi
     have hlo : (right.add (panels i)).lo ≤ (right.add raw).lo :=
-      add_le_add_left hbounds.1 right.lo
+      add_le_add (le_refl right.lo) hbounds.1
     have hhi : (right.add raw).hi ≤ (right.add (panels i)).hi :=
-      add_le_add_left hbounds.2 right.hi
+      add_le_add (le_refl right.hi) hbounds.2
     exact compactContainsReal_of_endpoints (A := right.add raw) (B := right.add (panels i)) hlo hhi h
 
 /-- A short panel reuses the jets at its center and a shared uniform anchor. -/
