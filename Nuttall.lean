@@ -12,3 +12,6 @@ import Nuttall.AuxiliarySeries
 import Nuttall.TailIntegrationByParts
 import Nuttall.AuxiliaryVandermonde
 import Nuttall.ThetaAndreief
+import Nuttall.ShiftedMomentCutoff
+import Nuttall.ProductTailTranslation
+import Nuttall.ThetaDeterminantTruncations

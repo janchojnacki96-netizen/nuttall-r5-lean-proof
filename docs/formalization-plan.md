@@ -52,6 +52,7 @@ Wszystkie pozycje sprawdzono w `lake build Nuttall` dla commita `68dc9c5`. [Ziel
 
 Kroki 1–9 zależą od trzech standardowych aksjomatów Lean. Krok 10 korzysta dodatkowo z klasycznej tożsamości Andréiefa, zadeklarowanej w [module literatury](../Nuttall/Literature/Andreief.lean). CI wykorzystało częściowy cache z poprzedniego przebiegu. Błędy dotyczyły sposobu zapisania iloczynów i granic funkcji w Lean.
 
+**Oczekuje na CI.** Osobne moduły zawierają algebrę i miarę przesunięcia, skończony zbiór aktywnych indeksów oraz rozwinięcie i granicę punktową obciętych wyznaczników.
 **Następny cel.** W reprezentacji `signed_wronskian_eq_andreief_integral` przetransponuj wyznacznik pochodnych, aby każdy wiersz zależał od jednego węzła. Rozwiń szereg theta w każdym wierszu i uzasadnij wymianę sum z całką wielokrotną. Użyj `auxiliaryWeightedSummand_le_exponential`, rozwinięcia według permutacji i iloczynu całek z wielomianem razy exp(−s). Zastosuj `det_auxiliary_weighted_summands` dla każdej krotki indeksów. Następnie podstaw uᵢ=sᵢ+(log nᵢ)/2 w zmiennych przesuniętych sᵢ=xᵢ−t, zmień domenę i zsumuj składniki do Rⱼ(uᵢ). Warunek odbioru U1 to pełne `eq:anorm`, z normalizacją (Xeᵗ/2)ᵖ(4X)^(p(p−1)/2)/p! i własnym dowodem uzasadniającym wszystkie wymiany.
 
 ## Ścieżka do twierdzeń 1.2 i 4.1
