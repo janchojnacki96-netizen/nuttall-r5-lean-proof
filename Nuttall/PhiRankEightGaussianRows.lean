@@ -43,6 +43,32 @@ noncomputable def phiRankEightGaussian (X q : ℝ) (i j : ℕ) : ℝ :=
   (∑ k ∈ Finset.range (min i j+1), phiRankEightGaussianTerm X q i j k) *
     Real.exp (-(q-1)*X)
 
+theorem phiRankEightGaussian_one (X : ℝ) (i j : ℕ) :
+    phiRankEightGaussian X 1 i j = if i = j then (-1:ℝ)^i else 0 := by
+  have hv (k : ℕ) (hk : k ≤ min i j) (hn : i ≠ k ∨ j ≠ k) :
+      phiRankEightGaussianTerm X 1 i j k = 0 := by
+    have hki := hk.trans (min_le_left i j)
+    have hkj := hk.trans (min_le_right i j)
+    have hm : (i-k)+(j-k) ≠ 0 := by omega
+    simp [phiRankEightGaussianTerm, zero_pow hm]
+  unfold phiRankEightGaussian
+  simp only [sub_self, neg_zero, zero_mul, Real.exp_zero, mul_one]
+  by_cases he : i = j
+  · subst j
+    rw [ite_eq_left rfl, Finset.sum_eq_single i]
+    · have hf : (i.factorial:ℝ) ≠ 0 := by positivity
+      simp only [phiRankEightGaussianTerm, Nat.sub_self, sub_self, Nat.add_zero, pow_zero,
+        mul_one, Nat.factorial_zero, Nat.cast_one, one_mul]
+      rw [Real.sqrt_mul_self (by positivity)]
+      field_simp
+    · intro k hk hki
+      exact hv k (Nat.le_of_lt_succ (Finset.mem_range.mp hk)) (Or.inl hki.symm)
+    · simp
+  · rw [ite_eq_right he]
+    apply Finset.sum_eq_zero
+    intro k hk
+    exact hv k (Nat.le_of_lt_succ (Finset.mem_range.mp hk)) (by omega)
+
 private theorem rankEightGaussianTerm_bound {X q : ℝ} (hX : 16 ≤ X) (hq : 4 ≤ q)
     (i j k : ℕ) (hi : i < 8) (hj : j < 8) (hk : k ≤ min i j) :
     |phiRankEightGaussianTerm X q i j k| ≤
@@ -142,5 +168,6 @@ theorem phiRankEightGaussian_row_le {X q : ℝ} (hX : 16 ≤ X) (hq : 4 ≤ q) (
 
 #print axioms phiRankEightGaussianMajorantRow_lt
 #print axioms phiRankEightGaussian_row_le
+#print axioms phiRankEightGaussian_one
 
 end Nuttall
