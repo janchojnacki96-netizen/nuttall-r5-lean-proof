@@ -58,3 +58,5 @@ import Nuttall.ShiftCriticalCutoff
 import Nuttall.ShiftCriticalAsymptotic
 import Nuttall.ShiftCriticalMargin
 import Nuttall.ShiftedMomentContinuity
+import Nuttall.ShiftedMomentKnotDerivative
+import Nuttall.ShiftedMomentWronskianAtKnots

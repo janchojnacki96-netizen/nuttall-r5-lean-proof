@@ -6,17 +6,18 @@ namespace Nuttall
 open Filter
 open scoped BigOperators Topology
 
+theorem shiftedMomentTerm_succ_eq_posPart (j n : ℕ) (hn : 0 < n) (x : ℝ) :
+    shiftedMomentTerm (j+1) n x =
+      tailMomentWeight (j+1) (max (x-thetaKnot n) 0) / Real.sqrt (n:ℝ) := by
+  by_cases hx : thetaKnot n < x
+  · rw [shiftedMomentTerm, ite_eq_left ⟨hn, hx⟩, max_eq_left (sub_nonneg.2 hx.le)]
+  · rw [shiftedMomentTerm, ite_eq_right (fun h => hx h.2),
+      max_eq_right (sub_nonpos.2 (le_of_not_gt hx)), tailMomentWeight_succ_zero, zero_div]
+
 /-- Positive-index summands extend continuously through their own cutoff. -/
 theorem continuous_shiftedMomentTerm_succ (j n : ℕ) : Continuous (shiftedMomentTerm (j+1) n) := by
   by_cases hn : 0 < n
-  · have heq : shiftedMomentTerm (j+1) n =
-        fun u => tailMomentWeight (j+1) (max (u-thetaKnot n) 0) / Real.sqrt (n:ℝ) := by
-      funext u
-      by_cases hu : thetaKnot n < u
-      · rw [shiftedMomentTerm, ite_eq_left ⟨hn, hu⟩, max_eq_left (sub_nonneg.2 hu.le)]
-      · rw [shiftedMomentTerm, ite_eq_right (fun h => hu h.2),
-          max_eq_right (sub_nonpos.2 (le_of_not_gt hu)), tailMomentWeight_succ_zero, zero_div]
-    rw [heq]
+  · rw [funext (shiftedMomentTerm_succ_eq_posPart j n hn)]
     unfold tailMomentWeight
     fun_prop
   · have heq : shiftedMomentTerm (j+1) n = fun _ => 0 := by
