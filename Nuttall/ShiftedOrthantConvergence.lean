@@ -112,7 +112,11 @@ private theorem measurable_shiftedMomentTerm (k n : ℕ) : Measurable (shiftedMo
   unfold shiftedMomentTerm
   have hs : MeasurableSet {u : ℝ | 0 < n ∧ thetaKnot n < u} := by
     by_cases hn : 0 < n
-    · simpa [hn] using (measurableSet_Ioi : MeasurableSet (Ioi (thetaKnot n)))
+    · have heq : {u : ℝ | 0 < n ∧ thetaKnot n < u} = Ioi (thetaKnot n) := by
+        ext u
+        simp [hn]
+      rw [heq]
+      exact measurableSet_Ioi
     · simp [hn]
   apply Measurable.ite hs
   · unfold tailMomentWeight
