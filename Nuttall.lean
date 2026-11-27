@@ -88,3 +88,4 @@ import Nuttall.ForwardDifferenceKernel
 import Nuttall.ForwardDifferenceLimit
 import Nuttall.KernelTailPersistence
 import Nuttall.WronskianObstruction
+import Nuttall.FiveIntegrationOrder
