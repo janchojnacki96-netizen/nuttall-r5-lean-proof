@@ -9,15 +9,15 @@ private def phiCompactGrid : List ℚ :=
     96, 112, 128, 160, 192, 256, 320, 384, 512, 768, 1024] : List ℚ).map
       (fun k => 3 + 13*k/1024)
 
-private def adjacentCells (a : ℚ) : List ℚ → List (ℚ × ℚ)
+def adjacentCells (a : ℚ) : List ℚ → List (ℚ × ℚ)
   | [] => []
   | b :: l => (a,b) :: adjacentCells b l
 
-private def lastEndpoint (a : ℚ) : List ℚ → ℚ
+def lastEndpoint (a : ℚ) : List ℚ → ℚ
   | [] => a
   | b :: l => lastEndpoint b l
 
-private theorem adjacentCells_cover {x : ℝ} (a : ℚ) (endpoints : List ℚ)
+theorem adjacentCells_cover {x : ℝ} (a : ℚ) (endpoints : List ℚ)
     (ha : (a:ℝ) ≤ x) (hb : x ≤ (lastEndpoint a endpoints : ℝ)) :
     x = (a:ℝ) ∨ ∃ c ∈ adjacentCells a endpoints, (c.1:ℝ) ≤ x ∧ x ≤ (c.2:ℝ) := by
   induction endpoints generalizing a with

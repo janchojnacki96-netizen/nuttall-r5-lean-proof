@@ -113,3 +113,6 @@ import Nuttall.PsiFirstCellCorner
 import Nuttall.CompactIntervalCongruence
 
 import Nuttall.PsiFirstCellSigns
+import Nuttall.PsiCompactCellSigns
+import Nuttall.PsiCompactCells
+import Nuttall.PsiCompactPrecisionSeed
