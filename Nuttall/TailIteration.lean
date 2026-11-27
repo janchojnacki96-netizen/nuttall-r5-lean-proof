@@ -4,29 +4,31 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 namespace Nuttall
 
-open MeasureTheory Set intervalIntegral
+open MeasureTheory Set
 
 /-- Repeated upper-tail integrals, with level zero equal to the input function. -/
 noncomputable def tailIterate (f : ℝ → ℝ) : ℕ → ℝ → ℝ
   | 0 => f
   | j + 1 => tailIntegral (tailIterate f j)
 
+private theorem exp_neg_hasDerivAt (x : ℝ) :
+    HasDerivAt (fun y : ℝ => Real.exp (-y)) (-Real.exp (-x)) x := by
+  simpa only [Function.comp_def, id_eq, mul_neg_one] using
+    (Real.hasDerivAt_exp (-x)).comp x (hasDerivAt_id x).neg
+
 private theorem exp_neg_integrableOn_Ici (t : ℝ) :
     IntegrableOn (fun x : ℝ => Real.exp (-x)) (Ici t) := by
-  have hd (x : ℝ) : HasDerivAt (fun y : ℝ => Real.exp (-y)) (-Real.exp (-x)) x := by
-    simpa using (Real.hasDerivAt_exp (-x)).comp x (hasDerivAt_id x).neg
   have hn : IntegrableOn (fun x : ℝ => -Real.exp (-x)) (Ioi t) :=
-    integrableOn_Ioi_deriv_of_nonpos' (fun x _ => hd x)
+    integrableOn_Ioi_deriv_of_nonpos' (fun x _ => exp_neg_hasDerivAt x)
       (fun x _ => neg_nonpos.mpr (Real.exp_pos _).le) Real.tendsto_exp_neg_atTop_nhds_zero
-  exact integrableOn_Ici_iff_integrableOn_Ioi.mpr (integrable_neg_iff.mp hn)
+  exact (integrableOn_Ici_iff_integrableOn_Ioi).2 (integrable_neg_iff.mp hn)
 
 private theorem tailIntegral_exp_neg (t : ℝ) :
     tailIntegral (fun x : ℝ => Real.exp (-x)) t = Real.exp (-t) := by
-  have hd (x : ℝ) : HasDerivAt (fun y : ℝ => Real.exp (-y)) (-Real.exp (-x)) x := by
-    simpa using (Real.hasDerivAt_exp (-x)).comp x (hasDerivAt_id x).neg
-  have h := integral_Ioi_of_hasDerivAt_of_nonpos' (a := t) (fun x _ => hd x)
+  have h := integral_Ioi_of_hasDerivAt_of_nonpos' (a := t) (fun x _ => exp_neg_hasDerivAt x)
     (fun x _ => neg_nonpos.mpr (Real.exp_pos _).le) Real.tendsto_exp_neg_atTop_nhds_zero
-  simpa only [tailIntegral, integral_Ici_eq_integral_Ioi, integral_neg, zero_sub, neg_inj] using h
+  rw [MeasureTheory.integral_neg, zero_sub, neg_inj] at h
+  simpa only [tailIntegral, integral_Ici_eq_integral_Ioi] using h
 
 private def TailBound (C : ℝ) (f : ℝ → ℝ) : Prop :=
   Continuous f ∧ ∀ x : ℝ, 0 ≤ x → 0 ≤ f x ∧ f x ≤ C * Real.exp (-x)
@@ -49,15 +51,14 @@ private theorem TailBound.tail (h : TailBound C f) : TailBound C (tailIntegral f
   refine ⟨?_, ?_⟩
   · have heq (t : ℝ) :
         tailIntegral f t = tailIntegral f 0 - ∫ x in (0 : ℝ)..t, f x := by
-      have hi := integral_Ici_sub_Ici' (h.integrableOn 0) (h.integrableOn t)
+      have hi := intervalIntegral.integral_Ici_sub_Ici' (h.integrableOn 0) (h.integrableOn t)
       change tailIntegral f 0 - tailIntegral f t = (∫ x in (0 : ℝ)..t, f x) at hi
       linarith
-    have hc : Continuous (fun t : ℝ => ∫ x in (0 : ℝ)..t, f x) := by
-      apply Differentiable.continuous
+    have hd : Differentiable ℝ (fun t : ℝ => ∫ x in (0 : ℝ)..t, f x) := by
       intro t
-      exact (integral_hasDerivAt_right (h.1.intervalIntegrable 0 t)
+      exact (intervalIntegral.integral_hasDerivAt_right (h.1.intervalIntegrable 0 t)
         (h.1.aestronglyMeasurable.stronglyMeasurableAtFilter) h.1.continuousAt).differentiableAt
-    exact (continuous_const.sub hc).congr (fun t => (heq t).symm)
+    exact (continuous_const.sub hd.continuous).congr (fun t => (heq t).symm)
   · intro t ht
     constructor
     · apply integral_nonneg_of_ae
