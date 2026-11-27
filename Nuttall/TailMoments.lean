@@ -157,9 +157,14 @@ noncomputable def tailMomentWeight (j : ℕ) (x : ℝ) : ℝ :=
 
 theorem tailMomentWeight_mul_auxiliary_integrable (j : ℕ) (t : ℝ) (ht : 0 ≤ t) :
     IntegrableOn (fun s => tailMomentWeight j (s-t) * auxiliaryTheta s) (Ici t) := by
-  simpa only [tailMomentWeight, sub_mul, div_mul_eq_mul_div] using
-    (((auxiliary_power_moment_integrable j t ht).div_const (j.factorial : ℝ)).sub
-      ((auxiliary_power_moment_integrable (j+1) t ht).div_const ((j+1).factorial : ℝ)))
+  have hw : (fun s => tailMomentWeight j (s-t) * auxiliaryTheta s) =
+      (fun s => (s-t)^j * auxiliaryTheta s / (j.factorial : ℝ)) -
+      (fun s => (s-t)^(j+1) * auxiliaryTheta s / ((j+1).factorial : ℝ)) := by
+    funext s
+    simp only [tailMomentWeight, Pi.sub_apply, sub_mul, div_mul_eq_mul_div]
+  rw [hw]
+  exact ((auxiliary_power_moment_integrable j t ht).div_const (j.factorial : ℝ)).sub
+    ((auxiliary_power_moment_integrable (j+1) t ht).div_const ((j+1).factorial : ℝ))
 
 theorem twice_psi_succ_succ_eq_weighted_moment (j : ℕ) (t : ℝ) (ht : 0 ≤ t) :
     2 * psi (j+2) t = ∫ s in Ici t, tailMomentWeight j (s-t) * auxiliaryTheta s := by
