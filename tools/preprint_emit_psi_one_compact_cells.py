@@ -191,11 +191,13 @@ theorem psiOneCompactAnchor{i}_containsReal : psiOneCompactAnchor{i}.ContainsRea
   have hright : psiOneCompactAnchor{next_i}.ContainsReal (psi 1 ((({i}+1:ℕ):ℝ)/32)) := by
     simpa [show ((({i}+1:ℕ):ℝ)/32) = (({next_i}/32:ℚ):ℝ) by norm_num] using
       psiOneCompactAnchor{next_i}_containsReal
+  have hnode : (({i}/32:ℚ):ℝ) = ((({i}:ℕ):ℝ)/32) := by norm_num
   have hj (j : ℕ) (hj : j < 36) :
-      (psiOneUniformPanel{i}Jet j).ContainsReal (iteratedDeriv j Phi (({i}:ℝ)/32)) := by
-    simpa only [Rat.cast_div, Rat.cast_ofNat] using psiOneUniformPanel{i}Jet_containsReal j hj
-  have h := psiOne_compact_panel_step (i := {i}) (by decide) hright hj psiOneUniformPanel{i}_checked
-  simpa only [psiOneCompactAnchor{i}, Rat.cast_div, Rat.cast_ofNat, Nat.cast_ofNat] using h
+      (psiOneUniformPanel{i}Jet j).ContainsReal (iteratedDeriv j Phi ((({i}:ℕ):ℝ)/32)) := by
+    rw [← hnode]
+    exact psiOneUniformPanel{i}Jet_containsReal j hj
+  rw [hnode]
+  exact psiOne_compact_panel_step (i := {i}) (by decide) hright hj psiOneUniformPanel{i}_checked
 
 #print axioms psiOneCompactAnchor{i}_containsReal
 
