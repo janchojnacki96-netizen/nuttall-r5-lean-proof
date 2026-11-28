@@ -4,6 +4,9 @@ import Nuttall.PsiTwoCompactBlock36
 import Nuttall.PsiOneCompactBlock32
 import Nuttall.PsiFirstCellSigns
 
+import Nuttall.PsiOneCompactBlock24
+import Nuttall.PsiTwoCompactBlock28
+
 namespace Nuttall
 
 /-- Assemble the remaining cells strictly to the left of an already certified right interval. -/
@@ -103,5 +106,34 @@ theorem kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstThirtySix
 
 #print axioms kernelIntegrationOrder_eq_one_of_psiOne_middleCells
 #print axioms kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstThirtySix
+
+/-- The certified origin cell and right interval leave only cells 1 through 23. -/
+theorem kernelIntegrationOrder_eq_one_of_psiOne_cellsOneThroughTwentyThree {r : ℕ}
+    (hr₅ : 5 ≤ r) (hr₇ : r ≤ 7)
+    (hcell : ∀ i : Fin 24, 0 < i.val → ∀ p ≤ 7, ∀ t : ℝ, (i.val:ℝ)/128 ≤ t →
+      t ≤ ((i.val+1:ℕ):ℝ)/128 →
+      0 < kernelMinorSign p * wronskian (psi 1) p t) :
+    kernelIntegrationOrder r = 1 := by
+  apply kernelIntegrationOrder_eq_one_of_psiOne_compact hr₅ hr₇
+  refine psi_compact_replay_with_cutoff (n := 24) psiOne_compact_from_cell24_signed_wronskians ?_
+  intro i p hp t hleft hright
+  by_cases hi : i.val = 0
+  · apply psiOne_first_cell_signed_wronskians p hp t
+    · simpa [hi] using hleft
+    · simpa [hi] using hright
+  · exact hcell i (Nat.pos_of_ne_zero hi) p hp t hleft hright
+
+/-- Only indices below 28 remain in the rank-eight compact assembly. -/
+theorem kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstTwentyEight
+    (hcell : ∀ i : Fin 28, ∀ p ≤ 8, ∀ t : ℝ, (i.val:ℝ)/128 ≤ t →
+      t ≤ ((i.val+1:ℕ):ℝ)/128 →
+      0 < kernelMinorSign p * wronskian (psi 2) p t) :
+    kernelIntegrationOrder 8 = 2 :=
+  kernelIntegrationOrder_eight_eq_two_of_psiTwo_compact
+    (psi_compact_replay_with_cutoff (n := 28)
+      psiTwo_compact_from_cell28_signed_wronskians hcell)
+
+#print axioms kernelIntegrationOrder_eq_one_of_psiOne_cellsOneThroughTwentyThree
+#print axioms kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstTwentyEight
 
 end Nuttall
