@@ -61,12 +61,15 @@ private theorem corners_checked :
 theorem psiTwo_compact_cell{i}_signed_wronskians (p : ℕ) (hp : p ≤ 8) (t : ℝ)
     (hL : {i}/128 ≤ t) (hU : t ≤ {hi}/128) :
     0 < kernelMinorSign p * wronskian (psi 2) p t := by
+  have hanchor : (({anchor}/32:ℚ):ℝ) = ((({anchor}:ℕ):ℝ)/32) := by norm_num
   refine psiTwo_compact_dyadic_snapshot_sound {i} {anchor} (by decide) (by decide +kernel)
     psiOneCompactAnchor{anchor} psiTwoCompactAnchor{anchor} ?_ ?_ psiOneCell{i}Snapshot psiTwoCell{i}Corner
     psiOneCell{i}Inputs_checked psiOneCell{i}Jets_checked corners_checked.1 corners_checked.2
     psiTwoCell{i}Basis ?_ ?_ ?_ psiTwoCell{i}Margin_checked p hp t ?_ ?_
-  · simpa only [Rat.cast_div, Rat.cast_ofNat, Nat.cast_ofNat] using psiOneCompactAnchor{anchor}_containsReal
-  · simpa only [Rat.cast_div, Rat.cast_ofNat, Nat.cast_ofNat] using psiTwoCompactAnchor{anchor}_containsReal
+  · rw [← hanchor]
+    exact psiOneCompactAnchor{anchor}_containsReal
+  · rw [← hanchor]
+    exact psiTwoCompactAnchor{anchor}_containsReal
   · intro i j hij
     change i.val < j.val at hij
     fin_cases i <;> fin_cases j <;> norm_num at hij <;> rfl

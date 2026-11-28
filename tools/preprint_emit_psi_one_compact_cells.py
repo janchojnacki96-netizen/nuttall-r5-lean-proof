@@ -108,8 +108,9 @@ theorem psiOne_compact_cell{i}_signed_wronskians (p : ℕ) (hp : p ≤ 7) (t : �
   refine psiOne_compact_dyadic_snapshot_sound {i} {anchor} (by decide) (by decide +kernel)
     {anchor_name} ?_ psiOneCell{i}Snapshot psiOneCell{i}Inputs_checked psiOneCell{i}Jets_checked
     corner_checked psiOneCell{i}Margin_checked p hp t ?_ ?_
-  · simpa only [Rat.cast_div, Rat.cast_ofNat, Nat.cast_ofNat] using
-      {anchor_name}_containsReal
+  · have hanchor : (({anchor}/32:ℚ):ℝ) = ((({anchor}:ℕ):ℝ)/32) := by norm_num
+    rw [← hanchor]
+    exact {anchor_name}_containsReal
   · change ({i}:ℝ)/128 ≤ t
     exact hL
   · change t ≤ ({i + 1}:ℝ)/128
