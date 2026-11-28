@@ -1,4 +1,5 @@
 import Nuttall.PsiTwoCompactDyadicReplay
+import Nuttall.PsiTwoCompactPointRow
 import Nuttall.PsiCompactCell3Data
 
 namespace Nuttall
@@ -26,6 +27,7 @@ set_option maxHeartbeats 45000000 in
 theorem psiTwoCell3Margin_checked (j : Fin 8) :
     psiTwoCompactRow psiTwoCell3Basis psiOneCell3Snapshot.corner psiTwoCell3Corner
       psiOneCell3Snapshot.jets j < psiTwoCompactThreshold := by
+  rw [← psiTwoCompactPointRow_eq]
   fin_cases j <;> decide +kernel
 
 #print axioms psiTwoCell3Margin_checked

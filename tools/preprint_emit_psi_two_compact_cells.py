@@ -11,6 +11,7 @@ def modules(i, anchor, cell):
                         for row in cell["basis"])
     lo = cell["corner"][0]
     return f"""import Nuttall.PsiTwoCompactDyadicReplay
+import Nuttall.PsiTwoCompactPointRow
 import Nuttall.PsiCompactCell{i}Data
 
 namespace Nuttall
@@ -31,6 +32,7 @@ set_option maxHeartbeats 45000000 in
 theorem psiTwoCell{i}Margin_checked (j : Fin 8) :
     psiTwoCompactRow psiTwoCell{i}Basis psiOneCell{i}Snapshot.corner psiTwoCell{i}Corner
       psiOneCell{i}Snapshot.jets j < psiTwoCompactThreshold := by
+  rw [← psiTwoCompactPointRow_eq]
   fin_cases j <;> decide +kernel
 
 #print axioms psiTwoCell{i}Margin_checked
