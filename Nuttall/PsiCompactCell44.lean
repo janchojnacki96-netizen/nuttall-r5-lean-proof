@@ -1,23 +1,10 @@
 import Nuttall.PsiCompactCell44Margin
+import Nuttall.PsiCompactCell44Jets
 import Nuttall.PsiCompactUniformPanel12
 
 namespace Nuttall
 
 open W5
-
-set_option maxRecDepth 65536 in
-set_option maxHeartbeats 45000000 in
-private theorem input_checked :
-    psiPreciseGridChecks (psiOneDyadicCenter 44) ∧
-      psiPreciseGridInputs (psiOneDyadicCenter 44) = psiOneCell44Snapshot.input := by
-  decide +kernel
-
-set_option maxRecDepth 65536 in
-set_option maxHeartbeats 45000000 in
-private theorem jets_checked (j : ℕ) (hj : j < 36) :
-    (psiOneCell44Snapshot.jets j).asQInterval (2^90) =
-      psiFixedGridPhiJetBoxOfInputs psiOneCell44Snapshot.input j := by
-  interval_cases j <;> decide +kernel
 
 set_option maxRecDepth 65536 in
 set_option maxHeartbeats 45000000 in
@@ -33,7 +20,7 @@ theorem psiOne_compact_cell44_signed_wronskians (p : ℕ) (hp : p ≤ 7) (t : �
     (hL : 44/128 ≤ t) (hU : t ≤ 45/128) :
     0 < kernelMinorSign p * wronskian (psi 1) p t := by
   refine psiOne_compact_dyadic_snapshot_sound 44 12 (by decide) (by decide +kernel)
-    psiOneCompactAnchor12 ?_ psiOneCell44Snapshot input_checked jets_checked
+    psiOneCompactAnchor12 ?_ psiOneCell44Snapshot psiOneCell44Inputs_checked psiOneCell44Jets_checked
     corner_checked psiOneCell44Margin_checked p hp t ?_ ?_
   · simpa only [Rat.cast_div, Rat.cast_ofNat, Nat.cast_ofNat] using
       psiOneCompactAnchor12_containsReal
