@@ -111,9 +111,11 @@ theorem psiOne_compact_cell{i}_signed_wronskians (p : ℕ) (hp : p ≤ 7) (t : �
   · have hanchor : (({anchor}/32:ℚ):ℝ) = ((({anchor}:ℕ):ℝ)/32) := by norm_num
     rw [← hanchor]
     exact {anchor_name}_containsReal
-  · change ({i}:ℝ)/128 ≤ t
+  · change ((({i}:ℕ):ℝ)/128) ≤ t
+    norm_num at hL ⊢
     exact hL
-  · change t ≤ ({i + 1}:ℝ)/128
+  · change t ≤ ((({i + 1}:ℕ):ℝ)/128)
+    norm_num at hU ⊢
     exact hU
 
 #print axioms psiOne_compact_cell{i}_signed_wronskians

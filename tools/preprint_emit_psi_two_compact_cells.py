@@ -77,9 +77,11 @@ theorem psiTwo_compact_cell{i}_signed_wronskians (p : ℕ) (hp : p ≤ 8) (t : �
     fin_cases i <;> decide +kernel
   · intro i
     fin_cases i <;> decide +kernel
-  · change ({i}:ℝ)/128 ≤ t
+  · change ((({i}:ℕ):ℝ)/128) ≤ t
+    norm_num at hL ⊢
     exact hL
-  · change t ≤ ({hi}:ℝ)/128
+  · change t ≤ ((({hi}:ℕ):ℝ)/128)
+    norm_num at hU ⊢
     exact hU
 
 #print axioms psiTwo_compact_cell{i}_signed_wronskians

@@ -39,9 +39,11 @@ theorem psiTwo_compact_cell0_signed_wronskians (p : ℕ) (hp : p ≤ 8) (t : ℝ
     fin_cases i <;> decide +kernel
   · intro i
     fin_cases i <;> decide +kernel
-  · change (0:ℝ)/128 ≤ t
+  · change (((0:ℕ):ℝ)/128) ≤ t
+    norm_num at hL ⊢
     exact hL
-  · change t ≤ (1:ℝ)/128
+  · change t ≤ (((1:ℕ):ℝ)/128)
+    norm_num at hU ⊢
     exact hU
 
 #print axioms psiTwo_compact_cell0_signed_wronskians
