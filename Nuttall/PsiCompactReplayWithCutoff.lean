@@ -1,6 +1,7 @@
 import Nuttall.PsiOneCompactGridReplay
 import Nuttall.PsiOneCompactBlock40
-import Nuttall.PsiTwoCompactCell47
+import Nuttall.PsiTwoCompactBlock40
+import Nuttall.PsiOneCompactBlock36
 
 namespace Nuttall
 
@@ -48,5 +49,29 @@ theorem kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstFortySeven
 
 #print axioms kernelIntegrationOrder_eq_one_of_psiOne_firstForty
 #print axioms kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstFortySeven
+
+/-- The rank-five through rank-seven minimum follows from cells below index 36. -/
+theorem kernelIntegrationOrder_eq_one_of_psiOne_firstThirtySix {r : ℕ}
+    (hr₅ : 5 ≤ r) (hr₇ : r ≤ 7)
+    (hcell : ∀ i : Fin 36, ∀ p ≤ 7, ∀ t : ℝ, (i.val:ℝ)/128 ≤ t →
+      t ≤ ((i.val+1:ℕ):ℝ)/128 →
+      0 < kernelMinorSign p * wronskian (psi 1) p t) :
+    kernelIntegrationOrder r = 1 :=
+  kernelIntegrationOrder_eq_one_of_psiOne_compact hr₅ hr₇
+    (psi_compact_replay_with_cutoff (n := 36)
+      psiOne_compact_from_cell36_signed_wronskians hcell)
+
+/-- Only indices below 40 remain in the rank-eight compact assembly. -/
+theorem kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstForty
+    (hcell : ∀ i : Fin 40, ∀ p ≤ 8, ∀ t : ℝ, (i.val:ℝ)/128 ≤ t →
+      t ≤ ((i.val+1:ℕ):ℝ)/128 →
+      0 < kernelMinorSign p * wronskian (psi 2) p t) :
+    kernelIntegrationOrder 8 = 2 :=
+  kernelIntegrationOrder_eight_eq_two_of_psiTwo_compact
+    (psi_compact_replay_with_cutoff (n := 40)
+      psiTwo_compact_from_cell40_signed_wronskians hcell)
+
+#print axioms kernelIntegrationOrder_eq_one_of_psiOne_firstThirtySix
+#print axioms kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstForty
 
 end Nuttall
