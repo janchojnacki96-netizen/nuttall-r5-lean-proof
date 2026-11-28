@@ -31,6 +31,7 @@ import Nuttall.ShiftReflectionOrthogonality
 import Nuttall.ShiftCoreNorm
 import Nuttall.ShiftGeometricPrefix
 import Nuttall.ShiftCorrection
+import Nuttall.ShiftFirstKnotCorrection
 import Nuttall.ShiftHankelBasis
 import Nuttall.ShiftHankelPower
 import Nuttall.ShiftHankelTruncation

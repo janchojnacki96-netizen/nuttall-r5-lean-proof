@@ -7,6 +7,10 @@ import Nuttall.PsiFirstCellSigns
 import Nuttall.PsiOneCompactBlock24
 import Nuttall.PsiTwoCompactBlock28
 
+import Nuttall.PsiOneCompactBlock16
+import Nuttall.PsiTwoCompactBlock20
+import Nuttall.PsiTwoCompactCell0
+
 namespace Nuttall
 
 /-- Assemble the remaining cells strictly to the left of an already certified right interval. -/
@@ -135,5 +139,47 @@ theorem kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstTwentyEight
 
 #print axioms kernelIntegrationOrder_eq_one_of_psiOne_cellsOneThroughTwentyThree
 #print axioms kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstTwentyEight
+
+/-- Assemble a certified origin cell and right interval around the remaining cells. -/
+theorem psi_compact_replay_with_origin {m r n : ℕ}
+    (hzero : ∀ p ≤ r, ∀ t : ℝ, 0 ≤ t → t ≤ 1/128 →
+      0 < kernelMinorSign p * wronskian (psi m) p t)
+    (hright : ∀ p ≤ r, ∀ t : ℝ, (n:ℝ)/128 ≤ t →
+      0 < kernelMinorSign p * wronskian (psi m) p t)
+    (hcell : ∀ i : Fin n, 0 < i.val → ∀ p ≤ r, ∀ t : ℝ, (i.val:ℝ)/128 ≤ t →
+      t ≤ ((i.val+1:ℕ):ℝ)/128 →
+      0 < kernelMinorSign p * wronskian (psi m) p t) :
+    ∀ p ≤ r, ∀ t : ℝ, 0 ≤ t → t ≤ 53/128 →
+      0 < kernelMinorSign p * wronskian (psi m) p t := by
+  refine psi_compact_replay_with_cutoff hright ?_
+  intro i p hp t hleft hright'
+  by_cases hi : i.val = 0
+  · exact hzero p hp t (by simpa [hi] using hleft) (by simpa [hi] using hright')
+  · exact hcell i (Nat.pos_of_ne_zero hi) p hp t hleft hright'
+
+/-- Only cells 1 through 15 remain for the first integration through order seven. -/
+theorem kernelIntegrationOrder_eq_one_of_psiOne_firstSixteenWithOrigin {r : ℕ}
+    (hr₅ : 5 ≤ r) (hr₇ : r ≤ 7)
+    (hcell : ∀ i : Fin 16, 0 < i.val → ∀ p ≤ 7, ∀ t : ℝ, (i.val:ℝ)/128 ≤ t →
+      t ≤ ((i.val+1:ℕ):ℝ)/128 →
+      0 < kernelMinorSign p * wronskian (psi 1) p t) :
+    kernelIntegrationOrder r = 1 :=
+  kernelIntegrationOrder_eq_one_of_psiOne_compact hr₅ hr₇
+    (psi_compact_replay_with_origin psiOne_first_cell_signed_wronskians
+      psiOne_compact_from_cell16_signed_wronskians hcell)
+
+/-- Only cells 1 through 19 remain for the second integration through order eight. -/
+theorem kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstTwentyWithOrigin
+    (hcell : ∀ i : Fin 20, 0 < i.val → ∀ p ≤ 8, ∀ t : ℝ, (i.val:ℝ)/128 ≤ t →
+      t ≤ ((i.val+1:ℕ):ℝ)/128 →
+      0 < kernelMinorSign p * wronskian (psi 2) p t) :
+    kernelIntegrationOrder 8 = 2 := by
+  apply kernelIntegrationOrder_eight_eq_two_of_psiTwo_compact
+  refine psi_compact_replay_with_origin ?_ psiTwo_compact_from_cell20_signed_wronskians hcell
+  intro p hp t hleft hright
+  exact psiTwo_compact_cell0_signed_wronskians p hp t (by simpa using hleft) hright
+
+#print axioms kernelIntegrationOrder_eq_one_of_psiOne_firstSixteenWithOrigin
+#print axioms kernelIntegrationOrder_eight_eq_two_of_psiTwo_firstTwentyWithOrigin
 
 end Nuttall

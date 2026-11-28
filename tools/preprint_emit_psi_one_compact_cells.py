@@ -224,8 +224,8 @@ def main():
             pending[f"PsiCompactUniformPanel{i}Data.lean"] = module_data
             pending[f"PsiCompactUniformPanel{i}.lean"] = anchor_code
             continue
-        if i < 1 or i > 51:
-            parser.error("choose uniform cells from 1 to 51")
+        if i < 0 or i > 51:
+            parser.error("choose uniform cells from 0 to 51")
         cell = data["cells"][i]
         node = cell["center"]
         anchor = cell["anchor_index"]
@@ -237,9 +237,12 @@ def main():
         assert max(cell["row_numerators"]) < 7 * data["scale"] // 10
         stem = f"PsiCompactCell{i}"
         pending[stem + "Data.lean"] = data_module(i, node, cell["corner"])
-        pending[stem + "Margin.lean"] = margin_module(i)
         pending[stem + "Jets.lean"] = jet_module(i)
-        pending[stem + ".lean"] = cell_module(i, anchor)
+        # The origin already has a rank-seven proof. Emit only the snapshot
+        # and its jet checks there so the rank-eight replay can reuse them.
+        if i != 0:
+            pending[stem + "Margin.lean"] = margin_module(i)
+            pending[stem + ".lean"] = cell_module(i, anchor)
     for name in pending:
         if (args.output_dir / name).exists():
             parser.error(f"refusing to overwrite {name}")

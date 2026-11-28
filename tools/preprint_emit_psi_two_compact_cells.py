@@ -98,8 +98,8 @@ def main():
     assert two["basis_scale"] == 1024
     pending = {}
     for i in args.indices:
-        if i < 1 or i > 47:
-            parser.error("choose a cell in the uniform range from 1 to 47")
+        if i < 0 or i > 47:
+            parser.error("choose a cell in the uniform range from 0 to 47")
         left, right = one["cells"][i], two["cells"][i]
         assert left["index"] == right["index"] == i
         assert all(row[j] and not any(row[j+1:]) for j, row in enumerate(right["basis"]))
