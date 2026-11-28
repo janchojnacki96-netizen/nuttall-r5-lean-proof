@@ -136,6 +136,7 @@ import Nuttall.PsiTwoPanelIdentity
 import Nuttall.PsiCompactCell59
 import Nuttall.PsiCompactCell52
 import Nuttall.PsiCompactReplayWithCutoff
+import Nuttall.SmallIntegrationOrders
 import Nuttall.PsiTwoPanelAnchors
 import Nuttall.PsiTwoCompactCellSigns
 import Nuttall.PsiOneCompactGridReplay
